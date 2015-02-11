@@ -29,7 +29,7 @@ def connectionCallback(connection):
 	global running
 	running = False
 
-server = hsmsMultiServer(5000, connectionCallback)
+server = hsmsMultiServer(5000, connectionCallback = connectionCallback)
 server.start()
 
 while running:

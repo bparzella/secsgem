@@ -197,11 +197,12 @@ class _callbackHandler:
 
 #wait for one single client connection and terminate
 class hsmsSingleServer(_callbackHandler):
-	def __init__(self, port = 5000, connectionCallback = None, sessionID = 0):
+	def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
 		_callbackHandler.__init__(self)
 
 		self.port = port
 		self.connectionCallback = connectionCallback
+		self.disconnectionCallback = disconnectionCallback
 		self.sessionID = sessionID
 
 	def waitForConnection(self):
@@ -216,7 +217,7 @@ class hsmsSingleServer(_callbackHandler):
 
 			(sock,(sourceIP, sourcePort)) = accept_result
 
-			connection = _hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID)
+			connection = _hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
 			if not self.connectionCallback == None:
 				self.connectionCallback(connection)
@@ -229,7 +230,7 @@ class hsmsSingleServer(_callbackHandler):
 
 #start server accepting all connections
 class hsmsMultiServer(_callbackHandler):
-	def __init__(self, port = 5000, connectionCallback = None, sessionID = 0):
+	def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
 		_callbackHandler.__init__(self)
 
 		self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -244,6 +245,7 @@ class hsmsMultiServer(_callbackHandler):
 		self.connectionsLock = threading.Lock()
 
 		self.connectionCallback = connectionCallback
+		self.disconnectionCallback = disconnectionCallback
 
 		self.listenThreadIdentifier = None
 
@@ -287,7 +289,7 @@ class hsmsMultiServer(_callbackHandler):
 				self.connectionsLock.acquire()
 				(sock,(sourceIP, sourcePort)) = accept_result
 
-				connection = _hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID)
+				connection = _hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
 				self.connections.append(connection)
 				self.connectionsLock.release()
@@ -305,19 +307,20 @@ class hsmsMultiServer(_callbackHandler):
 
 #single client connection
 class hsmsClient(_callbackHandler):
-	def __init__(self, address, port = 5000, connectionCallback = None, sessionID = 0):
+	def __init__(self, address, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
 		_callbackHandler.__init__(self)
 
 		self.address = address
 		self.port = port
 		self.connectionCallback = connectionCallback
+		self.disconnectionCallback = disconnectionCallback
 		self.sessionID = sessionID
 		
 	def connect(self):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		sock.connect((self.address, self.port)) 
 		
-		connection = _hsmsConnection(sock, self.callbacks, True, self.address, self.port, self.sessionID)
+		connection = _hsmsConnection(sock, self.callbacks, True, self.address, self.port, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
 		if not self.connectionCallback == None:
 			self.connectionCallback(connection)
@@ -330,7 +333,7 @@ class hsmsConnectionState:
     NOT_CONNECTED, CONNECTED, NOT_SELECTED, SELECTED = range(4)
 
 class _hsmsConnection(_callbackHandler):
-	def __init__(self, sock, callbacks, active, address, port, sessionID = 0):
+	def __init__(self, sock, callbacks, active, address, port, sessionID = 0, disconnectionCallback = None):
 		_callbackHandler.__init__(self)
 
 		self.sock = sock
@@ -339,6 +342,7 @@ class _hsmsConnection(_callbackHandler):
 		self.remoteIP = address
 		self.remotePort = port
 		self.sessionID = sessionID
+		self.disconnectionCallback = disconnectionCallback
 
 		self.systemCounter = 1
 
@@ -623,6 +627,9 @@ class _hsmsConnection(_callbackHandler):
 			print "hsmsClient.ReceiverThread : exception", e
 			print traceback.format_exc()
 
+		if not self.disconnectionCallback == None:
+			self.disconnectionCallback(self)
+
 		self.threadRunning = False
 
 	def getNextSystemCounter(self):
@@ -672,6 +679,9 @@ class hsmsConnectionManager:
 
 		self.peers[peer.name] = peer
 
+	def disconnectionCallback(self, connection):
+		print "disconnectionCallback"
+
 	def addPeer(self, name, address, port, active, sessionID, connectionHandler = hsmsDefaultHandler):
 		peer = connectionHandler(address, port, active, sessionID, name)
 
@@ -679,7 +689,7 @@ class hsmsConnectionManager:
 		self.pendingPeers[connectionID] = peer
 
 		if active:
-			client = hsmsClient(address, port, self.connectionCallback, sessionID)
+			client = hsmsClient(address, port, sessionID = sessionID, connectionCallback = self.connectionCallback, disconnectionCallback = self.disconnectionCallback)
 
 			client.connect()
 
