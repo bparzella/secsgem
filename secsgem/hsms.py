@@ -689,19 +689,3 @@ class hsmsConnectionManager:
 		for peerID in self.peers:
 			peer = self.peers[peerID]
 			peer.connection.disconnect()
-
-
-		
-#	def defaultS1F13Handler(self, connection, data, header):
-#		s1f14 = secsS1F14(chr(0x00), "pysecs", "prototype")
-#
-#		packet = hsmsPacket(hsmsStreamFunctionHeader(1,14, False, header.system), s1f14)
-#
-#		print "packet:", packet
-#		print "s1f14:", s1f14
-#
-#		self.sock.send(packet.encode())
-
-		
-		
-	
