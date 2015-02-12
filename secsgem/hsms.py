@@ -318,8 +318,15 @@ class hsmsClient(_callbackHandler):
 		
 	def connect(self):
 		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.connect((self.address, self.port)) 
-		
+
+		logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
+
+		try:
+			sock.connect((self.address, self.port)) 
+		except socket.error, v:
+			logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.address, self.port)
+			return None
+
 		connection = _hsmsConnection(sock, self.callbacks, True, self.address, self.port, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
 		if not self.connectionCallback == None:
@@ -394,7 +401,7 @@ class _hsmsConnection(_callbackHandler):
 			pass
 
 	def sendPacket(self, packet):
-		logging.debug("> %s", packet)
+		logging.info("> %s", packet)
 		self.sock.send(packet.encode())
 				
 	def waitforStreamFunction(self, stream, function):
@@ -420,7 +427,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendSelectReq(self):
 		packet = hsmsPacket(hsmsSelectReqHeader(self.getNextSystemCounter()))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[1])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[1])
 
 		self.sock.send(packet.encode())
 
@@ -449,7 +456,7 @@ class _hsmsConnection(_callbackHandler):
 	def sendSelectRsp(self, system = None):
 		packet = hsmsPacket(hsmsSelectRspHeader(system))
 
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[2])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[2])
 
 		self.sock.send(packet.encode())
 
@@ -478,7 +485,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendLinktestReq(self):
 		packet = hsmsPacket(hsmsLinktestReqHeader(self.getNextSystemCounter()))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[5])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[5])
 
 		self.sock.send(packet.encode())
 
@@ -501,7 +508,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendLinktestRsp(self, system):
 		packet = hsmsPacket(hsmsLinktestReqHeader(system))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[6])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[6])
 
 		self.sock.send(packet.encode())
 
@@ -524,7 +531,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendDeselectReq(self):
 		packet = hsmsPacket(hsmsDeselectReqHeader(self.getNextSystemCounter()))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[3])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[3])
 
 		self.sock.send(packet.encode())
 
@@ -547,7 +554,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendDeselectRsp(self, system):
 		packet = hsmsPacket(hsmsDeselectRspHeader(system))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[4])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[4])
 
 		self.sock.send(packet.encode())
 
@@ -576,7 +583,7 @@ class _hsmsConnection(_callbackHandler):
 
 	def sendSeparateReq(self):
 		packet = hsmsPacket(hsmsSeparateReqHeader(self.getNextSystemCounter()))
-		logging.debug("> %s\n  %s", packet, hsmsSTypes[9])
+		logging.info("> %s\n  %s", packet, hsmsSTypes[9])
 
 		self.sock.send(packet.encode())
 
@@ -603,12 +610,12 @@ class _hsmsConnection(_callbackHandler):
 					
 				response = hsmsPacket.decode(data)
 				if response.header.sessionID == 0xffff:
-					logging.debug("< %s\n  %s", response, hsmsSTypes[response.header.sType])
+					logging.info("< %s\n  %s", response, hsmsSTypes[response.header.sType])
 				else:
 					if response.data == None:
-						logging.debug("< %s", response)
+						logging.info("< %s", response)
 					else:
-						logging.debug("< %s", response)
+						logging.info("< %s", response)
 				
 				data = ""
 
@@ -643,7 +650,7 @@ class _hsmsConnection(_callbackHandler):
 		
 		if packet.header.sType == 0x05:
 			responsePacket = hsmsPacket(hsmsLinktestRspHeader(packet.header.system))
-			logging.debug("> %s\n  %s", responsePacket, hsmsSTypes[6])
+			logging.info("> %s\n  %s", responsePacket, hsmsSTypes[6])
 
 			self.sock.send(responsePacket.encode())
 		else:
@@ -661,41 +668,94 @@ class hsmsDefaultHandler:
 	def _setConnection(self, connection):
 		self.connection = connection
 
+	def _clearConnection(self):
+		self.connection = None
+
 	def _postInit(self):
 		pass
 
 class hsmsConnectionManager:
 	def __init__(self):
-		self.pendingPeers = {}
+		self.unconnectedPeers = {}
 		self.peers = {}
 
-	def connectionCallback(self, connection):
-		connectionID = "%s:%05d:%05d" % (connection.remoteIP, connection.remotePort, connection.sessionID)
+		self.stopping = False
 
-		peer = self.pendingPeers[connectionID]
-		del self.pendingPeers[connectionID]
+		self.reconnectTimeout = 10.0
+
+	def __getitem__(self, index):
+		for peer in self.peers:
+			if peer.name == index:
+				return peer
+
+		return None
+
+	def getConnectionID(self, address, port, sessionID):
+		return "%s:%05d:%05d" % (address, port, sessionID)
+
+	def startActiveConnect(self, peer):
+		if not self.stopping:
+			threading.Thread(target=self._activeConnectThread, args=(peer,)).start()
+
+	def _activeConnectThread(self, peer):
+		client = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self.connectionCallback, disconnectionCallback = self.disconnectionCallback)
+
+		if client.connect() == None:
+			time.sleep(self.reconnectTimeout)
+			self.startActiveConnect(peer)
+		else:
+			peer._postInit()
+
+	def connectionCallback(self, connection):
+		connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
+
+		peer = self.unconnectedPeers[connectionID]
+		del self.unconnectedPeers[connectionID]
 
 		peer._setConnection(connection)
 
-		self.peers[peer.name] = peer
+		self.peers[connectionID] = peer
 
 	def disconnectionCallback(self, connection):
-		print "disconnectionCallback"
+		connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
+
+		peer = self.peers[connectionID]
+		del self.peers[connectionID]
+
+		peer._clearConnection()
+
+		self.unconnectedPeers[connectionID] = peer
+
+		if peer.active:
+			self.startActiveConnect(peer)
 
 	def addPeer(self, name, address, port, active, sessionID, connectionHandler = hsmsDefaultHandler):
+		logging.debug("hsmsConnectionManager.addPeer: connecting to %s at %s:%d", name, address, port)
+
 		peer = connectionHandler(address, port, active, sessionID, name)
 
-		connectionID = "%s:%05d:%05d" % (address, port, sessionID)
-		self.pendingPeers[connectionID] = peer
+		connectionID = self.getConnectionID(address, port, sessionID)
+		self.unconnectedPeers[connectionID] = peer
 
-		if active:
-			client = hsmsClient(address, port, sessionID = sessionID, connectionCallback = self.connectionCallback, disconnectionCallback = self.disconnectionCallback)
+		if peer.active:
+			self.startActiveConnect(peer)
 
-			client.connect()
+	def removePeer(self, name, address, port, sessionID):
+		connectionID = self.getConnectionID(address, port, sessionID)
 
-			peer._postInit()
+		if connectionID in self.peers:
+			peer = self.peers[connectionID]
+			del self.peers[connectionID]
+
+			peer.connection.disconnect()
+
+		if connectionID in self.unconnectedPeers:
+			peer = self.unconnectedPeers[connectionID]
+			del self.unconnectedPeers[connectionID]
 
 	def stop(self):
-		for peerID in self.peers:
+		self.stopping = True
+
+		for peerID in self.peers.keys():
 			peer = self.peers[peerID]
 			peer.connection.disconnect()
