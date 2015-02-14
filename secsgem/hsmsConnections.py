@@ -95,6 +95,24 @@ class hsmsSingleServer(_callbackHandler):
     :type connectionCallback: def connectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
+
+    **Example**::
+
+        def S1F1Handler(connection, packet):
+            print "S1F1 received"
+
+        def onConnect(connection):
+            print "Connected"
+
+        server = secsgem.hsmsConnections.hsmsSingleServer(5000, connectionCallback = onConnect)
+        server.registerCallback(1, 1, S1F1Handler)
+
+        connection = server.waitForConnection()
+
+        time.sleep(3)
+
+        connection.disconnect()
+
     """
     def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
@@ -146,6 +164,23 @@ class hsmsMultiServer(_callbackHandler):
     :type connectionCallback: def connectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
+    **Example**::
+
+        def S1F1Handler(connection, packet):
+            print "S1F1 received"
+
+        def onConnect(connection):
+            print "Connected"
+
+        server = secsgem.hsmsConnections.hsmsMultiServer(5000, connectionCallback = onConnect)
+        server.registerCallback(1, 1, S1F1Handler)
+
+        server.start()
+
+        time.sleep(3)
+
+        server.stop()
+
     """
     def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
@@ -247,6 +282,24 @@ class hsmsClient(_callbackHandler):
     :type connectionCallback: def connectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
+
+    **Example**::
+
+        def S1F1Handler(connection, packet):
+            print "S1F1 received"
+
+        def onConnect(connection):
+            print "Connected"
+
+        client = secsgem.hsmsConnections.hsmsClient("127.0.0.1", 5000, connectionCallback = onConnect)
+        client.registerCallback(1, 1, S1F1Handler)
+
+        connection = client.connect()
+
+        time.sleep(3)
+
+        connection.disconnect()
+
     """
     def __init__(self, address, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
