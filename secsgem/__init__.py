@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from hsmsConnection import *
+from hsmsConnections import *
 from hsmsPackets import *
 
 from secsFunctions import *
