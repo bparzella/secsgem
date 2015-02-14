@@ -13,6 +13,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+"""Contains helper functions"""
 
 def formatHex(text):
-	return ":".join("{0:02x}".format(ord(c)) for c in text)
+    """Returns byte arrays (string) formated as hex numbers.
+
+    :param text: byte array
+    :type text: string
+    :returns: Formated text
+    :rtype: string
+    """
+    return ":".join("{0:02x}".format(ord(c)) for c in text)
