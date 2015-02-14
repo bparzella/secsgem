@@ -18,6 +18,13 @@
 def formatHex(text):
     """Returns byte arrays (string) formated as hex numbers.
 
+    **Example**::
+
+        >>> data = "asdfg"
+        >>> secsgem.common.formatHex(data)
+        '61:73:64:66:67'
+
+
     :param text: byte array
     :type text: string
     :returns: Formated text
