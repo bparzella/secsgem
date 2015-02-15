@@ -13,6 +13,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+"""Handler for SECS commands. Used in combination with :class:`secsgem.hsmsHandler.hsmsConnectionManager`"""
+#TODO: isn't this more like GEM?
 
 from hsmsHandler import *
 from hsmsPackets import *
@@ -20,73 +22,140 @@ from hsmsPackets import *
 from secsFunctions import *
 
 class secsDefaultHandler(hsmsDefaultHandler):
-	def __init__(self, address, port, active, sessionID, name):
-		hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
+    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
 
-	def disableCEIDs(self):
-		s2f37 = secsS2F37(False, [])
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 37, True, self.connection.sessionID), s2f37.encode())
+    :param address: IP address of remote host
+    :type address: string
+    :param port: TCP port of remote host
+    :type port: integer
+    :param active: Is the connection active (*True*) or passive (*False*)
+    :type active: boolean
+    :param sessionID: session / device ID to use for connection
+    :type sessionID: integer
+    :param name: Name of the underlying configuration
+    :type name: string
+    """
+    def __init__(self, address, port, active, sessionID, name):
+        hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(2, 38)
+    def disableCEIDs(self):
+        """Disable all Collection Events.
+        """
+        s2f37 = secsS2F37(False, [])
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 37, True, self.connection.sessionID), s2f37.encode())
 
-	def disableCEIDReports(self):
-		s2f33 = secsS2F33(0, [])
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 33, True, self.connection.sessionID), s2f33.encode())
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(2, 38)
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(2, 34)
+    def disableCEIDReports(self):
+        """Disable all Collection Event Reports.
+        """
+        s2f33 = secsS2F33(0, [])
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 33, True, self.connection.sessionID), s2f33.encode())
 
-	def listSVs(self):
-		s1f11 = secsS1F11([])
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 11, True, self.connection.sessionID), s1f11.encode())
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(2, 34)
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(1, 12)
+    def listSVs(self):
+        """Get list of available Service Variables.
 
-		return secsDecode(packet).data
+        :returns: available Service Variables
+        :rtype: list
+        """
+        s1f11 = secsS1F11([])
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 11, True, self.connection.sessionID), s1f11.encode())
 
-	def requestSVs(self, SVs):
-		s1f3 = secsS1F3(SVs)
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 3, True, self.connection.sessionID), s1f3.encode())
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(1, 12)
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(1, 4)
+        return secsDecode(packet).data
 
-		return secsDecode(packet).SV
+    def requestSVs(self, SVs):
+        """Request contents of supplied Service Variables.
 
-	def requestSV(self, SV):
-		return self.requestSVs([SV])[0]
+        :param SVs: Service Variables to request
+        :type SVs: list
+        :returns: values of requested Service Variables
+        :rtype: list
+        """
+        s1f3 = secsS1F3(SVs)
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 3, True, self.connection.sessionID), s1f3.encode())
 
-	def listECs(self):
-		s2f29 = secsS2F29([])
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 29, True, self.connection.sessionID), s2f29.encode())
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(1, 4)
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(2, 30)
+        return secsDecode(packet).SV
 
-		return secsDecode(packet).data
+    def requestSV(self, SV):
+        """Request contents of one Service Variable.
 
-	def requestECs(self, ECs):
-		s2f13 = secsS2F13(ECs)
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 13, True, self.connection.sessionID), s2f13.encode())
+        :param SV: id of Service Variable
+        :type SV: int
+        :returns: value of requested Service Variable
+        :rtype: various
+        """
+        return self.requestSVs([SV])[0]
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(2, 14)
+    def listECs(self):
+        """Get list of available Equipment Constants.
 
-		return secsDecode(packet).EC
+        :returns: available Equipment Constants
+        :rtype: list
+        """
+        s2f29 = secsS2F29([])
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 29, True, self.connection.sessionID), s2f29.encode())
 
-	def requestEC(self, EC):
-		return self.requestECs([EC])[0]
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(2, 30)
 
-	def setECs(self, ECs):
-		s2f15 = secsS2F15(ECs)
-		packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 15, True, self.connection.sessionID), s2f15.encode())
+        return secsDecode(packet).data
 
-		self.connection.sendPacket(packet)
-		packet = self.connection.waitforStreamFunction(2, 16)
+    def requestECs(self, ECs):
+        """Request contents of supplied Equipment Constants.
 
-		return secsDecode(packet).EAC
+        :param ECs: Equipment Constants to request
+        :type ECs: list
+        :returns: values of requested Equipment Constants
+        :rtype: list
+        """
+        s2f13 = secsS2F13(ECs)
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 13, True, self.connection.sessionID), s2f13.encode())
 
-	def setEC(self, EC, value):
-		return self.setECs([[EC, value]])
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(2, 14)
+
+        return secsDecode(packet).EC
+
+    def requestEC(self, EC):
+        """Request contents of one Equipment Constant.
+
+        :param EC: id of Equipment Constant
+        :type EC: int
+        :returns: value of requested Equipment Constant
+        :rtype: various
+        """
+        return self.requestECs([EC])[0]
+
+    def setECs(self, ECs):
+        """Set contents of supplied Equipment Constants.
+
+        :param ECs: list containing list of id / value pairs
+        :type ECs: list
+        """
+        s2f15 = secsS2F15(ECs)
+        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 15, True, self.connection.sessionID), s2f15.encode())
+
+        self.connection.sendPacket(packet)
+        packet = self.connection.waitforStreamFunction(2, 16)
+
+        return secsDecode(packet).EAC
+
+    def setEC(self, EC, value):
+        """Set contents of one Equipment Constant.
+
+        :param EC: id of Equipment Constant
+        :type EC: int
+        :param value: new content of Equipment Constant
+        :type value: various
+        """
+        return self.setECs([[EC, value]])
