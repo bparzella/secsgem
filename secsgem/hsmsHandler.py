@@ -71,7 +71,8 @@ class hsmsConnectionManager:
         self.reconnectTimeout = 10.0
 
     def __getitem__(self, index):
-        for peer in self.peers:
+        for peerID in self.peers:
+            peer = self.peers[peerID]
             if peer.name == index:
                 return peer
 
