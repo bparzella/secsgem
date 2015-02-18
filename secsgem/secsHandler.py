@@ -45,7 +45,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 37, True, self.connection.sessionID), s2f37.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(2, 38)
+        packet = self.connection.waitforSystem(s2f37.header.system)
 
     def disableCEIDReports(self):
         """Disable all Collection Event Reports.
@@ -54,7 +54,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 33, True, self.connection.sessionID), s2f33.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(2, 34)
+        packet = self.connection.waitforSystem(s2f33.header.system)
 
     def listSVs(self):
         """Get list of available Service Variables.
@@ -66,7 +66,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 11, True, self.connection.sessionID), s1f11.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(1, 12)
+        packet = self.connection.waitforSystem(s1f11.header.system)
 
         return secsDecode(packet).data
 
@@ -82,7 +82,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 3, True, self.connection.sessionID), s1f3.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(1, 4)
+        packet = self.connection.waitforSystem(s1f3.header.system)
 
         return secsDecode(packet).SV
 
@@ -106,7 +106,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 29, True, self.connection.sessionID), s2f29.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(2, 30)
+        packet = self.connection.waitforSystem(s2f29.header.system)
 
         return secsDecode(packet).data
 
@@ -122,7 +122,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 13, True, self.connection.sessionID), s2f13.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(2, 14)
+        packet = self.connection.waitforSystem(s2f13.header.system)
 
         return secsDecode(packet).EC
 
@@ -146,7 +146,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 15, True, self.connection.sessionID), s2f15.encode())
 
         self.connection.sendPacket(packet)
-        packet = self.connection.waitforStreamFunction(2, 16)
+        packet = self.connection.waitforSystem(s2f15.header.system)
 
         return secsDecode(packet).EAC
 

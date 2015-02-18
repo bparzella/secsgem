@@ -462,6 +462,34 @@ class hsmsConnection(_callbackHandler):
         
         return packet
 
+    def waitforSystem(self, system):
+        """Wait for an message with supplied system
+
+        :param system: number of system to wait for
+        :type system: integer
+        :returns: Packet that was received
+        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        """
+        event = threading.Event()
+        self.eventQueue.append(event)
+
+        foundPacket = None
+        
+        while foundPacket == None:
+            for packet in self.packetQueue:
+                if (packet.header.system == system):
+                    self.packetQueue.remove(packet)
+                    foundPacket = packet
+                    break
+
+            if foundPacket == None:
+                if event.wait(1) == True:
+                    event.clear()
+                    
+        self.eventQueue.remove(event)
+        
+        return packet
+
     def sendSelectReq(self):
         """Send a Select Request to the remote host"""
         packet = hsmsPacket(hsmsSelectReqHeader(self.getNextSystemCounter()))
