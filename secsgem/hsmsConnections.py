@@ -504,7 +504,7 @@ class hsmsConnection(_callbackHandler):
         return self.waitforSystem(outPacket.header.system)
 
     def sendResponse(self, packet, system):
-        """Send the packet and wait for the response
+        """Send response packet for system
 
         :param packet: packet to be sent
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
