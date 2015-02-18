@@ -431,7 +431,7 @@ class hsmsConnection(_callbackHandler):
         """
         logging.info("> %s", packet)
         self.sock.send(packet.encode())
-                
+
     def waitforStreamFunction(self, stream, function):
         """Wait for an incoming stream and function and return the receive data
 
@@ -489,6 +489,30 @@ class hsmsConnection(_callbackHandler):
         self.eventQueue.remove(event)
         
         return packet
+
+    def sendAndWaitForResponse(self, packet):
+        """Send the packet and wait for the response
+
+        :param packet: packet to be sent
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :returns: Packet that was received
+        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        """
+        outPacket = hsmsPacket(hsmsStreamFunctionHeader(self.getNextSystemCounter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        self.sendPacket(outPacket)
+        
+        return self.waitforSystem(outPacket.header.system)
+
+    def sendResponse(self, packet, system):
+        """Send the packet and wait for the response
+
+        :param packet: packet to be sent
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :param system: system to reply to
+        :type system: integer
+        """
+        outPacket = hsmsPacket(hsmsStreamFunctionHeader(system, packet.stream, packet.function, False, self.sessionID), packet.encode())
+        self.sendPacket(outPacket)
 
     def sendSelectReq(self):
         """Send a Select Request to the remote host"""

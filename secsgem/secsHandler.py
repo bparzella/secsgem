@@ -41,20 +41,12 @@ class secsDefaultHandler(hsmsDefaultHandler):
     def disableCEIDs(self):
         """Disable all Collection Events.
         """
-        s2f37 = secsS2F37(False, [])
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 37, True, self.connection.sessionID), s2f37.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s2f37.header.system)
+        return self.connection.sendAndWaitForResponse(secsS2F37(False, []))
 
     def disableCEIDReports(self):
         """Disable all Collection Event Reports.
         """
-        s2f33 = secsS2F33(0, [])
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 33, True, self.connection.sessionID), s2f33.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s2f33.header.system)
+        return self.connection.sendAndWaitForResponse(secsS2F33(0, []))
 
     def listSVs(self):
         """Get list of available Service Variables.
@@ -62,11 +54,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: available Service Variables
         :rtype: list
         """
-        s1f11 = secsS1F11([])
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 11, True, self.connection.sessionID), s1f11.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s1f11.header.system)
+        packet = self.connection.sendAndWaitForResponse(secsS1F11([]))
 
         return secsDecode(packet).data
 
@@ -78,11 +66,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: values of requested Service Variables
         :rtype: list
         """
-        s1f3 = secsS1F3(SVs)
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 1, 3, True, self.connection.sessionID), s1f3.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s1f3.header.system)
+        packet = self.connection.sendAndWaitForResponse(secsS1F3(SVs))
 
         return secsDecode(packet).SV
 
@@ -102,11 +86,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: available Equipment Constants
         :rtype: list
         """
-        s2f29 = secsS2F29([])
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 29, True, self.connection.sessionID), s2f29.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s2f29.header.system)
+        packet = self.connection.sendAndWaitForResponse(secsS2F29([]))
 
         return secsDecode(packet).data
 
@@ -118,11 +98,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: values of requested Equipment Constants
         :rtype: list
         """
-        s2f13 = secsS2F13(ECs)
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 13, True, self.connection.sessionID), s2f13.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s2f13.header.system)
+        packet = self.connection.sendAndWaitForResponse(secsS2F13(ECs))
 
         return secsDecode(packet).EC
 
@@ -142,11 +118,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :param ECs: list containing list of id / value pairs
         :type ECs: list
         """
-        s2f15 = secsS2F15(ECs)
-        packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), 2, 15, True, self.connection.sessionID), s2f15.encode())
-
-        self.connection.sendPacket(packet)
-        packet = self.connection.waitforSystem(s2f15.header.system)
+        packet = self.connection.sendAndWaitForResponse(secsS2F15(ECs))
 
         return secsDecode(packet).EAC
 

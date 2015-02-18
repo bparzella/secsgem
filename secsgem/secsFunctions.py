@@ -29,7 +29,8 @@ class secsS0F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 0
+        self.function = 0
         
     def __repr__(self):
         return "LL"
@@ -76,7 +77,8 @@ class secsS1F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 1
+        self.function = 0
         
     def __repr__(self):
         return "S1F0 {}"
@@ -123,7 +125,8 @@ class secsS1F1:
 
     """
     def __init__(self):
-        pass
+        self.stream = 1
+        self.function = 1
         
     def __repr__(self):
         return "S1F1 {}"
@@ -175,6 +178,9 @@ class secsS1F2:
 
     """
     def __init__(self, MDLN, SOFTREV):
+        self.stream = 1
+        self.function = 2
+
         self.MDLN = secsVarString(MDLN)
         self.SOFTREV = secsVarString(SOFTREV)
         
@@ -228,6 +234,9 @@ class secsS1F3:
 
     """
     def __init__(self, SVIDs):
+        self.stream = 1
+        self.function = 3
+
         self.SVID = []
         for SVID in SVIDs:
             self.SVID.append(secsVarUINT4(SVID))
@@ -284,6 +293,9 @@ class secsS1F4:
 
     """
     def __init__(self, SV):
+        self.stream = 1
+        self.function = 4
+
         self.SV = SV
 
     def __repr__(self):
@@ -336,6 +348,9 @@ class secsS1F11:
 
     """
     def __init__(self, SVIDs):
+        self.stream = 1
+        self.function = 11
+
         self.SVID = []
         for SVID in SVIDs:
             self.SVID.append(secsVarUINT4(SVID))
@@ -390,6 +405,9 @@ class secsS1F12:
 
     """
     def __init__(self, data):
+        self.stream = 1
+        self.function = 12
+
         self.data = []
         for item in data:
             self.data.append([secsVarUINT4(item[0]), secsVarString(item[1]), secsVarString(item[2])])
@@ -451,6 +469,9 @@ class secsS1F13:
 
     """
     def __init__(self, MDLN, SOFTREV):
+        self.stream = 1
+        self.function = 13
+
         self.MDLN = secsVarString(MDLN)
         self.SOFTREV = secsVarString(SOFTREV)
         
@@ -509,6 +530,9 @@ class secsS1F14:
 
     """
     def __init__(self, COMMACK, MDLN, SOFTREV):
+        self.stream = 1
+        self.function = 14
+
         self.COMMACK = secsVarBinary(COMMACK)
         self.MDLN = secsVarString(MDLN)
         self.SOFTREV = secsVarString(SOFTREV)
@@ -560,7 +584,8 @@ class secsS2F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 2
+        self.function = 0
         
     def __repr__(self):
         return "S2F0 {}"
@@ -599,6 +624,9 @@ class secsS2F0:
 
 class secsS2F13:
     def __init__(self, ECIDs):
+        self.stream = 2
+        self.function = 13
+
         self.ECID = []
         for ECID in ECIDs:
             self.ECID.append(secsVarUINT4(ECID))
@@ -617,6 +645,9 @@ class secsS2F13:
 
 class secsS2F14:
     def __init__(self, EC):
+        self.stream = 2
+        self.function = 14
+
         self.EC = EC
 
     def __repr__(self):
@@ -634,6 +665,9 @@ class secsS2F14:
 
 class secsS2F15:
     def __init__(self, ECIDs):
+        self.stream = 2
+        self.function = 15
+
         self.ECID = []
         for ECID in ECIDs:
             self.ECID.append([secsVarUINT4(ECID[0]), secsConvertVarIfRequired(secsVarString,ECID[1])])
@@ -653,6 +687,9 @@ class secsS2F15:
 
 class secsS2F16:
     def __init__(self, EAC):
+        self.stream = 2
+        self.function = 16
+
         self.EAC = secsVarBinary(EAC)
 
     def __repr__(self):
@@ -670,6 +707,9 @@ class secsS2F16:
 
 class secsS2F29:
     def __init__(self, ECIDs):
+        self.stream = 2
+        self.function = 29
+
         self.ECID = []
         for ECID in ECIDs:
             self.ECID.append(secsVarUINT4(ECID))
@@ -688,6 +728,9 @@ class secsS2F29:
 
 class secsS2F30:
     def __init__(self, data):
+        self.stream = 2
+        self.function = 30
+
         self.data = []
         for item in data:
             self.data.append([secsVarUINT4(item[0]), secsVarString(item[1]), secsVarString(item[2]), secsVarString(item[3]), secsVarString(item[4]), secsVarString(item[5])])
@@ -711,6 +754,9 @@ class secsS2F30:
 
 class secsS2F33:
     def __init__(self, DATAID, reports):
+        self.stream = 2
+        self.function = 33
+
         self.DATAID = secsVarUINT4(DATAID)
         self.reports = []
         for report in reports:
@@ -745,6 +791,9 @@ class secsS2F33:
 
 class secsS2F34:
     def __init__(self, DRACK):
+        self.stream = 2
+        self.function = 34
+
         self.DRACK = secsVarBinary(DRACK)
 
     def __repr__(self):
@@ -760,6 +809,9 @@ class secsS2F34:
 
 class secsS2F35:
     def __init__(self, DATAID, CEIDs):
+        self.stream = 2
+        self.function = 35
+
         self.DATAID = secsVarUINT4(DATAID)
         self.CEIDs = []
         for CEID in CEIDs:
@@ -794,6 +846,9 @@ class secsS2F35:
 
 class secsS2F36:
     def __init__(self, LRACK):
+        self.stream = 2
+        self.function = 36
+
         self.LRACK = secsVarBinary(LRACK)
 
     def __repr__(self):
@@ -809,6 +864,9 @@ class secsS2F36:
 
 class secsS2F37:
     def __init__(self, CEED, CEIDs):
+        self.stream = 2
+        self.function = 37
+
         self.CEED = secsVarBoolean(CEED)
         self.CEIDs = []
         for CEID in CEIDs:
@@ -834,6 +892,9 @@ class secsS2F37:
 
 class secsS2F38:
     def __init__(self, ERACK):
+        self.stream = 2
+        self.function = 38
+
         self.ERACK = secsVarBinary(ERACK)
 
     def __repr__(self):
@@ -849,6 +910,9 @@ class secsS2F38:
 
 class secsS2F41:
     def __init__(self, RCMD, parameters):
+        self.stream = 2
+        self.function = 41
+
         self.RCMD = secsVarString(RCMD)
         self.parameters = []
         for parameter in parameters:
@@ -872,6 +936,9 @@ class secsS2F41:
 
 class secsS2F42:
     def __init__(self, parameters):
+        self.stream = 2
+        self.function = 42
+
         self.parameters = parameters
 
     def __repr__(self):
@@ -895,7 +962,8 @@ class secsS5F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 5
+        self.function = 0
         
     def __repr__(self):
         return "S5F0 {}"
@@ -934,6 +1002,9 @@ class secsS5F0:
 
 class secsS5F1:
     def __init__(self, ALCD, ALID, ALTX):
+        self.stream = 5
+        self.function = 1
+
         self.ALCD = secsVarBinary(ALCD)
         self.ALID = secsVarUINT4(ALID)
         self.ALTX = secsVarString(ALTX)
@@ -952,6 +1023,9 @@ class secsS5F1:
 
 class secsS5F2:
     def __init__(self, ACKC5):
+        self.stream = 5
+        self.function = 2
+
         self.ACKC5 = secsVarBinary(ACKC5)
         
     def __repr__(self):
@@ -976,7 +1050,8 @@ class secsS6F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 6
+        self.function = 0
         
     def __repr__(self):
         return "S6F0 {}"
@@ -1015,6 +1090,9 @@ class secsS6F0:
 
 class secsS6F11:
     def __init__(self, DATAID, CEID, reports = []):
+        self.stream = 6
+        self.function = 11
+
         self.DATAID = secsVarUINT4(DATAID)
         self.CEID = secsVarUINT4(CEID)
 
@@ -1034,6 +1112,9 @@ class secsS6F11:
         
 class secsS6F12:
     def __init__(self, ACKC6):
+        self.stream = 6
+        self.function = 12
+
         self.ACKC6 = secsVarBinary(ACKC6)
         
     def __repr__(self):
@@ -1058,7 +1139,8 @@ class secsS9F0:
 
     """
     def __init__(self):
-        pass
+        self.stream = 9
+        self.function = 0
         
     def __repr__(self):
         return "S9F0 {}"
@@ -1097,6 +1179,9 @@ class secsS9F0:
 
 class secsS9F1:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 1
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1113,6 +1198,9 @@ class secsS9F1:
 
 class secsS9F3:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 3
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1129,6 +1217,9 @@ class secsS9F3:
 
 class secsS9F5:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 5
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1145,6 +1236,9 @@ class secsS9F5:
 
 class secsS9F7:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 7
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1161,6 +1255,9 @@ class secsS9F7:
 
 class secsS9F9:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 9
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1177,6 +1274,9 @@ class secsS9F9:
 
 class secsS9F11:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 11
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1193,6 +1293,9 @@ class secsS9F11:
 
 class secsS9F13:
     def __init__(self, MHEAD):
+        self.stream = 9
+        self.function = 13
+        
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
