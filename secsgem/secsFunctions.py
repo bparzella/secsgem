@@ -66,6 +66,53 @@ class secsS0F0:
         """
         return secsS0F0()
 
+class secsS1F0:
+    """Class for stream 1 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS1F0()
+        S1F0 {}
+
+    """
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "S1F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s1f0 = secsgem.secsS1F0()
+            >>> secsgem.formatHex(s1f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS1F0`
+
+        **Example**::
+
+            >>> secsgem.secsS1F0.decode(s1f0.encode())
+            S1F0 {}
+
+        """
+        return secsS1F0()
+
 class secsS1F1:
     """Class for stream 1 function 1, Are You There - Request.
 
@@ -503,6 +550,53 @@ class secsS1F14:
         
         return secsS1F14(data[0], data[1][0], data[1][1])
 
+class secsS2F0:
+    """Class for stream 2 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS2F0()
+        S2F0 {}
+
+    """
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "S2F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s2f0 = secsgem.secsS2F0()
+            >>> secsgem.formatHex(s2f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS2F0`
+
+        **Example**::
+
+            >>> secsgem.secsS2F0.decode(s2f0.encode())
+            S2F0 {}
+
+        """
+        return secsS2F0()
+
 class secsS2F13:
     def __init__(self, ECIDs):
         self.ECID = []
@@ -791,6 +885,53 @@ class secsS2F42:
         data = secsCoder.decode(text)
         return secsS2F42_generic(data)
 
+class secsS5F0:
+    """Class for stream 5 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS5F0()
+        S5F0 {}
+
+    """
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "S5F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s5f0 = secsgem.secsS5F0()
+            >>> secsgem.formatHex(s5f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS5F0`
+
+        **Example**::
+
+            >>> secsgem.secsS5F0.decode(s5f0.encode())
+            S5F0 {}
+
+        """
+        return secsS5F0()
+
 class secsS5F1:
     def __init__(self, ALCD, ALID, ALTX):
         self.ALCD = secsVarBinary(ALCD)
@@ -824,6 +965,53 @@ class secsS5F2:
         data = secsCoder.decode(text)
         
         return secsS5F2(data[0])
+
+class secsS6F0:
+    """Class for stream 6 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS6F0()
+        S6F0 {}
+
+    """
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "S6F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s6f0 = secsgem.secsS6F0()
+            >>> secsgem.formatHex(s6f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS6F0`
+
+        **Example**::
+
+            >>> secsgem.secsS6F0.decode(s6f0.encode())
+            S6F0 {}
+
+        """
+        return secsS6F0()
 
 class secsS6F11:
     def __init__(self, DATAID, CEID, reports = []):
@@ -859,6 +1047,53 @@ class secsS6F12:
         data = secsCoder.decode(text)
         
         return secsS6F12(data[0])
+
+class secsS9F0:
+    """Class for stream 9 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS9F0()
+        S9F0 {}
+
+    """
+    def __init__(self):
+        pass
+        
+    def __repr__(self):
+        return "S9F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f0 = secsgem.secsS9F0()
+            >>> secsgem.formatHex(s9f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F0`
+
+        **Example**::
+
+            >>> secsgem.secsS9F0.decode(s9f0.encode())
+            S9F0 {}
+
+        """
+        return secsS9F0()
 
 class secsS9F1:
     def __init__(self, MHEAD):
@@ -977,6 +1212,7 @@ secsStreamsFunctions = {
          0: secsS0F0,
         },
     1:     {
+         0: secsS1F0,
          1: secsS1F1,
          2: secsS1F2,
          3: secsS1F3,
@@ -987,6 +1223,7 @@ secsStreamsFunctions = {
         14: secsS1F14,
         },
     2:     {
+         0: secsS2F0,
         13: secsS2F13,
         14: secsS2F14,
         15: secsS2F15,
@@ -1003,14 +1240,17 @@ secsStreamsFunctions = {
         42: secsS2F42,
         },
     5:    {
+         0: secsS5F0,
          1: secsS5F1,
          2: secsS5F2,
         },
     6:    {
+         0: secsS6F0,
         11: secsS6F11,
         12: secsS6F12,
         },
     9:    {
+         0: secsS9F0,
          1: secsS9F1,
          3: secsS9F3,
          5: secsS9F5,
