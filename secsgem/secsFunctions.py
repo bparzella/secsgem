@@ -1295,7 +1295,7 @@ class secsS9F13:
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 13
-        
+
         self.MHEAD = secsVarBinary(MHEAD)
         
     def __repr__(self):
@@ -1310,11 +1310,98 @@ class secsS9F13:
         
         return secsS9F13(data[0])
 
+class secsS10F0:
+    """Class for stream 10 function 0, Transaction Abort
+
+    **Example**::
+
+        >>> secsgem.secsS10F0()
+        S10F0 {}
+
+    """
+    def __init__(self):
+        self.stream = 10
+        self.function = 0
+        
+    def __repr__(self):
+        return "S10F0 {}"
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s10f0 = secsgem.secsS10F0()
+            >>> secsgem.formatHex(s10f0.encode())
+            ''
+
+        """
+        return secsCoder.encode(None)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS10F0`
+
+        **Example**::
+
+            >>> secsgem.secsS10F0.decode(s10f0.encode())
+            S10F0 {}
+
+        """
+        return secsS10F0()
+
+class secsS10F1:
+    def __init__(self, TID, TEXT):
+        self.stream = 10
+        self.function = 1
+
+        self.TID = secsVarBinary(TID)
+        self.TEXT = secsVarString(TEXT)
+        
+    def __repr__(self):
+        return "S10F1 {TID: %d, TEXT: '%s'}" % (ord(self.TID.value[0]), self.TEXT.value)
+        
+    def encode(self):
+        return secsCoder.encode([self.TID, self.TEXT])
+    
+    @staticmethod    
+    def decode(text):
+        data = secsCoder.decode(text)
+        
+        return secsS10F1(data[0], data[1])
+
+class secsS10F2:
+    def __init__(self, ACKC10):
+        self.stream = 10
+        self.function = 2
+
+        self.ACKC10 = secsVarBinary(ACKC10)
+        
+    def __repr__(self):
+        return "S10F2 {ACKC10: '%s'}" % (self.ACKC10.value)
+        
+    def encode(self):
+        return secsCoder.encode(self.ACKC10)
+    
+    @staticmethod    
+    def decode(text):
+        data = secsCoder.decode(text)
+        
+        return secsS10F2(data[0])
+
 secsStreamsFunctions = {
-    0:     {
+     0:     {
          0: secsS0F0,
         },
-    1:     {
+     1:     {
          0: secsS1F0,
          1: secsS1F1,
          2: secsS1F2,
@@ -1325,7 +1412,7 @@ secsStreamsFunctions = {
         13: secsS1F13,
         14: secsS1F14,
         },
-    2:     {
+     2:     {
          0: secsS2F0,
         13: secsS2F13,
         14: secsS2F14,
@@ -1342,17 +1429,17 @@ secsStreamsFunctions = {
         41: secsS2F41,
         42: secsS2F42,
         },
-    5:    {
+     5:    {
          0: secsS5F0,
          1: secsS5F1,
          2: secsS5F2,
         },
-    6:    {
+     6:    {
          0: secsS6F0,
         11: secsS6F11,
         12: secsS6F12,
         },
-    9:    {
+     9:    {
          0: secsS9F0,
          1: secsS9F1,
          3: secsS9F3,
@@ -1361,6 +1448,11 @@ secsStreamsFunctions = {
          9: secsS9F9,
         11: secsS9F11,
         13: secsS9F13,
+        },
+    10:    {
+         0: secsS10F0,
+         1: secsS10F1,
+         2: secsS10F2,
         },
 }
 
