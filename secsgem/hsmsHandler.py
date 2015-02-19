@@ -43,6 +43,10 @@ class hsmsDefaultHandler:
         self.name = name
         self.connection = None
 
+        self.events = []
+        self.eventsLock = threading.Lock()
+        self.eventNotify = threading.Event()
+
     def _setConnection(self, connection):
         """Set the connection of the for this models. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`.
 
@@ -55,9 +59,51 @@ class hsmsDefaultHandler:
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`."""
         self.connection = None
 
+        self.postEvent("terminate")
+
     def _postInit(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
         pass
+
+    def postEvent(self, event, data={}):
+        """Add event to notify event list and notify listeners
+
+        :param event: name of event
+        :type event: string
+        :param data: parameters to event
+        :type data: dict
+        """
+        self.eventsLock.acquire()
+
+        data["event"] = event
+        self.events.append(data)
+
+        self.eventNotify.set()
+
+        self.eventsLock.release()
+
+    def waitForEvents(self):
+        """Wait for events in the event list and return
+
+        :returns: currently available events
+        :rtype: list
+        """
+        self.eventsLock.acquire()
+        if not self.events:
+            self.eventsLock.release()
+
+            while not self.eventNotify.wait(1):
+                pass
+
+            self.eventsLock.acquire()
+            self.eventNotify.clear()
+
+        result = list(self.events)
+        self.events = []
+
+        self.eventsLock.release()
+
+        return result
 
 class hsmsConnectionManager:
     """High level class that handles multiple active and passive connections and the model for them.
