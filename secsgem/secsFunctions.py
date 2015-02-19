@@ -1359,43 +1359,230 @@ class secsS10F0:
         return secsS10F0()
 
 class secsS10F1:
+    """Class for stream 10 function 1, Terminal - Request
+
+    :param TID: terminal id
+    :type TID: integer
+    :param TEXT: text for terminal
+    :type TEXT: string
+
+    **Example**::
+
+        >>> secsgem.secsS10F1(1, "Message")
+        S10F1 {TID: 1, TEXT: 'Message'}
+
+    """
     def __init__(self, TID, TEXT):
         self.stream = 10
         self.function = 1
 
-        self.TID = secsVarBinary(TID)
+        self.TID = secsVarBinary(chr(TID))
         self.TEXT = secsVarString(TEXT)
         
     def __repr__(self):
         return "S10F1 {TID: %d, TEXT: '%s'}" % (ord(self.TID.value[0]), self.TEXT.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s10f1 = secsgem.secsS10F1(1, "Message")
+            >>> secsgem.formatHex(s10f1.encode())
+            '01:02:21:01:01:41:07:4d:65:73:73:61:67:65'
+
+        """
         return secsCoder.encode([self.TID, self.TEXT])
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS10F1`
+
+        **Example**::
+
+            >>> secsgem.secsS10F1.decode(s10f1.encode())
+            S10F1 {TID: 1, TEXT: 'Message'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS10F1(data[0], data[1])
+        return secsS10F1(ord(data[0].value[0]), data[1])
 
 class secsS10F2:
+    """Class for stream 10 function 2, Terminal - Response
+
+    :param ACKC10: Reply code (0 = OK, 1 = Not Displayed, 2 = No Terminal)
+    :type ACKC10: integer
+
+    **Example**::
+
+        >>> secsgem.secsS10F2(0)
+        S10F2 {ACKC10: '0'}
+
+    """
     def __init__(self, ACKC10):
         self.stream = 10
         self.function = 2
 
-        self.ACKC10 = secsVarBinary(ACKC10)
+        self.ACKC10 = secsVarBinary(chr(ACKC10))
         
     def __repr__(self):
-        return "S10F2 {ACKC10: '%s'}" % (self.ACKC10.value)
+        return "S10F2 {ACKC10: %d}" % (ord(self.ACKC10.value[0]))
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s10f2 = secsgem.secsS10F2(0)
+            >>> secsgem.formatHex(s10f2.encode())
+            '21:01:00'
+
+        """
         return secsCoder.encode(self.ACKC10)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS10F2`
+
+        **Example**::
+
+            >>> secsgem.secsS10F2.decode(s10f2.encode())
+            S10F2 {ACKC10: 0}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS10F2(data[0])
+        return secsS10F2(ord(data.value[0]))
+
+class secsS10F3:
+    """Class for stream 10 function 3, Terminal Display - Request
+
+    :param TID: terminal id
+    :type TID: integer
+    :param TEXT: text for terminal
+    :type TEXT: string
+
+    **Example**::
+
+        >>> secsgem.secsS10F3(1, "Message")
+        S10F3 {TID: 1, TEXT: 'Message'}
+
+    """
+    def __init__(self, TID, TEXT):
+        self.stream = 10
+        self.function = 3
+
+        self.TID = secsVarBinary(chr(TID))
+        self.TEXT = secsVarString(TEXT)
+        
+    def __repr__(self):
+        return "S10F3 {TID: %d, TEXT: '%s'}" % (ord(self.TID.value[0]), self.TEXT.value)
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s10f3 = secsgem.secsS10F3(1, "Message")
+            >>> secsgem.formatHex(s10f3.encode())
+            '01:02:21:01:01:41:07:4d:65:73:73:61:67:65'
+
+        """
+        return secsCoder.encode([self.TID, self.TEXT])
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS10F3`
+
+        **Example**::
+
+            >>> secsgem.secsS10F3.decode(s10f3.encode())
+            S10F3 {TID: 1, TEXT: 'Message'}
+
+        """
+        data = secsCoder.decode(text)
+        
+        return secsS10F3(ord(data[0].value[0]), data[1])
+
+class secsS10F4:
+    """Class for stream 10 function 4, Terminal Display - Response
+
+    :param ACKC10: Reply code (0 = OK, 1 = Not Displayed, 2 = No Terminal)
+    :type ACKC10: integer
+
+    **Example**::
+
+        >>> secsgem.secsS10F4(0)
+        S10F4 {ACKC10: '0'}
+
+    """
+    def __init__(self, ACKC10):
+        self.stream = 10
+        self.function = 4
+
+        self.ACKC10 = secsVarBinary(chr(ACKC10))
+        
+    def __repr__(self):
+        return "S10F4 {ACKC10: %d}" % (ord(self.ACKC10.value[0]))
+        
+    def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s10f4 = secsgem.secsS10F4(0)
+            >>> secsgem.formatHex(s10f4.encode())
+            '21:01:00'
+
+        """
+        return secsCoder.encode(self.ACKC10)
+    
+    @staticmethod    
+    def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS10F4`
+
+        **Example**::
+
+            >>> secsgem.secsS10F4.decode(s10f4.encode())
+            S10F4 {ACKC10: 0}
+
+        """
+        data = secsCoder.decode(text)
+        
+        return secsS10F4(ord(data.value[0]))
 
 secsStreamsFunctions = {
      0:     {
@@ -1453,6 +1640,8 @@ secsStreamsFunctions = {
          0: secsS10F0,
          1: secsS10F1,
          2: secsS10F2,
+         3: secsS10F3,
+         4: secsS10F4,
         },
 }
 
