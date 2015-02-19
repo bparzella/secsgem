@@ -131,3 +131,13 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :type value: various
         """
         return self.setECs([[EC, value]])
+
+    def sendEquipmentTerminal(self, terminalID, text):
+        """Set text to equipment terminal
+
+        :param terminalID: ID of terminal
+        :type terminalID: int
+        :param value: text to send
+        :type value: string
+        """
+        return self.connection.sendAndWaitForResponse(secsS10F3(terminalID, text))
