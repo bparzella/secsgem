@@ -43,9 +43,9 @@ class hsmsDefaultHandler:
         self.name = name
         self.connection = None
 
-        self.events = []
+        self.events = {}
         self.eventsLock = threading.Lock()
-        self.eventNotify = threading.Event()
+        self.eventNotify = {}
 
     def _setConnection(self, connection):
         """Set the connection of the for this models. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`.
@@ -57,9 +57,9 @@ class hsmsDefaultHandler:
 
     def _clearConnection(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`."""
-        self.connection = None
-
         self.postEvent("terminate")
+
+        self.connection = None
 
     def _postInit(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
@@ -76,30 +76,36 @@ class hsmsDefaultHandler:
         self.eventsLock.acquire()
 
         data["event"] = event
-        self.events.append(data)
+        for queue in self.events:
+            self.events[queue].append(data)
 
-        self.eventNotify.set()
+            self.eventNotify[queue].set()
 
         self.eventsLock.release()
 
-    def waitForEvents(self):
+    def waitForEvents(self, queue):
         """Wait for events in the event list and return
 
         :returns: currently available events
         :rtype: list
         """
         self.eventsLock.acquire()
-        if not self.events:
+
+        if not queue in self.events:
+            self.events[queue] = []
+            self.eventNotify[queue] = threading.Event()
+
+        if not self.events[queue]:
             self.eventsLock.release()
 
-            while not self.eventNotify.wait(1):
+            while not self.eventNotify[queue].wait(1):
                 pass
 
             self.eventsLock.acquire()
-            self.eventNotify.clear()
+            self.eventNotify[queue].clear()
 
-        result = list(self.events)
-        self.events = []
+        result = list(self.events[queue])
+        self.events[queue] = []
 
         self.eventsLock.release()
 
