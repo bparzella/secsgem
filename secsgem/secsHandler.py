@@ -38,6 +38,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
     def __init__(self, address, port, active, sessionID, name):
         hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
 
+        self.ceids = {}
+        self.alarms = {}
+
     def disableCEIDs(self):
         """Disable all Collection Events.
         """
