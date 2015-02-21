@@ -154,11 +154,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        ceids = self.__class__.ceids
-        print ceid
-        if ceid in ceids:
-            if "name" in ceids[ceid]:
-                return ceids[ceid]["name"]
+        if ceid in self.ceids:
+            if "name" in self.ceids[ceid]:
+                return self.ceids[ceid]["name"]
 
         return ""
 
