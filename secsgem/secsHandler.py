@@ -14,7 +14,6 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.hsmsHandler.hsmsConnectionManager`"""
-#TODO: isn't this more like GEM?
 
 from hsmsHandler import *
 from hsmsPackets import *
@@ -35,11 +34,12 @@ class secsDefaultHandler(hsmsDefaultHandler):
     :param name: Name of the underlying configuration
     :type name: string
     """
+
+    ceids = {}
+    alarms = {}
+
     def __init__(self, address, port, active, sessionID, name):
         hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
-
-        self.ceids = {}
-        self.alarms = {}
 
     def disableCEIDs(self):
         """Disable all Collection Events.
