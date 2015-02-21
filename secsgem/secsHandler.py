@@ -36,6 +36,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
     """
 
     ceids = {}
+    dvs = {}
     alarms = {}
 
     def __init__(self, address, port, active, sessionID, name):
@@ -144,3 +145,33 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :type value: string
         """
         return self.connection.sendAndWaitForResponse(secsS10F3(terminalID, text))
+
+    def getCEIDName(self, ceid):
+        """Get the name of a collection event
+
+        :param ceid: ID of collection event
+        :type ceid: integer
+        :returns: Name of the event or empty string if not found
+        :rtype: string
+        """
+        ceids = self.__class__.ceids
+        print ceid
+        if ceid in ceids:
+            if "name" in ceids[ceid]:
+                return ceids[ceid]["name"]
+
+        return ""
+
+    def getDVIDName(self, dvid):
+        """Get the name of a data value
+
+        :param ceid: ID of data value
+        :type ceid: integer
+        :returns: Name of the event or empty string if not found
+        :rtype: string
+        """
+        if dvid in self.dvs:
+            if "name" in self.dvs[dvid]:
+                return self.dvs[dvid]["name"]
+
+        return ""

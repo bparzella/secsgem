@@ -236,6 +236,15 @@ def secsConvertVarIfRequired(targetClass, value):
     else:
         return targetClass(value)
 
+def secsUnwrapVariables(variable):
+    if issubclass(type(variable), secsVar):
+        return variable.value
+    if isinstance(variable, list):
+        resultList = []
+        for item in variable:
+            resultList.append(secsUnwrapVariables(item))
+        return resultList
+
 class secsCoder:
     @staticmethod    
     def decode(text, returnPos = False):
