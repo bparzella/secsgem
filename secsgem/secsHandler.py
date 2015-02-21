@@ -173,3 +173,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
                 return self.dvs[dvid]["name"]
 
         return ""
+
+    def areYouThere(self):
+        """Check if remote is still replying"""
+        packet = self.connection.sendAndWaitForResponse(secsS1F1())
