@@ -73,6 +73,12 @@ class hsmsDefaultHandler:
         :param data: parameters to event
         :type data: dict
         """
+        #call event handler function if present
+        eventFuncName = "event_" + event
+        eventFunc = getattr(self, eventFuncName, None)
+        if callable(eventFunc):
+            eventFunc(event, data)
+
         self.eventsLock.acquire()
 
         data["event"] = event
