@@ -164,6 +164,7 @@ class hsmsMultiServer(_callbackHandler):
     :type connectionCallback: def connectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
+    
     **Example**::
 
         def S1F1Handler(connection, packet):

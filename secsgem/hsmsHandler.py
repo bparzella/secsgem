@@ -48,7 +48,7 @@ class hsmsDefaultHandler:
         self.eventNotify = {}
 
     def _setConnection(self, connection):
-        """Set the connection of the for this models. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`.
+        """Set the connection of the for this models. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`.
 
         :param connection: The connection the model uses
         :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
@@ -56,13 +56,13 @@ class hsmsDefaultHandler:
         self.connection = connection
 
     def _clearConnection(self):
-        """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager`."""
+        """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
         self.postEvent("terminate")
 
         self.connection = None
 
     def _postInit(self):
-        """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsConnections.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
+        """Event called by :class:`secsgem.hsmsHandler.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
         pass
 
     def postEvent(self, event, data={}):

@@ -50,16 +50,23 @@ class gemDefaultHandler(secsDefaultHandler):
         self.communicationDelay = 10
 
     def _setConnection(self, connection):
+        """Set the connection of the for this models. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`.
+
+        :param connection: The connection the model uses
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        """
         secsDefaultHandler._setConnection(self, connection)
 
         self.connection.registerCallback(  1, 13, self.S1F13Handler)
 
     def _clearConnection(self):
+        """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
         self.connection.unregisterCallback(  1, 13, self.S1F13Handler)
 
         secsDefaultHandler._clearConnection(self)
 
     def _postInit(self):
+        """Event called by :class:`secsgem.hsmsHandler.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
         secsDefaultHandler._postInit(self)
 
         if not self.communicationState == gemCommunicationState.COMMUNICATING:
@@ -71,6 +78,11 @@ class gemDefaultHandler(secsDefaultHandler):
 
 
     def establishCommunication(self):
+        """Function to establish GEM communication with remote.
+
+        :returns: 0: OK, 1: denied, -1: error
+        :rtype: integer
+        """
         function = secsDecode(self.connection.sendAndWaitForResponse(secsS1F13("secsgem", "0.0.3")))
 
         self.communicationState = gemCommunicationState.WAIT_CRA
@@ -82,6 +94,15 @@ class gemDefaultHandler(secsDefaultHandler):
             return -1
 
     def S1F13Handler(self, connection, packet):
+        """Callback handler for Stream 1, Function 13, Establish Communication Request
+
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+
+        :param connection: connection the message was received on
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        """
         connection.sendResponse(secsS1F14(chr(0x00), "secsgem", "0.0.3"), packet.header.system)
 
         self.communicationState = gemCommunicationState.COMMUNICATING
