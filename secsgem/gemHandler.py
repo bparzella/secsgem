@@ -62,13 +62,17 @@ class gemDefaultHandler(secsDefaultHandler):
         """
         secsDefaultHandler._setConnection(self, connection)
 
+        self.connection.registerCallback(1, 1, self.S1F1Handler)
         self.connection.registerCallback(1, 13, self.S1F13Handler)
         self.connection.registerCallback(6, 11, self.S6F11Handler)
+        self.connection.registerCallback(10, 1, self.S10F1Handler)
 
     def _clearConnection(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
+        self.connection.unregisterCallback(1, 1, self.S1F1Handler)
         self.connection.unregisterCallback(1, 13, self.S1F13Handler)
         self.connection.unregisterCallback(6, 11, self.S6F11Handler)
+        self.connection.unregisterCallback(10, 1, self.S10F1Handler)
 
         secsDefaultHandler._clearConnection(self)
 
@@ -136,6 +140,19 @@ class gemDefaultHandler(secsDefaultHandler):
         #enable collection event
         packet = self.connection.sendAndWaitForResponse(secsS2F37(True, [ceid]))
      
+    def S1F1Handler(self, connection, packet):
+        """Callback handler for Stream 1, Function 1, Are You There
+
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+
+        :param connection: connection the message was received on
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        """
+        connection.sendResponse(secsS1F2("secsgem", "0.0.3"), packet.header.system)
+
+
     def S1F13Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
 
@@ -178,4 +195,18 @@ class gemDefaultHandler(secsDefaultHandler):
 
         connection.sendResponse(secsS6F12(chr(0x00)), packet.header.system)
 
+    def S10F1Handler(self, connection, packet):
+        """Callback handler for Stream 10, Function 1, Terminal Request
 
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+
+        :param connection: connection the message was received on
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        """
+        s10f1 = secsDecode(packet)
+
+        connection.sendResponse(secsS10F2(0), packet.header.system)
+
+        self.postEvent("terminal", {"text": s10f1.TEXT.value, "terminal": ord(s10f1.TID.value[0])})
