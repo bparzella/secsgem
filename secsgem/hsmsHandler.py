@@ -163,7 +163,7 @@ class hsmsConnectionManager:
         """Starts thread to (re)connect active connection to remote host.
 
         :param peer: Model for the affected remote.
-        :type peer: inherited from :class:`secsgem.hsmsConnections.hsmsDefaultHandler`
+        :type peer: inherited from :class:`secsgem.hsmsHandler.hsmsDefaultHandler`
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -174,7 +174,7 @@ class hsmsConnectionManager:
         """Thread function to (re)connect active connection to remote host.
 
         :param peer: Model for the affected remote.
-        :type peer: inherited from :class:`secsgem.hsmsConnections.hsmsDefaultHandler`
+        :type peer: inherited from :class:`secsgem.hsmsHandler.hsmsDefaultHandler`
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -246,7 +246,7 @@ class hsmsConnectionManager:
         :param sessionID: session / device ID of peer
         :type sessionID: integer
         :param connectionHandler: Model handling this connection
-        :type connectionHandler: inherited from :class:`secsgem.hsmsConnections.hsmsDefaultHandler`
+        :type connectionHandler: inherited from :class:`secsgem.hsmsHandler.hsmsDefaultHandler`
         """
         logging.debug("hsmsConnectionManager.addPeer: connecting to %s at %s:%d", name, address, port)
 
