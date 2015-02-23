@@ -119,14 +119,25 @@ class hsmsDefaultHandler:
 
 class hsmsConnectionManager:
     """High level class that handles multiple active and passive connections and the model for them.
+
+    :param connectionCallback: method to call when the connection is established
+    :type connectionCallback: def connectionCallback(peer)
+    :param disconnectionCallback: method to call when the connection is terminated
+    :type disconnectionCallback: def disconnectionCallback(peer)
+    :param postInitCallback: method to call when the connection is initialized
+    :type postInitCallback: def postInitCallback(peer)
     """
-    def __init__(self):
+    def __init__(self, connectionCallback = None, disconnectionCallback = None, postInitCallback = None):
         self.unconnectedPeers = {}
         self.peers = {}
 
         self.stopping = False
 
         self.reconnectTimeout = 10.0
+
+        self.connectionCallback = connectionCallback
+        self.disconnectionCallback = disconnectionCallback
+        self.postInitCallback = postInitCallback
 
     def __getitem__(self, index):
         for peerID in self.peers:
@@ -167,7 +178,7 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        client = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self.connectionCallback, disconnectionCallback = self.disconnectionCallback)
+        client = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, disconnectionCallback = self._disconnectionCallback)
 
         if client.connect() == None:
             time.sleep(self.reconnectTimeout)
@@ -175,7 +186,10 @@ class hsmsConnectionManager:
         else:
             peer._postInit()
 
-    def connectionCallback(self, connection):
+            if not self.postInitCallback == None:
+                self.postInitCallback(peer)
+
+    def _connectionCallback(self, connection):
         """Callback function for connection event
 
         :param peer: Connection that was connected
@@ -192,7 +206,10 @@ class hsmsConnectionManager:
 
         self.peers[connectionID] = peer
 
-    def disconnectionCallback(self, connection):
+        if not self.connectionCallback == None:
+            self.connectionCallback(peer)
+
+    def _disconnectionCallback(self, connection):
         """Callback function for disconnection event
 
         :param peer: Connection that was disconnected
@@ -204,6 +221,9 @@ class hsmsConnectionManager:
 
         peer = self.peers[connectionID]
         del self.peers[connectionID]
+
+        if not self.disconnectionCallback == None:
+            self.disconnectionCallback(peer)
 
         peer._clearConnection()
 
@@ -237,6 +257,8 @@ class hsmsConnectionManager:
 
         if peer.active:
             self._startActiveConnect(peer)
+
+        return peer
 
     def removePeer(self, name, address, port, sessionID):
         """Remove a previously added connection 
