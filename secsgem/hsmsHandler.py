@@ -139,6 +139,21 @@ class hsmsConnectionManager:
         self.disconnectionCallback = disconnectionCallback
         self.postInitCallback = postInitCallback
 
+    def hasConnectionTo(self, index):
+        """Check if connection to certain peer exists.
+
+        :param index: Name of the reqested peer.
+        :type index: string
+        :returns: Is peer available
+        :rtype: boolean
+        """
+        for peerID in self.peers:
+            peer = self.peers[peerID]
+            if peer.name == index:
+                return peer
+
+        return None
+
     def __getitem__(self, index):
         for peerID in self.peers:
             peer = self.peers[peerID]
