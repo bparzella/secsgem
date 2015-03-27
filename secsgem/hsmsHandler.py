@@ -42,6 +42,8 @@ class hsmsDefaultHandler:
         self.sessionID = sessionID
         self.name = name
         self.connection = None
+        self.connected = False
+        self.dead = False
 
         self.events = {}
         self.eventsLock = threading.Lock()
@@ -54,12 +56,17 @@ class hsmsDefaultHandler:
         :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
         """
         self.connection = connection
+        if connection:
+            self.connected = True
+        else:
+            self.connected = False
 
     def _clearConnection(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
         self.postEvent("terminate")
 
         self.connection = None
+        self.connected = False
 
     def _postInit(self):
         """Event called by :class:`secsgem.hsmsHandler.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
@@ -117,6 +124,10 @@ class hsmsDefaultHandler:
 
         return result
 
+    def stop(self):
+        """Mark peer as dead"""
+        self.dead = True
+
 class hsmsConnectionManager:
     """High level class that handles multiple active and passive connections and the model for them.
 
@@ -128,7 +139,6 @@ class hsmsConnectionManager:
     :type postInitCallback: def postInitCallback(peer)
     """
     def __init__(self, connectionCallback = None, disconnectionCallback = None, postInitCallback = None):
-        self.unconnectedPeers = {}
         self.peers = {}
 
         self.stopping = False
@@ -207,19 +217,16 @@ class hsmsConnectionManager:
     def _connectionCallback(self, connection):
         """Callback function for connection event
 
-        :param peer: Connection that was connected
-        :type peer: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param connection: Connection that was connected
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
 
         .. warning:: Do not call this directly, for internal use only.
         """
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
 
-        peer = self.unconnectedPeers[connectionID]
-        del self.unconnectedPeers[connectionID]
+        peer = self.peers[connectionID]
 
         peer._setConnection(connection)
-
-        self.peers[connectionID] = peer
 
         if not self.connectionCallback == None:
             self.connectionCallback(peer)
@@ -227,25 +234,23 @@ class hsmsConnectionManager:
     def _disconnectionCallback(self, connection):
         """Callback function for disconnection event
 
-        :param peer: Connection that was disconnected
-        :type peer: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param connection: Connection that was disconnected
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
 
         .. warning:: Do not call this directly, for internal use only.
         """
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
 
         peer = self.peers[connectionID]
-        del self.peers[connectionID]
+        
+        peer._clearConnection()
 
         if not self.disconnectionCallback == None:
             self.disconnectionCallback(peer)
 
-        peer._clearConnection()
-
-        self.unconnectedPeers[connectionID] = peer
-
-        if peer.active:
-            self._startActiveConnect(peer)
+        if not peer.dead:
+            if peer.active:
+                self._startActiveConnect(peer)
 
     def addPeer(self, name, address, port, active, sessionID, connectionHandler = hsmsDefaultHandler):
         """Add a new connection 
@@ -268,7 +273,7 @@ class hsmsConnectionManager:
         peer = connectionHandler(address, port, active, sessionID, name)
 
         connectionID = self.getConnectionID(address, port, sessionID)
-        self.unconnectedPeers[connectionID] = peer
+        self.peers[connectionID] = peer
 
         if peer.active:
             self._startActiveConnect(peer)
@@ -291,13 +296,12 @@ class hsmsConnectionManager:
 
         if connectionID in self.peers:
             peer = self.peers[connectionID]
-            del self.peers[connectionID]
 
+            peer.stop()
             peer.connection.disconnect()
 
-        if connectionID in self.unconnectedPeers:
-            peer = self.unconnectedPeers[connectionID]
-            del self.unconnectedPeers[connectionID]
+            del self.peers[connectionID]
+
 
     def stop(self):
         """Stop all servers and terminate the connections"""
@@ -305,4 +309,5 @@ class hsmsConnectionManager:
 
         for peerID in self.peers.keys():
             peer = self.peers[peerID]
-            peer.connection.disconnect()
+            if peer.connection:
+                peer.connection.disconnect()
