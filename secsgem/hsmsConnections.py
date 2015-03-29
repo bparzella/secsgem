@@ -310,6 +310,10 @@ class hsmsClient(_callbackHandler):
         self.connectionCallback = connectionCallback
         self.disconnectionCallback = disconnectionCallback
         self.sessionID = sessionID
+
+        self.aborted = False
+
+        self.sock = None
         
     def connect(self):
         """Open connection to remote host
@@ -317,17 +321,17 @@ class hsmsClient(_callbackHandler):
         :returns: the newly established connection, *None* if connection failed
         :rtype: :class:`secsgem.hsmsConnections.hsmsConnection`
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
 
         try:
-            sock.connect((self.address, self.port)) 
+            self.sock.connect((self.address, self.port)) 
         except socket.error, v:
             logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.address, self.port)
             return None
 
-        connection = hsmsConnection(sock, self.callbacks, True, self.address, self.port, self.sessionID, disconnectionCallback = self.disconnectionCallback)
+        connection = hsmsConnection(self.sock, self.callbacks, True, self.address, self.port, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
         if not self.connectionCallback == None:
             self.connectionCallback(connection)
@@ -335,6 +339,13 @@ class hsmsClient(_callbackHandler):
         connection.startReceiver()
 
         return connection
+
+    def cancel(self):
+        """Cancel connection to remote host
+        """
+        self.aborted = True
+
+        self.sock.close()
 
 class hsmsConnection(_callbackHandler):
     """Connection class used for active and passive connections. Contains the basic HSMS functionality.

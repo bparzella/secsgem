@@ -140,6 +140,7 @@ class hsmsConnectionManager:
     """
     def __init__(self, connectionCallback = None, disconnectionCallback = None, postInitCallback = None):
         self.peers = {}
+        self.clients = {}
 
         self.stopping = False
 
@@ -203,16 +204,25 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        client = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, disconnectionCallback = self._disconnectionCallback)
+        connectionID = self.getConnectionID(peer.address, peer.port, peer.sessionID)
 
-        if client.connect() == None:
-            time.sleep(self.reconnectTimeout)
-            self._startActiveConnect(peer)
-        else:
-            peer._postInit()
+        self.clients[connectionID] = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, disconnectionCallback = self._disconnectionCallback)
 
-            if not self.postInitCallback == None:
-                self.postInitCallback(peer)
+        while self.clients[connectionID].connect() == None:
+            for i in range(int(self.reconnectTimeout) * 5):
+                time.sleep(0.2)
+
+                #check if connect was aborted
+                if self.clients[connectionID].aborted:
+                    del self.clients[connectionID]
+                    return
+
+        del self.clients[connectionID]
+
+        peer._postInit()
+
+        if not self.postInitCallback == None:
+            self.postInitCallback(peer)
 
     def _connectionCallback(self, connection):
         """Callback function for connection event
@@ -294,11 +304,15 @@ class hsmsConnectionManager:
         """
         connectionID = self.getConnectionID(address, port, sessionID)
 
+        if connectionID in self.clients:
+            self.clients[connectionID].cancel()
+
         if connectionID in self.peers:
             peer = self.peers[connectionID]
 
             peer.stop()
-            peer.connection.disconnect()
+            if peer.connection:
+                peer.connection.disconnect()
 
             del self.peers[connectionID]
 
@@ -306,6 +320,10 @@ class hsmsConnectionManager:
     def stop(self):
         """Stop all servers and terminate the connections"""
         self.stopping = True
+
+        for clientID in self.clients.keys():
+            client = self.clients[clientID]
+            client.cancel()
 
         for peerID in self.peers.keys():
             peer = self.peers[peerID]
