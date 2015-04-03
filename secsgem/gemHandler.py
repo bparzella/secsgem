@@ -139,6 +139,18 @@ class gemDefaultHandler(secsDefaultHandler):
 
         #enable collection event
         packet = self.connection.sendAndWaitForResponse(secsS2F37(True, [ceid]))
+
+    def sendRemoteCommand(self, RCMD, params):
+        """Send a remote command
+
+        :param RCMD: Name of command
+        :type RCMD: string
+        :param params: DV IDs to add for collection event 
+        :type params: list of strings
+        """
+        #send remote command
+        return self.connection.sendAndWaitForResponse(secsS2F41(RCMD, params))
+
      
     def S1F1Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 1, Are You There
