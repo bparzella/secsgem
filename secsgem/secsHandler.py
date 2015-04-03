@@ -38,6 +38,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
     ceids = {}
     dvs = {}
     alarms = {}
+    rcmds = {}
 
     def __init__(self, address, port, active, sessionID, name):
         hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
