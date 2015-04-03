@@ -913,10 +913,10 @@ class secsS2F41:
         self.stream = 2
         self.function = 41
 
-        self.RCMD = secsVarString(RCMD)
+        self.RCMD = secsVarString(str(RCMD))
         self.parameters = []
         for parameter in parameters:
-            self.parameters.append([secsVarString(parameter[0]), secsVarString(parameter[1])])
+            self.parameters.append([secsVarString(str(parameter[0])), secsVarString(str(parameter[1]))])
 
     def __repr__(self):
         parameters = "["
@@ -935,22 +935,23 @@ class secsS2F41:
         return secsS2F41(data[0], data[1][0], data[1][1])
 
 class secsS2F42:
-    def __init__(self, parameters):
+    def __init__(self, HCACK, parameters):
         self.stream = 2
         self.function = 42
 
+        self.HCACK = HCACK
         self.parameters = parameters
 
     def __repr__(self):
-        return "2F42 {%s}" % (parameters)
+        return "2F42 {%s [%s]}" % (self.HCACK, self.parameters)
 
     def encode(self):
-        return secsCoder.encode(self.parameters)
+        return secsCoder.encode([self.HCACK, self.parameters])
 
     @staticmethod    
     def decode(text):
         data = secsCoder.decode(text)
-        return secsS2F42_generic(data)
+        return secsS2F42(data[0], data[1])
 
 class secsS5F0:
     """Class for stream 5 function 0, Transaction Abort
