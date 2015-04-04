@@ -1,0 +1,7 @@
+*.html
+.buildinfo
+.doctrees
+_sources
+_static
+objects.inv
+searchindex.js
