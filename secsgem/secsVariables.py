@@ -237,6 +237,21 @@ def secsConvertVarIfRequired(targetClass, value):
         return targetClass(value)
 
 def secsUnwrapVariables(variable):
+    """get wrapped value or list of wrapped values
+
+    :param variable: variable to unwrap
+    :type variable: :class:`secsgem.secsVariables.secsVar` derivate or list of it
+    :returns: unwrapped value or list
+    
+    **Example**::
+
+        >>> data = [secsgem.secsVarINT1(10), secsgem.secsVarINT4(20)]
+        >>> print data
+        [I1 10, I4 20]
+        >>> secsgem.secsUnwrapVariables(data)
+        [10, 20]
+        
+    """
     if issubclass(type(variable), secsVar):
         return variable.value
     if isinstance(variable, list):

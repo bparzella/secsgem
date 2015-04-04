@@ -623,6 +623,18 @@ class secsS2F0:
         return secsS2F0()
 
 class secsS2F13:
+    """Class for stream 2 function 13, Equipment Constant Request
+
+    :param ECIDs: Equipment constant IDs
+    :type ECIDs: list of integer
+
+    **Example**::
+
+        >>> secsgem.secsS2F13([12, 23, 34])
+        S2F13 {ECID: '[U4 12, U4 23, U4 34]'}
+
+    """
+
     def __init__(self, ECIDs):
         self.stream = 2
         self.function = 13
@@ -635,35 +647,109 @@ class secsS2F13:
         return "S2F13 {ECID: '%s'}" % (self.ECID)
 
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s2f13 = secsgem.secsS2F13([12, 23, 34])
+            >>> secsgem.formatHex(s2f13.encode())
+            '01:03:b1:04:00:00:00:0c:b1:04:00:00:00:17:b1:04:00:00:00:22'
+
+        """
         return secsCoder.encode(self.ECID)
 
     @staticmethod
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS2F13`
+
+        **Example**::
+
+            >>> secsgem.secsS2F13.decode(s2f13.encode())
+            S2F13 {ECID: '[U4 12, U4 23, U4 34]'}
+
+        """
         data = secsCoder.decode(text)
 
         return secsS2F13(data)
 
 class secsS2F14:
-    def __init__(self, EC):
+    """Class for stream 2 function 14, Equipment Constant Data
+
+    :param ECVs: Equipment constant values
+    :type ECVs: list of strings
+
+    **Example**::
+
+        >>> secsgem.secsS2F14(["ABC", "BCD", "CDE"])
+        S2F14 {ECVs: '['ABC', 'BCD', 'CDE']'}
+
+    """
+    def __init__(self, ECVs):
         self.stream = 2
         self.function = 14
 
-        self.EC = EC
+        self.ECVs = ECVs
 
     def __repr__(self):
-        return "S2F14 {EC: '%s'}" % (self.EC)
+        return "S2F14 {ECVs: '%s'}" % (self.ECVs)
 
     def encode(self):
-        return secsCoder.encode(self.EC)
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s2f14 = secsgem.secsS2F14(["ABC", "BCD", "CDE"])
+            >>> secsgem.formatHex(s2f14.encode())
+            '01:03:41:03:41:42:43:41:03:42:43:44:41:03:43:44:45'
+
+        """
+        ECVs = []
+        for ECV in self.ECVs:
+            ECVs.append(secsVarString(ECV))
+
+        return secsCoder.encode(ECVs)
 
     @staticmethod
     def decode(text):
-        data = secsCoder.decode(text)
+        """Create object from byte array
 
-        logging.debug("  %s", secsS2F14(data))
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS2F14`
+
+        **Example**::
+
+            >>> secsgem.secsS2F14.decode(s2f14.encode())
+            S2F14 {ECVs: '[A ABC, A BCD, A CDE]'}
+
+        """
+        data = secsCoder.decode(text)
         return secsS2F14(data)
 
 class secsS2F15:
+    """Class for stream 2 function 15, New Equipment Constant Send
+
+    :param ECIDs: New values
+    :type ECIDs: list of lists of an integer and string
+
+    **Example**::
+
+        >>> secsgem.secsS2F15([[12, "ABC"], [23, "BCD"], [34, "CDE"]])
+        S2F15 {ECID: '[[U4 12, A ABC], [U4 23, A BCD], [U4 34, A CDE]]'}
+
+    """
     def __init__(self, ECIDs):
         self.stream = 2
         self.function = 15
@@ -676,16 +762,51 @@ class secsS2F15:
         return "S2F15 {ECID: '%s'}" % (self.ECID)
 
     def encode(self):
-        logging.debug(" %s", self)
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s2f15 = secsgem.secsS2F15([[12, "ABC"], [23, "BCD"], [34, "CDE"]])
+            >>> secsgem.formatHex(s2f15.encode())
+            '01:03:01:02:b1:04:00:00:00:0c:41:03:41:42:43:01:02:b1:04:00:00:00:17:41:03:42:43:44:01:02:b1:04:00:00:00:22:41:03:43:44:45'
+
+        """
         return secsCoder.encode(self.ECID)
 
     @staticmethod
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS2F15`
+
+        **Example**::
+
+            >>> secsgem.secsS2F15.decode(s2f15.encode())
+            S2F15 {ECID: '[[U4 12, A ABC], [U4 23, A BCD], [U4 34, A CDE]]'}
+
+        """
         data = secsCoder.decode(text)
 
         return secsS2F15(data)
 
 class secsS2F16:
+    """Class for stream 2 function 15, New Equipment Constant Send
+
+    :param EAC: New values (0 = OK, 1 = One or more invalid, 2 = Busy, 3 = One or more out of range)
+    :type EAC: integer
+
+    **Example**::
+
+        >>> secsgem.secsS2F16("\\0")
+        2F16 {EAC: 0}
+
+    """
     def __init__(self, EAC):
         self.stream = 2
         self.function = 16
@@ -693,16 +814,39 @@ class secsS2F16:
         self.EAC = secsVarBinary(EAC)
 
     def __repr__(self):
-        return "2F16 {EAC: %s}" % (self.EAC)
+        return "2F16 {EAC: %s}" % (ord(self.EAC.value[0]))
 
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s2f16 = secsgem.secsS2F16("\0")
+            >>> secsgem.formatHex(s2f16.encode())
+            '21:01:00'
+
+        """
         return secsCoder.encode(self.EAC)
 
     @staticmethod    
     def decode(text):
-        data = secsCoder.decode(text)
+        """Create object from byte array
 
-        logging.debug("  %s", secsS2F16(data))
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS2F16`
+
+        **Example**::
+
+            >>> secsgem.secsS2F16.decode(s2f16.encode())
+            2F16 {EAC: 0}
+
+        """
+        data = secsCoder.decode(text)
         return secsS2F16(data)
 
 class secsS2F29:

@@ -36,9 +36,42 @@ class secsDefaultHandler(hsmsDefaultHandler):
     """
 
     ceids = {}
+    """Dictionary of available collection events, CEID is the key
+
+    :param name: Name of the data value
+    :type name: string
+    :param CEID: Collection event the data value is used for
+    :type CEID: integer
+    """
+
     dvs = {}
+    """Dictionary of available data values, DVID is the key
+
+    :param name: Name of the collection event
+    :type name: string
+    :param dv: Data values available for collection event
+    :type dv: list of integers
+    """
+
     alarms = {}
+    """Dictionary of available alarms, ALID is the key
+
+    :param alarmText: Description of the alarm
+    :type alarmText: string
+    :param ceidOn: Collection event for activated alarm 
+    :type ceidOn: integer
+    :param ceidOff: Collection event for deactivated alarm 
+    :type ceidOff: integer
+    """
+
     rcmds = {}
+    """Dictionary of available remote commands, command is the key
+
+    :param params: description of the parameters
+    :type params: list of dictionary
+    :param CEID: Collection events the remote command uses
+    :type CEID: list of integers
+    """
 
     def __init__(self, address, port, active, sessionID, name):
         hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
