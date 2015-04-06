@@ -1323,6 +1323,17 @@ class secsS9F0:
         return secsS9F0()
 
 class secsS9F1:
+    """Class for stream 9 function 1, Unknown Device ID
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F1("\50\51\52\53\54\55\56\57\58\59")
+        S9F1 ERROR: Unrecognized Device ID {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 1
@@ -1333,15 +1344,52 @@ class secsS9F1:
         return "S9F1 ERROR: Unrecognized Device ID {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f1 = secsgem.secsS9F1("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f1.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
+
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F1`
+
+        **Example**::
+
+            >>> secsgem.secsS9F1.decode(s9f1.encode())
+            S9F1 ERROR: Unrecognized Device ID {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F1(data[0])
+        return secsS9F1(data)
 
 class secsS9F3:
+    """Class for stream 9 function 3, Unknown Stream
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F3("\50\51\52\53\54\55\56\57\58\59")
+        S9F3 ERROR: Unrecognized Stream Type {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 3
@@ -1352,15 +1400,51 @@ class secsS9F3:
         return "S9F3 ERROR: Unrecognized Stream Type {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f3 = secsgem.secsS9F3("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f3.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F3`
+
+        **Example**::
+
+            >>> secsgem.secsS9F3.decode(s9f3.encode())
+            S9F3 ERROR: Unrecognized Stream Type {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F3(data[0])
+        return secsS9F3(data)
 
 class secsS9F5:
+    """Class for stream 9 function 5, Unknown Function
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F5("\50\51\52\53\54\55\56\57\58\59")
+        S9F5 ERROR: Unrecognized Function Type {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 5
@@ -1371,15 +1455,51 @@ class secsS9F5:
         return "S9F5 ERROR: Unrecognized Function Type {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f5 = secsgem.secsS9F5("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f5.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F5`
+
+        **Example**::
+
+            >>> secsgem.secsS9F5.decode(s9f5.encode())
+            S9F5 ERROR: Unrecognized Function Type {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F5(data[0])
+        return secsS9F5(data)
 
 class secsS9F7:
+    """Class for stream 9 function 7, Illegal Data
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F7("\50\51\52\53\54\55\56\57\58\59")
+        S9F7 ERROR: Illegal Data {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 7
@@ -1390,15 +1510,51 @@ class secsS9F7:
         return "S9F7 ERROR: Illegal Data {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f7 = secsgem.secsS9F7("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f7.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F7`
+
+        **Example**::
+
+            >>> secsgem.secsS9F7.decode(s9f7.encode())
+            S9F7 ERROR: Illegal Data {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F7(data[0])
+        return secsS9F7(data)
 
 class secsS9F9:
+    """Class for stream 9 function 9, Transaction Timeout
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F9("\50\51\52\53\54\55\56\57\58\59")
+        S9F9 ERROR: Transaction Timer Time-out {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 9
@@ -1409,15 +1565,51 @@ class secsS9F9:
         return "S9F9 ERROR: Transaction Timer Time-out {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f9 = secsgem.secsS9F9("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f9.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F9`
+
+        **Example**::
+
+            >>> secsgem.secsS9F9.decode(s9f9.encode())
+            S9F9 ERROR: Transaction Timer Time-out {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F9(data[0])
+        return secsS9F9(data)
 
 class secsS9F11:
+    """Class for stream 9 function 11, Data Too Long
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F11("\50\51\52\53\54\55\56\57\58\59")
+        S9F11 ERROR: Data Too Long {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 11
@@ -1428,15 +1620,51 @@ class secsS9F11:
         return "S9F11 ERROR: Data Too Long {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f11 = secsgem.secsS9F11("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f11.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F11`
+
+        **Example**::
+
+            >>> secsgem.secsS9F11.decode(s9f11.encode())
+            S9F11 ERROR: Data Too Long {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F11(data[0])
+        return secsS9F11(data)
 
 class secsS9F13:
+    """Class for stream 9 function 13, Conversation Timeout
+
+    :param MHEAD: The header for the rejected message
+    :type MHEAD: string[10]
+
+    **Example**::
+
+        >>> secsgem.secsS9F13("\50\51\52\53\54\55\56\57\58\59")
+        S9F13 ERROR: Inter Block Time-out {MHEAD: '()*+,-./89'}
+
+    """
     def __init__(self, MHEAD):
         self.stream = 9
         self.function = 13
@@ -1447,13 +1675,38 @@ class secsS9F13:
         return "S9F13 ERROR: Inter Block Time-out {MHEAD: '%s'}" % (self.MHEAD.value)
         
     def encode(self):
+        """Encode the class data to byte array.
+
+        :returns: data byte array
+        :rtype: string
+
+        **Example**::
+
+            >>> s9f13 = secsgem.secsS9F13("\50\51\52\53\54\55\56\57\58\59")
+            >>> secsgem.formatHex(s9f13.encode())
+            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
+
+        """
         return secsCoder.encode(self.MHEAD)
     
     @staticmethod    
     def decode(text):
+        """Create object from byte array
+
+        :param text: data byte array
+        :type text: string
+        :returns: stream and function object
+        :rtype: :class:`secsgem.secsFunctions.secsS9F13`
+
+        **Example**::
+
+            >>> secsgem.secsS9F13.decode(s9f13.encode())
+            S9F13 ERROR: Inter Block Time-out {MHEAD: '()*+,-./89'}
+
+        """
         data = secsCoder.decode(text)
         
-        return secsS9F13(data[0])
+        return secsS9F13(data)
 
 class secsS10F0:
     """Class for stream 10 function 0, Transaction Abort
