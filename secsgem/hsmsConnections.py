@@ -18,6 +18,7 @@
 import logging
 
 import socket
+import select
 import struct
 
 import thread
@@ -131,6 +132,9 @@ class hsmsSingleServer(_callbackHandler):
         :rtype: :class:`secsgem.hsmsConnections.hsmsConnection`
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
         sock.bind(('', self.port))
         sock.listen(1)
 
@@ -187,6 +191,8 @@ class hsmsMultiServer(_callbackHandler):
         _callbackHandler.__init__(self)
 
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        self.listenSock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         self.sessionID = sessionID
         self.port = port
@@ -323,6 +329,8 @@ class hsmsClient(_callbackHandler):
         """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
         logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
 
         try:
@@ -376,6 +384,8 @@ class hsmsConnection(_callbackHandler):
         self.sessionID = sessionID
         self.disconnectionCallback = disconnectionCallback
 
+        self.receiveBuffer = ""
+
         self.systemCounter = 1
 
         self.threadRunning = False
@@ -388,6 +398,14 @@ class hsmsConnection(_callbackHandler):
 
         self.connectionState = hsmsConnectionState.NOT_SELECTED
 
+        #disable blocking
+        self.sock.setblocking(0)
+
+    selectTimeout = 0.5
+    """ Timeout for select calls """ 
+
+    def __str__(self):
+        return ("Active" if self.active else "Passive") + " connection to " + self.remoteIP + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID) + ", connectionState=" + str(self.connectionState)
 
     def startReceiver(self):
         """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
@@ -423,17 +441,16 @@ class hsmsConnection(_callbackHandler):
             self.sendDeselectReq()
             self.waitforDeselectRsp()
 
-        time.sleep(0.5)
-
         self.stopThread = True
-        self.sock.shutdown(socket.SHUT_RDWR)
-        self.sock.close()
-        self.connected = False
-
-        self.connectionState = hsmsConnectionState.NOT_CONNECTED
         
         while self.threadRunning:
             pass
+
+        self.sock.close()
+
+        self.connected = False
+
+        self.connectionState = hsmsConnectionState.NOT_CONNECTED
 
     def sendPacket(self, packet):
         """Send the ASCII coded packet to the remote host
@@ -442,6 +459,10 @@ class hsmsConnection(_callbackHandler):
         :type packet: string / byte array
         """
         logging.info("> %s", packet)
+
+        while not select.select([], [self.sock], [], self.selectTimeout)[1]:
+            pass
+
         self.sock.send(packet.encode())
 
     def waitforStreamFunction(self, stream, function):
@@ -529,9 +550,7 @@ class hsmsConnection(_callbackHandler):
     def sendSelectReq(self):
         """Send a Select Request to the remote host"""
         packet = hsmsPacket(hsmsSelectReqHeader(self.getNextSystemCounter()))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[1])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforSelectReq(self):
         """Wait for an incoming Select Request
@@ -567,10 +586,7 @@ class hsmsConnection(_callbackHandler):
         :type system: integer
         """
         packet = hsmsPacket(hsmsSelectRspHeader(system))
-
-        logging.info("> %s\n  %s", packet, hsmsSTypes[2])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforSelectRsp(self):
         """Wait for an incoming Select Response
@@ -603,9 +619,7 @@ class hsmsConnection(_callbackHandler):
     def sendLinktestReq(self):
         """Send a Linktest Request to the remote host"""
         packet = hsmsPacket(hsmsLinktestReqHeader(self.getNextSystemCounter()))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[5])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforLinktestReq(self):
         """Wait for an incoming Linktest Request
@@ -636,9 +650,7 @@ class hsmsConnection(_callbackHandler):
         :type system: integer
         """
         packet = hsmsPacket(hsmsLinktestReqHeader(system))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[6])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforLinktestRsp(self):
         """Wait for an incoming Linktest Response
@@ -665,9 +677,7 @@ class hsmsConnection(_callbackHandler):
     def sendDeselectReq(self):
         """Send a Deselect Request to the remote host"""
         packet = hsmsPacket(hsmsDeselectReqHeader(self.getNextSystemCounter()))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[3])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforDeselectReq(self):
         """Wait for an incoming Deselect Request
@@ -698,9 +708,7 @@ class hsmsConnection(_callbackHandler):
         :type system: integer
         """
         packet = hsmsPacket(hsmsDeselectRspHeader(system))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[4])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
     def waitforDeselectRsp(self):
         """Wait for an incoming Deselect Response
@@ -733,57 +741,73 @@ class hsmsConnection(_callbackHandler):
     def sendSeparateReq(self):
         """Send a Separate Request to the remote host"""
         packet = hsmsPacket(hsmsSeparateReqHeader(self.getNextSystemCounter()))
-        logging.info("> %s\n  %s", packet, hsmsSTypes[9])
-
-        self.sock.send(packet.encode())
+        self.sendPacket(packet)
 
         self.connectionState = hsmsConnectionState.NOT_SELECTED
 
+    def _process_receive_buffer(self):
+        """Parse the receive buffer and dispatch callbacks.
+
+        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection._receiver_thread` method.
+        """
+        if len(self.receiveBuffer) < 4:
+            return False
+
+        length = struct.unpack(">L", self.receiveBuffer[0:4])[0] + 4
+
+        if len(self.receiveBuffer) < length:
+            return False
+
+        data = self.receiveBuffer[0:length]
+        self.receiveBuffer = self.receiveBuffer[length:]
+
+        response = hsmsPacket.decode(data)
+        if response.header.sessionID == 0xffff:
+            logging.info("< %s\n  %s", response, hsmsSTypes[response.header.sType])
+        else:
+            if response.data == None:
+                logging.info("< %s", response)
+            else:
+                logging.info("< %s", response)
+                
+        callbackIndex = "s"+str(response.header.stream)+"f"+str(response.header.function)
+        if callbackIndex in self.callbacks:
+            for callback in self.callbacks[callbackIndex]:
+                thread.start_new_thread(callback, (self, response))
+        else:
+            self.packetQueue.append(response)
+            for event in self.eventQueue:
+                event.set()
+
+        if len(self.receiveBuffer) > 0:
+            return True
+
+        return False
+
     def _receiver_thread(self):
-        """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests.
+        """Thread for receiving incoming data and adding it to the receive buffer.
 
         .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection.startReceiver` method.
         """
         self.threadRunning = True
+
         try:
             while not self.stopThread:
-                data = self.sock.recv(4) 
-                if len(data) == 0:
-                    self.connected = False
-                    self.stopThread = True
-                    continue
+                selectResult = select.select([self.sock], [], [self.sock], self.selectTimeout)
 
-                length = struct.unpack(">L", data)[0]
+                if selectResult[0]:
+                    recvData = self.sock.recv(1024) 
 
-                while len(data) < length + 4:
-                    data += self.sock.recv(length) 
-                    if len(data) == 4:
+                    if len(recvData) == 0:
                         self.connected = False
                         self.stopThread = True
                         continue
-                    
-                response = hsmsPacket.decode(data)
-                if response.header.sessionID == 0xffff:
-                    logging.info("< %s\n  %s", response, hsmsSTypes[response.header.sType])
-                else:
-                    if response.data == None:
-                        logging.info("< %s", response)
-                    else:
-                        logging.info("< %s", response)
-                
-                data = ""
 
-                unhandeled = True
-                
-                callbackIndex = "s"+str(response.header.stream)+"f"+str(response.header.function)
-                if callbackIndex in self.callbacks:
-                    unhandeled = False
-                    for callback in self.callbacks[callbackIndex]:
-                        thread.start_new_thread(callback, (self, response))
-                else:
-                    self.packetQueue.append(response)
-                    for event in self.eventQueue:
-                        event.set()
+                    self.receiveBuffer += recvData
+
+                    while self._process_receive_buffer():
+                        pass
+
         except Exception, e:
             print "hsmsClient.ReceiverThread : exception", e
             print traceback.format_exc()
@@ -813,9 +837,7 @@ class hsmsConnection(_callbackHandler):
         
         if packet.header.sType == 0x05:
             responsePacket = hsmsPacket(hsmsLinktestRspHeader(packet.header.system))
-            logging.info("> %s\n  %s", responsePacket, hsmsSTypes[6])
-
-            self.sock.send(responsePacket.encode())
+            self.sendPacket(responsePacket)
         else:
             logging.error("S00F00: unexpected sType (%s)", packet.header)
 
