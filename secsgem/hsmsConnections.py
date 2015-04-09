@@ -412,6 +412,9 @@ class hsmsConnection(_callbackHandler):
     selectTimeout = 0.5
     """ Timeout for select calls """ 
 
+    sendBlockSize = 1024*1024
+    """ Block size for outbound data """ 
+
     def __str__(self):
         return ("Active" if self.active else "Passive") + " connection to " + self.remoteIP + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID) + ", connectionState=" + str(self.connectionState)
 
@@ -468,26 +471,31 @@ class hsmsConnection(_callbackHandler):
         """
         logging.info("> %s", packet)
 
-        retry = True
+        data = packet.encode()
 
-        #not sent yet, retry
-        while retry:
-            #wait until socket is writable
-            while not select.select([], [self.sock], [], self.selectTimeout)[1]:
-                pass
+        blocks = [data[i:i+self.sendBlockSize] for i in range(0, len(data), self.sendBlockSize)]
 
-            try:
-                #send packet
-                self.sock.send(packet.encode())
+        for block in blocks:
+            retry = True
 
-                #retry will be cleared if send succeeded
-                retry = False
-            except socket.error, e:
-                errorcode = e[0]
-                if not isErrorCodeEWouldBlock(errorcode):
-                    # raise if not EWOULDBLOCK
-                    raise e
-                #it is EWOULDBLOCK, so retry sending
+            #not sent yet, retry
+            while retry:
+                #wait until socket is writable
+                while not select.select([], [self.sock], [], self.selectTimeout)[1]:
+                    pass
+
+                try:
+                    #send packet
+                    self.sock.send(block)
+
+                    #retry will be cleared if send succeeded
+                    retry = False
+                except socket.error, e:
+                    errorcode = e[0]
+                    if not isErrorCodeEWouldBlock(errorcode):
+                        # raise if not EWOULDBLOCK
+                        raise e
+                    #it is EWOULDBLOCK, so retry sending
 
     def waitforStreamFunction(self, stream, function):
         """Wait for an incoming stream and function and return the receive data
