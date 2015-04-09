@@ -35,7 +35,12 @@ def formatHex(text):
     return ":".join("{0:02x}".format(ord(c)) for c in text)
 
 def isWindows():
+    """Returns True if running on windows
+
+    :returns: Is windows system
+    :rtype: bool
+    """
     if sys.platform == "win32":
         return True
-        
+
     return False
