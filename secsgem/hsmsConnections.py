@@ -27,6 +27,8 @@ import traceback
 
 import time
 
+import errno
+
 from hsmsPackets import *
 
 from common import *
@@ -41,6 +43,12 @@ hsmsSTypes = {
     6: "Linktest.rsp",
     9: "Separate.req"
 }
+
+def isErrorCodeEWouldBlock(errorcode):
+    if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
+        return True
+
+    return False
 
 class hsmsConnectionState:
     """hsms connection state machine states"""
@@ -460,10 +468,26 @@ class hsmsConnection(_callbackHandler):
         """
         logging.info("> %s", packet)
 
-        while not select.select([], [self.sock], [], self.selectTimeout)[1]:
-            pass
+        retry = True
 
-        self.sock.send(packet.encode())
+        #not sent yet, retry
+        while retry:
+            #wait until socket is writable
+            while not select.select([], [self.sock], [], self.selectTimeout)[1]:
+                pass
+
+            try:
+                #send packet
+                self.sock.send(packet.encode())
+
+                #retry will be cleared if send succeeded
+                retry = False
+            except socket.error, e:
+                errorcode = e[0]
+                if not isErrorCodeEWouldBlock(errorcode):
+                    # raise if not EWOULDBLOCK
+                    raise e
+                #it is EWOULDBLOCK, so retry sending
 
     def waitforStreamFunction(self, stream, function):
         """Wait for an incoming stream and function and return the receive data
@@ -796,14 +820,20 @@ class hsmsConnection(_callbackHandler):
                 selectResult = select.select([self.sock], [], [self.sock], self.selectTimeout)
 
                 if selectResult[0]:
-                    recvData = self.sock.recv(1024) 
+                    try:
+                        recvData = self.sock.recv(1024) 
 
-                    if len(recvData) == 0:
-                        self.connected = False
-                        self.stopThread = True
-                        continue
+                        if len(recvData) == 0:
+                            self.connected = False
+                            self.stopThread = True
+                            continue
 
-                    self.receiveBuffer += recvData
+                        self.receiveBuffer += recvData
+                    except socket.error, e:
+                        errorcode = e[0]
+                        if not isErrorCodeEWouldBlock(errorcode):
+                            raise e
+    
 
                     while self._process_receive_buffer():
                         pass
