@@ -142,6 +142,8 @@ class hsmsConnectionManager:
         self.peers = {}
         self.clients = {}
 
+        self.server = None
+
         self.stopping = False
 
         self.reconnectTimeout = 10.0
@@ -173,7 +175,7 @@ class hsmsConnectionManager:
 
         return None
 
-    def getConnectionID(self, address, port, sessionID):
+    def getConnectionID(self, address, port):
         """Generates connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
@@ -183,7 +185,7 @@ class hsmsConnectionManager:
         :param sessionID: Session / device ID for the affected remote
         :type sessionID: integer
         """
-        return "%s:%05d:%05d" % (address, port, sessionID)
+        return "%s" % (address)
 
     def _startActiveConnect(self, peer):
         """Starts thread to (re)connect active connection to remote host.
@@ -204,9 +206,9 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        connectionID = self.getConnectionID(peer.address, peer.port, peer.sessionID)
+        connectionID = self.getConnectionID(peer.address, peer.port)
 
-        self.clients[connectionID] = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, disconnectionCallback = self._disconnectionCallback)
+        self.clients[connectionID] = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, postConnectionCallback = self._postConnectionCallback, disconnectionCallback = self._disconnectionCallback)
 
         while self.clients[connectionID].connect() == None:
             for i in range(int(self.reconnectTimeout) * 5):
@@ -219,10 +221,53 @@ class hsmsConnectionManager:
 
         del self.clients[connectionID]
 
-        peer._postInit()
+    def _startServerIfRequired(self):
+        """Starts server if any active peer is found
 
-        if not self.postInitCallback == None:
-            self.postInitCallback(peer)
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        if self.server:
+            logging.debug("hsmsConnectionManager._startServerIfRequired: server already running")
+            return
+
+        found = False
+
+        for connectionID in self.peers:
+            peer = self.peers[connectionID]
+
+            if not peer.active:
+                logging.debug("hsmsConnectionManager._startServerIfRequired: passive connection found")
+                found = True
+
+        if found:
+            logging.debug("hsmsConnectionManager._startServerIfRequired: starting server")
+            self.server = hsmsMultiServer(connectionCallback = self._connectionCallback, postConnectionCallback = self._postConnectionCallback, disconnectionCallback = self._disconnectionCallback)
+            self.server.start()
+
+    def _stopServerIfRequired(self):
+        """Stops server if no active peer is found
+
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        if not self.server:
+            logging.debug("hsmsConnectionManager._stopServerIfRequired: server isn't running")
+            return
+
+        found = False
+
+        for connectionID in self.peers:
+            peer = self.peers[connectionID]
+
+            if not peer.active:
+                logging.debug("hsmsConnectionManager._stopServerIfRequired: passive connection found")
+                found = True
+
+        if not found:
+            logging.debug("hsmsConnectionManager._stopServerIfRequired: stopping server")
+
+            self.server.stop()
+            del self.server
+            self.server = None
 
     def _connectionCallback(self, connection):
         """Callback function for connection event
@@ -232,14 +277,33 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
+        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
+
+        connection.sessionID = peer.sessionID
 
         peer._setConnection(connection)
 
         if not self.connectionCallback == None:
             self.connectionCallback(peer)
+
+    def _postConnectionCallback(self, connection):
+        """Callback function for post connection event (receiver running)
+
+        :param connection: Connection that was connected
+        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
+
+        peer = self.peers[connectionID]
+
+        peer._postInit()
+
+        if not self.postInitCallback == None:
+            self.postInitCallback(peer)
 
     def _disconnectionCallback(self, connection):
         """Callback function for disconnection event
@@ -249,7 +313,7 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort, connection.sessionID)
+        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
         
@@ -282,11 +346,13 @@ class hsmsConnectionManager:
 
         peer = connectionHandler(address, port, active, sessionID, name)
 
-        connectionID = self.getConnectionID(address, port, sessionID)
+        connectionID = self.getConnectionID(address, port)
         self.peers[connectionID] = peer
 
         if peer.active:
             self._startActiveConnect(peer)
+        else:
+            self._startServerIfRequired()
 
         return peer
 
@@ -302,7 +368,9 @@ class hsmsConnectionManager:
         :param sessionID: session / device ID of peer
         :type sessionID: integer
         """
-        connectionID = self.getConnectionID(address, port, sessionID)
+        logging.debug("hsmsConnectionManager.removePeer: disconnecting from %s at %s:%d", name, address, port)
+        
+        connectionID = self.getConnectionID(address, port)
 
         if connectionID in self.clients:
             self.clients[connectionID].cancel()
@@ -315,6 +383,8 @@ class hsmsConnectionManager:
                 peer.connection.disconnect()
 
             del self.peers[connectionID]
+
+            self._stopServerIfRequired()
 
 
     def stop(self):
@@ -329,3 +399,5 @@ class hsmsConnectionManager:
             peer = self.peers[peerID]
             if peer.connection:
                 peer.connection.disconnect()
+
+        self._stopServerIfRequired()

@@ -102,6 +102,8 @@ class hsmsSingleServer(_callbackHandler):
     :type sessionID: integer
     :param connectionCallback: method to call when the connection is established
     :type connectionCallback: def connectionCallback(connection)
+    :param postConnectionCallback: method to call when the receiver thread is running
+    :type postConnectionCallback: def postConnectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
 
@@ -123,11 +125,12 @@ class hsmsSingleServer(_callbackHandler):
         connection.disconnect()
 
     """
-    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
+    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
 
         self.port = port
         self.connectionCallback = connectionCallback
+        self.postConnectionCallback = postConnectionCallback
         self.disconnectionCallback = disconnectionCallback
         self.sessionID = sessionID
 
@@ -163,6 +166,9 @@ class hsmsSingleServer(_callbackHandler):
 
             connection.startReceiver()
 
+            if not self.postConnectionCallback == None:
+                self.postConnectionCallback(connection)
+
             return connection
 
         sock.close()
@@ -177,6 +183,8 @@ class hsmsMultiServer(_callbackHandler):
     :type sessionID: integer
     :param connectionCallback: method to call when the connection is established
     :type connectionCallback: def connectionCallback(connection)
+    :param postConnectionCallback: method to call when the receiver thread is running
+    :type postConnectionCallback: def postConnectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
     
@@ -198,7 +206,7 @@ class hsmsMultiServer(_callbackHandler):
         server.stop()
 
     """
-    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
+    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
 
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -218,6 +226,7 @@ class hsmsMultiServer(_callbackHandler):
         self.connectionsLock = threading.Lock()
 
         self.connectionCallback = connectionCallback
+        self.postConnectionCallback = postConnectionCallback
         self.disconnectionCallback = disconnectionCallback
 
         self.listenThreadIdentifier = None
@@ -283,6 +292,9 @@ class hsmsMultiServer(_callbackHandler):
 
                 connection.startReceiver()
 
+                if not self.postConnectionCallback == None:
+                    self.postConnectionCallback(connection)
+
         except Exception, e:
             print "hsmsServer._listen_thread : exception", e
             traceback.print_exc()
@@ -301,6 +313,8 @@ class hsmsClient(_callbackHandler):
     :type sessionID: integer
     :param connectionCallback: method to call when the connection is established
     :type connectionCallback: def connectionCallback(connection)
+    :param postConnectionCallback: method to call when the receiver thread is running
+    :type postConnectionCallback: def postConnectionCallback(connection)
     :param disconnectionCallback: method to call when the connection is terminated
     :type disconnectionCallback: def disconnectionCallback(connection)
 
@@ -322,12 +336,13 @@ class hsmsClient(_callbackHandler):
         connection.disconnect()
 
     """
-    def __init__(self, address, port = 5000, sessionID = 0, connectionCallback = None, disconnectionCallback = None):
+    def __init__(self, address, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
 
         self.address = address
         self.port = port
         self.connectionCallback = connectionCallback
+        self.postConnectionCallback = postConnectionCallback
         self.disconnectionCallback = disconnectionCallback
         self.sessionID = sessionID
 
@@ -359,6 +374,9 @@ class hsmsClient(_callbackHandler):
             self.connectionCallback(connection)
 
         connection.startReceiver()
+
+        if not self.postConnectionCallback == None:
+            self.postConnectionCallback(connection)
 
         return connection
 
