@@ -143,6 +143,9 @@ class hsmsSingleServer(_callbackHandler):
 
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
+        if not isWindows():
+            self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
         sock.bind(('', self.port))
         sock.listen(1)
 
@@ -201,6 +204,9 @@ class hsmsMultiServer(_callbackHandler):
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.listenSock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+        if not isWindows():
+            self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         self.sessionID = sessionID
         self.port = port

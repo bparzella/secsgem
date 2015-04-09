@@ -15,6 +15,8 @@
 #####################################################################
 """Contains helper functions"""
 
+import sys
+
 def formatHex(text):
     """Returns byte arrays (string) formated as hex numbers.
 
@@ -31,3 +33,9 @@ def formatHex(text):
     :rtype: string
     """
     return ":".join("{0:02x}".format(ord(c)) for c in text)
+
+def isWindows():
+    if sys.platform == "win32":
+        return True
+        
+    return False
