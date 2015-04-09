@@ -144,7 +144,7 @@ class hsmsSingleServer(_callbackHandler):
         sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         if not isWindows():
-            self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         sock.bind(('', self.port))
         sock.listen(1)
