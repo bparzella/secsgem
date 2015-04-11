@@ -391,6 +391,11 @@ class hsmsConnectionManager:
         """Stop all servers and terminate the connections"""
         self.stopping = True
 
+        if self.server:
+            self.server.stop()
+            del self.server
+            self.server = None
+
         for clientID in self.clients.keys():
             client = self.clients[clientID]
             client.cancel()
@@ -398,6 +403,4 @@ class hsmsConnectionManager:
         for peerID in self.peers.keys():
             peer = self.peers[peerID]
             if peer.connection:
-                peer.connection.disconnect()
-
-        self._stopServerIfRequired()
+                peer.connection.disconnect(separate = True)
