@@ -260,7 +260,8 @@ class hsmsMultiServer(_callbackHandler):
 
         if terminateConnections:
             for connection in self.connections:
-                connection.disconnect(separate = True)
+                if connection.connected:
+                    connection.disconnect(separate = True)
 
         self.connectionsLock.release()
 
