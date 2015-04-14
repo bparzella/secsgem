@@ -206,6 +206,10 @@ class hsmsMultiServer(_callbackHandler):
         server.stop()
 
     """
+
+    selectTimeout = 0.5
+    """ Timeout for select calls """ 
+
     def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
         _callbackHandler.__init__(self)
 
@@ -235,6 +239,7 @@ class hsmsMultiServer(_callbackHandler):
         """Starts the server and returns. It will launch a listener running in background to wait for incoming connections."""
         self.listenSock.bind(('', self.port))
         self.listenSock.listen(1)
+        self.listenSock.setblocking(0)
 
         self.listenThreadIdentifier = threading.Thread(target=self._listen_thread, args=())
         self.listenThreadIdentifier.start()
@@ -247,14 +252,11 @@ class hsmsMultiServer(_callbackHandler):
         """
         self.stopThread = True
 
-        #this is evil madness
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect(("localhost", self.port))
-
-        self.listenSock.close()
-
         if self.listenThreadIdentifier.isAlive:
             while self.threadRunning:
                 pass
+
+        self.listenSock.close()
 
         self.connectionsLock.acquire()
 
@@ -273,28 +275,39 @@ class hsmsMultiServer(_callbackHandler):
         self.threadRunning = True
         try:
             while not self.stopThread:
-                accept_result = self.listenSock.accept()
-                if accept_result == None:
-                    continue
+                selectResult = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
 
-                if self.stopThread:
-                    continue
+                if selectResult[0]:
+                    accept_result = None
 
-                self.connectionsLock.acquire()
-                (sock,(sourceIP, sourcePort)) = accept_result
+                    try:
+                        accept_result = self.listenSock.accept()
+                    except socket.error, e:
+                        errorcode = e[0]
+                        if not isErrorCodeEWouldBlock(errorcode):
+                            raise e
 
-                connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
+                    if accept_result == None:
+                        continue
 
-                self.connections.append(connection)
-                self.connectionsLock.release()
+                    if self.stopThread:
+                        continue
 
-                if not self.connectionCallback == None:
-                    self.connectionCallback(connection)
+                    self.connectionsLock.acquire()
+                    (sock,(sourceIP, sourcePort)) = accept_result
 
-                connection.startReceiver()
+                    connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
-                if not self.postConnectionCallback == None:
-                    self.postConnectionCallback(connection)
+                    self.connections.append(connection)
+                    self.connectionsLock.release()
+
+                    if not self.connectionCallback == None:
+                        self.connectionCallback(connection)
+
+                    connection.startReceiver()
+
+                    if not self.postConnectionCallback == None:
+                        self.postConnectionCallback(connection)
 
         except Exception, e:
             print "hsmsServer._listen_thread : exception", e
