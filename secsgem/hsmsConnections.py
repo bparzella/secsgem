@@ -159,6 +159,10 @@ class hsmsSingleServer(_callbackHandler):
 
             (sock,(sourceIP, sourcePort)) = accept_result
 
+            sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
             connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 
             if not self.connectionCallback == None:
@@ -384,6 +388,8 @@ class hsmsClient(_callbackHandler):
 
         self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
         logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
 
         try:
@@ -504,12 +510,6 @@ class hsmsConnection(_callbackHandler):
         
         while self.threadRunning:
             pass
-
-        self.sock.close()
-
-        self.connected = False
-
-        self.connectionState = hsmsConnectionState.NOT_CONNECTED
 
     def sendPacket(self, packet):
         """Send the ASCII coded packet to the remote host
@@ -900,6 +900,12 @@ class hsmsConnection(_callbackHandler):
 
         if not self.disconnectionCallback == None:
             self.disconnectionCallback(self)
+
+        self.sock.close()
+
+        self.connected = False
+
+        self.connectionState = hsmsConnectionState.NOT_CONNECTED
 
         self.threadRunning = False
 
