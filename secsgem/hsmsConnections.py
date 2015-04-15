@@ -244,6 +244,8 @@ class hsmsMultiServer(_callbackHandler):
         self.listenThreadIdentifier = threading.Thread(target=self._listen_thread, args=())
         self.listenThreadIdentifier.start()
 
+        logging.debug("hsmsMultiServer.start: listening")
+
     def stop(self, terminateConnections = True):
         """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
 
@@ -266,6 +268,8 @@ class hsmsMultiServer(_callbackHandler):
                     connection.disconnect(separate = True)
 
         self.connectionsLock.release()
+
+        logging.debug("hsmsMultiServer.stop: server stopped")
 
     def _listen_thread(self):
         """Thread listening for incoming connections
@@ -293,8 +297,14 @@ class hsmsMultiServer(_callbackHandler):
                     if self.stopThread:
                         continue
 
+                    logging.debug("hsmsMultiServer.<listening_thread>: connection from %s:%d", accept_result[1][0], accept_result[1][1])
+
                     self.connectionsLock.acquire()
                     (sock,(sourceIP, sourcePort)) = accept_result
+
+                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
                     connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
 

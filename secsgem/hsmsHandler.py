@@ -277,6 +277,8 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
+        logging.debug("hsmsConnectionManager._connectionCallback: new connection from %s:%d", connection.remoteIP, connection.remotePort)
+
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
@@ -296,6 +298,7 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
+        logging.debug("hsmsConnectionManager._postConnectionCallback: connection from %s:%d", connection.remoteIP, connection.remotePort)
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
@@ -313,6 +316,8 @@ class hsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
+        logging.debug("hsmsConnectionManager._disconnectionCallback: disconnected from %s:%d", connection.remoteIP, connection.remotePort)
+
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
@@ -342,7 +347,7 @@ class hsmsConnectionManager:
         :param connectionHandler: Model handling this connection
         :type connectionHandler: inherited from :class:`secsgem.hsmsHandler.hsmsDefaultHandler`
         """
-        logging.debug("hsmsConnectionManager.addPeer: connecting to %s at %s:%d", name, address, port)
+        logging.debug("hsmsConnectionManager.addPeer: new remote %s at %s:%d", name, address, port)
 
         peer = connectionHandler(address, port, active, sessionID, name)
 
