@@ -144,8 +144,6 @@ class hsmsSingleServer(_callbackHandler):
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
         if not isWindows():
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -158,8 +156,6 @@ class hsmsSingleServer(_callbackHandler):
                 continue
 
             (sock,(sourceIP, sourcePort)) = accept_result
-
-            sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
@@ -218,8 +214,6 @@ class hsmsMultiServer(_callbackHandler):
         _callbackHandler.__init__(self)
 
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        self.listenSock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         if not isWindows():
             self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -306,8 +300,6 @@ class hsmsMultiServer(_callbackHandler):
                     self.connectionsLock.acquire()
                     (sock,(sourceIP, sourcePort)) = accept_result
 
-                    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-
                     sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
                     connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
@@ -385,8 +377,6 @@ class hsmsClient(_callbackHandler):
         :rtype: :class:`secsgem.hsmsConnections.hsmsConnection`
         """
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
