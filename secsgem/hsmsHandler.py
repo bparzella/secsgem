@@ -21,7 +21,7 @@ import threading
 
 from hsmsConnections import *
 
-class hsmsDefaultHandler:
+class hsmsDefaultHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -34,8 +34,12 @@ class hsmsDefaultHandler:
     :type sessionID: integer
     :param name: Name of the underlying configuration
     :type name: string
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, address, port, active, sessionID, name):
+    def __init__(self, address, port, active, sessionID, name, eventHandler=None):
+        EventProducer.__init__(self, eventHandler)
+
         self.address = address
         self.port = port
         self.active = active
@@ -45,10 +49,15 @@ class hsmsDefaultHandler:
         self.connected = False
         self.dead = False
 
-        self.events = {}
-        self.eventsLock = threading.Lock()
-        self.eventNotify = {}
+    def _serializeData(self):
+        """Returns data for serialization
 
+        :returns: data to serialize for this object
+        :rtype: dict
+        """
+        return {'address': self.address, 'port': self.port, 'active': self.active, 'sessionID': self.sessionID, 'name': self.name, 'connected': self.connected, 'dead': self.dead}
+
+    # connection handling
     def _setConnection(self, connection):
         """Set the connection of the for this models. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`.
 
@@ -58,12 +67,13 @@ class hsmsDefaultHandler:
         self.connection = connection
         if connection:
             self.connected = True
+            self.fireEvent("HandlerConnected", {'remoteIP': self.connection.remoteIP, 'remotePort': self.connection.remotePort, 'peer': self, 'connection': self.connection})
         else:
             self.connected = False
 
     def _clearConnection(self):
         """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
-        self.postEvent("terminate")
+        self.fireEvent("HandlerTerminated", {'peer': self, 'connection': self.connection})
 
         self.connection = None
         self.connected = False
@@ -72,73 +82,19 @@ class hsmsDefaultHandler:
         """Event called by :class:`secsgem.hsmsHandler.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
         pass
 
-    def postEvent(self, event, data={}):
-        """Add event to notify event list and notify listeners
-
-        :param event: name of event
-        :type event: string
-        :param data: parameters to event
-        :type data: dict
-        """
-        #call event handler function if present
-        eventFuncName = "event_" + event
-        eventFunc = getattr(self, eventFuncName, None)
-        if callable(eventFunc):
-            eventFunc(event, data)
-
-        self.eventsLock.acquire()
-
-        data["event"] = event
-        for queue in self.events:
-            self.events[queue].append(data)
-
-            self.eventNotify[queue].set()
-
-        self.eventsLock.release()
-
-    def waitForEvents(self, queue):
-        """Wait for events in the event list and return
-
-        :returns: currently available events
-        :rtype: list
-        """
-        self.eventsLock.acquire()
-
-        if not queue in self.events:
-            self.events[queue] = []
-            self.eventNotify[queue] = threading.Event()
-
-        if not self.events[queue]:
-            self.eventsLock.release()
-
-            while not self.eventNotify[queue].wait(1):
-                pass
-
-            self.eventsLock.acquire()
-            self.eventNotify[queue].clear()
-
-        result = list(self.events[queue])
-        self.events[queue] = []
-
-        self.eventsLock.release()
-
-        return result
-
     def stop(self):
         """Mark peer as dead"""
         self.dead = True
 
-class hsmsConnectionManager:
+class hsmsConnectionManager(EventProducer):
     """High level class that handles multiple active and passive connections and the model for them.
 
-    :param connectionCallback: method to call when the connection is established
-    :type connectionCallback: def connectionCallback(peer)
-    :param disconnectionCallback: method to call when the connection is terminated
-    :type disconnectionCallback: def disconnectionCallback(peer)
-    :param postInitCallback: method to call when the connection is initialized
-    :type postInitCallback: def postInitCallback(peer)
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, connectionCallback = None, disconnectionCallback = None, postInitCallback = None):
+    def __init__(self, eventHandler=None):
+        EventProducer.__init__(self, eventHandler)
+
         self.peers = {}
         self.clients = {}
 
@@ -147,10 +103,6 @@ class hsmsConnectionManager:
         self.stopping = False
 
         self.reconnectTimeout = 10.0
-
-        self.connectionCallback = connectionCallback
-        self.disconnectionCallback = disconnectionCallback
-        self.postInitCallback = postInitCallback
 
     def hasConnectionTo(self, index):
         """Check if connection to certain peer exists.
@@ -208,7 +160,7 @@ class hsmsConnectionManager:
         """
         connectionID = self.getConnectionID(peer.address, peer.port)
 
-        self.clients[connectionID] = hsmsClient(peer.address, peer.port, sessionID = peer.sessionID, connectionCallback = self._connectionCallback, postConnectionCallback = self._postConnectionCallback, disconnectionCallback = self._disconnectionCallback)
+        self.clients[connectionID] = hsmsClient(peer.address, peer.port, sessionID=peer.sessionID, eventHandler=EventHandler(self))
 
         while self.clients[connectionID].connect() == None:
             for i in range(int(self.reconnectTimeout) * 5):
@@ -241,7 +193,7 @@ class hsmsConnectionManager:
 
         if found:
             logging.debug("hsmsConnectionManager._startServerIfRequired: starting server")
-            self.server = hsmsMultiServer(connectionCallback = self._connectionCallback, postConnectionCallback = self._postConnectionCallback, disconnectionCallback = self._disconnectionCallback)
+            self.server = hsmsMultiServer(eventHandler=EventHandler(self))
             self.server.start()
 
     def _stopServerIfRequired(self):
@@ -269,15 +221,17 @@ class hsmsConnectionManager:
             del self.server
             self.server = None
 
-    def _connectionCallback(self, connection):
+    def _onEventRemoteConnected(self, data):
         """Callback function for connection event
 
-        :param connection: Connection that was connected
-        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param data: Data supplied with event
+        :type data: dict
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        logging.debug("hsmsConnectionManager._connectionCallback: new connection from %s:%d", connection.remoteIP, connection.remotePort)
+        connection = data['connection']
+
+        logging.debug("hsmsConnectionManager._onEventRemoteConnected: new connection from %s:%d", connection.remoteIP, connection.remotePort)
 
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
@@ -287,36 +241,42 @@ class hsmsConnectionManager:
 
         peer._setConnection(connection)
 
-        if not self.connectionCallback == None:
-            self.connectionCallback(peer)
+        data['peer'] = peer
 
-    def _postConnectionCallback(self, connection):
+        self.fireEvent("PeerConnected", data)
+
+    def _onEventRemoteInitialized(self, data):
         """Callback function for post connection event (receiver running)
 
-        :param connection: Connection that was connected
-        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param data: Data supplied with event
+        :type data: dict
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        logging.debug("hsmsConnectionManager._postConnectionCallback: connection from %s:%d", connection.remoteIP, connection.remotePort)
+        connection = data['connection']
+        
+        logging.debug("hsmsConnectionManager._onEventRemoteInitialized: connection from %s:%d", connection.remoteIP, connection.remotePort)
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
 
         peer._postInit()
 
-        if not self.postInitCallback == None:
-            self.postInitCallback(peer)
+        data['peer'] = peer
 
-    def _disconnectionCallback(self, connection):
+        self.fireEvent("PeerInitialized", data)
+
+    def _onEventRemoteDisconnected(self, data):
         """Callback function for disconnection event
 
-        :param connection: Connection that was disconnected
-        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+        :param data: Data supplied with event
+        :type data: dict
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        logging.debug("hsmsConnectionManager._disconnectionCallback: disconnected from %s:%d", connection.remoteIP, connection.remotePort)
+        connection = data['connection']
+        
+        logging.debug("hsmsConnectionManager._onEventRemoteDisconnected: disconnected from %s:%d", connection.remoteIP, connection.remotePort)
 
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
@@ -324,12 +284,32 @@ class hsmsConnectionManager:
         
         peer._clearConnection()
 
-        if not self.disconnectionCallback == None:
-            self.disconnectionCallback(peer)
+        data['peer'] = peer
+
+        self.fireEvent("PeerDisconnected", data)
 
         if not peer.dead:
             if peer.active:
                 self._startActiveConnect(peer)
+
+    def _onEvent(self, eventName, data):
+        """Callback function for disconnection event
+
+        :param eventName: Name of the event
+        :type eventName: string
+        :param data: Data supplied with event
+        :type data: dict
+
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        connection = data['connection']
+        
+        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
+
+        if connectionID in self.peers:
+            data['peer'] = self.peers[connectionID]
+
+        self.fireEvent(eventName, data)
 
     def addPeer(self, name, address, port, active, sessionID, connectionHandler = hsmsDefaultHandler):
         """Add a new connection 
@@ -349,7 +329,7 @@ class hsmsConnectionManager:
         """
         logging.debug("hsmsConnectionManager.addPeer: new remote %s at %s:%d", name, address, port)
 
-        peer = connectionHandler(address, port, active, sessionID, name)
+        peer = connectionHandler(address, port, active, sessionID, name, self.parentEventHandler)
 
         connectionID = self.getConnectionID(address, port)
         self.peers[connectionID] = peer

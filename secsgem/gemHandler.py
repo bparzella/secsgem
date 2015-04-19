@@ -39,6 +39,8 @@ class gemDefaultHandler(secsDefaultHandler):
     :type sessionID: integer
     :param name: Name of the underlying configuration
     :type name: string
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     """
 
     ceids = secsDefaultHandler.ceids
@@ -79,8 +81,8 @@ class gemDefaultHandler(secsDefaultHandler):
     :type CEID: list of integers
     """
 
-    def __init__(self, address, port, active, sessionID, name):
-        secsDefaultHandler.__init__(self, address, port, active, sessionID, name)
+    def __init__(self, address, port, active, sessionID, name, eventHandler=None):
+        secsDefaultHandler.__init__(self, address, port, active, sessionID, name, eventHandler)
 
         self.communicationState = gemCommunicationState.WAIT_CR_FROM_HOST
         self.communicationDelay = 10
@@ -88,6 +90,16 @@ class gemDefaultHandler(secsDefaultHandler):
         self.reportIDCounter = 1000
 
         self.reportSubscriptions = {}
+
+    def _serializeData(self):
+        """Returns data for serialization
+
+        :returns: data to serialize for this object
+        :rtype: dict
+        """
+        data = secsDefaultHandler._serializeData(self)
+        data.update({'communicationState': self.communicationState, 'communicationDelay': self.communicationDelay, 'reportIDCounter': self.reportIDCounter, 'reportSubscriptions': self.reportSubscriptions})
+        return data
 
     def _setConnection(self, connection):
         """Set the connection of the for this models. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`.
@@ -237,8 +249,8 @@ class gemDefaultHandler(secsDefaultHandler):
 
             print values
 
-            data = {"ceid": message.CEID.value, "rptid": report[0].value, "values": values, "name": self.getCEIDName(message.CEID.value)}
-            self.postEvent("collectionevent", data)
+            data = {"ceid": message.CEID.value, "rptid": report[0].value, "values": values, "name": self.getCEIDName(message.CEID.value), "connection": self.connection, 'peer': self}
+            self.fireEvent("CollectionEventReceived", data)
 
         connection.sendResponse(secsS6F12(chr(0x00)), packet.header.system)
 
@@ -256,4 +268,4 @@ class gemDefaultHandler(secsDefaultHandler):
 
         connection.sendResponse(secsS10F2(0), packet.header.system)
 
-        self.postEvent("terminal", {"text": s10f1.TEXT.value, "terminal": ord(s10f1.TID.value[0])})
+        self.fireEvent("TerminalReceived", {"text": s10f1.TEXT.value, "terminal": ord(s10f1.TID.value[0]), "connection": self.connection, 'peer': self})

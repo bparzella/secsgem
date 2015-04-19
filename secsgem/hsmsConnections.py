@@ -54,44 +54,7 @@ class hsmsConnectionState:
     """hsms connection state machine states"""
     NOT_CONNECTED, CONNECTED, NOT_SELECTED, SELECTED = range(4)
 
-class _callbackHandler:
-    """Base class for all connection classes. Provides functionality for registering and unregistering callbacks for streams and functions."""
-    def __init__(self):
-        self.callbacks = {}
-
-    def registerCallback(self, stream, function, callback):
-        """Register the function callback for stream and function. Multiple callbacks can be registered for one function.
-
-        :param stream: stream to register callback for
-        :type stream: integer
-        :param function: function to register callback for
-        :type function: integer
-        :param callback: method to call when stream and functions is received
-        :type callback: def callback(connection)
-        """
-        name = "s"+str(stream)+"f"+str(function)
-
-        if not name in self.callbacks:
-            self.callbacks[name] = []
-
-        self.callbacks[name].append(callback)
-
-    def unregisterCallback(self, stream, function, callback):
-        """Unregister the function callback for stream and function. Multiple callbacks can be registered for one function, only the supplied callback will be removed.
-
-        :param stream: stream to unregister callback for
-        :type stream: integer
-        :param function: function to register callback for
-        :type function: integer
-        :param callback: method to remove from callback list
-        :type callback: def callback(connection)
-        """
-        name = "s"+str(stream)+"f"+str(function)
-
-        if callback in self.callbacks[name]:
-            self.callbacks[name].remove(callback)
-
-class hsmsSingleServer(_callbackHandler):
+class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
     """Server class for single passive (incoming) connection 
 
     Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
@@ -100,12 +63,8 @@ class hsmsSingleServer(_callbackHandler):
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
-    :param connectionCallback: method to call when the connection is established
-    :type connectionCallback: def connectionCallback(connection)
-    :param postConnectionCallback: method to call when the receiver thread is running
-    :type postConnectionCallback: def postConnectionCallback(connection)
-    :param disconnectionCallback: method to call when the connection is terminated
-    :type disconnectionCallback: def disconnectionCallback(connection)
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
 
     **Example**::
 
@@ -115,7 +74,7 @@ class hsmsSingleServer(_callbackHandler):
         def onConnect(connection):
             print "Connected"
 
-        server = secsgem.hsmsConnections.hsmsSingleServer(5000, connectionCallback = onConnect)
+        server = secsgem.hsmsConnections.hsmsSingleServer(5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
         server.registerCallback(1, 1, S1F1Handler)
 
         connection = server.waitForConnection()
@@ -125,13 +84,11 @@ class hsmsSingleServer(_callbackHandler):
         connection.disconnect()
 
     """
-    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
-        _callbackHandler.__init__(self)
+    def __init__(self, port = 5000, sessionID = 0, eventHandler=None):
+        StreamFunctionCallbackHandler.__init__(self)
+        EventProducer.__init__(self, eventHandler)
 
         self.port = port
-        self.connectionCallback = connectionCallback
-        self.postConnectionCallback = postConnectionCallback
-        self.disconnectionCallback = disconnectionCallback
         self.sessionID = sessionID
 
     def waitForConnection(self):
@@ -159,34 +116,28 @@ class hsmsSingleServer(_callbackHandler):
 
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-            connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
+            connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler = self.parentEventHandler)
 
-            if not self.connectionCallback == None:
-                self.connectionCallback(connection)
+            self.fireEvent("RemoteConnected", {'connection': connection})
 
             connection.startReceiver()
 
-            if not self.postConnectionCallback == None:
-                self.postConnectionCallback(connection)
+            self.fireEvent("RemoteInitialized", {'connection': connection})
 
             return connection
 
         sock.close()
 
 #start server accepting all connections
-class hsmsMultiServer(_callbackHandler):
-    """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket. When the connection is established the supplied connectionCallback will be called with the new connection class.
+class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
+    """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
 
     :param port: TCP port to listen on
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
-    :param connectionCallback: method to call when the connection is established
-    :type connectionCallback: def connectionCallback(connection)
-    :param postConnectionCallback: method to call when the receiver thread is running
-    :type postConnectionCallback: def postConnectionCallback(connection)
-    :param disconnectionCallback: method to call when the connection is terminated
-    :type disconnectionCallback: def disconnectionCallback(connection)
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     
     **Example**::
 
@@ -196,7 +147,7 @@ class hsmsMultiServer(_callbackHandler):
         def onConnect(connection):
             print "Connected"
 
-        server = secsgem.hsmsConnections.hsmsMultiServer(5000, connectionCallback = onConnect)
+        server = secsgem.hsmsConnections.hsmsMultiServer(5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
         server.registerCallback(1, 1, S1F1Handler)
 
         server.start()
@@ -210,8 +161,9 @@ class hsmsMultiServer(_callbackHandler):
     selectTimeout = 0.5
     """ Timeout for select calls """ 
 
-    def __init__(self, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
-        _callbackHandler.__init__(self)
+    def __init__(self, port=5000, sessionID=0, eventHandler=None):
+        StreamFunctionCallbackHandler.__init__(self)
+        EventProducer.__init__(self, eventHandler)
 
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -226,10 +178,6 @@ class hsmsMultiServer(_callbackHandler):
 
         self.connections = []
         self.connectionsLock = threading.Lock()
-
-        self.connectionCallback = connectionCallback
-        self.postConnectionCallback = postConnectionCallback
-        self.disconnectionCallback = disconnectionCallback
 
         self.listenThreadIdentifier = None
 
@@ -295,25 +243,23 @@ class hsmsMultiServer(_callbackHandler):
                     if self.stopThread:
                         continue
 
-                    logging.debug("hsmsMultiServer.<listening_thread>: connection from %s:%d", accept_result[1][0], accept_result[1][1])
+                    logging.debug("hsmsMultiServer._listen_thread: connection from %s:%d", accept_result[1][0], accept_result[1][1])
 
                     self.connectionsLock.acquire()
                     (sock,(sourceIP, sourcePort)) = accept_result
 
                     sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-                    connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, disconnectionCallback = self.disconnectionCallback)
+                    connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
 
                     self.connections.append(connection)
                     self.connectionsLock.release()
 
-                    if not self.connectionCallback == None:
-                        self.connectionCallback(connection)
+                    self.fireEvent("RemoteConnected", {'connection': connection})
 
                     connection.startReceiver()
 
-                    if not self.postConnectionCallback == None:
-                        self.postConnectionCallback(connection)
+                    self.fireEvent("RemoteInitialized", {'connection': connection})
 
         except Exception, e:
             print "hsmsServer._listen_thread : exception", e
@@ -322,7 +268,7 @@ class hsmsMultiServer(_callbackHandler):
         self.threadRunning = False
 
 #single client connection
-class hsmsClient(_callbackHandler):
+class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
     """Client class for single active (outgoing) connection 
 
     :param address: IP address of target host
@@ -331,12 +277,8 @@ class hsmsClient(_callbackHandler):
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
-    :param connectionCallback: method to call when the connection is established
-    :type connectionCallback: def connectionCallback(connection)
-    :param postConnectionCallback: method to call when the receiver thread is running
-    :type postConnectionCallback: def postConnectionCallback(connection)
-    :param disconnectionCallback: method to call when the connection is terminated
-    :type disconnectionCallback: def disconnectionCallback(connection)
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
 
     **Example**::
 
@@ -346,7 +288,7 @@ class hsmsClient(_callbackHandler):
         def onConnect(connection):
             print "Connected"
 
-        client = secsgem.hsmsConnections.hsmsClient("127.0.0.1", 5000, connectionCallback = onConnect)
+        client = secsgem.hsmsConnections.hsmsClient("127.0.0.1", 5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
         client.registerCallback(1, 1, S1F1Handler)
 
         connection = client.connect()
@@ -356,14 +298,12 @@ class hsmsClient(_callbackHandler):
         connection.disconnect()
 
     """
-    def __init__(self, address, port = 5000, sessionID = 0, connectionCallback = None, postConnectionCallback = None, disconnectionCallback = None):
-        _callbackHandler.__init__(self)
+    def __init__(self, address, port=5000, sessionID=0, eventHandler=None):
+        StreamFunctionCallbackHandler.__init__(self)
+        EventProducer.__init__(self, eventHandler)
 
         self.address = address
         self.port = port
-        self.connectionCallback = connectionCallback
-        self.postConnectionCallback = postConnectionCallback
-        self.disconnectionCallback = disconnectionCallback
         self.sessionID = sessionID
 
         self.aborted = False
@@ -388,15 +328,13 @@ class hsmsClient(_callbackHandler):
             logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.address, self.port)
             return None
 
-        connection = hsmsConnection(self.sock, self.callbacks, True, self.address, self.port, self.sessionID, disconnectionCallback = self.disconnectionCallback)
+        connection = hsmsConnection(self.sock, self.callbacks, True, self.address, self.port, self.sessionID, eventHandler=self.parentEventHandler)
 
-        if not self.connectionCallback == None:
-            self.connectionCallback(connection)
+        self.fireEvent("RemoteConnected", {'connection': connection})
 
         connection.startReceiver()
 
-        if not self.postConnectionCallback == None:
-            self.postConnectionCallback(connection)
+        self.fireEvent("RemoteInitialized", {'connection': connection})
 
         return connection
 
@@ -407,7 +345,7 @@ class hsmsClient(_callbackHandler):
 
         self.sock.close()
 
-class hsmsConnection(_callbackHandler):
+class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
     """Connection class used for active and passive connections. Contains the basic HSMS functionality.
 
     :param sock: Socket of the underlying connection
@@ -422,11 +360,12 @@ class hsmsConnection(_callbackHandler):
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
-    :param disconnectionCallback: method to call when the connection is terminated
-    :type disconnectionCallback: def disconnectionCallback(connection)
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, sock, callbacks, active, address, port, sessionID = 0, disconnectionCallback = None):
-        _callbackHandler.__init__(self)
+    def __init__(self, sock, callbacks, active, address, port, sessionID = 0, eventHandler=None):
+        StreamFunctionCallbackHandler.__init__(self)
+        EventProducer.__init__(self, eventHandler)
 
         self.sock = sock
         self.callbacks = dict(callbacks)
@@ -434,7 +373,6 @@ class hsmsConnection(_callbackHandler):
         self.remoteIP = address
         self.remotePort = port
         self.sessionID = sessionID
-        self.disconnectionCallback = disconnectionCallback
 
         self.receiveBuffer = ""
 
@@ -458,6 +396,14 @@ class hsmsConnection(_callbackHandler):
 
     sendBlockSize = 1024*1024
     """ Block size for outbound data """ 
+
+    def _serializeData(self):
+        """Returns data for serialization
+
+        :returns: data to serialize for this object
+        :rtype: dict
+        """
+        return {'active': self.active, 'remoteIP': self.remoteIP, 'remotePort': self.remotePort, 'sessionID': self.sessionID, 'systemCounter': self.systemCounter, 'connected': self.connected, 'connectionState': self.connectionState}
 
     def __str__(self):
         return ("Active" if self.active else "Passive") + " connection to " + self.remoteIP + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID) + ", connectionState=" + str(self.connectionState)
@@ -839,7 +785,7 @@ class hsmsConnection(_callbackHandler):
                 logging.info("< %s", response)
             else:
                 logging.info("< %s", response)
-                
+
         callbackIndex = "s"+str(response.header.stream)+"f"+str(response.header.function)
         if callbackIndex in self.callbacks:
             for callback in self.callbacks[callbackIndex]:
@@ -880,7 +826,6 @@ class hsmsConnection(_callbackHandler):
                         if not isErrorCodeEWouldBlock(errorcode):
                             raise e
     
-
                     while self._process_receive_buffer():
                         pass
 
@@ -888,8 +833,7 @@ class hsmsConnection(_callbackHandler):
             print "hsmsClient.ReceiverThread : exception", e
             print traceback.format_exc()
 
-        if not self.disconnectionCallback == None:
-            self.disconnectionCallback(self)
+        self.fireEvent("RemoteDisconnected", {'connection': self})
 
         self.sock.close()
 

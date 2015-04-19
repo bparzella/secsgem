@@ -33,6 +33,8 @@ class secsDefaultHandler(hsmsDefaultHandler):
     :type sessionID: integer
     :param name: Name of the underlying configuration
     :type name: string
+    :param eventHandler: object for event handling
+    :type eventHandler: :class:`secsgem.common.EventHandler`
     """
 
     ceids = {}
@@ -73,8 +75,8 @@ class secsDefaultHandler(hsmsDefaultHandler):
     :type CEID: list of integers
     """
 
-    def __init__(self, address, port, active, sessionID, name):
-        hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name)
+    def __init__(self, address, port, active, sessionID, name, eventHandler=None):
+        hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name, eventHandler)
 
     def disableCEIDs(self):
         """Disable all Collection Events.
