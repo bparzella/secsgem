@@ -196,7 +196,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :type params: list of strings
         """
         #send remote command
-        return self.connection.sendAndWaitForResponse(secsS2F41(RCMD, params))
+        return secsDecode(self.connection.sendAndWaitForResponse(secsS2F41(RCMD, params)))
 
      
     def S1F1Handler(self, connection, packet):
