@@ -140,7 +140,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         """
         packet = self.connection.sendAndWaitForResponse(secsS2F13(ECs))
 
-        return secsDecode(packet).EC
+        return secsDecode(packet).ECVs
 
     def requestEC(self, EC):
         """Request contents of one Equipment Constant.
