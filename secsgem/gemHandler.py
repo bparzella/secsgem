@@ -198,6 +198,41 @@ class gemDefaultHandler(secsDefaultHandler):
         #send remote command
         return secsDecode(self.connection.sendAndWaitForResponse(secsS2F41(RCMD, params)))
 
+    def sendProcessProgram(self, PPID, PPBODY):
+        """Send a process program
+
+        :param PPID: Transferred process programs ID
+        :type PPID: string
+        :param PPBODY: Content of process program
+        :type PPBODY: string
+        """
+        #send remote command
+        return ord(secsDecode(self.connection.sendAndWaitForResponse(secsS7F3(PPID, PPBODY))).ACKC7.value)
+
+    def requestProcessProgram(self, PPID):
+        """Request a process program
+
+        :param PPID: Transferred process programs ID
+        :type PPID: string
+        """
+        #send remote command
+        s7f6 = secsDecode(self.connection.sendAndWaitForResponse(secsS7F5(PPID)))
+        return (s7f6.PPID.value, s7f6.PPBODY.value)
+
+    def deleteProcessPrograms(self, PPIDs):
+        """Delete a list of process program
+
+        :param PPIDs: Process programs to delete
+        :type PPIDs: list of strings
+        """
+        #send remote command
+        return ord(secsDecode(self.connection.sendAndWaitForResponse(secsS7F17(PPIDs))).ACKC7.value)
+
+    def getProcessProgramList(self):
+        """Get process program list
+        """
+        #send remote command
+        return secsUnwrapVariables(secsDecode(self.connection.sendAndWaitForResponse(secsS7F19())).PPIDs)
      
     def S1F1Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 1, Are You There
