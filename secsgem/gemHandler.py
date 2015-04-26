@@ -19,7 +19,6 @@ from hsmsHandler import *
 from hsmsPackets import *
 
 from secsHandler import *
-from secsFunctions import *
 from secsVariables import *
 
 class gemCommunicationState:
@@ -135,17 +134,20 @@ class gemDefaultHandler(secsDefaultHandler):
             self.communicationState = gemCommunicationState.COMMUNICATING
 
     def establishCommunication(self):
-        """Function to establish GEM communication with remote.
+        """Function to establish GEM communication with equipment.
 
         :returns: 0: OK, 1: denied, -1: error
         :rtype: integer
         """
-        function = secsDecode(self.connection.sendAndWaitForResponse(secsS1F13("secsgem", "0.0.3")))
+        if self.isHost:
+            function = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(1, 13)()))
+        else:
+            function = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(1, 13)("secsgem", "0.0.3")), True)
 
         self.communicationState = gemCommunicationState.WAIT_CRA
 
         if function.stream == 1 and function.function == 14:
-            return ord(function.COMMACK.value[0])
+            return function.COMMACK
         else:
             print "establishCommunication unknown response " + function
             return -1
@@ -179,13 +181,13 @@ class gemDefaultHandler(secsDefaultHandler):
         self.reportSubscriptions[reportID] = dvs
 
         #create report
-        packet = self.connection.sendAndWaitForResponse(secsS2F33(0, [[reportID, dvs]]))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "RPT": dvs}]}))
 
         #link event report to collection event
-        packet = self.connection.sendAndWaitForResponse(secsS2F35(0, [[ceid, [reportID]]]))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "CE": [reportID]}]}))
 
         #enable collection event
-        packet = self.connection.sendAndWaitForResponse(secsS2F37(True, [ceid]))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
 
     def sendRemoteCommand(self, RCMD, params):
         """Send a remote command
@@ -195,8 +197,13 @@ class gemDefaultHandler(secsDefaultHandler):
         :param params: DV IDs to add for collection event 
         :type params: list of strings
         """
+        s2f41 = self.streamFunction(2, 41)()
+        s2f41.RCMD = RCMD
+        for param in params:
+            s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
+
         #send remote command
-        return secsDecode(self.connection.sendAndWaitForResponse(secsS2F41(RCMD, params)))
+        return self.secsDecode(self.connection.sendAndWaitForResponse(s2f41))
 
     def sendProcessProgram(self, PPID, PPBODY):
         """Send a process program
@@ -207,7 +214,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPBODY: string
         """
         #send remote command
-        return ord(secsDecode(self.connection.sendAndWaitForResponse(secsS7F3(PPID, PPBODY))).ACKC7.value)
+        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 3)({"PPID": PPID, "PPBODY": PPBODY}))).ACKC7
 
     def requestProcessProgram(self, PPID):
         """Request a process program
@@ -216,8 +223,8 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPID: string
         """
         #send remote command
-        s7f6 = secsDecode(self.connection.sendAndWaitForResponse(secsS7F5(PPID)))
-        return (s7f6.PPID.value, s7f6.PPBODY.value)
+        s7f6 = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 5)(PPID)))
+        return (s7f6.PPID, s7f6.PPBODY)
 
     def deleteProcessPrograms(self, PPIDs):
         """Delete a list of process program
@@ -226,13 +233,13 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPIDs: list of strings
         """
         #send remote command
-        return ord(secsDecode(self.connection.sendAndWaitForResponse(secsS7F17(PPIDs))).ACKC7.value)
+        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 17)(PPIDs))).ACKC7
 
     def getProcessProgramList(self):
         """Get process program list
         """
         #send remote command
-        return secsUnwrapVariables(secsDecode(self.connection.sendAndWaitForResponse(secsS7F19())).PPIDs)
+        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
      
     def S1F1Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 1, Are You There
@@ -244,7 +251,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        connection.sendResponse(secsS1F2("secsgem", "0.0.3"), packet.header.system)
+        connection.sendResponse(self.streamFunction(1, 2)(), packet.header.system)
 
 
     def S1F13Handler(self, connection, packet):
@@ -257,7 +264,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        connection.sendResponse(secsS1F14(chr(0x00), "secsgem", "0.0.3"), packet.header.system)
+        connection.sendResponse(self.streamFunction(1, 14)({"COMMACK": 0}), packet.header.system)
 
         self.communicationState = gemCommunicationState.COMMUNICATING
 
@@ -271,11 +278,11 @@ class gemDefaultHandler(secsDefaultHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        message = secsDecode(packet)
+        message = self.secsDecode(packet)
 
-        for report in message.reports:
-            reportDVs = self.reportSubscriptions[report[0].value]
-            reportValues = secsUnwrapVariables(report[1])
+        for report in message.RPT:
+            reportDVs = self.reportSubscriptions[report.RPTID]
+            reportValues = report.V.get()
 
             values = []
 
@@ -287,7 +294,7 @@ class gemDefaultHandler(secsDefaultHandler):
             data = {"ceid": message.CEID.value, "rptid": report[0].value, "values": values, "name": self.getCEIDName(message.CEID.value), "connection": self.connection, 'peer': self}
             self.fireEvent("CollectionEventReceived", data)
 
-        connection.sendResponse(secsS6F12(chr(0x00)), packet.header.system)
+        connection.sendResponse(self.streamFunction(6, 12)(0), packet.header.system)
 
     def S10F1Handler(self, connection, packet):
         """Callback handler for Stream 10, Function 1, Terminal Request
@@ -299,8 +306,8 @@ class gemDefaultHandler(secsDefaultHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        s10f1 = secsDecode(packet)
+        s10f1 = self.secsDecode(packet)
 
-        connection.sendResponse(secsS10F2(0), packet.header.system)
+        connection.sendResponse(self.streamFunction(10, 2)(0), packet.header.system)
 
-        self.fireEvent("TerminalReceived", {"text": s10f1.TEXT.value, "terminal": ord(s10f1.TID.value[0]), "connection": self.connection, 'peer': self})
+        self.fireEvent("TerminalReceived", {"text": s10f1.TEXT, "terminal": s10f1.TID, "connection": self.connection, 'peer': self})

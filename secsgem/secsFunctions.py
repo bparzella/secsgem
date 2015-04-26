@@ -15,2619 +15,624 @@
 #####################################################################
 """Wrappers for SECS stream and functions"""
 
-import logging
+from collections import OrderedDict
 
-from secsVariables import *
+from secsFunctionBase import secsStreamFunction
+from secsVariables import secsVarList, secsVarArray, secsVarString, secsVarBinary, secsVarU4, secsVarBoolean, secsVarDynamic
 
-class secsS0F0:
-    """Class for hsms low level functions (like Select, Linktest). All data is contained in the header.
+class secsS00F00(secsStreamFunction):
+    stream = 0
+    function = 0
 
-    **Example**::
+    formatDescriptor = None
 
-        >>> secsgem.secsS0F0()
-        LL
+class secsS01F00(secsStreamFunction):
+    stream = 1
+    function = 0
 
-    """
-    def __init__(self):
-        self.stream = 0
-        self.function = 0
-        
-    def __repr__(self):
-        return "LL"
-        
-    def encode(self):
-        """Encode the class data to byte array.
+    formatDescriptor = None
 
-        :returns: data byte array
-        :rtype: string
+class secsS01F01(secsStreamFunction):
+    stream = 1
+    function = 1
 
-        **Example**::
+    formatDescriptor = None
 
-            >>> s0f0 = secsgem.secsS0F0()
-            >>> secsgem.formatHex(s0f0.encode())
-            ''
+class secsS01F02E(secsStreamFunction):
+    stream = 1
+    function = 2
 
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS0F0`
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("MDLN", secsVarString(20)),
+                        ("SOFTREV", secsVarString(20)),
+                        )), 2)
 
-        **Example**::
+class secsS01F02H(secsStreamFunction):
+    stream = 1
+    function = 2
 
-            >>> secsgem.secsS0F0.decode(s0f0.encode())
-            LL
+    formatDescriptor = None
 
-        """
-        return secsS0F0()
+class secsS01F03(secsStreamFunction):
+    stream = 1
+    function = 3
 
-class secsS1F0:
-    """Class for stream 1 function 0, Transaction Abort
+    formatDescriptor = secsVarArray(secsVarU4(1))
 
-    **Example**::
+class secsS01F04(secsStreamFunction):
+    stream = 1
+    function = 4
 
-        >>> secsgem.secsS1F0()
-        S1F0 {}
+    formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
-    """
-    def __init__(self):
-        self.stream = 1
-        self.function = 0
-        
-    def __repr__(self):
-        return "S1F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
+class secsS01F11(secsStreamFunction):
+    stream = 1
+    function = 11
 
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
+    formatDescriptor = secsVarArray(secsVarU4(1))
 
-            >>> s1f0 = secsgem.secsS1F0()
-            >>> secsgem.formatHex(s1f0.encode())
-            ''
+class secsS01F12(secsStreamFunction):
+    stream = 1
+    function = 12
 
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
+    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+                        ("SVID", secsVarU4(1)),
+                        ("SVNAME", secsVarString()),
+                        ("UNITS", secsVarString()),
+                        )), 3))
 
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F0`
+class secsS01F13E(secsStreamFunction):
+    stream = 1
+    function = 13
 
-        **Example**::
-
-            >>> secsgem.secsS1F0.decode(s1f0.encode())
-            S1F0 {}
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("MDLN", secsVarString(20)),
+                        ("SOFTREV", secsVarString(20)),
+                        )), 2)
 
-        """
-        return secsS1F0()
+class secsS01F13H(secsStreamFunction):
+    stream = 1
+    function = 13
 
-class secsS1F1:
-    """Class for stream 1 function 1, Are You There - Request.
-
-    **Example**::
-
-        >>> secsgem.secsS1F1()
-        S1F1 {}
-
-    """
-    def __init__(self):
-        self.stream = 1
-        self.function = 1
-        
-    def __repr__(self):
-        return "S1F1 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
+    formatDescriptor = None
 
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
+class secsS01F14E(secsStreamFunction):
+    stream = 1
+    function = 14
 
-            >>> s1f1 = secsgem.secsS1F1()
-            >>> secsgem.formatHex(s1f1.encode())
-            ''
+    formatDescriptor = secsVarList(OrderedDict((
+                            ("COMMACK", secsVarBinary(1)),
+                            ("DATA", secsVarList(OrderedDict((
+                                ("MDLN", secsVarString(20)),
+                                ("SOFTREV", secsVarString(20)),
+                            )), 2))
+                        )), 2)
 
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
+class secsS01F14H(secsStreamFunction):
+    stream = 1
+    function = 14
 
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F1`
+    formatDescriptor = secsVarList(OrderedDict((
+                            ("COMMACK", secsVarBinary(1)),
+                            ("DATA", secsVarList([], 0))
+                        )), 2)
+
+class secsS02F00(secsStreamFunction):
+    stream = 2
+    function = 0
+
+    formatDescriptor = None
+
+class secsS02F13(secsStreamFunction):
+    stream = 2
+    function = 13
+
+    formatDescriptor = secsVarArray(secsVarU4(1))
+
+
+class secsS02F14(secsStreamFunction):
+    stream = 2
+    function = 14
+
+    formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
+
+class secsS02F15(secsStreamFunction):
+    stream = 2
+    function = 15
+
+    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+                        ("ECID", secsVarU4(1)),
+                        ("ECV", secsVarDynamic(secsVarString)),
+                        )), 2))
+
+class secsS02F16(secsStreamFunction):
+    stream = 2
+    function = 16
+
+    formatDescriptor = secsVarBinary(1)
+
+class secsS02F29(secsStreamFunction):
+    stream = 2
+    function = 29
+
+    formatDescriptor = secsVarArray(secsVarU4(1))
+
+class secsS02F30(secsStreamFunction):
+    stream = 2
+    function = 30
+
+    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+                        ("ECID", secsVarU4(1)),
+                        ("ECNAME", secsVarString()),
+                        ("ECMIN", secsVarDynamic(secsVarString)),
+                        ("ECMAX", secsVarDynamic(secsVarString)),
+                        ("ECDEF", secsVarDynamic(secsVarString)),
+                        ("UNITS", secsVarString()),
+                        )), 6))
+
+class secsS02F33(secsStreamFunction):
+    stream = 2
+    function = 33
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("DATAID", secsVarU4(1)),
+                        ("DATA", secsVarArray(
+                            secsVarList(OrderedDict((
+                                ("RPTID", secsVarU4(1)),
+                                ("RPT", secsVarArray(
+                                    secsVarString()
+                                )),
+                            )), 2)
+                        )),
+                        )), 2)
+
+class secsS02F34(secsStreamFunction):
+    stream = 2
+    function = 34
+
+    formatDescriptor = secsVarBinary(1)
+
+class secsS02F35(secsStreamFunction):
+    stream = 2
+    function = 35
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("DATAID", secsVarU4(1)),
+                        ("DATA", secsVarArray(
+                            secsVarList(OrderedDict((
+                                ("CEID", secsVarU4(1)),
+                                ("CE", secsVarArray(
+                                    secsVarU4(1)
+                                )),
+                            )), 2)
+                        )),
+                        )), 2)
+
+class secsS02F36(secsStreamFunction):
+    stream = 2
+    function = 36
+
+    formatDescriptor = secsVarBinary(1)
+
+class secsS02F37(secsStreamFunction):
+    stream = 2
+    function = 37
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("CEED", secsVarBoolean(1)),
+                        ("CEID", secsVarArray(
+                            secsVarU4(1)
+                        )),
+                        )), 2)
+
+class secsS02F38(secsStreamFunction):
+    stream = 2
+    function = 38
+
+    formatDescriptor = secsVarBinary(1)
+
+class secsS02F41(secsStreamFunction):
+    stream = 2
+    function = 41
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("RCMD", secsVarString()),
+                        ("PARAMS", secsVarArray(
+                            secsVarList(OrderedDict((
+                                ("CPNAME", secsVarString()),
+                                ("CPVAL", secsVarString()),
+                            )), 2)
+                        )),
+                        )), 2)
+
+class secsS02F42(secsStreamFunction):
+    stream = 2
+    function = 42
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("HCACK", secsVarBinary(1)),
+                        ("PARAMS", secsVarArray(
+                            secsVarList(OrderedDict((
+                                ("CPNAME", secsVarString()),
+                                ("CPACK", secsVarBinary(1)),
+                            )), 2)
+                        )),
+                        )), 2)
+
+class secsS05F00(secsStreamFunction):
+    stream = 5
+    function = 0
+
+    formatDescriptor = None
+
+class secsS05F01(secsStreamFunction):
+    stream = 5
+    function = 1
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("ALCD", secsVarBinary(1)),
+                        ("ALID", secsVarU4(1)),
+                        ("ALTX", secsVarString(120)),
+                        )), 3)
+
+class secsS05F02(secsStreamFunction):
+    stream = 5
+    function = 2
+
+    formatDescriptor = secsVarBinary(1)
+
+class secsS06F00(secsStreamFunction):
+    stream = 6
+    function = 0
+
+    formatDescriptor = None
+
+class secsS06F11(secsStreamFunction):
+    stream = 6
+    function = 11
+
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("DATAID", secsVarU4(1)),
+                        ("CEID", secsVarU4(1)),
+                        ("RPT", secsVarArray(
+                            secsVarList(OrderedDict((
+                                ("RPTID", secsVarU4(1)),
+                                ("V", secsVarArray(
+                                    secsVarString()
+                                )),
+                            )), 2)
+                        )),
+                        )), 3)
 
-        **Example**::
+class secsS06F12(secsStreamFunction):
+    stream = 6
+    function = 12
 
-            >>> secsgem.secsS1F1.decode(s1f1.encode())
-            S1F1 {}
+    formatDescriptor = secsVarBinary(1)
 
-        """
-        return secsS1F1()
+class secsS07F00(secsStreamFunction):
+    stream = 7
+    function = 0
 
-class secsS1F2:
-    """Class for stream 1 function 2, Online Data Response , response to Are You There - Request.
+    formatDescriptor = None
 
-    :param MDLN: model name
-    :type MDLN: string
-    :param SOFTREV: software revision
-    :type SOFTREV: string
+class secsS07F01(secsStreamFunction):
+    stream = 7
+    function = 1
 
-    **Example**::
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("PPID", secsVarString()),
+                        ("LENGTH", secsVarU4(1)),
+                        )), 2)
 
-        >>> secsgem.secsS1F2("secsgem", "0.0.3")
-        S1F2 {MDLN: 'secsgem', SOFTREV: '0.0.3'}
+class secsS07F02(secsStreamFunction):
+    stream = 7
+    function = 2
 
-    """
-    def __init__(self, MDLN, SOFTREV):
-        self.stream = 1
-        self.function = 2
+    formatDescriptor = secsVarBinary(1)
 
-        self.MDLN = secsVarString(MDLN)
-        self.SOFTREV = secsVarString(SOFTREV)
-        
-    def __repr__(self):
-        return "S1F2 {MDLN: '%s', SOFTREV: '%s'}" % (self.MDLN.value, self.SOFTREV.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
+class secsS07F03(secsStreamFunction):
+    stream = 7
+    function = 3
 
-        :returns: data byte array
-        :rtype: string
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("PPID", secsVarString()),
+                        ("PPBODY", secsVarBinary()),
+                        )), 2)
 
-        **Example**::
+class secsS07F04(secsStreamFunction):
+    stream = 7
+    function = 4
 
-            >>> s1f2 = secsgem.secsS1F2("secsgem", "0.0.3")
-            >>> secsgem.formatHex(s1f2.encode())
-            '01:02:41:07:73:65:63:73:67:65:6d:41:05:30:2e:30:2e:33'
+    formatDescriptor = secsVarBinary(1)
 
-        """
-        return secsCoder.encode([self.MDLN, self.SOFTREV])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
+class secsS07F05(secsStreamFunction):
+    stream = 7
+    function = 5
 
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F2`
+    formatDescriptor = secsVarString()
 
-        **Example**::
+class secsS07F06(secsStreamFunction):
+    stream = 7
+    function = 6
 
-            >>> secsgem.secsS1F2.decode(s1f2.encode())
-            S1F2 {MDLN: 'secsgem', SOFTREV: '0.0.3'}
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("PPID", secsVarString()),
+                        ("PPBODY", secsVarBinary()),
+                        )), 2)
 
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS1F2(data[0], data[1])
+class secsS07F17(secsStreamFunction):
+    stream = 7
+    function = 17
 
-class secsS1F3:
-    """Class for stream 1 function 3, Selected Equipment Status - Request.
+    formatDescriptor = secsVarArray(secsVarString())
 
-    :param SVIDs: list of UINT4, Status Variables to request
-    :type SVIDs: list
+class secsS07F18(secsStreamFunction):
+    stream = 7
+    function = 18
 
-    **Example**::
+    formatDescriptor = secsVarBinary(1)
 
-        >>> secsgem.secsS1F3([1000, 50000])
-        S1F3 {SVID: '[U4 1000, U4 50000]'}
+class secsS07F19(secsStreamFunction):
+    stream = 7
+    function = 19
 
-    """
-    def __init__(self, SVIDs):
-        self.stream = 1
-        self.function = 3
+    formatDescriptor = None
 
-        self.SVID = []
-        for SVID in SVIDs:
-            self.SVID.append(secsVarUINT4(SVID))
+class secsS07F20(secsStreamFunction):
+    stream = 7
+    function = 20
 
-    def __repr__(self):
-        return "S1F3 {SVID: '%s'}" % (self.SVID)
+    formatDescriptor = secsVarArray(secsVarString())
 
-    def encode(self):
-        """Encode the class data to byte array.
+class secsS09F00(secsStreamFunction):
+    stream = 9
+    function = 0
 
-        :returns: data byte array
-        :rtype: string
+    formatDescriptor = None
 
-        **Example**::
+class secsS09F01(secsStreamFunction):
+    stream = 9
+    function = 1
 
-            >>> s1f3 = secsgem.secsS1F3([1000, 50000])
-            >>> secsgem.formatHex(s1f3.encode())
-            '01:02:b1:04:00:00:03:e8:b1:04:00:00:c3:50'
+    formatDescriptor = secsVarBinary(10)
 
-        """
-        return secsCoder.encode(self.SVID)
+class secsS09F03(secsStreamFunction):
+    stream = 9
+    function = 3
 
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
+    formatDescriptor = secsVarBinary(10)
 
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F3`
+class secsS09F05(secsStreamFunction):
+    stream = 9
+    function = 5
 
-        **Example**::
+    formatDescriptor = secsVarBinary(10)
 
-            >>> secsgem.secsS1F3.decode(s1f3.encode())
-            S1F3 {SVID: '[U4 1000, U4 50000]'}
+class secsS09F07(secsStreamFunction):
+    stream = 9
+    function = 7
 
-        """
-        data = secsCoder.decode(text)
+    formatDescriptor = secsVarBinary(10)
 
-        return secsS1F3(data)
+class secsS09F09(secsStreamFunction):
+    stream = 9
+    function = 9
 
-class secsS1F4:
-    """Class for stream 1 function 4, Selected Equipment Status - Response.
+    formatDescriptor = secsVarBinary(10)
 
-    Because of the dynamic type of the values, the types must be specified in the list.
+class secsS09F11(secsStreamFunction):
+    stream = 9
+    function = 11
 
-    :param SV: list, Status Variables values of various types
-    :type SV: list
+    formatDescriptor = secsVarBinary(10)
 
-    **Example**::
+class secsS09F13(secsStreamFunction):
+    stream = 9
+    function = 13
 
-        >>> secsgem.secsS1F4([secsgem.secsVarString("ASDFG"), secsgem.secsVarUINT4(10)])
-        S1F4 {SV: '[A ASDFG, U4 10]'}
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("MEXP", secsVarString(6)),
+                        ("EDID", secsVarString(80)),
+                        )), 2)
 
-    """
-    def __init__(self, SV):
-        self.stream = 1
-        self.function = 4
+class secsS10F00(secsStreamFunction):
+    stream = 10
+    function = 0
 
-        self.SV = SV
+    formatDescriptor = None
 
-    def __repr__(self):
-        return "S1F4 {SV: '%s'}" % (self.SV)
+class secsS10F01(secsStreamFunction):
+    stream = 10
+    function = 1
 
-    def encode(self):
-        """Encode the class data to byte array.
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("TID", secsVarBinary(1)),
+                        ("TEXT", secsVarString(120)),
+                        )), 2)
 
-        :returns: data byte array
-        :rtype: string
+class secsS10F02(secsStreamFunction):
+    stream = 10
+    function = 2
 
-        **Example**::
+    formatDescriptor = secsVarBinary(1)
 
-            >>> s1f4 = secsgem.secsS1F4([secsgem.secsVarString("ASDFG"), secsgem.secsVarUINT4(10)])
-            >>> secsgem.formatHex(s1f4.encode())
-            '01:02:41:05:41:53:44:46:47:b1:04:00:00:00:0a'
+class secsS10F03(secsStreamFunction):
+    stream = 10
+    function = 3
 
-        """
-        return secsCoder.encode(self.SV)
+    formatDescriptor = secsVarList(OrderedDict((
+                        ("TID", secsVarBinary(1)),
+                        ("TEXT", secsVarString(120)),
+                        )), 2)
 
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
+class secsS10F04(secsStreamFunction):
+    stream = 10
+    function = 4
 
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F4`
+    formatDescriptor = secsVarBinary(10)
 
-        **Example**::
-
-            >>> secsgem.secsS1F4.decode(s1f4.encode())
-            S1F4 {SV: '[A ASDFG, U4 10]'}
-
-        """
-        data = secsCoder.decode(text)
-
-        return secsS1F4(data)
-        
-class secsS1F11:
-    """Class for stream 1 function 11, Status Variable List - Request.
-
-    :param SVIDs: ids of Status Variables to list, all if empty
-    :type SVIDs: list
-
-    **Example**::
-
-        >>> secsgem.secsS1F11([1000, 50000])
-        S1F11 {SVID: '[U4 1000, U4 50000]'}
-
-    """
-    def __init__(self, SVIDs):
-        self.stream = 1
-        self.function = 11
-
-        self.SVID = []
-        for SVID in SVIDs:
-            self.SVID.append(secsVarUINT4(SVID))
-
-    def __repr__(self):
-        return "S1F11 {SVID: '%s'}" % (self.SVID)
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s1f11 = secsgem.secsS1F11([1000, 50000])
-            >>> secsgem.formatHex(s1f11.encode())
-            '01:02:b1:04:00:00:03:e8:b1:04:00:00:c3:50'
-
-        """
-        return secsCoder.encode(self.SVID)
-
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F11`
-
-        **Example**::
-
-            >>> secsgem.secsS1F11.decode(s1f11.encode())
-            S1F11 {SVID: '[U4 1000, U4 50000]'}
-
-        """
-        data = secsCoder.decode(text)
-
-        return secsS1F11(data)
-
-class secsS1F12:
-    """Class for stream 1 function 12, Status Variable List - Response.
-
-    :param data: list with list of Status Variable ID, Name and Unit
-    :type data: list
-
-    **Example**::
-
-        >>> secsgem.secsS1F12([[1000, "Variable1", ""], [50000, "Variable2", ""]])
-        S1F12 {data: [[SVID: 'U4 1000', SVNAME: 'A Variable1',  UNIT: 'A '][SVID: 'U4 50000', SVNAME: 'A Variable2',  UNIT: 'A ']]}
-
-    """
-    def __init__(self, data):
-        self.stream = 1
-        self.function = 12
-
-        self.data = []
-        for item in data:
-            self.data.append([secsVarUINT4(item[0]), secsVarString(item[1]), secsVarString(item[2])])
-
-    def __repr__(self):
-        data = "["
-        for item in self.data:
-            data += "[SVID: '%s', SVNAME: '%s',  UNIT: '%s']" % (item[0], item[1], item[2])
-        data += "]"
-
-        return "S1F12 {data: %s}" % (data)
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s1f12 = secsgem.secsS1F12([[1000, "Variable1", ""], [50000, "Variable2", ""]])
-            >>> secsgem.formatHex(s1f12.encode())
-            '01:02:01:03:b1:04:00:00:03:e8:41:09:56:61:72:69:61:62:6c:65:31:41:00:01:03:b1:04:00:00:c3:50:41:09:56:61:72:69:61:62:6c:65:32:41:00'
-
-        """
-        return secsCoder.encode(self.data)
-
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F12`
-
-        **Example**::
-
-            >>> secsgem.secsS1F12.decode(s1f12.encode())
-            S1F12 {data: [[SVID: 'U4 1000', SVNAME: 'A Variable1',  UNIT: 'A None'][SVID: 'U4 50000', SVNAME: 'A Variable2',  UNIT: 'A None']]}
-
-        """
-        data = secsCoder.decode(text)
-
-        return secsS1F12(data)
-
-class secsS1F13:
-    """Class for stream 1 function 13, Establish Communication - Request.
-
-    :param MDLN: model name
-    :type MDLN: string
-    :param SOFTREV: software revision
-    :type SOFTREV: string
-
-    **Example**::
-
-        >>> secsgem.secsS1F13("secsgem", "0.0.3")
-        S1F13 {MDLN: 'secsgem', SOFTREV: '0.0.3'}
-
-    """
-    def __init__(self, MDLN, SOFTREV):
-        self.stream = 1
-        self.function = 13
-
-        self.MDLN = secsVarString(MDLN)
-        self.SOFTREV = secsVarString(SOFTREV)
-        
-    def __repr__(self):
-        return "S1F13 {MDLN: '%s', SOFTREV: '%s'}" % (self.MDLN.value, self.SOFTREV.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s1f13 = secsgem.secsS1F13("secsgem", "0.0.3")
-            >>> secsgem.formatHex(s1f13.encode())
-            '01:02:41:07:73:65:63:73:67:65:6d:41:05:30:2e:30:2e:33'
-
-        """
-        return secsCoder.encode([self.MDLN, self.SOFTREV])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F13`
-
-        **Example**::
-
-            >>> secsgem.secsS1F13.decode(s1f13.encode())
-            S1F13 {MDLN: 'secsgem', SOFTREV: '0.0.3'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS1F13(data[0], data[1])
-
-
-class secsS1F14:
-    """Class for stream 1 function 14, Establish Communication - Response.
-
-    :param COMMACK: acknowledgement code, binary, 0=ok / 1=denied
-    :type COMMACK: string
-    :param MDLN: model name
-    :type MDLN: string
-    :param SOFTREV: software revision
-    :type SOFTREV: string
-
-    **Example**::
-
-        >>> secsgem.secsS1F14("\\0", "secsgem", "0.0.3")
-        S1F14 {COMMACK: '', {MDLN: 'secsgem', SOFTREV: '0.0.3'}}
-
-    """
-    def __init__(self, COMMACK, MDLN, SOFTREV):
-        self.stream = 1
-        self.function = 14
-
-        self.COMMACK = secsVarBinary(COMMACK)
-        self.MDLN = secsVarString(MDLN)
-        self.SOFTREV = secsVarString(SOFTREV)
-        
-    def __repr__(self):
-        return "S1F14 {COMMACK: '%s', {MDLN: '%s', SOFTREV: '%s'}}" % (self.COMMACK.value, self.MDLN.value, self.SOFTREV.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s1f14 = secsgem.secsS1F14("\\0", "secsgem", "0.0.3")
-            >>> secsgem.formatHex(s1f14.encode())
-            '01:02:21:01:00:01:02:41:07:73:65:63:73:67:65:6d:41:05:30:2e:30:2e:33'
-
-        """
-        return secsCoder.encode([self.COMMACK, [self.MDLN, self.SOFTREV]])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS1F14`
-
-        **Example**::
-
-            >>> secsgem.secsS1F14.decode(s1f14.encode())
-            S1F14 {COMMACK: '', {MDLN: 'secsgem', SOFTREV: '0.0.3'}}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS1F14(data[0], data[1][0], data[1][1])
-
-class secsS2F0:
-    """Class for stream 2 function 0, Transaction Abort
-
-    **Example**::
-
-        >>> secsgem.secsS2F0()
-        S2F0 {}
-
-    """
-    def __init__(self):
-        self.stream = 2
-        self.function = 0
-        
-    def __repr__(self):
-        return "S2F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s2f0 = secsgem.secsS2F0()
-            >>> secsgem.formatHex(s2f0.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS2F0`
-
-        **Example**::
-
-            >>> secsgem.secsS2F0.decode(s2f0.encode())
-            S2F0 {}
-
-        """
-        return secsS2F0()
-
-class secsS2F13:
-    """Class for stream 2 function 13, Equipment Constant Request
-
-    :param ECIDs: Equipment constant IDs
-    :type ECIDs: list of integer
-
-    **Example**::
-
-        >>> secsgem.secsS2F13([12, 23, 34])
-        S2F13 {ECID: '[U4 12, U4 23, U4 34]'}
-
-    """
-
-    def __init__(self, ECIDs):
-        self.stream = 2
-        self.function = 13
-
-        self.ECID = []
-        for ECID in ECIDs:
-            self.ECID.append(secsVarUINT4(ECID))
-
-    def __repr__(self):
-        return "S2F13 {ECID: '%s'}" % (self.ECID)
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s2f13 = secsgem.secsS2F13([12, 23, 34])
-            >>> secsgem.formatHex(s2f13.encode())
-            '01:03:b1:04:00:00:00:0c:b1:04:00:00:00:17:b1:04:00:00:00:22'
-
-        """
-        return secsCoder.encode(self.ECID)
-
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS2F13`
-
-        **Example**::
-
-            >>> secsgem.secsS2F13.decode(s2f13.encode())
-            S2F13 {ECID: '[U4 12, U4 23, U4 34]'}
-
-        """
-        data = secsCoder.decode(text)
-
-        return secsS2F13(data)
-
-class secsS2F14:
-    """Class for stream 2 function 14, Equipment Constant Data
-
-    :param ECVs: Equipment constant values
-    :type ECVs: list of strings
-
-    **Example**::
-
-        >>> secsgem.secsS2F14(["ABC", "BCD", "CDE"])
-        S2F14 {ECVs: '['ABC', 'BCD', 'CDE']'}
-
-    """
-    def __init__(self, ECVs):
-        self.stream = 2
-        self.function = 14
-
-        self.ECVs = ECVs
-
-    def __repr__(self):
-        return "S2F14 {ECVs: '%s'}" % (self.ECVs)
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s2f14 = secsgem.secsS2F14(["ABC", "BCD", "CDE"])
-            >>> secsgem.formatHex(s2f14.encode())
-            '01:03:41:03:41:42:43:41:03:42:43:44:41:03:43:44:45'
-
-        """
-        ECVs = []
-        for ECV in self.ECVs:
-            ECVs.append(secsVarString(ECV))
-
-        return secsCoder.encode(ECVs)
-
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS2F14`
-
-        **Example**::
-
-            >>> secsgem.secsS2F14.decode(s2f14.encode())
-            S2F14 {ECVs: '[A ABC, A BCD, A CDE]'}
-
-        """
-        data = secsCoder.decode(text)
-        return secsS2F14(data)
-
-class secsS2F15:
-    """Class for stream 2 function 15, New Equipment Constant Send
-
-    :param ECIDs: New values
-    :type ECIDs: list of lists of an integer and string
-
-    **Example**::
-
-        >>> secsgem.secsS2F15([[12, "ABC"], [23, "BCD"], [34, "CDE"]])
-        S2F15 {ECID: '[[U4 12, A ABC], [U4 23, A BCD], [U4 34, A CDE]]'}
-
-    """
-    def __init__(self, ECIDs):
-        self.stream = 2
-        self.function = 15
-
-        self.ECID = []
-        for ECID in ECIDs:
-            self.ECID.append([secsVarUINT4(ECID[0]), secsConvertVarIfRequired(secsVarString,ECID[1])])
-
-    def __repr__(self):
-        return "S2F15 {ECID: '%s'}" % (self.ECID)
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s2f15 = secsgem.secsS2F15([[12, "ABC"], [23, "BCD"], [34, "CDE"]])
-            >>> secsgem.formatHex(s2f15.encode())
-            '01:03:01:02:b1:04:00:00:00:0c:41:03:41:42:43:01:02:b1:04:00:00:00:17:41:03:42:43:44:01:02:b1:04:00:00:00:22:41:03:43:44:45'
-
-        """
-        return secsCoder.encode(self.ECID)
-
-    @staticmethod
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS2F15`
-
-        **Example**::
-
-            >>> secsgem.secsS2F15.decode(s2f15.encode())
-            S2F15 {ECID: '[[U4 12, A ABC], [U4 23, A BCD], [U4 34, A CDE]]'}
-
-        """
-        data = secsCoder.decode(text)
-
-        return secsS2F15(data)
-
-class secsS2F16:
-    """Class for stream 2 function 15, New Equipment Constant Send
-
-    :param EAC: New values (0 = OK, 1 = One or more invalid, 2 = Busy, 3 = One or more out of range)
-    :type EAC: integer
-
-    **Example**::
-
-        >>> secsgem.secsS2F16("\\0")
-        2F16 {EAC: 0}
-
-    """
-    def __init__(self, EAC):
-        self.stream = 2
-        self.function = 16
-
-        self.EAC = secsVarBinary(EAC)
-
-    def __repr__(self):
-        return "2F16 {EAC: %s}" % (ord(self.EAC.value[0]))
-
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s2f16 = secsgem.secsS2F16("\0")
-            >>> secsgem.formatHex(s2f16.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.EAC)
-
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS2F16`
-
-        **Example**::
-
-            >>> secsgem.secsS2F16.decode(s2f16.encode())
-            2F16 {EAC: 0}
-
-        """
-        data = secsCoder.decode(text)
-        return secsS2F16(data)
-
-class secsS2F29:
-    def __init__(self, ECIDs):
-        self.stream = 2
-        self.function = 29
-
-        self.ECID = []
-        for ECID in ECIDs:
-            self.ECID.append(secsVarUINT4(ECID))
-
-    def __repr__(self):
-        return "S2F29 {ECID: '%s'}" % (self.ECID)
-
-    def encode(self):
-        return secsCoder.encode(self.ECID)
-
-    @staticmethod
-    def decode(text):
-        data = secsCoder.decode(text)
-
-        return secsS2F29(data)
-
-class secsS2F30:
-    def __init__(self, data):
-        self.stream = 2
-        self.function = 30
-
-        self.data = []
-        for item in data:
-            self.data.append([secsVarUINT4(item[0]), secsVarString(item[1]), secsVarString(item[2]), secsVarString(item[3]), secsVarString(item[4]), secsVarString(item[5])])
-
-    def __repr__(self):
-        data = "["
-        for item in self.data:
-            data += "[ECID: '%s', ECNAME: '%s',  ECMIN: '%s',  ECMAX: '%s',  ECDEF: '%s',  UNITS: '%s']" % (item[0], item[1], item[2], item[3], item[4], item[5])
-        data += "]"
-
-        return "S2F30 {data: %s}" % (data)
-
-    def encode(self):
-        return secsCoder.encode(self.data)
-
-    @staticmethod
-    def decode(text):
-        data = secsCoder.decode(text)
-
-        return secsS2F30(data)
-
-class secsS2F33:
-    def __init__(self, DATAID, reports):
-        self.stream = 2
-        self.function = 33
-
-        self.DATAID = secsVarUINT4(DATAID)
-        self.reports = []
-        for report in reports:
-            CEIDs = []
-
-            for CEID in report[1]:
-                CEIDs.append(secsVarUINT4(CEID))
-
-            self.reports.append([secsVarUINT4(report[0]), CEIDs])
-
-    def __repr__(self):
-        reports = "["
-        for report in self.reports:
-            CEIDs = "["
-            for CEID in report[1]:
-                CEIDs += "VID = %d," % (CEID.value)
-
-            CEIDs += "]"
-
-            reports += "[RPTID: '%d', %s]" % (report[0].value, CEIDs)
-        reports += "]"
-        return "2F33 {DATAID: '%s', %s}" % (self.DATAID.value, reports)
-
-    def encode(self):
-        return secsCoder.encode([self.DATAID, self.reports])
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS2F33(data[0], data[1][0], data[1][1])
-
-class secsS2F34:
-    def __init__(self, DRACK):
-        self.stream = 2
-        self.function = 34
-
-        self.DRACK = secsVarBinary(DRACK)
-
-    def __repr__(self):
-        return "2F34 {DRACK: '%d'}" % (ord(self.DRACK.value[0]))
-
-    def encode(self):
-        return secsCoder.encode(self.DRACK)
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        return secsS2F34(data[0])
-
-class secsS2F35:
-    def __init__(self, DATAID, CEIDs):
-        self.stream = 2
-        self.function = 35
-
-        self.DATAID = secsVarUINT4(DATAID)
-        self.CEIDs = []
-        for CEID in CEIDs:
-            RPTIDs = []
-
-            for RPTID in CEID[1]:
-                RPTIDs.append(secsVarUINT4(RPTID))
-
-            self.CEIDs.append([secsVarUINT4(CEID[0]), RPTIDs])
-
-    def __repr__(self):
-        CEIDs = "["
-        for CEID in self.CEIDs:
-            RPTIDs = "["
-            for RPTID in CEID[1]:
-                RPTIDs += "RPTID = %d," % (RPTID.value)
-
-            RPTIDs += "]"
-
-            CEIDs += "[CEID: '%d', %s]" % (CEID[0].value, RPTIDs)
-        CEIDs += "]"
-        return "2F35 {DATAID: '%s', %s}" % (self.DATAID.value, CEIDs)
-
-    def encode(self):
-        return secsCoder.encode([self.DATAID, self.CEIDs])
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS2F35(data[0], data[1][0], data[1][1])
-
-class secsS2F36:
-    def __init__(self, LRACK):
-        self.stream = 2
-        self.function = 36
-
-        self.LRACK = secsVarBinary(LRACK)
-
-    def __repr__(self):
-        return "2F36 {LRACK: '%d'}" % (ord(self.LRACK.value[0]))
-
-    def encode(self):
-        return secsCoder.encode(self.LRACK)
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        return secsS2F36(data[0])
-
-class secsS2F37:
-    def __init__(self, CEED, CEIDs):
-        self.stream = 2
-        self.function = 37
-
-        self.CEED = secsVarBoolean(CEED)
-        self.CEIDs = []
-        for CEID in CEIDs:
-            self.CEIDs.append(secsVarUINT4(CEID))
-
-    def __repr__(self):
-        CEIDs = "["
-        for CEID in self.CEIDs:
-            CEIDs += "CEID = %d," % (CEID.value)
-
-        CEIDs += "]"
-
-        return "2F37 {CEED: '%s', %s}" % (self.CEED.value, CEIDs)
-
-    def encode(self):
-        return secsCoder.encode([self.CEED, self.CEIDs])
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS2F37(data[0], data[1])
-
-class secsS2F38:
-    def __init__(self, ERACK):
-        self.stream = 2
-        self.function = 38
-
-        self.ERACK = secsVarBinary(ERACK)
-
-    def __repr__(self):
-        return "2F38 {ERACK: '%d'}" % (ord(self.ERACK.value[0]))
-
-    def encode(self):
-        return secsCoder.encode(self.ERACK)
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        return secsS2F38(data[0])
-
-class secsS2F41:
-    def __init__(self, RCMD, parameters):
-        self.stream = 2
-        self.function = 41
-
-        self.RCMD = secsVarString(str(RCMD))
-        self.parameters = []
-        for parameter in parameters:
-            self.parameters.append([secsVarString(str(parameter[0])), secsVarString(str(parameter[1]))])
-
-    def __repr__(self):
-        parameters = "["
-        for parameter in self.parameters:
-            parameters += "[RPTID: '%s', CPVAL: '%s']" % (parameter[0].value, parameter[1].value)
-        parameters += "]"
-        return "2F41 {RCMD: '%s', %s}" % (self.RCMD.value, parameters)
-
-    def encode(self):
-        return secsCoder.encode([self.RCMD, self.parameters])
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS2F41(data[0], data[1][0], data[1][1])
-
-class secsS2F42:
-    def __init__(self, HCACK, parameters):
-        self.stream = 2
-        self.function = 42
-
-        self.HCACK = HCACK
-        self.parameters = parameters
-
-    def __repr__(self):
-        return "2F42 {%s [%s]}" % (self.HCACK, self.parameters)
-
-    def encode(self):
-        return secsCoder.encode([self.HCACK, self.parameters])
-
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        return secsS2F42(data[0], data[1])
-
-class secsS5F0:
-    """Class for stream 5 function 0, Transaction Abort
-
-    **Example**::
-
-        >>> secsgem.secsS5F0()
-        S5F0 {}
-
-    """
-    def __init__(self):
-        self.stream = 5
-        self.function = 0
-        
-    def __repr__(self):
-        return "S5F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s5f0 = secsgem.secsS5F0()
-            >>> secsgem.formatHex(s5f0.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS5F0`
-
-        **Example**::
-
-            >>> secsgem.secsS5F0.decode(s5f0.encode())
-            S5F0 {}
-
-        """
-        return secsS5F0()
-
-class secsS5F1:
-    def __init__(self, ALCD, ALID, ALTX):
-        self.stream = 5
-        self.function = 1
-
-        self.ALCD = secsVarBinary(ALCD)
-        self.ALID = secsVarUINT4(ALID)
-        self.ALTX = secsVarString(ALTX)
-        
-    def __repr__(self):
-        return "S5F1 {ALCD: '%s', ALID: %d, ALTX: '%s'}" % (self.ALCD.value, self.ALID.value, self.ALTX.value)
-        
-    def encode(self):
-        return secsCoder.encode([self.ALCD, self.ALID, self.ALTX])
-    
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS5F1(data[0], data[1], data[2])
-
-class secsS5F2:
-    def __init__(self, ACKC5):
-        self.stream = 5
-        self.function = 2
-
-        self.ACKC5 = secsVarBinary(ACKC5)
-        
-    def __repr__(self):
-        return "S5F2 {ACKC5: '%s'}" % (self.ACKC5.value)
-        
-    def encode(self):
-        return secsCoder.encode(self.ACKC5)
-    
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS5F2(data[0])
-
-class secsS6F0:
-    """Class for stream 6 function 0, Transaction Abort
-
-    **Example**::
-
-        >>> secsgem.secsS6F0()
-        S6F0 {}
-
-    """
-    def __init__(self):
-        self.stream = 6
-        self.function = 0
-        
-    def __repr__(self):
-        return "S6F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s6f0 = secsgem.secsS6F0()
-            >>> secsgem.formatHex(s6f0.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS6F0`
-
-        **Example**::
-
-            >>> secsgem.secsS6F0.decode(s6f0.encode())
-            S6F0 {}
-
-        """
-        return secsS6F0()
-
-class secsS6F11:
-    def __init__(self, DATAID, CEID, reports = []):
-        self.stream = 6
-        self.function = 11
-
-        self.DATAID = secsVarUINT4(DATAID)
-        self.CEID = secsVarUINT4(CEID)
-
-        self.reports = reports
-        
-    def __repr__(self):
-        return "S6F11 {DATAID: %d, CEID: %d, %s}" % (self.DATAID.value, self.CEID.value, self.reports)
-            
-    def encode(self):
-        return secsCoder.encode([self.DATAID.value, self.CEID.value, self.reports])
-    
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS6F11(data[0], data[1], data[2])
-        
-class secsS6F12:
-    def __init__(self, ACKC6):
-        self.stream = 6
-        self.function = 12
-
-        self.ACKC6 = secsVarBinary(ACKC6)
-        
-    def __repr__(self):
-        return "S6F12 {ACKC6: '%s'}" % (self.ACKC6.value)
-        
-    def encode(self):
-        return secsCoder.encode(self.ACKC6)
-    
-    @staticmethod    
-    def decode(text):
-        data = secsCoder.decode(text)
-        
-        return secsS6F12(data[0])
-
-class secsS7F1:
-    """Class for stream 7 function 1, Process Program Load - Request.
-
-    :param PPID: process program id
-    :type PPID: string
-    :param LENGTH: program lenght
-    :type LENGTH: integer
-
-    **Example**::
-
-        >>> secsgem.secsS7F1("PROCESSPROGRAM1", 1024)
-        S7F1 {PPID: PROCESSPROGRAM1, LENGTH: 1024}
-
-    """
-
-    def __init__(self, PPID, LENGTH):
-        self.stream = 7
-        self.function = 1
-
-        self.PPID = secsVarString(PPID)
-        self.LENGTH = secsVarUINT4(LENGTH)
-        
-    def __repr__(self):
-        return "S7F1 {PPID: %s, LENGTH: %d}" % (self.PPID.value, self.LENGTH.value)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f1 = secsgem.secsS7F1("PROCESSPROGRAM1", 1024)
-            >>> secsgem.formatHex(s7f1.encode())
-            '01:02:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31:b1:04:00:00:04:00'
-
-        """
-        return secsCoder.encode([self.PPID, self.LENGTH])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F1`
-
-        **Example**::
-
-            >>> secsgem.secsS7F1.decode(s7f1.encode())
-            S7F1 {PPID: PROCESSPROGRAM1, LENGTH: 1024}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F1(data[0], data[1])
-
-class secsS7F2:
-    """Class for stream 7 function 2, Process Program Load - Response.
-
-    :param PPGND: process program grand
-    :type PPGND: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F2(0)
-        S7F2 {PPGND: 00}
-
-    """
-
-    def __init__(self, PPGND):
-        self.stream = 7
-        self.function = 2
-
-        self.PPGND = secsVarBinary(chr(PPGND))
-        
-    def __repr__(self):
-        return "S7F2 {PPGND: %s}" % (formatHex(self.PPGND.value))
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f2 = secsgem.secsS7F2(0)
-            >>> secsgem.formatHex(s7f2.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.PPGND)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F2`
-
-        **Example**::
-
-            >>> secsgem.secsS7F2.decode(s7f2.encode())
-            S7F2 {PPGND: 00}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F2(ord(data.value))
-
-class secsS7F3:
-    """Class for stream 7 function 3, Process Program Send - Request.
-
-    :param PPID: process program id
-    :type PPID: string
-    :param PPBODY: program program data
-    :type PPBODY: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F3("PROCESSPROGRAM1", "asdfg")
-        S7F3 {PPID: PROCESSPROGRAM1, PPBODY: asdfg}
-
-    """
-
-    def __init__(self, PPID, PPBODY):
-        self.stream = 7
-        self.function = 3
-
-        self.PPID = secsVarString(PPID)
-        self.PPBODY  = secsVarBinary(PPBODY)
-        
-    def __repr__(self):
-        return "S7F3 {PPID: %s, PPBODY: %s}" % (self.PPID.value, self.PPBODY.value)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f3 = secsgem.secsS7F3("PROCESSPROGRAM1", "asdfg")
-            >>> secsgem.formatHex(s7f3.encode())
-            '01:02:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31:21:05:61:73:64:66:67'
-
-        """
-        return secsCoder.encode([self.PPID, self.PPBODY])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F3`
-
-        **Example**::
-
-            >>> secsgem.secsS7F3.decode(s7f3.encode())
-            S7F3 {PPID: PROCESSPROGRAM1, PPBODY : asdfg}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F3(data[0], data[1])
-
-class secsS7F4:
-    """Class for stream 7 function 4, Process Program Send - Response.
-
-    :param ACKC7: stream 7 acknowledge code
-    :type ACKC7: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F4(0)
-        S7F4 {ACKC7: 00}
-
-    """
-
-    def __init__(self, ACKC7):
-        self.stream = 7
-        self.function = 4
-
-        self.ACKC7 = secsVarBinary(chr(ACKC7))
-        
-    def __repr__(self):
-        return "S7F4 {ACKC7: %s}" % (formatHex(self.ACKC7.value))
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f4 = secsgem.secsS7F4(0)
-            >>> secsgem.formatHex(s7f4.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.ACKC7)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F4`
-
-        **Example**::
-
-            >>> secsgem.secsS7F4.decode(s7f4.encode())
-            S7F4 {ACKC7: 00}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F4(ord(data.value))
-
-class secsS7F5:
-    """Class for stream 7 function 5, Process Program Receive - Request.
-
-    :param PPID: process program id
-    :type PPID: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F5("PROCESSPROGRAM1")
-        S7F5 {PPID: PROCESSPROGRAM1}
-
-    """
-
-    def __init__(self, PPID):
-        self.stream = 7
-        self.function = 5
-
-        self.PPID = secsVarString(PPID)
-        
-    def __repr__(self):
-        return "S7F5 {PPID: %s}" % (self.PPID.value)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f5 = secsgem.secsS7F5("PROCESSPROGRAM1")
-            >>> secsgem.formatHex(s7f5.encode())
-            '21:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31'
-
-        """
-        return secsCoder.encode(self.PPID)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F5`
-
-        **Example**::
-
-            >>> secsgem.secsS7F5.decode(s7f5.encode())
-            S7F5 {PPID: PROCESSPROGRAM1}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F5(data.value)
-
-class secsS7F6:
-    """Class for stream 7 function 6, Process Program Receive - Response.
-
-    :param PPID: process program id
-    :type PPID: string
-    :param PPBODY: program program data
-    :type PPBODY: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F6("PROCESSPROGRAM1", "asdfg")
-        S7F6 {PPID: PROCESSPROGRAM1, PPBODY: asdfg}
-
-    """
-
-    def __init__(self, PPID, PPBODY):
-        self.stream = 7
-        self.function = 6
-
-        self.PPID = secsVarString(PPID)
-        self.PPBODY  = secsVarBinary(PPBODY)
-        
-    def __repr__(self):
-        return "S7F6 {PPID: %s, PPBODY: %s}" % (self.PPID.value, self.PPBODY.value)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f6 = secsgem.secsS7F6("PROCESSPROGRAM1", "asdfg")
-            >>> secsgem.formatHex(s7f6.encode())
-            '01:02:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31:21:05:61:73:64:66:67'
-
-        """
-        return secsCoder.encode([self.PPID, self.PPBODY])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F6`
-
-        **Example**::
-
-            >>> secsgem.secsS7F6.decode(s7f6.encode())
-            S7F6 {PPID: PROCESSPROGRAM1, PPBODY: asdfg}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F6(data[0], data[1])
-
-class secsS7F17:
-    """Class for stream 7 function 17, Delete Process Program - Request.
-
-    :param PPIDs: process program ids
-    :type PPIDs: list
-
-    **Example**::
-
-        >>> secsgem.secsS7F17(["PROCESSPROGRAM1", "PROCESSPROGRAM2"])
-        S7F17 {PPIDs: [A PROCESSPROGRAM1, A PROCESSPROGRAM2]}
-
-    """
-
-    def __init__(self, PPIDs):
-        self.stream = 7
-        self.function = 17
-
-        self.PPIDs = []
-        for PPID in PPIDs:
-            self.PPIDs.append(secsVarString(PPID))
-        
-    def __repr__(self):
-        return "S7F17 {PPIDs: %s}" % (self.PPIDs)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f17 = secsgem.secsS7F17(["PROCESSPROGRAM1", "PROCESSPROGRAM2"])
-            >>> secsgem.formatHex(s7f17.encode())
-            '01:02:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:32'
-
-        """
-        return secsCoder.encode(self.PPIDs)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F17`
-
-        **Example**::
-
-            >>> secsgem.secsS7F17.decode(s7f17.encode())
-            S7F17 {PPIDs: [A PROCESSPROGRAM1, A PROCESSPROGRAM2]}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F17(data)
-
-class secsS7F18:
-    """Class for stream 7 function 18, Delete Process Program - Response.
-
-    :param ACKC7: stream 7 acknowledge code
-    :type ACKC7: string
-
-    **Example**::
-
-        >>> secsgem.secsS7F18(0)
-        S7F18 {ACKC7: 00}
-
-    """
-
-    def __init__(self, ACKC7):
-        self.stream = 7
-        self.function = 18
-
-        self.ACKC7 = secsVarBinary(chr(ACKC7))
-        
-    def __repr__(self):
-        return "S7F18 {ACKC7: %s}" % (formatHex(self.ACKC7.value))
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f18 = secsgem.secsS7F18(0)
-            >>> secsgem.formatHex(s7f18.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.ACKC7)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F18`
-
-        **Example**::
-
-            >>> secsgem.secsS7F18.decode(s7f18.encode())
-            S7F18 {ACKC7: 00}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F18(ord(data.value))
-
-class secsS7F19:
-    """Class for stream 7 function 19, Current Process Program Dir - Request
-
-    **Example**::
-
-        >>> secsgem.secsS7F19()
-        S7F19 {}
-
-    """
-    def __init__(self):
-        self.stream = 7
-        self.function = 19
-        
-    def __repr__(self):
-        return "S7F19 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f19 = secsgem.secsS7F19()
-            >>> secsgem.formatHex(s7f19.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F19`
-
-        **Example**::
-
-            >>> secsgem.secsS7F19.decode(s7f19.encode())
-            S7F19 {}
-
-        """
-        return secsS7F19()
-
-class secsS7F20:
-    """Class for stream 7 function 20, Current Process Program Dir - Response.
-
-    :param PPIDs: process program ids
-    :type PPIDs: list
-
-    **Example**::
-
-        >>> secsgem.secsS7F20(["PROCESSPROGRAM1", "PROCESSPROGRAM2"])
-        S7F20 {PPIDs: [A PROCESSPROGRAM1, A PROCESSPROGRAM2]}
-
-    """
-
-    def __init__(self, PPIDs):
-        self.stream = 7
-        self.function = 20
-
-        self.PPIDs = []
-        for PPID in PPIDs:
-            self.PPIDs.append(secsVarString(PPID))
-        
-    def __repr__(self):
-        return "S7F20 {PPIDs: %s}" % (self.PPIDs)
-            
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s7f20 = secsgem.secsS7F20(["PROCESSPROGRAM1", "PROCESSPROGRAM2"])
-            >>> secsgem.formatHex(s7f20.encode())
-            '01:02:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:31:41:0f:50:52:4f:43:45:53:53:50:52:4f:47:52:41:4d:32'
-
-        """
-        return secsCoder.encode(self.PPIDs)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS7F20`
-
-        **Example**::
-
-            >>> secsgem.secsS7F20.decode(s7f20.encode())
-            S7F20 {PPIDs: [A PROCESSPROGRAM1, A PROCESSPROGRAM2]}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS7F20(data)
-
-class secsS9F0:
-    """Class for stream 9 function 0, Transaction Abort
-
-    **Example**::
-
-        >>> secsgem.secsS9F0()
-        S9F0 {}
-
-    """
-    def __init__(self):
-        self.stream = 9
-        self.function = 0
-        
-    def __repr__(self):
-        return "S9F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f0 = secsgem.secsS9F0()
-            >>> secsgem.formatHex(s9f0.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F0`
-
-        **Example**::
-
-            >>> secsgem.secsS9F0.decode(s9f0.encode())
-            S9F0 {}
-
-        """
-        return secsS9F0()
-
-class secsS9F1:
-    """Class for stream 9 function 1, Unknown Device ID
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F1("\50\51\52\53\54\55\56\57\58\59")
-        S9F1 ERROR: Unrecognized Device ID {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 1
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F1 ERROR: Unrecognized Device ID {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f1 = secsgem.secsS9F1("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f1.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F1`
-
-        **Example**::
-
-            >>> secsgem.secsS9F1.decode(s9f1.encode())
-            S9F1 ERROR: Unrecognized Device ID {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F1(data)
-
-class secsS9F3:
-    """Class for stream 9 function 3, Unknown Stream
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F3("\50\51\52\53\54\55\56\57\58\59")
-        S9F3 ERROR: Unrecognized Stream Type {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 3
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F3 ERROR: Unrecognized Stream Type {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f3 = secsgem.secsS9F3("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f3.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F3`
-
-        **Example**::
-
-            >>> secsgem.secsS9F3.decode(s9f3.encode())
-            S9F3 ERROR: Unrecognized Stream Type {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F3(data)
-
-class secsS9F5:
-    """Class for stream 9 function 5, Unknown Function
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F5("\50\51\52\53\54\55\56\57\58\59")
-        S9F5 ERROR: Unrecognized Function Type {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 5
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F5 ERROR: Unrecognized Function Type {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f5 = secsgem.secsS9F5("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f5.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F5`
-
-        **Example**::
-
-            >>> secsgem.secsS9F5.decode(s9f5.encode())
-            S9F5 ERROR: Unrecognized Function Type {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F5(data)
-
-class secsS9F7:
-    """Class for stream 9 function 7, Illegal Data
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F7("\50\51\52\53\54\55\56\57\58\59")
-        S9F7 ERROR: Illegal Data {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 7
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F7 ERROR: Illegal Data {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f7 = secsgem.secsS9F7("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f7.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F7`
-
-        **Example**::
-
-            >>> secsgem.secsS9F7.decode(s9f7.encode())
-            S9F7 ERROR: Illegal Data {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F7(data)
-
-class secsS9F9:
-    """Class for stream 9 function 9, Transaction Timeout
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F9("\50\51\52\53\54\55\56\57\58\59")
-        S9F9 ERROR: Transaction Timer Time-out {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 9
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F9 ERROR: Transaction Timer Time-out {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f9 = secsgem.secsS9F9("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f9.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F9`
-
-        **Example**::
-
-            >>> secsgem.secsS9F9.decode(s9f9.encode())
-            S9F9 ERROR: Transaction Timer Time-out {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F9(data)
-
-class secsS9F11:
-    """Class for stream 9 function 11, Data Too Long
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F11("\50\51\52\53\54\55\56\57\58\59")
-        S9F11 ERROR: Data Too Long {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 11
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F11 ERROR: Data Too Long {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f11 = secsgem.secsS9F11("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f11.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F11`
-
-        **Example**::
-
-            >>> secsgem.secsS9F11.decode(s9f11.encode())
-            S9F11 ERROR: Data Too Long {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F11(data)
-
-class secsS9F13:
-    """Class for stream 9 function 13, Conversation Timeout
-
-    :param MHEAD: The header for the rejected message
-    :type MHEAD: string[10]
-
-    **Example**::
-
-        >>> secsgem.secsS9F13("\50\51\52\53\54\55\56\57\58\59")
-        S9F13 ERROR: Inter Block Time-out {MHEAD: '()*+,-./89'}
-
-    """
-    def __init__(self, MHEAD):
-        self.stream = 9
-        self.function = 13
-
-        self.MHEAD = secsVarBinary(MHEAD)
-        
-    def __repr__(self):
-        return "S9F13 ERROR: Inter Block Time-out {MHEAD: '%s'}" % (self.MHEAD.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s9f13 = secsgem.secsS9F13("\50\51\52\53\54\55\56\57\58\59")
-            >>> secsgem.formatHex(s9f13.encode())
-            '21:0c:28:29:2a:2b:2c:2d:2e:2f:05:38:05:39'
-
-        """
-        return secsCoder.encode(self.MHEAD)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS9F13`
-
-        **Example**::
-
-            >>> secsgem.secsS9F13.decode(s9f13.encode())
-            S9F13 ERROR: Inter Block Time-out {MHEAD: '()*+,-./89'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS9F13(data)
-
-class secsS10F0:
-    """Class for stream 10 function 0, Transaction Abort
-
-    **Example**::
-
-        >>> secsgem.secsS10F0()
-        S10F0 {}
-
-    """
-    def __init__(self):
-        self.stream = 10
-        self.function = 0
-        
-    def __repr__(self):
-        return "S10F0 {}"
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s10f0 = secsgem.secsS10F0()
-            >>> secsgem.formatHex(s10f0.encode())
-            ''
-
-        """
-        return secsCoder.encode(None)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS10F0`
-
-        **Example**::
-
-            >>> secsgem.secsS10F0.decode(s10f0.encode())
-            S10F0 {}
-
-        """
-        return secsS10F0()
-
-class secsS10F1:
-    """Class for stream 10 function 1, Terminal - Request
-
-    :param TID: terminal id
-    :type TID: integer
-    :param TEXT: text for terminal
-    :type TEXT: string
-
-    **Example**::
-
-        >>> secsgem.secsS10F1(1, "Message")
-        S10F1 {TID: 1, TEXT: 'Message'}
-
-    """
-    def __init__(self, TID, TEXT):
-        self.stream = 10
-        self.function = 1
-
-        self.TID = secsVarBinary(chr(TID))
-        self.TEXT = secsVarString(TEXT)
-        
-    def __repr__(self):
-        return "S10F1 {TID: %d, TEXT: '%s'}" % (ord(self.TID.value[0]), self.TEXT.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s10f1 = secsgem.secsS10F1(1, "Message")
-            >>> secsgem.formatHex(s10f1.encode())
-            '01:02:21:01:01:41:07:4d:65:73:73:61:67:65'
-
-        """
-        return secsCoder.encode([self.TID, self.TEXT])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS10F1`
-
-        **Example**::
-
-            >>> secsgem.secsS10F1.decode(s10f1.encode())
-            S10F1 {TID: 1, TEXT: 'Message'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS10F1(ord(data[0].value[0]), data[1])
-
-class secsS10F2:
-    """Class for stream 10 function 2, Terminal - Response
-
-    :param ACKC10: Reply code (0 = OK, 1 = Not Displayed, 2 = No Terminal)
-    :type ACKC10: integer
-
-    **Example**::
-
-        >>> secsgem.secsS10F2(0)
-        S10F2 {ACKC10: '0'}
-
-    """
-    def __init__(self, ACKC10):
-        self.stream = 10
-        self.function = 2
-
-        self.ACKC10 = secsVarBinary(chr(ACKC10))
-        
-    def __repr__(self):
-        return "S10F2 {ACKC10: %d}" % (ord(self.ACKC10.value[0]))
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s10f2 = secsgem.secsS10F2(0)
-            >>> secsgem.formatHex(s10f2.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.ACKC10)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS10F2`
-
-        **Example**::
-
-            >>> secsgem.secsS10F2.decode(s10f2.encode())
-            S10F2 {ACKC10: 0}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS10F2(ord(data.value[0]))
-
-class secsS10F3:
-    """Class for stream 10 function 3, Terminal Display - Request
-
-    :param TID: terminal id
-    :type TID: integer
-    :param TEXT: text for terminal
-    :type TEXT: string
-
-    **Example**::
-
-        >>> secsgem.secsS10F3(1, "Message")
-        S10F3 {TID: 1, TEXT: 'Message'}
-
-    """
-    def __init__(self, TID, TEXT):
-        self.stream = 10
-        self.function = 3
-
-        self.TID = secsVarBinary(chr(TID))
-        self.TEXT = secsVarString(TEXT)
-        
-    def __repr__(self):
-        return "S10F3 {TID: %d, TEXT: '%s'}" % (ord(self.TID.value[0]), self.TEXT.value)
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s10f3 = secsgem.secsS10F3(1, "Message")
-            >>> secsgem.formatHex(s10f3.encode())
-            '01:02:21:01:01:41:07:4d:65:73:73:61:67:65'
-
-        """
-        return secsCoder.encode([self.TID, self.TEXT])
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS10F3`
-
-        **Example**::
-
-            >>> secsgem.secsS10F3.decode(s10f3.encode())
-            S10F3 {TID: 1, TEXT: 'Message'}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS10F3(ord(data[0].value[0]), data[1])
-
-class secsS10F4:
-    """Class for stream 10 function 4, Terminal Display - Response
-
-    :param ACKC10: Reply code (0 = OK, 1 = Not Displayed, 2 = No Terminal)
-    :type ACKC10: integer
-
-    **Example**::
-
-        >>> secsgem.secsS10F4(0)
-        S10F4 {ACKC10: '0'}
-
-    """
-    def __init__(self, ACKC10):
-        self.stream = 10
-        self.function = 4
-
-        self.ACKC10 = secsVarBinary(chr(ACKC10))
-        
-    def __repr__(self):
-        return "S10F4 {ACKC10: %d}" % (ord(self.ACKC10.value[0]))
-        
-    def encode(self):
-        """Encode the class data to byte array.
-
-        :returns: data byte array
-        :rtype: string
-
-        **Example**::
-
-            >>> s10f4 = secsgem.secsS10F4(0)
-            >>> secsgem.formatHex(s10f4.encode())
-            '21:01:00'
-
-        """
-        return secsCoder.encode(self.ACKC10)
-    
-    @staticmethod    
-    def decode(text):
-        """Create object from byte array
-
-        :param text: data byte array
-        :type text: string
-        :returns: stream and function object
-        :rtype: :class:`secsgem.secsFunctions.secsS10F4`
-
-        **Example**::
-
-            >>> secsgem.secsS10F4.decode(s10f4.encode())
-            S10F4 {ACKC10: 0}
-
-        """
-        data = secsCoder.decode(text)
-        
-        return secsS10F4(ord(data.value[0]))
-
-secsStreamsFunctions = {
+secsStreamsFunctionsHost = {
      0:     {
-         0: secsS0F0,
+         0: secsS00F00,
         },
      1:     {
-         0: secsS1F0,
-         1: secsS1F1,
-         2: secsS1F2,
-         3: secsS1F3,
-         4: secsS1F4,
-        11: secsS1F11,
-        12: secsS1F12,
-        13: secsS1F13,
-        14: secsS1F14,
+         0: secsS01F00,
+         1: secsS01F01,
+         2: secsS01F02H,
+         3: secsS01F03,
+         4: secsS01F04,
+        11: secsS01F11,
+        12: secsS01F12,
+        13: secsS01F13H,
+        14: secsS01F14H,
         },
      2:     {
-         0: secsS2F0,
-        13: secsS2F13,
-        14: secsS2F14,
-        15: secsS2F15,
-        16: secsS2F16,
-        29: secsS2F29,
-        30: secsS2F30,
-        33: secsS2F33,
-        34: secsS2F34,
-        35: secsS2F35,
-        36: secsS2F36,
-        37: secsS2F37,
-        38: secsS2F38,
-        41: secsS2F41,
-        42: secsS2F42,
+         0: secsS02F00,
+        13: secsS02F13,
+        14: secsS02F14,
+        15: secsS02F15,
+        16: secsS02F16,
+        29: secsS02F29,
+        30: secsS02F30,
+        33: secsS02F33,
+        34: secsS02F34,
+        35: secsS02F35,
+        36: secsS02F36,
+        37: secsS02F37,
+        38: secsS02F38,
+        41: secsS02F41,
+        42: secsS02F42,
         },
      5:    {
-         0: secsS5F0,
-         1: secsS5F1,
-         2: secsS5F2,
+         0: secsS05F00,
+         1: secsS05F01,
+         2: secsS05F02,
         },
      6:    {
-         0: secsS6F0,
-        11: secsS6F11,
-        12: secsS6F12,
+         0: secsS06F00,
+        11: secsS06F11,
+        12: secsS06F12,
         },
      7:    {
-         1: secsS7F1,
-         2: secsS7F2,
-         3: secsS7F3,
-         4: secsS7F4,
-         5: secsS7F5,
-         6: secsS7F6,
-        17: secsS7F17,
-        18: secsS7F18,
-        19: secsS7F19,
-        20: secsS7F20,
+         1: secsS07F01,
+         2: secsS07F02,
+         3: secsS07F03,
+         4: secsS07F04,
+         5: secsS07F05,
+         6: secsS07F06,
+        17: secsS07F17,
+        18: secsS07F18,
+        19: secsS07F19,
+        20: secsS07F20,
         },
      9:    {
-         0: secsS9F0,
-         1: secsS9F1,
-         3: secsS9F3,
-         5: secsS9F5,
-         7: secsS9F7,
-         9: secsS9F9,
-        11: secsS9F11,
-        13: secsS9F13,
+         0: secsS09F00,
+         1: secsS09F01,
+         3: secsS09F03,
+         5: secsS09F05,
+         7: secsS09F07,
+         9: secsS09F09,
+        11: secsS09F11,
+        13: secsS09F13,
         },
     10:    {
-         0: secsS10F0,
-         1: secsS10F1,
-         2: secsS10F2,
-         3: secsS10F3,
-         4: secsS10F4,
+         0: secsS10F00,
+         1: secsS10F01,
+         2: secsS10F02,
+         3: secsS10F03,
+         4: secsS10F04,
         },
 }
 
-def secsDecode(packet):
+secsStreamsFunctionsEquipment = {
+     0:     {
+         0: secsS00F00,
+        },
+     1:     {
+         0: secsS01F00,
+         1: secsS01F01,
+         2: secsS01F02E,
+         3: secsS01F03,
+         4: secsS01F04,
+        11: secsS01F11,
+        12: secsS01F12,
+        13: secsS01F13E,
+        14: secsS01F14E,
+        },
+     2:     {
+         0: secsS02F00,
+        13: secsS02F13,
+        14: secsS02F14,
+        15: secsS02F15,
+        16: secsS02F16,
+        29: secsS02F29,
+        30: secsS02F30,
+        33: secsS02F33,
+        34: secsS02F34,
+        35: secsS02F35,
+        36: secsS02F36,
+        37: secsS02F37,
+        38: secsS02F38,
+        41: secsS02F41,
+        42: secsS02F42,
+        },
+     5:    {
+         0: secsS05F00,
+         1: secsS05F01,
+         2: secsS05F02,
+        },
+     6:    {
+         0: secsS06F00,
+        11: secsS06F11,
+        12: secsS06F12,
+        },
+     7:    {
+         1: secsS07F01,
+         2: secsS07F02,
+         3: secsS07F03,
+         4: secsS07F04,
+         5: secsS07F05,
+         6: secsS07F06,
+        17: secsS07F17,
+        18: secsS07F18,
+        19: secsS07F19,
+        20: secsS07F20,
+        },
+     9:    {
+         0: secsS09F00,
+         1: secsS09F01,
+         3: secsS09F03,
+         5: secsS09F05,
+         7: secsS09F07,
+         9: secsS09F09,
+        11: secsS09F11,
+        13: secsS09F13,
+        },
+    10:    {
+         0: secsS10F00,
+         1: secsS10F01,
+         2: secsS10F02,
+         3: secsS10F03,
+         4: secsS10F04,
+        },
+}
+
+def secsDecode(packet, host=False):
     """Get object of decoded stream and function class, or None if no class is available.
 
     :param packet: packet to get object for
     :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+    :param host: decode packet comming from host
+    :type host: boolean
     :return: matching stream and function object
     :rtype: secsSxFx object
     """
+    if host:
+        secsStreamsFunctions = secsStreamsFunctionsHost
+    else:
+        secsStreamsFunctions = secsStreamsFunctionsEquipment
+
     if not packet.header.stream in secsStreamsFunctions:
         logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
         return None
@@ -2636,5 +641,6 @@ def secsDecode(packet):
             logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
         else:
-            return secsStreamsFunctions[packet.header.stream][packet.header.function].decode(packet.data)
-
+            function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
+            function.decode(packet.data)
+            return function

@@ -18,7 +18,9 @@
 from hsmsHandler import *
 from hsmsPackets import *
 
-from secsFunctions import *
+import secsFunctions
+
+import copy
 
 class secsDefaultHandler(hsmsDefaultHandler):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
@@ -75,18 +77,22 @@ class secsDefaultHandler(hsmsDefaultHandler):
     :type CEID: list of integers
     """
 
+    secsStreamsFunctionsHost = copy.deepcopy(secsFunctions.secsStreamsFunctionsHost)
+    secsStreamsFunctionsEquipment = copy.deepcopy(secsFunctions.secsStreamsFunctionsEquipment)
+
     def __init__(self, address, port, active, sessionID, name, eventHandler=None):
         hsmsDefaultHandler.__init__(self, address, port, active, sessionID, name, eventHandler)
+        self.isHost = True
 
     def disableCEIDs(self):
         """Disable all Collection Events.
         """
-        return self.connection.sendAndWaitForResponse(secsS2F37(False, []))
+        return self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": False, "CEID":[]}))
 
     def disableCEIDReports(self):
         """Disable all Collection Event Reports.
         """
-        return self.connection.sendAndWaitForResponse(secsS2F33(0, []))
+        return self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": []}))
 
     def listSVs(self):
         """Get list of available Service Variables.
@@ -94,9 +100,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: available Service Variables
         :rtype: list
         """
-        packet = self.connection.sendAndWaitForResponse(secsS1F11([]))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(1, 11)([]))
 
-        return secsDecode(packet).data
+        return self.secsDecode(packet)
 
     def requestSVs(self, SVs):
         """Request contents of supplied Service Variables.
@@ -106,9 +112,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: values of requested Service Variables
         :rtype: list
         """
-        packet = self.connection.sendAndWaitForResponse(secsS1F3(SVs))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(1, 3)(SVs))
 
-        return secsDecode(packet).SV
+        return self.secsDecode(packet)
 
     def requestSV(self, SV):
         """Request contents of one Service Variable.
@@ -126,9 +132,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: available Equipment Constants
         :rtype: list
         """
-        packet = self.connection.sendAndWaitForResponse(secsS2F29([]))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 29)([]))
 
-        return secsDecode(packet).data
+        return self.secsDecode(packet)
 
     def requestECs(self, ECs):
         """Request contents of supplied Equipment Constants.
@@ -138,9 +144,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: values of requested Equipment Constants
         :rtype: list
         """
-        packet = self.connection.sendAndWaitForResponse(secsS2F13(ECs))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 13)(ECs))
 
-        return secsDecode(packet).ECVs
+        return self.secsDecode(packet)
 
     def requestEC(self, EC):
         """Request contents of one Equipment Constant.
@@ -150,7 +156,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :returns: value of requested Equipment Constant
         :rtype: various
         """
-        return self.requestECs([EC])[0]
+        return self.requestECs([EC])
 
     def setECs(self, ECs):
         """Set contents of supplied Equipment Constants.
@@ -158,9 +164,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :param ECs: list containing list of id / value pairs
         :type ECs: list
         """
-        packet = self.connection.sendAndWaitForResponse(secsS2F15(ECs))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 15)(ECs))
 
-        return secsDecode(packet).EAC
+        return self.secsDecode(packet).get()
 
     def setEC(self, EC, value):
         """Set contents of one Equipment Constant.
@@ -180,7 +186,7 @@ class secsDefaultHandler(hsmsDefaultHandler):
         :param value: text to send
         :type value: string
         """
-        return self.connection.sendAndWaitForResponse(secsS10F3(terminalID, text))
+        return self.connection.sendAndWaitForResponse(self.streamFunction(10, 3)({"TID": terminalID, "TEXT": text}))
 
     def getCEIDName(self, ceid):
         """Get the name of a collection event
@@ -212,4 +218,56 @@ class secsDefaultHandler(hsmsDefaultHandler):
 
     def areYouThere(self):
         """Check if remote is still replying"""
-        packet = self.connection.sendAndWaitForResponse(secsS1F1())
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(1, 1)())
+
+    def streamFunction(self, stream, function):
+        """Get class for stream and function 
+
+        :param stream: stream to get function for
+        :type stream: int
+        :param function: function to get
+        :type function: int
+        :return: matching stream and function class
+        :rtype: secsSxFx class
+        """
+        if self.isHost:
+            secsStreamsFunctions = self.secsStreamsFunctionsHost
+        else:
+            secsStreamsFunctions = self.secsStreamsFunctionsEquipment
+
+        if not stream in secsStreamsFunctions:
+            logging.warning("unknown function S%02dF%02d", stream, function)
+            return None
+        else:
+            if not function in secsStreamsFunctions[stream]:
+                logging.warning("unknown function S%02dF%02d", stream, function)
+                return None
+            else:
+                return secsStreamsFunctions[stream][function]
+
+    def secsDecode(self, packet):
+        """Get object of decoded stream and function class, or None if no class is available.
+
+        :param packet: packet to get object for
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :return: matching stream and function object
+        :rtype: secsSxFx object
+        """
+        if self.isHost:
+            secsStreamsFunctions = self.secsStreamsFunctionsEquipment
+        else:
+            secsStreamsFunctions = self.secsStreamsFunctionsHost
+
+        if not packet.header.stream in secsStreamsFunctions:
+            logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
+            return None
+        else:
+            if not packet.header.function in secsStreamsFunctions[packet.header.stream]:
+                logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
+                return None
+            else:
+                logging.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
+                function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
+                function.decode(packet.data)
+                logging.debug("decoded {}".format(function))
+                return function
