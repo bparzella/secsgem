@@ -617,30 +617,3 @@ secsStreamsFunctionsEquipment = {
          4: secsS10F04,
         },
 }
-
-def secsDecode(packet, host=False):
-    """Get object of decoded stream and function class, or None if no class is available.
-
-    :param packet: packet to get object for
-    :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
-    :param host: decode packet comming from host
-    :type host: boolean
-    :return: matching stream and function object
-    :rtype: secsSxFx object
-    """
-    if host:
-        secsStreamsFunctions = secsStreamsFunctionsHost
-    else:
-        secsStreamsFunctions = secsStreamsFunctionsEquipment
-
-    if not packet.header.stream in secsStreamsFunctions:
-        logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-        return None
-    else:
-        if not packet.header.function in secsStreamsFunctions[packet.header.stream]:
-            logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-            return None
-        else:
-            _function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
-            function.decode(packet.data)
-            return function
