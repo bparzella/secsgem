@@ -9,6 +9,7 @@ Submodules
    secsgem.hsmsConnections
    secsgem.hsmsHandler
    secsgem.hsmsPackets
+   secsgem.secsFunctionBase
    secsgem.secsFunctions
    secsgem.secsHandler
    secsgem.secsVariables

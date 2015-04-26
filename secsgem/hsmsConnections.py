@@ -547,7 +547,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         :returns: Packet that was received
         :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        outPacket = hsmsPacket(hsmsStreamFunctionHeader(self.getNextSystemCounter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        outPacket = hsmsPacket(hsmsStreamFunctionHeader(self.getNextSystemCounter(), packet._stream, packet._function, True, self.sessionID), packet.encode())
         self.sendPacket(outPacket)
         
         return self.waitforSystem(outPacket.header.system)
@@ -560,7 +560,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         :param system: system to reply to
         :type system: integer
         """
-        outPacket = hsmsPacket(hsmsStreamFunctionHeader(system, packet.stream, packet.function, False, self.sessionID), packet.encode())
+        outPacket = hsmsPacket(hsmsStreamFunctionHeader(system, packet._stream, packet._function, False, self.sessionID), packet.encode())
         self.sendPacket(outPacket)
 
     def sendSelectReq(self):

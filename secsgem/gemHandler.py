@@ -146,7 +146,7 @@ class gemDefaultHandler(secsDefaultHandler):
 
         self.communicationState = gemCommunicationState.WAIT_CRA
 
-        if function.stream == 1 and function.function == 14:
+        if function._stream == 1 and function._function == 14:
             return function.COMMACK
         else:
             print "establishCommunication unknown response " + function
@@ -291,7 +291,7 @@ class gemDefaultHandler(secsDefaultHandler):
 
             print values
 
-            data = {"ceid": message.CEID.value, "rptid": report[0].value, "values": values, "name": self.getCEIDName(message.CEID.value), "connection": self.connection, 'peer': self}
+            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.getCEIDName(message.CEID), "connection": self.connection, 'peer': self}
             self.fireEvent("CollectionEventReceived", data)
 
         connection.sendResponse(self.streamFunction(6, 12)(0), packet.header.system)

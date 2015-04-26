@@ -18,20 +18,22 @@
 from secsVariables import secsVarList, secsVarArray
 
 class secsStreamFunction(object):
-    stream = 0
-    function = 0
+    _stream = 0
+    _function = 0
+
+    _formatDescriptor = None
 
     def __init__(self, value=None):
-        if self.formatDescriptor == None:
+        if self._formatDescriptor == None:
             self.__dict__["format"] = None
         else:
-            self.__dict__["format"] = self.formatDescriptor.clone()
+            self.__dict__["format"] = self._formatDescriptor.clone()
 
         if not value == None and not self.format == None:
             self.format.set(value)
 
     def __repr__(self):
-        function = "S{0}F{1}".format(self.stream, self.function)
+        function = "S{0}F{1}".format(self._stream, self._function)
         data = "{{ {} }}".format(self.format.__repr__())
         return "{} {}".format(function, data)
 

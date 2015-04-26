@@ -21,86 +21,86 @@ from secsFunctionBase import secsStreamFunction
 from secsVariables import secsVarList, secsVarArray, secsVarString, secsVarBinary, secsVarU4, secsVarBoolean, secsVarDynamic
 
 class secsS00F00(secsStreamFunction):
-    stream = 0
-    function = 0
+    _stream = 0
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS01F00(secsStreamFunction):
-    stream = 1
-    function = 0
+    _stream = 1
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS01F01(secsStreamFunction):
-    stream = 1
-    function = 1
+    _stream = 1
+    _function = 1
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS01F02E(secsStreamFunction):
-    stream = 1
-    function = 2
+    _stream = 1
+    _function = 2
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
                         ("SOFTREV", secsVarString(20)),
                         )), 2)
 
 class secsS01F02H(secsStreamFunction):
-    stream = 1
-    function = 2
+    _stream = 1
+    _function = 2
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS01F03(secsStreamFunction):
-    stream = 1
-    function = 3
+    _stream = 1
+    _function = 3
 
-    formatDescriptor = secsVarArray(secsVarU4(1))
+    _formatDescriptor = secsVarArray(secsVarU4(1))
 
 class secsS01F04(secsStreamFunction):
-    stream = 1
-    function = 4
+    _stream = 1
+    _function = 4
 
-    formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
+    _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
 class secsS01F11(secsStreamFunction):
-    stream = 1
-    function = 11
+    _stream = 1
+    _function = 11
 
-    formatDescriptor = secsVarArray(secsVarU4(1))
+    _formatDescriptor = secsVarArray(secsVarU4(1))
 
 class secsS01F12(secsStreamFunction):
-    stream = 1
-    function = 12
+    _stream = 1
+    _function = 12
 
-    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+    _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("SVID", secsVarU4(1)),
                         ("SVNAME", secsVarString()),
                         ("UNITS", secsVarString()),
                         )), 3))
 
 class secsS01F13E(secsStreamFunction):
-    stream = 1
-    function = 13
+    _stream = 1
+    _function = 13
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
                         ("SOFTREV", secsVarString(20)),
                         )), 2)
 
 class secsS01F13H(secsStreamFunction):
-    stream = 1
-    function = 13
+    _stream = 1
+    _function = 13
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS01F14E(secsStreamFunction):
-    stream = 1
-    function = 14
+    _stream = 1
+    _function = 14
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
                             ("DATA", secsVarList(OrderedDict((
                                 ("MDLN", secsVarString(20)),
@@ -109,59 +109,59 @@ class secsS01F14E(secsStreamFunction):
                         )), 2)
 
 class secsS01F14H(secsStreamFunction):
-    stream = 1
-    function = 14
+    _stream = 1
+    _function = 14
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
                             ("DATA", secsVarList([], 0))
                         )), 2)
 
 class secsS02F00(secsStreamFunction):
-    stream = 2
-    function = 0
+    _stream = 2
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS02F13(secsStreamFunction):
-    stream = 2
-    function = 13
+    _stream = 2
+    _function = 13
 
-    formatDescriptor = secsVarArray(secsVarU4(1))
+    _formatDescriptor = secsVarArray(secsVarU4(1))
 
 
 class secsS02F14(secsStreamFunction):
-    stream = 2
-    function = 14
+    _stream = 2
+    _function = 14
 
-    formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
+    _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
 class secsS02F15(secsStreamFunction):
-    stream = 2
-    function = 15
+    _stream = 2
+    _function = 15
 
-    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+    _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
                         ("ECV", secsVarDynamic(secsVarString)),
                         )), 2))
 
 class secsS02F16(secsStreamFunction):
-    stream = 2
-    function = 16
+    _stream = 2
+    _function = 16
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS02F29(secsStreamFunction):
-    stream = 2
-    function = 29
+    _stream = 2
+    _function = 29
 
-    formatDescriptor = secsVarArray(secsVarU4(1))
+    _formatDescriptor = secsVarArray(secsVarU4(1))
 
 class secsS02F30(secsStreamFunction):
-    stream = 2
-    function = 30
+    _stream = 2
+    _function = 30
 
-    formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+    _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
                         ("ECNAME", secsVarString()),
                         ("ECMIN", secsVarDynamic(secsVarString)),
@@ -171,10 +171,10 @@ class secsS02F30(secsStreamFunction):
                         )), 6))
 
 class secsS02F33(secsStreamFunction):
-    stream = 2
-    function = 33
+    _stream = 2
+    _function = 33
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
                         ("DATA", secsVarArray(
                             secsVarList(OrderedDict((
@@ -187,16 +187,16 @@ class secsS02F33(secsStreamFunction):
                         )), 2)
 
 class secsS02F34(secsStreamFunction):
-    stream = 2
-    function = 34
+    _stream = 2
+    _function = 34
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS02F35(secsStreamFunction):
-    stream = 2
-    function = 35
+    _stream = 2
+    _function = 35
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
                         ("DATA", secsVarArray(
                             secsVarList(OrderedDict((
@@ -209,16 +209,16 @@ class secsS02F35(secsStreamFunction):
                         )), 2)
 
 class secsS02F36(secsStreamFunction):
-    stream = 2
-    function = 36
+    _stream = 2
+    _function = 36
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS02F37(secsStreamFunction):
-    stream = 2
-    function = 37
+    _stream = 2
+    _function = 37
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("CEED", secsVarBoolean(1)),
                         ("CEID", secsVarArray(
                             secsVarU4(1)
@@ -226,16 +226,16 @@ class secsS02F37(secsStreamFunction):
                         )), 2)
 
 class secsS02F38(secsStreamFunction):
-    stream = 2
-    function = 38
+    _stream = 2
+    _function = 38
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS02F41(secsStreamFunction):
-    stream = 2
-    function = 41
+    _stream = 2
+    _function = 41
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("RCMD", secsVarString()),
                         ("PARAMS", secsVarArray(
                             secsVarList(OrderedDict((
@@ -246,10 +246,10 @@ class secsS02F41(secsStreamFunction):
                         )), 2)
 
 class secsS02F42(secsStreamFunction):
-    stream = 2
-    function = 42
+    _stream = 2
+    _function = 42
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("HCACK", secsVarBinary(1)),
                         ("PARAMS", secsVarArray(
                             secsVarList(OrderedDict((
@@ -260,217 +260,217 @@ class secsS02F42(secsStreamFunction):
                         )), 2)
 
 class secsS05F00(secsStreamFunction):
-    stream = 5
-    function = 0
+    _stream = 5
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS05F01(secsStreamFunction):
-    stream = 5
-    function = 1
+    _stream = 5
+    _function = 1
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("ALCD", secsVarBinary(1)),
                         ("ALID", secsVarU4(1)),
                         ("ALTX", secsVarString(120)),
                         )), 3)
 
 class secsS05F02(secsStreamFunction):
-    stream = 5
-    function = 2
+    _stream = 5
+    _function = 2
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS06F00(secsStreamFunction):
-    stream = 6
-    function = 0
+    _stream = 6
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS06F11(secsStreamFunction):
-    stream = 6
-    function = 11
+    _stream = 6
+    _function = 11
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
                         ("CEID", secsVarU4(1)),
                         ("RPT", secsVarArray(
                             secsVarList(OrderedDict((
                                 ("RPTID", secsVarU4(1)),
                                 ("V", secsVarArray(
-                                    secsVarString()
+                                    secsVarDynamic(secsVarString)
                                 )),
                             )), 2)
                         )),
                         )), 3)
 
 class secsS06F12(secsStreamFunction):
-    stream = 6
-    function = 12
+    _stream = 6
+    _function = 12
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS07F00(secsStreamFunction):
-    stream = 7
-    function = 0
+    _stream = 7
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS07F01(secsStreamFunction):
-    stream = 7
-    function = 1
+    _stream = 7
+    _function = 1
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
                         ("LENGTH", secsVarU4(1)),
                         )), 2)
 
 class secsS07F02(secsStreamFunction):
-    stream = 7
-    function = 2
+    _stream = 7
+    _function = 2
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS07F03(secsStreamFunction):
-    stream = 7
-    function = 3
+    _stream = 7
+    _function = 3
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
                         ("PPBODY", secsVarBinary()),
                         )), 2)
 
 class secsS07F04(secsStreamFunction):
-    stream = 7
-    function = 4
+    _stream = 7
+    _function = 4
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS07F05(secsStreamFunction):
-    stream = 7
-    function = 5
+    _stream = 7
+    _function = 5
 
-    formatDescriptor = secsVarString()
+    _formatDescriptor = secsVarString()
 
 class secsS07F06(secsStreamFunction):
-    stream = 7
-    function = 6
+    _stream = 7
+    _function = 6
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
                         ("PPBODY", secsVarBinary()),
                         )), 2)
 
 class secsS07F17(secsStreamFunction):
-    stream = 7
-    function = 17
+    _stream = 7
+    _function = 17
 
-    formatDescriptor = secsVarArray(secsVarString())
+    _formatDescriptor = secsVarArray(secsVarString())
 
 class secsS07F18(secsStreamFunction):
-    stream = 7
-    function = 18
+    _stream = 7
+    _function = 18
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS07F19(secsStreamFunction):
-    stream = 7
-    function = 19
+    _stream = 7
+    _function = 19
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS07F20(secsStreamFunction):
-    stream = 7
-    function = 20
+    _stream = 7
+    _function = 20
 
-    formatDescriptor = secsVarArray(secsVarString())
+    _formatDescriptor = secsVarArray(secsVarString())
 
 class secsS09F00(secsStreamFunction):
-    stream = 9
-    function = 0
+    _stream = 9
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS09F01(secsStreamFunction):
-    stream = 9
-    function = 1
+    _stream = 9
+    _function = 1
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F03(secsStreamFunction):
-    stream = 9
-    function = 3
+    _stream = 9
+    _function = 3
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F05(secsStreamFunction):
-    stream = 9
-    function = 5
+    _stream = 9
+    _function = 5
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F07(secsStreamFunction):
-    stream = 9
-    function = 7
+    _stream = 9
+    _function = 7
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F09(secsStreamFunction):
-    stream = 9
-    function = 9
+    _stream = 9
+    _function = 9
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F11(secsStreamFunction):
-    stream = 9
-    function = 11
+    _stream = 9
+    _function = 11
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 class secsS09F13(secsStreamFunction):
-    stream = 9
-    function = 13
+    _stream = 9
+    _function = 13
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("MEXP", secsVarString(6)),
                         ("EDID", secsVarString(80)),
                         )), 2)
 
 class secsS10F00(secsStreamFunction):
-    stream = 10
-    function = 0
+    _stream = 10
+    _function = 0
 
-    formatDescriptor = None
+    _formatDescriptor = None
 
 class secsS10F01(secsStreamFunction):
-    stream = 10
-    function = 1
+    _stream = 10
+    _function = 1
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
                         ("TEXT", secsVarString(120)),
                         )), 2)
 
 class secsS10F02(secsStreamFunction):
-    stream = 10
-    function = 2
+    _stream = 10
+    _function = 2
 
-    formatDescriptor = secsVarBinary(1)
+    _formatDescriptor = secsVarBinary(1)
 
 class secsS10F03(secsStreamFunction):
-    stream = 10
-    function = 3
+    _stream = 10
+    _function = 3
 
-    formatDescriptor = secsVarList(OrderedDict((
+    _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
                         ("TEXT", secsVarString(120)),
                         )), 2)
 
 class secsS10F04(secsStreamFunction):
-    stream = 10
-    function = 4
+    _stream = 10
+    _function = 4
 
-    formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(10)
 
 secsStreamsFunctionsHost = {
      0:     {
@@ -641,6 +641,6 @@ def secsDecode(packet, host=False):
             logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
         else:
-            function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
+            _function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
             function.decode(packet.data)
             return function

@@ -17,6 +17,7 @@
 from hsmsConnections import *
 from hsmsPackets import *
 
+from secsFunctionBase import *
 from secsFunctions import *
 from secsHandler import *
 from secsVariables import *
