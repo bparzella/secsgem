@@ -18,6 +18,29 @@
 from secsVariables import secsVarList, secsVarArray
 
 class secsStreamFunction(object):
+    """Secs stream and function base class
+
+    This class is inherited to create a stream/function class. To create a function specific content the class variables :attr:`_stream`, :attr:`_function` and :attr:`_formatDescriptor` must be overridden.
+
+    **Example**::
+
+        class secsS02F30(secsStreamFunction):
+            _stream = 2
+            _function = 30
+
+            _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
+                                ("ECID", secsVarU4(1)),
+                                ("ECNAME", secsVarString()),
+                                ("ECMIN", secsVarDynamic(secsVarString)),
+                                ("ECMAX", secsVarDynamic(secsVarString)),
+                                ("ECDEF", secsVarDynamic(secsVarString)),
+                                ("UNITS", secsVarString()),
+                                )), 6))
+
+    :param value: set the value of stream/function parameters
+    :type value: various
+    """
+
     _stream = 0
     _function = 0
 
@@ -56,23 +79,48 @@ class secsStreamFunction(object):
         self.format[key] = item
 
     def append(self, data):
+        """Append data to list, if stream/function parameter is a list
+
+        :param data: list item to add
+        :type data: various
+        """
         if hasattr(self.format, 'append') and callable(self.format.append):
             self.format.append(data)
         else:
             raise AttributeError("class {} has no attribute 'append'".format(self.__class__.__name__))
 
     def encode(self):
+        """Generates the encoded hsms data of the stream/function parameter
+
+        :returns: encoded data
+        :rtype: string
+        """
         if self.format == None:
             return ""
 
         return self.format.encode()
 
     def decode(self, data):
+        """Updates stream/function parameter data from the passed data
+
+        :param data: encoded data
+        :type data: string
+        """
         if not self.format == None:
             self.format.decode(data)
 
     def set(self, value):
+        """Updates the value of the stream/function parameter
+
+        :param value: new value for the parameter
+        :type value: various
+        """
         self.format.set(value)
 
     def get(self):
+        """Gets the current value of the stream/function parameter
+
+        :returns: current parameter value
+        :rtype: various
+        """
         return self.format.get()

@@ -181,10 +181,10 @@ class gemDefaultHandler(secsDefaultHandler):
         self.reportSubscriptions[reportID] = dvs
 
         #create report
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "RPT": dvs}]}))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "VID": dvs}]}))
 
         #link event report to collection event
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "CE": [reportID]}]}))
+        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [reportID]}]}))
 
         #enable collection event
         packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
