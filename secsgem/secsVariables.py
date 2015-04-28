@@ -335,7 +335,10 @@ class secsVarBinary(secsVar):
             self.set(value)
 
     def __repr__(self):
-        return "B {}".format(self.get())
+        if len(self.value) == 1:
+            return "B {}".format(self.get())
+        else:
+            return "B <{} bytes>".format(len(self.value))
 
     def __len__(self):
         return len(self.value)
