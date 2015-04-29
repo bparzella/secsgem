@@ -37,6 +37,11 @@ class secsVar(object):
         :returns: encoded item header bytes
         :rtype: string
         """
+        if length < 0:
+            raise ValueError("Encoding {} not possible, data length too small {}".format(self.__class__.__name__, length))
+        if length > 0xFFFFFF:
+            raise ValueError("Encoding {} not possible, data length too big {}".format(self.__class__.__name__, length))
+
         if (length > 0xFFFF):
             lengthBytes = 3
             formatByte = (self.formatCode << 2) | lengthBytes
