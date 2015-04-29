@@ -145,10 +145,8 @@ class secsS01F04(secsStreamFunction):
 
     **Example**::
 
-        >>> secsgem.secsS01F04([1, "text", 1337])
-        S1F4 { [A '1', A 'text', A '1337'] }
-
-    SV is currently only encoded as string in constructor. The inherited :func:`secsgem.secsFunctionBase.secsStreamFunction.decode` method will use the matching type.
+        >>> secsgem.secsS01F04([secsgem.secsVarU1(value=1), "text", secsgem.secsVarU4(value=1337)])
+        S1F4 { [U1 1, A 'text', U4 1337] }
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -369,10 +367,8 @@ class secsS02F14(secsStreamFunction):
 
     **Example**::
 
-        >>> secsgem.secsS02F14([1, "text",])
-        S2F14 { [A '1', A 'text'] }
-
-    ECV is currently only encoded as string in constructor. The inherited :func:`secsgem.secsFunctionBase.secsStreamFunction.decode` method will use the matching type.
+        >>> secsgem.secsS02F14([secsgem.secsVarU1(value=1), "text"])
+        S2F14 { [U1 1, A 'text'] }
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -397,10 +393,8 @@ class secsS02F15(secsStreamFunction):
 
     **Example**::
 
-        >>> secsgem.secsS02F15([{"ECID": 1, "ECV": 10}, {"ECID": 1337, "ECV": "text"}])
-        S2F15 { [[ECID: U4 1, ECV: A '10'], [ECID: U4 1337, ECV: A 'text']] }
-
-    ECV is currently only encoded as string in constructor. The inherited :func:`secsgem.secsFunctionBase.secsStreamFunction.decode` method will use the matching type.
+        >>> secsgem.secsS02F15([{"ECID": 1, "ECV": secsgem.secsVarU4(value=10)}, {"ECID": 1337, "ECV": "text"}])
+        S2F15 { [[ECID: U4 1, ECV: U4 10], [ECID: U4 1337, ECV: A 'text']] }
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -477,10 +471,8 @@ class secsS02F30(secsStreamFunction):
 
     **Example**::
 
-        >>> secsgem.secsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": 0, "ECMAX": 100, "ECDEF": 50, "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
-        S2F30 { [[ECID: U4 1, ECNAME: A 'EC1', ECMIN: A '0', ECMAX: A '100', ECDEF: A '50', UNITS: A 'mm'], [ECID: U4 1337, ECNAME: A 'EC2', ECMIN: A '', ECMAX: A '', ECDEF: A '', UNITS: A '']] }
-
-    ECMIN, ECMAX and ECDEF are currently only encoded as string in constructor. The inherited :func:`secsgem.secsFunctionBase.secsStreamFunction.decode` method will use the matching type.
+        >>> secsgem.secsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.secsVarU1(value=0), "ECMAX": secsgem.secsVarU1(value=100), "ECDEF": secsgem.secsVarU1(value=50), "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
+        S2F30 { [[ECID: U4 1, ECNAME: A 'EC1', ECMIN: U1 0, ECMAX: U1 100, ECDEF: U1 50, UNITS: A 'mm'], [ECID: U4 1337, ECNAME: A 'EC2', ECMIN: A '', ECMAX: A '', ECDEF: A '', UNITS: A '']] }
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -848,10 +840,8 @@ class secsS06F11(secsStreamFunction):
 
     **Example**::
 
-        >>> secsgem.secsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", 100]}]})
-        S6F11 { [DATAID: U4 1, CEID: U4 1337, RPT: [[RPTID: U4 1000, V: [A 'VAR', A '100']]]] }
-
-    V is currently only encoded as string in constructor. The inherited :func:`secsgem.secsFunctionBase.secsStreamFunction.decode` method will use the matching type.
+        >>> secsgem.secsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.secsVarU4(value=100)]}]})
+        S6F11 { [DATAID: U4 1, CEID: U4 1337, RPT: [[RPTID: U4 1000, V: [A 'VAR', U4 100]]]] }
 
     :param value: parameters for this function (see example)
     :type value: list

@@ -30,6 +30,13 @@ class secsVar(object):
         self.value = None
 
     def encodeItemHeader(self, length):
+        """Encode item header depending on the number of length bytes required.
+
+        :param length: number of bytes in data
+        :type length: integer
+        :returns: encoded item header bytes
+        :rtype: string
+        """
         if (length > 0xFFFF):
             lengthBytes = 3
             formatByte = (self.formatCode << 2) | lengthBytes
@@ -44,6 +51,15 @@ class secsVar(object):
             return chr(formatByte) + chr((length & 0x0000FF))
 
     def decodeItemHeader(self, data, textPos=0):
+        """Encode item header depending on the number of length bytes required.
+
+        :param data: encoded data
+        :type data: string
+        :param textPos: start of item header in data
+        :type textPos: integer
+        :returns: start position for next item, format code, length item of data
+        :rtype: (integer, integer, integer)
+        """
         if DEBUG_DECODE:
             print "{}--Decoded item header for {} starting at {}".format((" " * DEBUG_DECODE_DEPTH), self.__class__.__name__, textPos)
         
@@ -74,6 +90,15 @@ class secsVar(object):
         return (textPos, formatCode, length)
 
 class secsVarDynamic(secsVar):
+    """Variable with interchangable type. 
+
+    :param defaultType: the default type for internal value
+    :type defaultType: type
+    :param length: max number of items in type
+    :type length: integer
+    :param value: initial value
+    :type value: various
+    """
     def __init__(self, defaultType, length=-1, value=None):
         self.value = defaultType(length)
 
@@ -96,18 +121,42 @@ class secsVarDynamic(secsVar):
         self.value.__setitem__(key, item)
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: various
+        """
         if isinstance(value, secsVar):
             self.value = value
         else:
             self.value.set(value)
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: various
+        """
         return self.value.get()
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         return self.value.encode()
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         if formatCode == secsVarArray.formatCode:
@@ -130,9 +179,23 @@ class secsVarDynamic(secsVar):
         return self.value.decode(data, start)
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarDynamic
+        """
         return secsVarDynamic(self.defaultType, self.length, self.value.get())
 
 class secsVarList(secsVar):
+    """List variable type. List with items of different types
+
+    :param data: internal data values
+    :type data: dict
+    :param fieldCount: number of fields in the list
+    :type fieldCount: integer
+    :param value: initial value
+    :type value: dict/list
+    """
     formatCode = 0
 
     def __init__(self, data, fieldCount=-1, value=None):
@@ -164,6 +227,11 @@ class secsVarList(secsVar):
         return len(self.data)
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: dict/list
+        """
         if isinstance(value, dict):
             for fieldName in value:
                 self.data[fieldName].set(value[fieldName])
@@ -178,6 +246,11 @@ class secsVarList(secsVar):
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list
+        """
         data = []
         for fieldName in self.data:
             data.append(self.data[fieldName].get())
@@ -185,6 +258,11 @@ class secsVarList(secsVar):
         return data
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.data))
             
         for fieldName in self.data:
@@ -193,6 +271,15 @@ class secsVarList(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         global DEBUG_DECODE_DEPTH
@@ -222,6 +309,11 @@ class secsVarList(secsVar):
         self.data[name].set(value)
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarList
+        """
         newData = OrderedDict()
         for item in self.data:
             newData[item] = self.data[item].clone()
@@ -229,6 +321,15 @@ class secsVarList(secsVar):
         return secsVarList(newData, self.fieldCount)
 
 class secsVarArray(secsVar):
+    """List variable type. List with items of same type
+
+    :param data: internal data definition/sample
+    :type data: secsVar
+    :param fieldCount: number of fields in the list
+    :type fieldCount: integer
+    :param value: initial value
+    :type value: list
+    """
     formatCode = 0
 
     def __init__(self, data, fieldCount=-1, value=None):
@@ -265,11 +366,21 @@ class secsVarArray(secsVar):
         self.data[key].set(item)
 
     def append(self, data):
+        """Append data to the internal list
+
+        :param value: new value
+        :type value: various
+        """
         newObject = self.itemDecriptor.clone()
         newObject.set(data)
         self.data.append(newObject)
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list
+        """
         if not isinstance(value, list):
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
@@ -285,6 +396,11 @@ class secsVarArray(secsVar):
             self.data.append(newObject)
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list
+        """
         data = []
         for item in self.data:
             data.append(item.get())
@@ -292,6 +408,11 @@ class secsVarArray(secsVar):
         return data
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.data))
             
         for item in self.data:
@@ -300,6 +421,15 @@ class secsVarArray(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         global DEBUG_DECODE_DEPTH
@@ -317,6 +447,11 @@ class secsVarArray(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarArray
+        """
         itemDecriptor = self.itemDecriptor.clone()
         newData = []
         for item in self.data:
@@ -325,6 +460,13 @@ class secsVarArray(secsVar):
         return secsVarArray(itemDecriptor, self.fieldCount, newData)
 
 class secsVarBinary(secsVar):
+    """Secs type for binary data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: string/integer
+    """
     formatCode = 010
     
     def __init__(self, length=-1, value=None):
@@ -350,6 +492,11 @@ class secsVarBinary(secsVar):
         self.value[key] = chr(item)
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: string/integer
+        """
         if value == None:
             return
 
@@ -362,6 +509,11 @@ class secsVarBinary(secsVar):
         self.value = value
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
         if len(self.value) == 1:
             if self.value:
                 return ord(self.value[0])
@@ -371,6 +523,11 @@ class secsVarBinary(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         if self.value == None:
             length = 0
         else:
@@ -384,6 +541,15 @@ class secsVarBinary(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         #string
@@ -400,9 +566,21 @@ class secsVarBinary(secsVar):
         return textPos + length
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarBinary
+        """
         return secsVarBinary(self.length, self.value)
 
 class secsVarBoolean(secsVar):
+    """Secs type for boolean data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/boolean
+    """
     formatCode = 011
     
     def __init__(self, length=-1, value=None):
@@ -425,6 +603,11 @@ class secsVarBoolean(secsVar):
         self.value[key] = item
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/boolean
+        """
         if isinstance(value, list):
             if self.length >= 0 and len(value) > self.length:
                 raise ValueError("Value longer than {} chars".format(self.length))
@@ -437,6 +620,11 @@ class secsVarBoolean(secsVar):
             self.value = [ bool(value) ]
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/boolean
+        """
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -446,6 +634,11 @@ class secsVarBoolean(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value))
 
         for counter in range(len(self.value)):
@@ -455,6 +648,15 @@ class secsVarBoolean(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         result = []
@@ -473,9 +675,21 @@ class secsVarBoolean(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarBoolean
+        """
         return secsVarBoolean(self.length, self.value)
 
 class secsVarString(secsVar):
+    """Secs type for string data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: string
+    """
     formatCode = 020
     
     def __init__(self, length=-1, value=None):
@@ -492,6 +706,11 @@ class secsVarString(secsVar):
         return len(self.value)
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: string
+        """
         if not isinstance(value, str):
             value = str(value)
 
@@ -501,9 +720,19 @@ class secsVarString(secsVar):
         self.value = value
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: string
+        """
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value))
 
         result += self.value
@@ -511,6 +740,15 @@ class secsVarString(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
         
         #string
@@ -527,9 +765,21 @@ class secsVarString(secsVar):
         return textPos + length
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarString
+        """
         return secsVarString(self.length, self.value)
 
 class secsVarI4(secsVar):
+    """Secs type for 4 byte signed data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/integer
+    """
     formatCode = 034
     
     def __init__(self, length=-1, value=None):
@@ -552,6 +802,11 @@ class secsVarI4(secsVar):
         self.value[key] = item
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/integer
+        """
         if isinstance(value, list):
             if self.length >= 0 and len(value) > self.length:
                 raise ValueError("Value longer than {} chars".format(self.length))
@@ -564,6 +819,11 @@ class secsVarI4(secsVar):
             self.value = [ int(value) ]
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -573,6 +833,11 @@ class secsVarI4(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value)*4)
 
         for counter in range(len(self.value)):
@@ -582,6 +847,15 @@ class secsVarI4(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         result = []
@@ -600,9 +874,21 @@ class secsVarI4(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarI4
+        """
         return secsVarI4(self.length, self.value)
 
 class secsVarU1(secsVar):
+    """Secs type for 1 byte unsigned data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/integer
+    """
     formatCode = 051
     
     def __init__(self, length=-1, value=None):
@@ -625,6 +911,11 @@ class secsVarU1(secsVar):
         self.value[key] = item
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/integer
+        """
         if isinstance(value, list):
             if self.length >= 0 and len(value) > self.length:
                 raise ValueError("Value longer than {} chars".format(self.length))
@@ -637,6 +928,11 @@ class secsVarU1(secsVar):
             self.value = [ int(value) ]
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -646,6 +942,11 @@ class secsVarU1(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value))
 
         for counter in range(len(self.value)):
@@ -655,6 +956,15 @@ class secsVarU1(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         result = []
@@ -673,9 +983,21 @@ class secsVarU1(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarU1
+        """
         return secsVarU1(self.length, self.value)
 
 class secsVarU2(secsVar):
+    """Secs type for 2 byte unsigned data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/integer
+    """
     formatCode = 052
     
     def __init__(self, length=-1, value=None):
@@ -698,6 +1020,11 @@ class secsVarU2(secsVar):
         self.value[key] = item
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/integer
+        """
         if isinstance(value, list):
             if self.length >= 0 and len(value) > self.length:
                 raise ValueError("Value longer than {} chars".format(self.length))
@@ -710,6 +1037,11 @@ class secsVarU2(secsVar):
             self.value = [ int(value) ]
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -719,6 +1051,11 @@ class secsVarU2(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value)*2)
 
         for counter in range(len(self.value)):
@@ -728,6 +1065,15 @@ class secsVarU2(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         result = []
@@ -746,9 +1092,21 @@ class secsVarU2(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarU2
+        """
         return secsVarU2(self.length, self.value)
 
 class secsVarU4(secsVar):
+    """Secs type for 4 byte unsigned data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/integer
+    """
     formatCode = 054
     
     def __init__(self, length=-1, value=None):
@@ -771,6 +1129,11 @@ class secsVarU4(secsVar):
         self.value[key] = item
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/integer
+        """
         if isinstance(value, list):
             if self.length >= 0 and len(value) > self.length:
                 raise ValueError("Value longer than {} chars".format(self.length))
@@ -783,6 +1146,11 @@ class secsVarU4(secsVar):
             self.value = [ int(value) ]
 
     def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -792,6 +1160,11 @@ class secsVarU4(secsVar):
         return self.value
 
     def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
         result = self.encodeItemHeader(len(self.value)*4)
 
         for counter in range(len(self.value)):
@@ -801,6 +1174,15 @@ class secsVarU4(secsVar):
         return result
 
     def decode(self, data, start = 0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         result = []
@@ -819,4 +1201,9 @@ class secsVarU4(secsVar):
         return textPos
 
     def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: secsVarU4
+        """
         return secsVarU4(self.length, self.value)
