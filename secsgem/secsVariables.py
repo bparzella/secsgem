@@ -80,7 +80,7 @@ class secsVarDynamic(secsVar):
         self.defaultType = defaultType
         self.length = length
 
-        if value:
+        if not value == None:
             self.value.set(value)
 
     def __repr__(self):
@@ -145,7 +145,7 @@ class secsVarList(secsVar):
                 raise ValueError("Definition has invalid field count (expected: {}, actual: {})".format(self.fieldCount, len(data)))
 
         #set the value if passed
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -237,7 +237,7 @@ class secsVarArray(secsVar):
         self.__dict__["data"] = []
 
         #set the value if passed
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -331,7 +331,7 @@ class secsVarBinary(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -482,7 +482,7 @@ class secsVarString(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -536,7 +536,7 @@ class secsVarI4(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -609,7 +609,7 @@ class secsVarU1(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -682,7 +682,7 @@ class secsVarU2(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
@@ -755,7 +755,7 @@ class secsVarU4(secsVar):
         self.value = None
         self.length = length
 
-        if value:
+        if not value == None:
             self.set(value)
 
     def __repr__(self):
