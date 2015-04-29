@@ -148,7 +148,7 @@ class hsmsConnectionManager(EventProducer):
         .. warning:: Do not call this directly, for internal use only.
         """
         if not self.stopping:
-            threading.Thread(target=self.__activeConnectThread, args=(peer,)).start()
+            threading.Thread(target=self.__activeConnectThread, args=(peer,), name="secsgem_hsmsConnectionManager_activeConnectThread_{}".format(peer.name)).start()
 
     def __activeConnectThread(self, peer):
         """Thread function to (re)connect active connection to remote host.

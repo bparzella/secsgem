@@ -187,7 +187,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
         self.listenSock.listen(1)
         self.listenSock.setblocking(0)
 
-        self.listenThreadIdentifier = threading.Thread(target=self._listen_thread, args=())
+        self.listenThreadIdentifier = threading.Thread(target=self._listen_thread, args=(), name="secsgem_hsmsMultiServer_listenThread_{}".format(self.port))
         self.listenThreadIdentifier.start()
 
         logging.debug("hsmsMultiServer.start: listening")
@@ -414,7 +414,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
         .. seealso:: :class:`secsgem.hsmsConnections.hsmsSingleServer`, :class:`secsgem.hsmsConnections.hsmsMultiServer`, :class:`secsgem.hsmsConnections.hsmsClient`
         """
-        thread.start_new_thread(self._receiver_thread, ())
+        threading.Thread(target=self._receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteIP, self.remotePort)).start()
 
         while not self.threadRunning:
             pass
@@ -789,7 +789,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         callbackIndex = "s"+str(response.header.stream)+"f"+str(response.header.function)
         if callbackIndex in self.callbacks:
             for callback in self.callbacks[callbackIndex]:
-                thread.start_new_thread(callback, (self, response))
+                threading.Thread(target=callback, args=(self, response), name="secsgem_hsmsConnection_callback_{}".format(callbackIndex)).start()
         else:
             self.packetQueue.append(response)
             for event in self.eventQueue:
