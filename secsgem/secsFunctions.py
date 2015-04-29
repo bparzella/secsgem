@@ -1386,7 +1386,7 @@ class secsS10F04(secsStreamFunction):
     _stream = 10
     _function = 4
 
-    _formatDescriptor = secsVarBinary(10)
+    _formatDescriptor = secsVarBinary(1)
 
 secsStreamsFunctionsHost = {
      0:     {
