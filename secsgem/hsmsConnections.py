@@ -217,6 +217,27 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
 
         logging.debug("hsmsMultiServer.stop: server stopped")
 
+    def _initialize_connection_thread(self, accept_result):
+        """Setup connection
+
+        .. warning:: Do not call this directly, used internally.
+        """
+        self.connectionsLock.acquire()
+        (sock,(sourceIP, sourcePort)) = accept_result
+
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+        connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
+
+        self.connections.append(connection)
+        self.connectionsLock.release()
+
+        self.fireEvent("RemoteConnected", {'connection': connection})
+
+        connection.startReceiver()
+
+        self.fireEvent("RemoteInitialized", {'connection': connection})
+
     def _listen_thread(self):
         """Thread listening for incoming connections
 
@@ -245,21 +266,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
 
                     logging.debug("hsmsMultiServer._listen_thread: connection from %s:%d", accept_result[1][0], accept_result[1][1])
 
-                    self.connectionsLock.acquire()
-                    (sock,(sourceIP, sourcePort)) = accept_result
-
-                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-
-                    connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
-
-                    self.connections.append(connection)
-                    self.connectionsLock.release()
-
-                    self.fireEvent("RemoteConnected", {'connection': connection})
-
-                    connection.startReceiver()
-
-                    self.fireEvent("RemoteInitialized", {'connection': connection})
+                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsConnection_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
 
         except Exception, e:
             print "hsmsServer._listen_thread : exception", e
