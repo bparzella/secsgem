@@ -165,21 +165,21 @@ class secsVarDynamic(secsVar):
         (textPos, formatCode, length) = self.decodeItemHeader(data, start)
 
         if formatCode == secsVarArray.formatCode:
-            self.value = secsVarArray(secsVarDynamic(secsVarString))
+            self.value = secsVarArray(secsVarDynamic(secsVarString, self.length))
         elif formatCode == secsVarBinary.formatCode:
-            self.value = secsVarBinary()
+            self.value = secsVarBinary(self.length)
         elif formatCode == secsVarBoolean.formatCode:
-            self.value = secsVarBoolean()
+            self.value = secsVarBoolean(self.length)
         elif formatCode == secsVarString.formatCode:
-            self.value = secsVarString()
+            self.value = secsVarString(self.length)
         elif formatCode == secsVarI4.formatCode:
-            self.value = secsVarI4()
+            self.value = secsVarI4(self.length)
         elif formatCode == secsVarU1.formatCode:
-            self.value = secsVarU1()
+            self.value = secsVarU1(self.length)
         elif formatCode == secsVarU2.formatCode:
-            self.value = secsVarU2()
+            self.value = secsVarU2(self.length)
         elif formatCode == secsVarU4.formatCode:
-            self.value = secsVarU4()
+            self.value = secsVarU4(self.length)
 
         return self.value.decode(data, start)
 
@@ -867,6 +867,10 @@ class secsVarI4(secsVar):
 
         for i in range(length/4):
             resultText = data[textPos:textPos+4]
+            
+            if len(resultText) != 4:
+                raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
+
             result.append(struct.unpack(">l", resultText)[0])
 
             if DEBUG_DECODE:
@@ -976,6 +980,10 @@ class secsVarU1(secsVar):
 
         for i in range(length):
             resultText = data[textPos]
+
+            if len(resultText) != 1:
+                raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
+
             result.append(struct.unpack(">B", resultText)[0])
 
             if DEBUG_DECODE:
@@ -1085,6 +1093,10 @@ class secsVarU2(secsVar):
 
         for i in range(length/2):
             resultText = data[textPos:textPos+2]
+
+            if len(resultText) != 2:
+                raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
+
             result.append(struct.unpack(">H", resultText)[0])
 
             if DEBUG_DECODE:
@@ -1194,6 +1206,10 @@ class secsVarU4(secsVar):
 
         for i in range(length/4):
             resultText = data[textPos:textPos+4]
+
+            if len(resultText) != 4:
+                raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
+
             result.append(struct.unpack(">L", resultText)[0])
 
             if DEBUG_DECODE:
