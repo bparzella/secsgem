@@ -18,7 +18,7 @@
 from collections import OrderedDict
 
 from secsFunctionBase import secsStreamFunction
-from secsVariables import secsVarList, secsVarArray, secsVarString, secsVarBinary, secsVarU4, secsVarBoolean, secsVarDynamic
+from secsVariables import secsVarList, secsVarArray, secsVarString, secsVarBinary, secsVarI2, secsVarI4, secsVarU1, secsVarU2, secsVarU4, secsVarBoolean, secsVarDynamic
 
 class secsS00F00(secsStreamFunction):
     """Secs stream and function class for stream 00, function 00 - hsms communication
@@ -1388,6 +1388,663 @@ class secsS10F04(secsStreamFunction):
 
     _formatDescriptor = secsVarBinary(1)
 
+class secsS12F00(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 00 - abort transaction stream 12
+
+    **Example**::
+
+        >>> secsgem.secsS12F00()
+        S12F0 { None }
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 12
+    _function = 0
+
+    _formatDescriptor = None
+
+class secsS12F01(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 01 - map setup data - send
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            FNLOC: U2[1]
+            FFROT: U2[1]
+            ORLOC: B[1]
+            RPSEL: U1[1]
+            REF: [
+                REFP: I4[2]
+                ...
+            ]
+            DUTMS: A[n]
+            XDIES: U4[1]
+            YDIES: U4[1]
+            ROWCT: U4[1]
+            COLCT: U4[1]
+            NULBC: A[n]
+            PRDCT: U4[1]
+            PRAXI: B[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F01({"MID": "materialID", 
+                "IDTYP": 0,
+                "FNLOC": 0,
+                "FFROT": 0,
+                "ORLOC": 0,
+                "RPSEL": 0,
+                "REF": [[1,2], [2,3]],
+                "DUTMS": "unit",
+                "XDIES": 100,
+                "YDIES": 100,
+                "ROWCT": 10,
+                "COLCT": 10,
+                "NULBC": "{x}",
+                "PRDCT": 100,
+                "PRAXI": 0,
+                })
+        S12F1 { [MID: A 'materialID', IDTYP: B 0, FNLOC: U2 0, FFROT: U2 0, ORLOC: B 0, RPSEL: U1 0, REF: [I4 [1, 2], I4 [2, 3]], DUTMS: A 'unit', XDIES: U4 100, YDIES: U4 100, ROWCT: U4 10, COLCT: U4 10, NULBC: A '{x}', PRDCT: U4 100, PRAXI: B 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 1
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("FNLOC", secsVarU2(1)),
+                            ("FFROT", secsVarU2(1)),
+                            ("ORLOC", secsVarBinary(1)),
+                            ("RPSEL", secsVarU1(1)),
+                            ("REF", secsVarArray(
+                                secsVarI4(2)
+                            )),
+                            ("DUTMS", secsVarString()),
+                            ("XDIES", secsVarU4(1)),
+                            ("YDIES", secsVarU4(1)),
+                            ("ROWCT", secsVarU4(1)),
+                            ("COLCT", secsVarU4(1)),
+                            ("NULBC", secsVarString()),
+                            ("PRDCT", secsVarU4(1)),
+                            ("PRAXI", secsVarBinary(1)),
+                        )), 15)
+
+class secsS12F02(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 02 - map setup data - acknowledge
+
+    **Structure**::
+    
+        SDACK: B[1]
+
+    **Example**::
+
+        >>> secsgem.secsS12F02(0)
+        S12F2 { B 0 }
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 12
+    _function = 2
+
+    _formatDescriptor = secsVarBinary(1)
+
+class secsS12F03(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 03 - map setup data - request
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            MAPFT: B[1]
+            FNLOC: U2[1]
+            FFROT: U2[1]
+            ORLOC: B[1]
+            PRAXI: B[1]
+            BCEQU: U1[n]
+            NULBC: A[n]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F03({"MID": "materialID", 
+                "IDTYP": 0,
+                "MAPFT": 0,
+                "FNLOC": 0,
+                "FFROT": 0,
+                "ORLOC": 0,
+                "PRAXI": 0,
+                "BCEQU": [1, 3, 5, 7],
+                "NULBC": "{x}",
+                })
+        S12F3 { [MID: A 'materialID', IDTYP: B 0, MAPFT: B 0, FNLOC: U2 0, FFROT: U2 0, ORLOC: B 0, PRAXI: B 0, BCEQU: U1 [1, 3, 5, 7], NULBC: A '{x}'] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 3
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("MAPFT", secsVarBinary(1)),
+                            ("FNLOC", secsVarU2(1)),
+                            ("FFROT", secsVarU2(1)),
+                            ("ORLOC", secsVarBinary(1)),
+                            ("PRAXI", secsVarBinary(1)),
+                            ("BCEQU", secsVarU1()),
+                            ("NULBC", secsVarString()),
+                        )), 9)
+
+class secsS12F04(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 04 - map setup data 
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            FNLOC: U2[1]
+            ORLOC: B[1]
+            RPSEL: U1[1]
+            REF: [
+                REFP: I4[2]
+                ...
+            ]
+            DUTMS: A[n]
+            XDIES: U4[1]
+            YDIES: U4[1]
+            ROWCT: U4[1]
+            COLCT: U4[1]
+            PRDCT: U4[1]
+            BCEQU: U1[n]
+            NULBC: A[n]
+            MLCL: U4[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F04({"MID": "materialID", 
+                "IDTYP": 0,
+                "FNLOC": 0,
+                "ORLOC": 0,
+                "RPSEL": 0,
+                "REF": [[1,2], [2,3]],
+                "DUTMS": "unit",
+                "XDIES": 100,
+                "YDIES": 100,
+                "ROWCT": 10,
+                "COLCT": 10,
+                "PRDCT": 100,
+                "BCEQU": [1, 3, 5, 7],
+                "NULBC": "{x}",
+                "MLCL": 0,
+                })
+        S12F4 { [MID: A 'materialID', IDTYP: B 0, FNLOC: U2 0, ORLOC: B 0, RPSEL: U1 0, REF: [I4 [1, 2], I4 [2, 3]], DUTMS: A 'unit', XDIES: U4 100, YDIES: U4 100, ROWCT: U4 10, COLCT: U4 10, PRDCT: U4 100, BCEQU: U1 [1, 3, 5, 7], NULBC: A '{x}', MLCL: U4 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 4
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("FNLOC", secsVarU2(1)),
+                            ("ORLOC", secsVarBinary(1)),
+                            ("RPSEL", secsVarU1(1)),
+                            ("REF", secsVarArray(
+                                secsVarI4(2)
+                            )),
+                            ("DUTMS", secsVarString()),
+                            ("XDIES", secsVarU4(1)),
+                            ("YDIES", secsVarU4(1)),
+                            ("ROWCT", secsVarU4(1)),
+                            ("COLCT", secsVarU4(1)),
+                            ("PRDCT", secsVarU4(1)),
+                            ("BCEQU", secsVarU1()),
+                            ("NULBC", secsVarString()),
+                            ("MLCL", secsVarU4(1)),
+                        )), 15)
+
+class secsS12F05(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 05 - map transmit inquire
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            MAPFT: B[1]
+            MLCL: U4[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F05({"MID": "materialID", "IDTYP": 0, "MAPFT": 0, "MLCL": 0})
+        S12F5 { [MID: A 'materialID', IDTYP: B 0, MAPFT: B 0, MLCL: U4 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 5
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("MAPFT", secsVarBinary(1)),
+                            ("MLCL", secsVarU4(1)),
+                        )), 4)
+
+class secsS12F06(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 06 - map transmit - grant
+
+    **Structure**::
+    
+        GRNT1: B[1]
+
+    **Example**::
+
+        >>> secsgem.secsS12F06(0)
+        S12F6 { B 0 }
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 12
+    _function = 6
+
+    _formatDescriptor = secsVarBinary(1)
+
+class secsS12F07(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 07 - map data type 1 - send
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            [
+                {
+                    RSINF: I4[3]
+                    BINLT: U1[]
+                }
+            ]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F07({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
+        S12F7 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 7
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("DATA", secsVarArray(
+                                secsVarList(OrderedDict((
+                                    ("RSINF", secsVarI4(3)),
+                                    ("BINLT", secsVarU1()),
+                                )), 2)
+                            )),
+                        )), 3)
+
+class secsS12F08(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 08 - map data type 1 - acknowledge
+
+    **Structure**::
+    
+        MDACK: B[1]
+
+    **Example**::
+
+        >>> secsgem.secsS12F08(0)
+        S12F8 { B 0 }
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 12
+    _function = 8
+
+    _formatDescriptor = secsVarBinary(1)
+
+class secsS12F09(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 09 - map data type 2 - send
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            STRP: I2[2]
+            BINLT: U1[]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F09({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
+        S12F9 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 9
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("STRP", secsVarI2(2)),
+                            ("BINLT", secsVarU2()),
+                        )), 4)
+
+class secsS12F10(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 10 - map data type 2 - acknowledge
+
+    **Structure**::
+    
+        MDACK: B[1]
+
+    **Example**::
+
+        >>> secsgem.secsS12F10(0)
+        S12F10 { B 0 }
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 12
+    _function = 10
+
+    _formatDescriptor = secsVarBinary(1)
+
+class secsS12F11(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 11 - map data type 3 - send
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            [
+                {
+                    XYPOS: I2[2]
+                    BINLT: U1[]
+                }
+            ]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F11({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
+        S12F11 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 11
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("DATA", secsVarArray(
+                                secsVarList(OrderedDict((
+                                    ("XYPOS", secsVarI2(2)),
+                                    ("BINLT", secsVarU1()),
+                                )), 2)
+                            )),
+                        )), 3)
+
+class secsS12F12(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 12 - map data type 3 - acknowledge
+
+    **Structure**::
+    
+        MDACK: B[1]
+
+    **Example**::
+
+        >>> secsgem.secsS12F12(0)
+        S12F12 { B 0 }
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 12
+    _function = 12
+
+    _formatDescriptor = secsVarBinary(1)
+
+class secsS12F13(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 13 - map data type 1 - request
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F13({"MID": "materialID", "IDTYP": 0})
+        S12F13 { [MID: A 'materialID', IDTYP: B 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 13
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                        )), 2)
+
+class secsS12F14(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 14 - map data type 1
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            [
+                {
+                    RSINF: I4[3]
+                    BINLT: U1[]
+                }
+            ]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F14({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
+        S12F14 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 14
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("DATA", secsVarArray(
+                                secsVarList(OrderedDict((
+                                    ("RSINF", secsVarI4(3)),
+                                    ("BINLT", secsVarU1()),
+                                )), 2)
+                            )),
+                        )), 3)
+
+class secsS12F15(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 15 - map data type 2 - request
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F15({"MID": "materialID", "IDTYP": 0})
+        S12F15 { [MID: A 'materialID', IDTYP: B 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 15
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                        )), 2)
+
+class secsS12F16(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 16 - map data type 2
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            STRP: I2[2]
+            BINLT: U1[]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F16({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
+        S12F16 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 16
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("STRP", secsVarI2(2)),
+                            ("BINLT", secsVarU2()),
+                        )), 4)
+
+class secsS12F17(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 17 - map data type 3 - request
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            SDBIN: B[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F17({"MID": "materialID", "IDTYP": 0, "SDBIN": 1})
+        S12F17 { [MID: A 'materialID', IDTYP: B 0, SDBIN: B 1] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 17
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("SDBIN", secsVarBinary(1)),
+                        )), 3)
+
+class secsS12F18(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 18 - map data type 3
+
+    **Structure**::
+    
+        {
+            MID: A[16]
+            IDTYP: B[1]
+            [
+                {
+                    XYPOS: I2[2]
+                    BINLT: U1[]
+                }
+            ]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F18({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
+        S12F18 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 18
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MID", secsVarString(16)),
+                            ("IDTYP", secsVarBinary(1)),
+                            ("DATA", secsVarArray(
+                                secsVarList(OrderedDict((
+                                    ("XYPOS", secsVarI2(2)),
+                                    ("BINLT", secsVarU1()),
+                                )), 2)
+                            )),
+                        )), 3)
+
+class secsS12F19(secsStreamFunction):
+    """Secs stream and function class for stream 12, function 19 - map error report - send
+
+    **Structure**::
+    
+        {
+            MAPER: B[1]
+            DATLC: U1[1]
+        }
+
+    **Example**::
+
+        >>> secsgem.secsS12F19({"MAPER": 1, "DATLC": 0})
+        S12F19 { [MAPER: B 1, DATLC: U1 0] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 12
+    _function = 19
+
+    _formatDescriptor = secsVarList(OrderedDict((
+                            ("MAPER", secsVarBinary(1)),
+                            ("DATLC", secsVarU1(1)),
+                        )), 2)
+
 secsStreamsFunctionsHost = {
      0:     {
          0: secsS00F00,
@@ -1458,6 +2115,28 @@ secsStreamsFunctionsHost = {
          2: secsS10F02,
          3: secsS10F03,
          4: secsS10F04,
+        },
+    12:    {
+         0: secsS12F00,
+         1: secsS12F01,
+         2: secsS12F02,
+         3: secsS12F03,
+         4: secsS12F04,
+         5: secsS12F05,
+         6: secsS12F06,
+         7: secsS12F07,
+         8: secsS12F08,
+         9: secsS12F09,
+        10: secsS12F10,
+        11: secsS12F11,
+        12: secsS12F12,
+        13: secsS12F13,
+        14: secsS12F14,
+        15: secsS12F15,
+        16: secsS12F16,
+        17: secsS12F17,
+        18: secsS12F18,
+        19: secsS12F19,
         },
 }
 
@@ -1531,5 +2210,27 @@ secsStreamsFunctionsEquipment = {
          2: secsS10F02,
          3: secsS10F03,
          4: secsS10F04,
+        },
+    12:    {
+         0: secsS12F00,
+         1: secsS12F01,
+         2: secsS12F02,
+         3: secsS12F03,
+         4: secsS12F04,
+         5: secsS12F05,
+         6: secsS12F06,
+         7: secsS12F07,
+         8: secsS12F08,
+         9: secsS12F09,
+        10: secsS12F10,
+        11: secsS12F11,
+        12: secsS12F12,
+        13: secsS12F13,
+        14: secsS12F14,
+        15: secsS12F15,
+        16: secsS12F16,
+        17: secsS12F17,
+        18: secsS12F18,
+        19: secsS12F19,
         },
 }
