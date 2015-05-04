@@ -847,7 +847,7 @@ class secsVarI2(secsVar):
 
         for counter in range(len(self.value)):
             value = self.value[counter]
-            result += struct.pack(">l", value)
+            result += struct.pack(">h", value)
 
         return result
 
