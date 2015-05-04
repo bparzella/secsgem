@@ -1471,7 +1471,7 @@ class secsS12F01(secsStreamFunction):
                             ("YDIES", secsVarU4(1)),
                             ("ROWCT", secsVarU4(1)),
                             ("COLCT", secsVarU4(1)),
-                            ("NULBC", secsVarString()),
+                            ("NULBC", secsVarDynamic(secsVarU1)),
                             ("PRDCT", secsVarU4(1)),
                             ("PRAXI", secsVarBinary(1)),
                         )), 15)
@@ -1542,7 +1542,7 @@ class secsS12F03(secsStreamFunction):
                             ("ORLOC", secsVarBinary(1)),
                             ("PRAXI", secsVarBinary(1)),
                             ("BCEQU", secsVarU1()),
-                            ("NULBC", secsVarDynamic(secsVarString)),
+                            ("NULBC", secsVarDynamic(secsVarU1)),
                         )), 9)
 
 class secsS12F04(secsStreamFunction):
@@ -1613,7 +1613,7 @@ class secsS12F04(secsStreamFunction):
                             ("COLCT", secsVarU4(1)),
                             ("PRDCT", secsVarU4(1)),
                             ("BCEQU", secsVarU1()),
-                            ("NULBC", secsVarString()),
+                            ("NULBC", secsVarDynamic(secsVarU1)),
                             ("MLCL", secsVarU4(1)),
                         )), 15)
 
