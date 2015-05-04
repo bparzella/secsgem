@@ -519,6 +519,9 @@ class secsVarBinary(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return ord(self.value[0])
@@ -630,6 +633,9 @@ class secsVarBoolean(secsVar):
         :returns: internal value
         :rtype: list/boolean
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -829,6 +835,9 @@ class secsVarI2(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -942,6 +951,9 @@ class secsVarI4(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -1055,6 +1067,9 @@ class secsVarU1(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -1168,6 +1183,9 @@ class secsVarU2(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
@@ -1281,6 +1299,9 @@ class secsVarU4(secsVar):
         :returns: internal value
         :rtype: list/integer
         """
+        if self.value == None:
+            return None
+
         if len(self.value) == 1:
             if self.value:
                 return self.value[0]
