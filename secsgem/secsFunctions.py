@@ -1357,7 +1357,7 @@ class secsS10F01(secsStreamFunction):
 
         {
             TID: B[1]
-            TEXT: A[120]
+            TEXT: A[]
         }
 
     **Example**::
@@ -1373,7 +1373,7 @@ class secsS10F01(secsStreamFunction):
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
-                        ("TEXT", secsVarString(120)),
+                        ("TEXT", secsVarString()),
                         )), 2)
 
 
@@ -1405,7 +1405,7 @@ class secsS10F03(secsStreamFunction):
 
         {
             TID: B[1]
-            TEXT: A[120]
+            TEXT: A[]
         }
 
     **Example**::
@@ -1421,7 +1421,7 @@ class secsS10F03(secsStreamFunction):
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
-                        ("TEXT", secsVarString(120)),
+                        ("TEXT", secsVarString()),
                         )), 2)
 
 
