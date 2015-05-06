@@ -21,6 +21,7 @@ import threading
 
 from hsmsConnections import *
 
+
 class hsmsDefaultHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
 
@@ -85,6 +86,7 @@ class hsmsDefaultHandler(EventProducer):
     def stop(self):
         """Mark peer as dead"""
         self.dead = True
+
 
 class hsmsConnectionManager(EventProducer):
     """High level class that handles multiple active and passive connections and the model for them.
@@ -166,7 +168,7 @@ class hsmsConnectionManager(EventProducer):
             for i in range(int(self.reconnectTimeout) * 5):
                 time.sleep(0.2)
 
-                #check if connect was aborted
+                # check if connect was aborted
                 if self.clients[connectionID].aborted:
                     del self.clients[connectionID]
                     return
@@ -254,7 +256,7 @@ class hsmsConnectionManager(EventProducer):
         .. warning:: Do not call this directly, for internal use only.
         """
         connection = data['connection']
-        
+
         logging.debug("hsmsConnectionManager._onEventRemoteInitialized: connection from %s:%d", connection.remoteIP, connection.remotePort)
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
@@ -275,13 +277,13 @@ class hsmsConnectionManager(EventProducer):
         .. warning:: Do not call this directly, for internal use only.
         """
         connection = data['connection']
-        
+
         logging.debug("hsmsConnectionManager._onEventRemoteDisconnected: disconnected from %s:%d", connection.remoteIP, connection.remotePort)
 
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         peer = self.peers[connectionID]
-        
+
         peer._clearConnection()
 
         data['peer'] = peer
@@ -303,7 +305,7 @@ class hsmsConnectionManager(EventProducer):
         .. warning:: Do not call this directly, for internal use only.
         """
         connection = data['connection']
-        
+
         connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
 
         if connectionID in self.peers:
@@ -311,12 +313,12 @@ class hsmsConnectionManager(EventProducer):
 
         self.fireEvent(eventName, data)
 
-    def addPeer(self, name, address, port, active, sessionID, connectionHandler = hsmsDefaultHandler):
-        """Add a new connection 
+    def addPeer(self, name, address, port, active, sessionID, connectionHandler=hsmsDefaultHandler):
+        """Add a new connection
 
         :param name: Name of the peers configuration
         :type name: string
-        :param address: IP address of peer 
+        :param address: IP address of peer
         :type address: string
         :param port: TCP port of peer
         :type port: integer
@@ -342,11 +344,11 @@ class hsmsConnectionManager(EventProducer):
         return peer
 
     def removePeer(self, name, address, port, sessionID):
-        """Remove a previously added connection 
+        """Remove a previously added connection
 
         :param name: Name of the peers configuration
         :type name: string
-        :param address: IP address of peer 
+        :param address: IP address of peer
         :type address: string
         :param port: TCP port of peer
         :type port: integer
@@ -354,7 +356,7 @@ class hsmsConnectionManager(EventProducer):
         :type sessionID: integer
         """
         logging.debug("hsmsConnectionManager.removePeer: disconnecting from %s at %s:%d", name, address, port)
-        
+
         connectionID = self.getConnectionID(address, port)
 
         if connectionID in self.clients:
@@ -370,7 +372,6 @@ class hsmsConnectionManager(EventProducer):
             del self.peers[connectionID]
 
             self._stopServerIfRequired()
-
 
     def stop(self):
         """Stop all servers and terminate the connections"""
@@ -388,4 +389,4 @@ class hsmsConnectionManager(EventProducer):
         for peerID in self.peers.keys():
             peer = self.peers[peerID]
             if peer.connection:
-                peer.connection.disconnect(separate = True)
+                peer.connection.disconnect(separate=True)

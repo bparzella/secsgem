@@ -21,11 +21,8 @@ import socket
 import select
 import struct
 
-import thread
 import threading
 import traceback
-
-import time
 
 import errno
 
@@ -44,22 +41,25 @@ hsmsSTypes = {
     9: "Separate.req"
 }
 
+
 def isErrorCodeEWouldBlock(errorcode):
     if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
         return True
 
     return False
 
+
 class hsmsConnectionState:
     """hsms connection state machine states"""
     NOT_CONNECTED, CONNECTED, NOT_SELECTED, SELECTED = range(4)
 
+
 class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
-    """Server class for single passive (incoming) connection 
+    """Server class for single passive (incoming) connection
 
     Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
 
-    :param port: TCP port to listen on for incoming connections 
+    :param port: TCP port to listen on for incoming connections
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
@@ -84,7 +84,7 @@ class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
         connection.disconnect()
 
     """
-    def __init__(self, port = 5000, sessionID = 0, eventHandler=None):
+    def __init__(self, port=5000, sessionID=0, eventHandler=None):
         StreamFunctionCallbackHandler.__init__(self)
         EventProducer.__init__(self, eventHandler)
 
@@ -109,14 +109,14 @@ class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
 
         while True:
             accept_result = sock.accept()
-            if accept_result == None:
+            if accept_result is None:
                 continue
 
-            (sock,(sourceIP, sourcePort)) = accept_result
+            (sock, (sourceIP, sourcePort)) = accept_result
 
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-            connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler = self.parentEventHandler)
+            connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
 
             self.fireEvent("RemoteConnected", {'connection': connection})
 
@@ -128,7 +128,7 @@ class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
 
         sock.close()
 
-#start server accepting all connections
+
 class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
     """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
 
@@ -138,7 +138,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
     :type sessionID: integer
     :param eventHandler: object for event handling
     :type eventHandler: :class:`secsgem.common.EventHandler`
-    
+
     **Example**::
 
         def S1F1Handler(connection, packet):
@@ -159,7 +159,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
     """
 
     selectTimeout = 0.5
-    """ Timeout for select calls """ 
+    """ Timeout for select calls """
 
     def __init__(self, port=5000, sessionID=0, eventHandler=None):
         StreamFunctionCallbackHandler.__init__(self)
@@ -192,7 +192,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
 
         logging.debug("hsmsMultiServer.start: listening")
 
-    def stop(self, terminateConnections = True):
+    def stop(self, terminateConnections=True):
         """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
 
         :param terminateConnections: terminate all connection made by this server
@@ -211,7 +211,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
         if terminateConnections:
             for connection in self.connections:
                 if connection.connected:
-                    connection.disconnect(separate = True)
+                    connection.disconnect(separate=True)
 
         self.connectionsLock.release()
 
@@ -223,7 +223,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
         .. warning:: Do not call this directly, used internally.
         """
         self.connectionsLock.acquire()
-        (sock,(sourceIP, sourcePort)) = accept_result
+        (sock, (sourceIP, sourcePort)) = accept_result
 
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
@@ -258,7 +258,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
                         if not isErrorCodeEWouldBlock(errorcode):
                             raise e
 
-                    if accept_result == None:
+                    if accept_result is None:
                         continue
 
                     if self.stopThread:
@@ -274,9 +274,9 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
 
         self.threadRunning = False
 
-#single client connection
+
 class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
-    """Client class for single active (outgoing) connection 
+    """Client class for single active (outgoing) connection
 
     :param address: IP address of target host
     :type address: string
@@ -316,7 +316,7 @@ class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
         self.aborted = False
 
         self.sock = None
-        
+
     def connect(self):
         """Open connection to remote host
 
@@ -330,8 +330,8 @@ class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
         logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
 
         try:
-            self.sock.connect((self.address, self.port)) 
-        except socket.error, v:
+            self.sock.connect((self.address, self.port))
+        except socket.error:
             logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.address, self.port)
             return None
 
@@ -352,6 +352,7 @@ class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
 
         self.sock.close()
 
+
 class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
     """Connection class used for active and passive connections. Contains the basic HSMS functionality.
 
@@ -370,7 +371,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
     :param eventHandler: object for event handling
     :type eventHandler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, sock, callbacks, active, address, port, sessionID = 0, eventHandler=None):
+    def __init__(self, sock, callbacks, active, address, port, sessionID=0, eventHandler=None):
         StreamFunctionCallbackHandler.__init__(self)
         EventProducer.__init__(self, eventHandler)
 
@@ -387,7 +388,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
 
         self.threadRunning = False
         self.stopThread = False
-        
+
         self.eventQueue = []
         self.packetQueue = []
 
@@ -395,14 +396,14 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
 
         self.connectionState = hsmsConnectionState.NOT_SELECTED
 
-        #disable blocking
+        # disable blocking
         self.sock.setblocking(0)
 
     selectTimeout = 0.5
-    """ Timeout for select calls """ 
+    """ Timeout for select calls """
 
     sendBlockSize = 1024*1024
-    """ Block size for outbound data """ 
+    """ Block size for outbound data """
 
     def _serializeData(self):
         """Returns data for serialization
@@ -425,7 +426,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
 
         while not self.threadRunning:
             pass
-        
+
         if self.active:
             self.sendSelectReq()
             self.waitforSelectRsp()
@@ -437,10 +438,10 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
             self.sendLinktestReq()
             self.waitforLinktestRsp()
 
-    def disconnect(self, separate = False):
+    def disconnect(self, separate=False):
         """Close connection
 
-        :param separate: use Separate instead of Deselect 
+        :param separate: use Separate instead of Deselect
         :type separate: boolean
         """
         if separate:
@@ -450,7 +451,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
             self.waitforDeselectRsp()
 
         self.stopThread = True
-        
+
         while self.threadRunning:
             pass
 
@@ -469,24 +470,24 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         for block in blocks:
             retry = True
 
-            #not sent yet, retry
+            # not sent yet, retry
             while retry:
-                #wait until socket is writable
+                # wait until socket is writable
                 while not select.select([], [self.sock], [], self.selectTimeout)[1]:
                     pass
 
                 try:
-                    #send packet
+                    # send packet
                     self.sock.send(block)
 
-                    #retry will be cleared if send succeeded
+                    # retry will be cleared if send succeeded
                     retry = False
                 except socket.error, e:
                     errorcode = e[0]
                     if not isErrorCodeEWouldBlock(errorcode):
                         # raise if not EWOULDBLOCK
                         raise e
-                    #it is EWOULDBLOCK, so retry sending
+                    # it is EWOULDBLOCK, so retry sending
 
     def waitforStreamFunction(self, stream, function):
         """Wait for an incoming stream and function and return the receive data
@@ -502,20 +503,20 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         foundPacket = None
-        
-        while foundPacket == None:
+
+        while foundPacket is None:
             for packet in self.packetQueue:
                 if (packet.header.stream == stream) and (packet.header.function == function):
                     self.packetQueue.remove(packet)
                     foundPacket = packet
                     break
 
-            if foundPacket == None:
+            if foundPacket is None:
                 if event.wait(1) == True:
                     event.clear()
-                    
+
         self.eventQueue.remove(event)
-        
+
         return packet
 
     def waitforSystem(self, system):
@@ -530,20 +531,20 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         foundPacket = None
-        
-        while foundPacket == None:
+
+        while foundPacket is None:
             for packet in self.packetQueue:
                 if (packet.header.system == system):
                     self.packetQueue.remove(packet)
                     foundPacket = packet
                     break
 
-            if foundPacket == None:
+            if foundPacket is None:
                 if event.wait(1) == True:
                     event.clear()
-                    
+
         self.eventQueue.remove(event)
-        
+
         return packet
 
     def sendAndWaitForResponse(self, packet):
@@ -556,7 +557,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         """
         outPacket = hsmsPacket(hsmsStreamFunctionHeader(self.getNextSystemCounter(), packet._stream, packet._function, True, self.sessionID), packet.encode())
         self.sendPacket(outPacket)
-        
+
         return self.waitforSystem(outPacket.header.system)
 
     def sendResponse(self, packet, system):
@@ -587,7 +588,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         eventReceived = False
-        
+
         while not eventReceived:
             if event.wait(1) == True:
                 event.clear()
@@ -597,12 +598,12 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         eventReceived = True
                         result = packet.header.system
                         break
-        
+
         self.eventQueue.remove(event)
 
         return result
 
-    def sendSelectRsp(self, system = None):
+    def sendSelectRsp(self, system=None):
         """Send a Select Response to the remote host
 
         :param system: System of the request to reply for
@@ -632,7 +633,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         eventReceived = True
                         result = packet.header.function
                         break
-        
+
         self.eventQueue.remove(event)
 
         self.connectionState = hsmsConnectionState.SELECTED
@@ -654,7 +655,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         eventReceived = False
-        
+
         while not eventReceived:
             if event.wait(1) == True:
                 event.clear()
@@ -663,7 +664,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         self.packetQueue.remove(packet)
                         eventReceived = True
                         break
-        
+
         self.eventQueue.remove(event)
 
     def sendLinktestRsp(self, system):
@@ -685,7 +686,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         eventReceived = False
-        
+
         while not eventReceived:
             if event.wait(1) == True:
                 event.clear()
@@ -694,7 +695,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         self.packetQueue.remove(packet)
                         eventReceived = True
                         break
-        
+
         self.eventQueue.remove(event)
 
     def sendDeselectReq(self):
@@ -712,7 +713,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.eventQueue.append(event)
 
         eventReceived = False
-        
+
         while not eventReceived:
             if event.wait(1) == True:
                 event.clear()
@@ -744,7 +745,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
 
         eventReceived = False
         result = -1
-        
+
         while not eventReceived:
             if event.wait(1) == True:
                 event.clear()
@@ -754,7 +755,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         eventReceived = True
                         result = packet.header.function
                         break
-        
+
         self.eventQueue.remove(event)
 
         self.connectionState = hsmsConnectionState.NOT_SELECTED
@@ -788,7 +789,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         if response.header.sessionID == 0xffff:
             logging.info("< %s\n  %s", response, hsmsSTypes[response.header.sType])
         else:
-            if response.data == None:
+            if response.data is None:
                 logging.info("< %s", response)
             else:
                 logging.info("< %s", response)
@@ -820,7 +821,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
 
                 if selectResult[0]:
                     try:
-                        recvData = self.sock.recv(1024) 
+                        recvData = self.sock.recv(1024)
 
                         if len(recvData) == 0:
                             self.connected = False
@@ -832,7 +833,7 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         errorcode = e[0]
                         if not isErrorCodeEWouldBlock(errorcode):
                             raise e
-    
+
                     while self._process_receive_buffer():
                         pass
 
@@ -867,10 +868,9 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         if packet.header.sessionID != 0xffff:
             logging.error("S00F00: invalid sessionID")
             return
-        
+
         if packet.header.sType == 0x05:
             responsePacket = hsmsPacket(hsmsLinktestRspHeader(packet.header.system))
             self.sendPacket(responsePacket)
         else:
             logging.error("S00F00: unexpected sType (%s)", packet.header)
-

@@ -22,6 +22,7 @@ import secsFunctions
 
 import copy
 
+
 class secsDefaultHandler(hsmsDefaultHandler):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
 
@@ -62,9 +63,9 @@ class secsDefaultHandler(hsmsDefaultHandler):
 
     :param alarmText: Description of the alarm
     :type alarmText: string
-    :param ceidOn: Collection event for activated alarm 
+    :param ceidOn: Collection event for activated alarm
     :type ceidOn: integer
-    :param ceidOff: Collection event for deactivated alarm 
+    :param ceidOff: Collection event for deactivated alarm
     :type ceidOff: integer
     """
 
@@ -218,10 +219,10 @@ class secsDefaultHandler(hsmsDefaultHandler):
 
     def areYouThere(self):
         """Check if remote is still replying"""
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(1, 1)())
+        self.connection.sendAndWaitForResponse(self.streamFunction(1, 1)())
 
     def streamFunction(self, stream, function):
-        """Get class for stream and function 
+        """Get class for stream and function
 
         :param stream: stream to get function for
         :type stream: int
@@ -235,11 +236,11 @@ class secsDefaultHandler(hsmsDefaultHandler):
         else:
             secsStreamsFunctions = self.secsStreamsFunctionsEquipment
 
-        if not stream in secsStreamsFunctions:
+        if stream not in secsStreamsFunctions:
             logging.warning("unknown function S%02dF%02d", stream, function)
             return None
         else:
-            if not function in secsStreamsFunctions[stream]:
+            if function not in secsStreamsFunctions[stream]:
                 logging.warning("unknown function S%02dF%02d", stream, function)
                 return None
             else:
@@ -258,11 +259,11 @@ class secsDefaultHandler(hsmsDefaultHandler):
         else:
             secsStreamsFunctions = self.secsStreamsFunctionsHost
 
-        if not packet.header.stream in secsStreamsFunctions:
+        if packet.header.stream not in secsStreamsFunctions:
             logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
         else:
-            if not packet.header.function in secsStreamsFunctions[packet.header.stream]:
+            if packet.header.function not in secsStreamsFunctions[packet.header.stream]:
                 logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
                 return None
             else:

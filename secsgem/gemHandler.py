@@ -21,9 +21,11 @@ from hsmsPackets import *
 from secsHandler import *
 from secsVariables import *
 
+
 class gemCommunicationState:
     """hsms connection state machine states"""
     DISABLED, ENABLED, NOT_COMMUNICATING, EQUIPMENT_INITIATED_CONNECT, WAIT_CRA, WAIT_DELAY, HOST_INITIATED_CONNECT, WAIT_CR_FROM_HOST, COMMUNICATING = range(9)
+
 
 class gemDefaultHandler(secsDefaultHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
@@ -65,9 +67,9 @@ class gemDefaultHandler(secsDefaultHandler):
 
     :param alarmText: Description of the alarm
     :type alarmText: string
-    :param ceidOn: Collection event for activated alarm 
+    :param ceidOn: Collection event for activated alarm
     :type ceidOn: integer
-    :param ceidOff: Collection event for deactivated alarm 
+    :param ceidOff: Collection event for deactivated alarm
     :type ceidOff: integer
     """
 
@@ -154,13 +156,13 @@ class gemDefaultHandler(secsDefaultHandler):
 
     def clearCollectionEvents(self):
         """Clear all collection events"""
-        #clear subscribed reports
+        # clear subscribed reports
         self.reportSubscriptions = {}
 
-        #disable all ceids
+        # disable all ceids
         self.disableCEIDs()
 
-        #delete all reports
+        # delete all reports
         self.disableCEIDReports()
 
     def subscribeCollectionEvent(self, ceid, dvs, reportID=None):
@@ -168,33 +170,33 @@ class gemDefaultHandler(secsDefaultHandler):
 
         :param ceid: ID of the collection event
         :type ceid: integer
-        :param dvs: DV IDs to add for collection event 
+        :param dvs: DV IDs to add for collection event
         :type dvs: list of integers
         :param reportID: optional - ID for report, autonumbering if None
         :type reportID: integer
         """
-        if reportID == None:
+        if reportID is None:
             reportID = self.reportIDCounter
             self.reportIDCounter += 1
 
-        #note subscribed reports
+        # note subscribed reports
         self.reportSubscriptions[reportID] = dvs
 
-        #create report
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "VID": dvs}]}))
+        # create report
+        self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "VID": dvs}]}))
 
-        #link event report to collection event
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [reportID]}]}))
+        # link event report to collection event
+        self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [reportID]}]}))
 
-        #enable collection event
-        packet = self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
+        # enable collection event
+        self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
 
     def sendRemoteCommand(self, RCMD, params):
         """Send a remote command
 
         :param RCMD: Name of command
         :type RCMD: string
-        :param params: DV IDs to add for collection event 
+        :param params: DV IDs to add for collection event
         :type params: list of strings
         """
         s2f41 = self.streamFunction(2, 41)()
@@ -202,7 +204,7 @@ class gemDefaultHandler(secsDefaultHandler):
         for param in params:
             s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
 
-        #send remote command
+        # send remote command
         return self.secsDecode(self.connection.sendAndWaitForResponse(s2f41))
 
     def sendProcessProgram(self, PPID, PPBODY):
@@ -213,7 +215,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :param PPBODY: Content of process program
         :type PPBODY: string
         """
-        #send remote command
+        # send remote command
         return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 3)({"PPID": PPID, "PPBODY": PPBODY}))).ACKC7
 
     def requestProcessProgram(self, PPID):
@@ -222,7 +224,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :param PPID: Transferred process programs ID
         :type PPID: string
         """
-        #send remote command
+        # send remote command
         s7f6 = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 5)(PPID)))
         return (s7f6.PPID, s7f6.PPBODY)
 
@@ -232,15 +234,15 @@ class gemDefaultHandler(secsDefaultHandler):
         :param PPIDs: Process programs to delete
         :type PPIDs: list of strings
         """
-        #send remote command
+        # send remote command
         return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 17)(PPIDs))).ACKC7
 
     def getProcessProgramList(self):
         """Get process program list
         """
-        #send remote command
+        # send remote command
         return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
-     
+
     def S1F1Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 1, Are You There
 
@@ -252,7 +254,6 @@ class gemDefaultHandler(secsDefaultHandler):
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
         connection.sendResponse(self.streamFunction(1, 2)(), packet.header.system)
-
 
     def S1F13Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request

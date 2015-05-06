@@ -21,6 +21,7 @@ import inspect
 import logging
 import types
 
+
 def formatHex(text):
     """Returns byte arrays (string) formated as hex numbers.
 
@@ -38,6 +39,7 @@ def formatHex(text):
     """
     return ":".join("{0:02x}".format(ord(c)) for c in text)
 
+
 def isWindows():
     """Returns True if running on windows
 
@@ -49,6 +51,7 @@ def isWindows():
 
     return False
 
+
 def functionName(function):
     """Gets name of function or method
 
@@ -59,6 +62,7 @@ def functionName(function):
         return function.__name__
     else:
         return function.__self__.__class__.__name__ + "." + function.__name__
+
 
 class StreamFunctionCallbackHandler:
     """Base class for all connection classes. Provides functionality for registering and unregistering callbacks for streams and functions."""
@@ -77,7 +81,7 @@ class StreamFunctionCallbackHandler:
         """
         name = "s"+str(stream)+"f"+str(function)
 
-        if not name in self.callbacks:
+        if name not in self.callbacks:
             self.callbacks[name] = []
 
         self.callbacks[name].append(callback)
@@ -96,6 +100,7 @@ class StreamFunctionCallbackHandler:
 
         if callback in self.callbacks[name]:
             self.callbacks[name].remove(callback)
+
 
 class EventHandler:
     """Class for event handling. Provides functionality for managing events.
@@ -126,7 +131,7 @@ class EventHandler:
         handled = False
 
         stack = inspect.stack()
-        callingClass = stack[2][0].f_locals["self"].__class__.__name__ #.split('.')[-1]
+        callingClass = stack[2][0].f_locals["self"].__class__.__name__
         callingMethod = stack[2][0].f_code.co_name
 
         if self.target:
@@ -156,7 +161,6 @@ class EventHandler:
         if not handled:
             logging.debug("%s.%s: unhandled event %s" % (callingClass, callingMethod, eventName))
 
-
     def addEventHandler(self, eventName, handler):
         """Register handler for an event. Multiple handlers can be registered for one event.
 
@@ -165,7 +169,7 @@ class EventHandler:
         :param handler: method to call when event is received
         :type handler: def handler(eventName, handler)
         """
-        if not eventName in self.eventHandlers:
+        if eventName not in self.eventHandlers:
             self.eventHandlers[eventName] = []
 
         self.eventHandlers[eventName].append(handler)
@@ -178,10 +182,11 @@ class EventHandler:
         :param handler: method to unregister
         :type handler: def handler(eventName, handler)
         """
-        if not eventName in self.eventHandlers:
+        if eventName not in self.eventHandlers:
             return
 
         self.eventHandlers[eventName].remove(handler)
+
 
 class EventProducer:
     """Class for event production. Provides functionality for sending events.

@@ -15,7 +15,8 @@
 #####################################################################
 """Base class for for SECS stream and functions"""
 
-from secsVariables import secsVarList, secsVarArray
+from secsVariables import secsVarList
+
 
 class secsStreamFunction(object):
     """Secs stream and function base class
@@ -47,12 +48,12 @@ class secsStreamFunction(object):
     _formatDescriptor = None
 
     def __init__(self, value=None):
-        if self._formatDescriptor == None:
+        if self._formatDescriptor is None:
             self.__dict__["format"] = None
         else:
             self.__dict__["format"] = self._formatDescriptor.clone()
 
-        if not value == None and not self.format == None:
+        if value is not None and self.format is not None:
             self.format.set(value)
 
     def __repr__(self):
@@ -72,7 +73,7 @@ class secsStreamFunction(object):
 
         self.format.__setattr__(name, value)
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         return self.format[key]
 
     def __setitem__(self, key, item):
@@ -95,7 +96,7 @@ class secsStreamFunction(object):
         :returns: encoded data
         :rtype: string
         """
-        if self.format == None:
+        if self.format is None:
             return ""
 
         return self.format.encode()
@@ -106,7 +107,7 @@ class secsStreamFunction(object):
         :param data: encoded data
         :type data: string
         """
-        if not self.format == None:
+        if self.format is not None:
             self.format.decode(data)
 
     def set(self, value):
