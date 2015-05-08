@@ -16,6 +16,9 @@ To install the current development code (might be instable):
 $ pip install git+git://github.com/bparzella/secsgem
 ```
 
+##Documentation
+Documentation build with readthedocs.org can be found [here](http://secsgem.readthedocs.org/en/latest/)
+
 ##Sample
 
 ```python
