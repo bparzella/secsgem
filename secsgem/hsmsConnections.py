@@ -612,6 +612,8 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         packet = hsmsPacket(hsmsSelectRspHeader(system))
         self.sendPacket(packet)
 
+        self.connectionState = hsmsConnectionState.SELECTED
+
     def waitforSelectRsp(self):
         """Wait for an incoming Select Response
 
