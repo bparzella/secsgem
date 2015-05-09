@@ -211,7 +211,7 @@ class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
         if terminateConnections:
             for connection in self.connections:
                 if connection.connected:
-                    connection.disconnect(separate=True)
+                    threading.Thread(target=connection.disconnect, args=(True, ), name="secsgem_hsmsMultiServer_DisconnectThread_{}:{}".format(connection.remoteIP, connection.remotePort)).start()
 
         self.connectionsLock.release()
 
