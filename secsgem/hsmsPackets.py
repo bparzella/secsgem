@@ -195,6 +195,34 @@ class hsmsLinktestRspHeader(hsmsHeader):
         self.system = system
 
 
+class hsmsRejectReqHeader(hsmsHeader):
+    """Header for Reject Request
+
+    Header for message with SType 7.
+
+    :param system: message ID
+    :type system: integer
+    :param sType: sType of rejected message
+    :type sType: integer
+    :param reason: reason for rejection
+    :type reason: integer
+
+    **Example**::
+
+        >>> secsgem.hsmsPackets.hsmsRejectReqHeader(17, 3, 4)
+        secsgem.hsmsPackets.hsmsRejectReqHeader({'function': 4, 'stream': 3, 'pType': 0, 'system': 17, 'sessionID': 65535, 'requireResponse': False, 'sType': 7})
+
+    """
+    def __init__(self, system, sType, reason):
+        self.sessionID = 0x0FFFF
+        self.requireResponse = False
+        self.stream = sType
+        self.function = reason
+        self.pType = 0x00
+        self.sType = 0x07
+        self.system = system
+
+
 class hsmsSeparateReqHeader(hsmsHeader):
     """Header for Separate Request
 
@@ -296,13 +324,13 @@ class hsmsPacket:
 
         """
         length = 10 + len(self.data)
-        dataLengthText = str(len(self.data))+"s"
+        dataLengthText = str(len(self.data)) + "s"
 
         headerStream = self.header.stream
         if self.header.requireResponse:
             headerStream |= 0b10000000
 
-        return struct.pack(">LHBBBBL"+dataLengthText, length, self.header.sessionID, headerStream, self.header.function, self.header.pType, self.header.sType, self.header.system, self.data)
+        return struct.pack(">LHBBBBL" + dataLengthText, length, self.header.sessionID, headerStream, self.header.function, self.header.pType, self.header.sType, self.header.system, self.data)
 
     @staticmethod
     def decode(text):
@@ -321,9 +349,9 @@ class hsmsPacket:
 
         """
         dataLength = len(text) - 14
-        dataLengthText = str(dataLength)+"s"
+        dataLengthText = str(dataLength) + "s"
 
-        res = struct.unpack(">LHBBBBL"+dataLengthText, text)
+        res = struct.unpack(">LHBBBBL" + dataLengthText, text)
 
         result = hsmsPacket(hsmsHeader(res[6], res[1]))
         result.header.requireResponse = (((res[2] & 0b10000000) >> 7) == 1)

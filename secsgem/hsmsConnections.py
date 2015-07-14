@@ -20,15 +20,18 @@ import logging
 import socket
 import select
 import struct
+import time
 
 import threading
 import traceback
 
 import errno
 
-from hsmsPackets import *
+from hsmsPackets import hsmsPacket
 
-from common import *
+from common import isWindows, StreamFunctionCallbackHandler, EventProducer
+
+# TODO: timeouts (T7, T8)
 
 """Names for hsms header SType"""
 hsmsSTypes = {
@@ -38,6 +41,7 @@ hsmsSTypes = {
     4: "Deselect.rsp",
     5: "Linktest.req",
     6: "Linktest.rsp",
+    7: "Reject.req",
     9: "Separate.req"
 }
 
@@ -49,317 +53,9 @@ def isErrorCodeEWouldBlock(errorcode):
     return False
 
 
-class hsmsConnectionState:
-    """hsms connection state machine states"""
-    NOT_CONNECTED, CONNECTED, NOT_SELECTED, SELECTED = range(4)
+class hsmsConnection(object):
+    """Connection class used for active and passive hsms connections.
 
-
-class hsmsSingleServer(StreamFunctionCallbackHandler, EventProducer):
-    """Server class for single passive (incoming) connection
-
-    Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
-
-    :param port: TCP port to listen on for incoming connections
-    :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
-
-    **Example**::
-
-        def S1F1Handler(connection, packet):
-            print "S1F1 received"
-
-        def onConnect(connection):
-            print "Connected"
-
-        server = secsgem.hsmsConnections.hsmsSingleServer(5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
-        server.registerCallback(1, 1, S1F1Handler)
-
-        connection = server.waitForConnection()
-
-        time.sleep(3)
-
-        connection.disconnect()
-
-    """
-    def __init__(self, port=5000, sessionID=0, eventHandler=None):
-        StreamFunctionCallbackHandler.__init__(self)
-        EventProducer.__init__(self, eventHandler)
-
-        self.port = port
-        self.sessionID = sessionID
-
-    def waitForConnection(self):
-        """Wait for incoming connection
-
-        Opens listening socket and waits (blocking) for the connection. Terminates the listening socket and returns the new connection.
-
-        :returns: the newly established connection
-        :rtype: :class:`secsgem.hsmsConnections.hsmsConnection`
-        """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        if not isWindows():
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-        sock.bind(('', self.port))
-        sock.listen(1)
-
-        while True:
-            accept_result = sock.accept()
-            if accept_result is None:
-                continue
-
-            (sock, (sourceIP, sourcePort)) = accept_result
-
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-
-            connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
-
-            self.fireEvent("RemoteConnected", {'connection': connection})
-
-            connection.startReceiver()
-
-            self.fireEvent("RemoteInitialized", {'connection': connection})
-
-            return connection
-
-        sock.close()
-
-
-class hsmsMultiServer(StreamFunctionCallbackHandler, EventProducer):
-    """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
-
-    :param port: TCP port to listen on
-    :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
-
-    **Example**::
-
-        def S1F1Handler(connection, packet):
-            print "S1F1 received"
-
-        def onConnect(connection):
-            print "Connected"
-
-        server = secsgem.hsmsConnections.hsmsMultiServer(5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
-        server.registerCallback(1, 1, S1F1Handler)
-
-        server.start()
-
-        time.sleep(3)
-
-        server.stop()
-
-    """
-
-    selectTimeout = 0.5
-    """ Timeout for select calls """
-
-    def __init__(self, port=5000, sessionID=0, eventHandler=None):
-        StreamFunctionCallbackHandler.__init__(self)
-        EventProducer.__init__(self, eventHandler)
-
-        self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        if not isWindows():
-            self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-        self.sessionID = sessionID
-        self.port = port
-
-        self.threadRunning = False
-        self.stopThread = False
-
-        self.connections = []
-        self.connectionsLock = threading.Lock()
-
-        self.listenThreadIdentifier = None
-
-    def start(self):
-        """Starts the server and returns. It will launch a listener running in background to wait for incoming connections."""
-        self.listenSock.bind(('', self.port))
-        self.listenSock.listen(1)
-        self.listenSock.setblocking(0)
-
-        self.listenThreadIdentifier = threading.Thread(target=self._listen_thread, args=(), name="secsgem_hsmsMultiServer_listenThread_{}".format(self.port))
-        self.listenThreadIdentifier.start()
-
-        logging.debug("hsmsMultiServer.start: listening")
-
-    def stop(self, terminateConnections=True):
-        """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
-
-        :param terminateConnections: terminate all connection made by this server
-        :type terminateConnections: boolean
-        """
-        self.stopThread = True
-
-        if self.listenThreadIdentifier.isAlive:
-            while self.threadRunning:
-                pass
-
-        self.listenSock.close()
-
-        self.connectionsLock.acquire()
-
-        if terminateConnections:
-            for connection in self.connections:
-                if connection.connected:
-                    threading.Thread(target=connection.disconnect, args=(True, ), name="secsgem_hsmsMultiServer_DisconnectThread_{}:{}".format(connection.remoteIP, connection.remotePort)).start()
-
-        self.connectionsLock.release()
-
-        logging.debug("hsmsMultiServer.stop: server stopped")
-
-    def _initialize_connection_thread(self, accept_result):
-        """Setup connection
-
-        .. warning:: Do not call this directly, used internally.
-        """
-        self.connectionsLock.acquire()
-        (sock, (sourceIP, sourcePort)) = accept_result
-
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-
-        connection = hsmsConnection(sock, self.callbacks, False, sourceIP, sourcePort, self.sessionID, eventHandler=self.parentEventHandler)
-
-        self.connections.append(connection)
-        self.connectionsLock.release()
-
-        self.fireEvent("RemoteConnected", {'connection': connection})
-
-        connection.startReceiver()
-
-        self.fireEvent("RemoteInitialized", {'connection': connection})
-
-    def _listen_thread(self):
-        """Thread listening for incoming connections
-
-        .. warning:: Do not call this directly, used internally.
-        """
-        self.threadRunning = True
-        try:
-            while not self.stopThread:
-                selectResult = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
-
-                if selectResult[0]:
-                    accept_result = None
-
-                    try:
-                        accept_result = self.listenSock.accept()
-                    except socket.error, e:
-                        errorcode = e[0]
-                        if not isErrorCodeEWouldBlock(errorcode):
-                            raise e
-
-                    if accept_result is None:
-                        continue
-
-                    if self.stopThread:
-                        continue
-
-                    logging.debug("hsmsMultiServer._listen_thread: connection from %s:%d", accept_result[1][0], accept_result[1][1])
-
-                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsConnection_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
-
-        except Exception, e:
-            print "hsmsServer._listen_thread : exception", e
-            traceback.print_exc()
-
-        self.threadRunning = False
-
-
-class hsmsClient(StreamFunctionCallbackHandler, EventProducer):
-    """Client class for single active (outgoing) connection
-
-    :param address: IP address of target host
-    :type address: string
-    :param port: TCP port of target host
-    :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
-
-    **Example**::
-
-        def S1F1Handler(connection, packet):
-            print "S1F1 received"
-
-        def onConnect(connection):
-            print "Connected"
-
-        client = secsgem.hsmsConnections.hsmsClient("127.0.0.1", 5000, eventHandler=EventHandler(events={'RemoteInitialized': onConnect}))
-        client.registerCallback(1, 1, S1F1Handler)
-
-        connection = client.connect()
-
-        time.sleep(3)
-
-        connection.disconnect()
-
-    """
-    def __init__(self, address, port=5000, sessionID=0, eventHandler=None):
-        StreamFunctionCallbackHandler.__init__(self)
-        EventProducer.__init__(self, eventHandler)
-
-        self.address = address
-        self.port = port
-        self.sessionID = sessionID
-
-        self.aborted = False
-
-        self.sock = None
-
-    def connect(self):
-        """Open connection to remote host
-
-        :returns: the newly established connection, *None* if connection failed
-        :rtype: :class:`secsgem.hsmsConnections.hsmsConnection`
-        """
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-
-        logging.debug("hsmsClient.connect: connecting to %s:%d", self.address, self.port)
-
-        try:
-            self.sock.connect((self.address, self.port))
-        except socket.error:
-            logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.address, self.port)
-            return None
-
-        connection = hsmsConnection(self.sock, self.callbacks, True, self.address, self.port, self.sessionID, eventHandler=self.parentEventHandler)
-
-        self.fireEvent("RemoteConnected", {'connection': connection})
-
-        connection.startReceiver()
-
-        self.fireEvent("RemoteInitialized", {'connection': connection})
-
-        return connection
-
-    def cancel(self):
-        """Cancel connection to remote host
-        """
-        self.aborted = True
-
-        self.sock.close()
-
-
-class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
-    """Connection class used for active and passive connections. Contains the basic HSMS functionality.
-
-    :param sock: Socket of the underlying connection
-    :type sock: socket.socket
-    :param callbacks: Callbacks used for this connections streams and functions
-    :type callbacks: dict
     :param active: Is the connection active (*True*) or passive (*False*)
     :type active: boolean
     :param address: IP address of remote host
@@ -368,36 +64,9 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
     :type port: integer
     :param sessionID: session / device ID to use for connection
     :type sessionID: integer
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
+    :param delegate: target for messages
+    :type delegate: object
     """
-    def __init__(self, sock, callbacks, active, address, port, sessionID=0, eventHandler=None):
-        StreamFunctionCallbackHandler.__init__(self)
-        EventProducer.__init__(self, eventHandler)
-
-        self.sock = sock
-        self.callbacks = dict(callbacks)
-        self.active = active
-        self.remoteIP = address
-        self.remotePort = port
-        self.sessionID = sessionID
-
-        self.receiveBuffer = ""
-
-        self.systemCounter = 1
-
-        self.threadRunning = False
-        self.stopThread = False
-
-        self.eventQueue = []
-        self.packetQueue = []
-
-        self.connected = True
-
-        self.connectionState = hsmsConnectionState.NOT_SELECTED
-
-        # disable blocking
-        self.sock.setblocking(0)
 
     selectTimeout = 0.5
     """ Timeout for select calls """
@@ -405,38 +74,73 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
     sendBlockSize = 1024*1024
     """ Block size for outbound data """
 
+    T3 = 45.0
+    """ Reply Timeout """
+
+    T5 = 10.0
+    """ Connect Separation Time """
+
+    T6 = 5.0
+    """ Control Transaction Timeout """
+
+    def __init__(self, active, address, port, sessionID=0, delegate=None):
+        # set parameters
+        self.active = active
+        self.remoteAddress = address
+        self.remotePort = port
+        self.sessionID = sessionID
+        self.delegate = delegate
+
+        # connection socket
+        self.sock = None
+
+        # buffer for received data
+        self.receiveBuffer = ""
+
+        # system id counter
+        self.systemCounter = 1
+
+        # receiving thread flags
+        self.threadRunning = False
+        self.stopThread = False
+
+        # connected flag
+        self.connected = False
+
+        # flag set during disconnection
+        self.disconnecting = False
+
     def _serializeData(self):
         """Returns data for serialization
 
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'active': self.active, 'remoteIP': self.remoteIP, 'remotePort': self.remotePort, 'sessionID': self.sessionID, 'systemCounter': self.systemCounter, 'connected': self.connected, 'connectionState': self.connectionState}
+        return {'active': self.active, 'remoteAddress': self.remoteAddress, 'remotePort': self.remotePort, 'sessionID': self.sessionID, 'systemCounter': self.systemCounter, 'connected': self.connected}
 
     def __str__(self):
-        return ("Active" if self.active else "Passive") + " connection to " + self.remoteIP + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID) + ", connectionState=" + str(self.connectionState)
+        return ("Active" if self.active else "Passive") + " connection to " + self.remoteAddress + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID)
 
-    def startReceiver(self):
+    def _startReceiver(self):
         """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
 
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
-        .. seealso:: :class:`secsgem.hsmsConnections.hsmsSingleServer`, :class:`secsgem.hsmsConnections.hsmsMultiServer`, :class:`secsgem.hsmsConnections.hsmsClient`
+        .. seealso:: :class:`secsgem.hsmsConnections.hsmsActiveConnection`, :class:`secsgem.hsmsConnections.hsmsPassiveConnection`, :class:`secsgem.hsmsConnections.hsmsMultiPassiveConnection`
         """
-        threading.Thread(target=self._receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteIP, self.remotePort)).start()
+        # mark connection as connected
+        self.connected = True
 
+        if self.delegate and hasattr(self.delegate, '_onConnectionEstablished') and callable(getattr(self.delegate, '_onConnectionEstablished')):
+            self.delegate._onConnectionEstablished()
+
+        # start data receiving thread
+        threading.Thread(target=self.__receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress, self.remotePort)).start()
+
+        # wait until thread is running
         while not self.threadRunning:
             pass
 
-        if self.active:
-            self.sendSelectReq()
-            self.waitforSelectRsp()
-            self.sendLinktestReq()
-            self.waitforLinktestRsp()
-        else:
-            system = self.waitforSelectReq()
-            self.sendSelectRsp(system)
-            self.sendLinktestReq()
-            self.waitforLinktestRsp()
+        # send event
 
     def disconnect(self, separate=False):
         """Close connection
@@ -444,16 +148,22 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         :param separate: use Separate instead of Deselect
         :type separate: boolean
         """
-        if separate:
-            self.sendSeparateReq()
-        else:
-            self.sendDeselectReq()
-            self.waitforDeselectRsp()
+        # return if thread isn't running
+        if not self.threadRunning:
+            return
 
+        # set disconnecting flag to avoid another select
+        self.disconnecting = True
+
+        # set flag to stop the thread
         self.stopThread = True
 
+        # wait until thread stopped
         while self.threadRunning:
             pass
+
+        # clear disconnecting flag, no selects coming any more
+        self.disconnecting = False
 
     def sendPacket(self, packet):
         """Send the ASCII coded packet to the remote host
@@ -463,8 +173,10 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         """
         logging.info("> %s", packet)
 
+        # encode the packet
         data = packet.encode()
 
+        # split data into blocks
         blocks = [data[i:i+self.sendBlockSize] for i in range(0, len(data), self.sendBlockSize)]
 
         for block in blocks:
@@ -489,369 +201,106 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
                         raise e
                     # it is EWOULDBLOCK, so retry sending
 
-    def waitforStreamFunction(self, stream, function):
-        """Wait for an incoming stream and function and return the receive data
-
-        :param stream: number of stream to wait for
-        :type stream: integer
-        :param function: number of function to wait for
-        :type function: integer
-        :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        foundPacket = None
-
-        while foundPacket is None:
-            for packet in self.packetQueue:
-                if (packet.header.stream == stream) and (packet.header.function == function):
-                    self.packetQueue.remove(packet)
-                    foundPacket = packet
-                    break
-
-            if foundPacket is None:
-                if event.wait(1) == True:
-                    event.clear()
-
-        self.eventQueue.remove(event)
-
-        return packet
-
-    def waitforSystem(self, system):
-        """Wait for an message with supplied system
-
-        :param system: number of system to wait for
-        :type system: integer
-        :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        foundPacket = None
-
-        while foundPacket is None:
-            for packet in self.packetQueue:
-                if (packet.header.system == system):
-                    self.packetQueue.remove(packet)
-                    foundPacket = packet
-                    break
-
-            if foundPacket is None:
-                if event.wait(1) == True:
-                    event.clear()
-
-        self.eventQueue.remove(event)
-
-        return packet
-
-    def sendAndWaitForResponse(self, packet):
-        """Send the packet and wait for the response
-
-        :param packet: packet to be sent
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
-        :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
-        """
-        outPacket = hsmsPacket(hsmsStreamFunctionHeader(self.getNextSystemCounter(), packet._stream, packet._function, True, self.sessionID), packet.encode())
-        self.sendPacket(outPacket)
-
-        return self.waitforSystem(outPacket.header.system)
-
-    def sendResponse(self, packet, system):
-        """Send response packet for system
-
-        :param packet: packet to be sent
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
-        :param system: system to reply to
-        :type system: integer
-        """
-        outPacket = hsmsPacket(hsmsStreamFunctionHeader(system, packet._stream, packet._function, False, self.sessionID), packet.encode())
-        self.sendPacket(outPacket)
-
-    def sendSelectReq(self):
-        """Send a Select Request to the remote host"""
-        packet = hsmsPacket(hsmsSelectReqHeader(self.getNextSystemCounter()))
-        self.sendPacket(packet)
-
-    def waitforSelectReq(self):
-        """Wait for an incoming Select Request
-
-        :returns: System of the incoming request required for response
-        :rtype: integer
-        """
-        result = None
-
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x01):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        result = packet.header.system
-                        break
-
-        self.eventQueue.remove(event)
-
-        return result
-
-    def sendSelectRsp(self, system=None):
-        """Send a Select Response to the remote host
-
-        :param system: System of the request to reply for
-        :type system: integer
-        """
-        packet = hsmsPacket(hsmsSelectRspHeader(system))
-        self.sendPacket(packet)
-
-        self.connectionState = hsmsConnectionState.SELECTED
-
-    def waitforSelectRsp(self):
-        """Wait for an incoming Select Response
-
-        :returns: System of the incoming response for validation
-        :rtype: integer
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-        result = -1
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x02):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        result = packet.header.function
-                        break
-
-        self.eventQueue.remove(event)
-
-        self.connectionState = hsmsConnectionState.SELECTED
-
-        return result
-
-    def sendLinktestReq(self):
-        """Send a Linktest Request to the remote host"""
-        packet = hsmsPacket(hsmsLinktestReqHeader(self.getNextSystemCounter()))
-        self.sendPacket(packet)
-
-    def waitforLinktestReq(self):
-        """Wait for an incoming Linktest Request
-
-        :returns: System of the incoming request required for response
-        :rtype: integer
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x05):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        break
-
-        self.eventQueue.remove(event)
-
-    def sendLinktestRsp(self, system):
-        """Send a Linktest Response to the remote host
-
-        :param system: System of the request to reply for
-        :type system: integer
-        """
-        packet = hsmsPacket(hsmsLinktestReqHeader(system))
-        self.sendPacket(packet)
-
-    def waitforLinktestRsp(self):
-        """Wait for an incoming Linktest Response
-
-        :returns: System of the incoming response for validation
-        :rtype: integer
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x06):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        break
-
-        self.eventQueue.remove(event)
-
-    def sendDeselectReq(self):
-        """Send a Deselect Request to the remote host"""
-        packet = hsmsPacket(hsmsDeselectReqHeader(self.getNextSystemCounter()))
-        self.sendPacket(packet)
-
-    def waitforDeselectReq(self):
-        """Wait for an incoming Deselect Request
-
-        :returns: System of the incoming request required for response
-        :rtype: integer
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x03):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        break
-
-        self.eventQueue.remove(event)
-
-    def sendDeselectRsp(self, system):
-        """Send a Deselect Response to the remote host
-
-        :param system: System of the request to reply for
-        :type system: integer
-        """
-        packet = hsmsPacket(hsmsDeselectRspHeader(system))
-        self.sendPacket(packet)
-
-    def waitforDeselectRsp(self):
-        """Wait for an incoming Deselect Response
-
-        :returns: System of the incoming response for validation
-        :rtype: integer
-        """
-        event = threading.Event()
-        self.eventQueue.append(event)
-
-        eventReceived = False
-        result = -1
-
-        while not eventReceived:
-            if event.wait(1) == True:
-                event.clear()
-                for packet in self.packetQueue:
-                    if (packet.header.sessionID == 0xFFFF) and (packet.header.stream == 0x00) and (packet.header.sType == 0x04):
-                        self.packetQueue.remove(packet)
-                        eventReceived = True
-                        result = packet.header.function
-                        break
-
-        self.eventQueue.remove(event)
-
-        self.connectionState = hsmsConnectionState.NOT_SELECTED
-
-        return result
-
-    def sendSeparateReq(self):
-        """Send a Separate Request to the remote host"""
-        packet = hsmsPacket(hsmsSeparateReqHeader(self.getNextSystemCounter()))
-        self.sendPacket(packet)
-
-        self.connectionState = hsmsConnectionState.NOT_SELECTED
-
     def _process_receive_buffer(self):
         """Parse the receive buffer and dispatch callbacks.
 
-        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection._receiver_thread` method.
+        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
         """
+        # check if enough data in input buffer
         if len(self.receiveBuffer) < 4:
             return False
 
+        # unpack length from input buffer
         length = struct.unpack(">L", self.receiveBuffer[0:4])[0] + 4
 
+        # check if enough data in input buffer
         if len(self.receiveBuffer) < length:
             return False
 
+        # extract and remove packet from input buffer
         data = self.receiveBuffer[0:length]
         self.receiveBuffer = self.receiveBuffer[length:]
 
+        # decode received packet
         response = hsmsPacket.decode(data)
-        if response.header.sessionID == 0xffff:
-            logging.info("< %s\n  %s", response, hsmsSTypes[response.header.sType])
-        else:
-            if response.data is None:
-                logging.info("< %s", response)
-            else:
-                logging.info("< %s", response)
 
-        callbackIndex = "s"+str(response.header.stream)+"f"+str(response.header.function)
-        if callbackIndex in self.callbacks:
-            for callback in self.callbacks[callbackIndex]:
-                threading.Thread(target=callback, args=(self, response), name="secsgem_hsmsConnection_callback_{}".format(callbackIndex)).start()
-        else:
-            self.packetQueue.append(response)
-            for event in self.eventQueue:
-                event.set()
+        # redirect packet to hsms handler
+        if self.delegate and hasattr(self.delegate, '_onConnectionPacketReceived') and callable(getattr(self.delegate, '_onConnectionPacketReceived')):
+            self.delegate._onConnectionPacketReceived(response)
 
+        # return True if more data is available
         if len(self.receiveBuffer) > 0:
             return True
 
         return False
 
-    def _receiver_thread(self):
+    def __receiver_thread(self):
         """Thread for receiving incoming data and adding it to the receive buffer.
 
-        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection.startReceiver` method.
+        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
         """
         self.threadRunning = True
 
         try:
+            # check if shutdown requested
             while not self.stopThread:
+                # check if data available
                 selectResult = select.select([self.sock], [], [self.sock], self.selectTimeout)
+
+                # check if disconnection was started
+                if self.disconnecting:
+                    time.sleep(0.2)
+                    continue
 
                 if selectResult[0]:
                     try:
+                        # get data from socket
                         recvData = self.sock.recv(1024)
 
+                        # check if socket was closed
                         if len(recvData) == 0:
                             self.connected = False
                             self.stopThread = True
                             continue
 
+                        # add received data to input buffer
                         self.receiveBuffer += recvData
                     except socket.error, e:
                         errorcode = e[0]
                         if not isErrorCodeEWouldBlock(errorcode):
                             raise e
 
+                    # handle data in input buffer
                     while self._process_receive_buffer():
                         pass
 
         except Exception, e:
-            print "hsmsClient.ReceiverThread : exception", e
-            print traceback.format_exc()
+            result = 'hsmsClient.ReceiverThread : exception {0}\n'.format(e)
+            result += ''.join(traceback.format_stack())
+            logging.error(result)
 
-        self.fireEvent("RemoteDisconnected", {'connection': self})
+        # notify listeners of disconnection
+        if self.delegate and hasattr(self.delegate, '_onBeforeConnectionClosed') and callable(getattr(self.delegate, '_onBeforeConnectionClosed')):
+            self.delegate._onBeforeConnectionClosed()
 
+        # close the socket
         self.sock.close()
 
+        # notify listeners of disconnection
+        if self.delegate and hasattr(self.delegate, '_onConnectionClosed') and callable(getattr(self.delegate, '_onConnectionClosed')):
+            self.delegate._onConnectionClosed()
+
+        # reset all flags
         self.connected = False
-
-        self.connectionState = hsmsConnectionState.NOT_CONNECTED
-
         self.threadRunning = False
+        self.stopThread = False
+
+        # clear receive buffer
+        self.receiveBuffer = ""
+
+        # notify inherited classes of disconnection
+        if hasattr(self.__class__, '_onHsmsConnectionClose') and callable(getattr(self.__class__, '_onHsmsConnectionClose')):
+            self._onHsmsConnectionClose({'connection': self})
 
     def getNextSystemCounter(self):
         """Returns the next System.
@@ -862,17 +311,472 @@ class hsmsConnection(StreamFunctionCallbackHandler, EventProducer):
         self.systemCounter += 1
         return self.systemCounter
 
-    def defaultS0F0Handler(self, connection, packet):
-        """Stream/Function callback to autoreply Linktest requests
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+class hsmsPassiveConnection(hsmsConnection):
+    """Server class for single passive (incoming) connection
+
+    Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
+
+    :param address: IP address of target host
+    :type address: string
+    :param port: TCP port of target host
+    :type port: integer
+    :param sessionID: session / device ID to use for connection
+    :type sessionID: integer
+    :param delegate: target for messages
+    :type delegate: object
+
+    **Example**::
+
+        def S1F1Handler(connection, packet):
+            print "S1F1 received"
+
+        def onConnect(connection):
+            print "Connected"
+
+        server = secsgem.hsmsConnections.hsmsPassiveConnection(5000, eventHandler=EventHandler(events={'RemoteConnected': onConnect}))
+        server.registerCallback(1, 1, S1F1Handler)
+
+        connection = server.waitForConnection()
+
+        time.sleep(3)
+
+        connection.disconnect()
+
+    """
+    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+        # initialize super class
+        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+
+        # initially not enabled
+        self.enabled = False
+
+        # reconnect thread required for passive connection
+        self.serverThread = None
+        self.stopServerThread = False
+
+    def _onHsmsConnectionClose(self, data):
+        """Signal from super that the connection was closed
+
+        This is required to initiate the reconnect if the connection is still enabled
         """
-        if packet.header.sessionID != 0xffff:
-            logging.error("S00F00: invalid sessionID")
+        if self.enabled:
+            self.__startServerThread()
+
+    def enable(self):
+        """Enable the connection.
+
+        Starts the connection process to the passive remote.
+        """
+        # only start if not already enabled
+        if not self.enabled:
+            # mark connection as enabled
+            self.enabled = True
+
+            # start the connection thread
+            self.__startServerThread()
+
+    def disable(self):
+        """Disable the connection.
+
+        Stops all connection attempts, and closes the connection
+        """
+        # only stop if enabled
+        if self.enabled:
+            #mark connection as disabled
+            self.enabled = False
+
+            # stop connection thread if it is running
+            if self.serverThread and self.serverThread.isAlive():
+                self.stopServerThread = True
+
+            # wait for connection thread to stop
+            while self.stopServerThread:
+                time.sleep(0.2)
+
+            # disconnect super class
+            self.disconnect()
+
+    def __startServerThread(self):
+        self.serverThread = threading.Thread(target=self.__serverThread, name="secsgem_hsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
+        self.serverThread.start()
+
+    def __serverThread(self):
+        """Thread function to (re)connect active connection to remote host.
+
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        if not isWindows():
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        sock.bind(('', self.remotePort))
+        sock.listen(1)
+
+        while True:
+            accept_result = sock.accept()
+            if accept_result is None:
+                continue
+
+            (self.sock, (sourceIP, sourcePort)) = accept_result
+
+            # setup socket
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+            # make socket nonblocking
+            self.sock.setblocking(0)
+
+            # start the receiver thread
+            self._startReceiver()
+
+            sock.close()
+
             return
 
-        if packet.header.sType == 0x05:
-            responsePacket = hsmsPacket(hsmsLinktestRspHeader(packet.header.system))
-            self.sendPacket(responsePacket)
-        else:
-            logging.error("S00F00: unexpected sType (%s)", packet.header)
+class hsmsMultiPassiveConnection(hsmsConnection):
+    """Connection class for single connection from hsmsMultiPassiveServer
+
+    Handles connections incoming connection from hsmsMultiPassiveServer
+
+    :param address: IP address of target host
+    :type address: string
+    :param port: TCP port of target host
+    :type port: integer
+    :param sessionID: session / device ID to use for connection
+    :type sessionID: integer
+    :param delegate: target for messages
+    :type delegate: object
+
+    **Example**::
+
+        # TODO: create example
+
+    """
+    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+        # initialize super class
+        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+
+        # initially not enabled
+        self.enabled = False
+
+    def _onConnected(self, sock, address):
+        # setup socket
+        self.sock = sock
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+        # make socket nonblocking
+        self.sock.setblocking(0)
+
+        # start the receiver thread
+        self._startReceiver()
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
+        if self.connected:
+            self.disconnect()
+
+
+class hsmsMultiPassiveServer(object):
+    """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
+
+    :param port: TCP port to listen on
+    :type port: integer
+
+    **Example**::
+
+        # TODO: create example
+
+    """
+
+    selectTimeout = 0.5
+    """ Timeout for select calls """
+
+    def __init__(self, port=5000):
+        self.listenSock = None
+
+        self.port = port
+
+        self.threadRunning = False
+        self.stopThread = False
+
+        self.connections = {}
+
+        self.listenThread = None
+
+    def createConnection(self, address, port=5000, sessionID=0, delegate=None):
+        """ Create and remember connection for the server
+
+        :param address: IP address of target host
+        :type address: string
+        :param port: TCP port of target host
+        :type port: integer
+        :param sessionID: session / device ID to use for connection
+        :type sessionID: integer
+        :param delegate: target for messages
+        :type delegate: object
+        """
+        connection = hsmsMultiPassiveConnection(address, port, sessionID, delegate)
+        connection.handler = self
+
+        self.connections[address] = connection
+
+        return connection
+
+    def start(self):
+        """Starts the server and returns. It will launch a listener running in background to wait for incoming connections."""
+        self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        if not isWindows():
+            self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        self.listenSock.bind(('', self.port))
+        self.listenSock.listen(1)
+        self.listenSock.setblocking(0)
+
+        self.listenThread = threading.Thread(target=self._listen_thread, args=(), name="secsgem_hsmsMultiPassiveServer_listenThread_{}".format(self.port))
+        self.listenThread.start()
+
+        logging.debug("hsmsMultiPassiveServer.start: listening")
+
+    def stop(self, terminateConnections=True):
+        """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
+
+        :param terminateConnections: terminate all connection made by this server
+        :type terminateConnections: boolean
+        """
+        self.stopThread = True
+
+        if self.listenThread.isAlive:
+            while self.threadRunning:
+                pass
+
+        self.listenSock.close()
+
+        self.stopThread = False
+
+        if terminateConnections:
+            for address in self.connections:
+                connection = self.connections[address]
+                connection.disconnect()
+
+        logging.debug("hsmsMultiPassiveServer.stop: server stopped")
+
+    def _initialize_connection_thread(self, accept_result):
+        """Setup connection
+
+        .. warning:: Do not call this directly, used internally.
+        """
+        (sock, (sourceIP, sourcePort)) = accept_result
+
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+        if sourceIP not in self.connections:
+            sock.close()
+            return
+
+        connection = self.connections[sourceIP]
+
+        if not connection.enabled:
+            sock.close()
+            return
+
+        connection._onConnected(sock, sourceIP)
+
+    def _listen_thread(self):
+        """Thread listening for incoming connections
+
+        .. warning:: Do not call this directly, used internally.
+        """
+        self.threadRunning = True
+        try:
+            while not self.stopThread:
+                # check for data in the input buffer
+                selectResult = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
+
+                if selectResult[0]:
+                    accept_result = None
+
+                    try:
+                        accept_result = self.listenSock.accept()
+                    except socket.error, e:
+                        errorcode = e[0]
+                        if not isErrorCodeEWouldBlock(errorcode):
+                            raise e
+
+                    if accept_result is None:
+                        continue
+
+                    if self.stopThread:
+                        continue
+
+                    logging.debug("hsmsMultiPassiveServer._listen_thread: connection from %s:%d", accept_result[1][0], accept_result[1][1])
+
+                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
+
+        except Exception, e:
+            result = 'hsmsServer._listen_thread : exception {0}\n'.format(e)
+            result += ''.join(traceback.format_stack())
+            logging.error(result)
+
+        self.threadRunning = False
+
+
+class hsmsActiveConnection(hsmsConnection):
+    """Client class for single active (outgoing) connection
+
+    :param address: IP address of target host
+    :type address: string
+    :param port: TCP port of target host
+    :type port: integer
+    :param sessionID: session / device ID to use for connection
+    :type sessionID: integer
+    :param delegate: target for messages
+    :type delegate: object
+
+    **Example**::
+
+        import secsgem
+
+        def S0F0Handler(connection, packet):
+            print "S0F0 received:", packet
+
+        def onConnect(event, data):
+            print "Connected"
+            client = data["connection"]
+            packet = secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(client.getNextSystemCounter()))
+            client.sendPacket(packet)
+
+        client = secsgem.hsmsActiveConnection("10.211.55.33", 5000, 0, eventHandler=secsgem.EventHandler(events={'HsmsConnectionEstablished': onConnect}))
+        client.registerCallback(0, 0, S0F0Handler)
+
+    """
+    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+        # initialize super class
+        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+
+        # initially not enabled
+        self.enabled = False
+
+        # reconnect thread required for active connection
+        self.connectionThread = None
+        self.stopConnectionThread = False
+
+        # flag if this is the first connection since enable
+        self.firstConnection = True
+
+    def _onHsmsConnectionClose(self, data):
+        """Signal from super that the connection was closed
+
+        This is required to initiate the reconnect if the connection is still enabled
+        """
+        if self.enabled:
+            self.__startConnectThread()
+
+    def enable(self):
+        """Enable the connection.
+
+        Starts the connection process to the passive remote.
+        """
+        # only start if not already enabled
+        if not self.enabled:
+            # reset first connection to eliminate reconnection timeout
+            self.firstConnection = True
+
+            # mark connection as enabled
+            self.enabled = True
+
+            # start the connection thread
+            self.__startConnectThread()
+
+    def disable(self):
+        """Disable the connection.
+
+        Stops all connection attempts, and closes the connection
+        """
+        # only stop if enabled
+        if self.enabled:
+            #mark connection as disabled
+            self.enabled = False
+
+            # stop connection thread if it is running
+            if self.connectionThread and self.connectionThread.isAlive():
+                self.stopConnectionThread = True
+
+            # wait for connection thread to stop
+            while self.stopConnectionThread:
+                time.sleep(0.2)
+
+            # disconnect super class
+            self.disconnect()
+
+    def __idle(self, timeout):
+        """Wait until timeout elapsed or connection thread is stopped
+
+        :param timeout: number of seconds to wait
+        :type timeout: integer
+        :returns: False if thread was stopped
+        :rtype: boolean
+        """
+        for i in range(int(timeout) * 5):
+            time.sleep(0.2)
+
+            # check if connection was disabled
+            if self.stopConnectionThread:
+                self.stopConnectionThread = False
+                return False
+
+        return True
+
+    def __startConnectThread(self):
+        self.connectionThread = threading.Thread(target=self.__connectThread, name="secsgem_hsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
+        self.connectionThread.start()
+
+    def __connectThread(self):
+        """Thread function to (re)connect active connection to remote host.
+
+        .. warning:: Do not call this directly, for internal use only.
+        """
+        # wait for timeout if this is not the first connection
+        if not self.firstConnection:
+            if not self.__idle(self.T5):
+                return
+
+        self.firstConnection = False
+
+        # try to connect to remote
+        while not self.__connect():
+            if not self.__idle(self.T5):
+                return
+
+    def __connect(self):
+        """Open connection to remote host
+
+        :returns: True if connection was established, False if connection failed
+        :rtype: boolean
+        """
+        # create socket
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # setup socket
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+        logging.debug("hsmsClient.connect: connecting to %s:%d", self.remoteAddress, self.remotePort)
+
+        # try to connect socket
+        try:
+            self.sock.connect((self.remoteAddress, self.remotePort))
+        except socket.error:
+            logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.remoteAddress, self.remotePort)
+            return False
+
+        # make socket nonblocking
+        self.sock.setblocking(0)
+
+        # start the receiver thread
+        self._startReceiver()
+
+        return True

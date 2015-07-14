@@ -15,6 +15,7 @@
 #####################################################################
 
 from hsmsConnections import *
+from hsmsConnectionManager import *
 from hsmsPackets import *
 
 from secsFunctionBase import *

@@ -15,19 +15,16 @@
 #####################################################################
 """Handler for GEM commands. Used in combination with :class:`secsgem.hsmsHandler.hsmsConnectionManager`"""
 
-from hsmsHandler import *
-from hsmsPackets import *
 
-from secsHandler import *
-from secsVariables import *
+import logging
+import threading
+import time
 
+from fysom import Fysom
 
-class gemCommunicationState:
-    """hsms connection state machine states"""
-    DISABLED, ENABLED, NOT_COMMUNICATING, EQUIPMENT_INITIATED_CONNECT, WAIT_CRA, WAIT_DELAY, HOST_INITIATED_CONNECT, WAIT_CR_FROM_HOST, COMMUNICATING = range(9)
+from secsHandler import secsHandler
 
-
-class gemDefaultHandler(secsDefaultHandler):
+class gemHandler(secsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -42,9 +39,11 @@ class gemDefaultHandler(secsDefaultHandler):
     :type name: string
     :param eventHandler: object for event handling
     :type eventHandler: :class:`secsgem.common.EventHandler`
+    :param connectionHandler: object for connection handling (ie multi server)
+    :type connectionHandler: object
     """
 
-    ceids = secsDefaultHandler.ceids
+    ceids = secsHandler.ceids
     """Dictionary of available collection events, CEID is the key
 
     :param name: Name of the data value
@@ -53,7 +52,7 @@ class gemDefaultHandler(secsDefaultHandler):
     :type CEID: integer
     """
 
-    dvs = secsDefaultHandler.dvs
+    dvs = secsHandler.dvs
     """Dictionary of available data values, DVID is the key
 
     :param name: Name of the collection event
@@ -62,7 +61,7 @@ class gemDefaultHandler(secsDefaultHandler):
     :type dv: list of integers
     """
 
-    alarms = secsDefaultHandler.alarms
+    alarms = secsHandler.alarms
     """Dictionary of available alarms, ALID is the key
 
     :param alarmText: Description of the alarm
@@ -73,7 +72,7 @@ class gemDefaultHandler(secsDefaultHandler):
     :type ceidOff: integer
     """
 
-    rcmds = secsDefaultHandler.rcmds
+    rcmds = secsHandler.rcmds
     """Dictionary of available remote commands, command is the key
 
     :param params: description of the parameters
@@ -82,15 +81,50 @@ class gemDefaultHandler(secsDefaultHandler):
     :type CEID: list of integers
     """
 
-    def __init__(self, address, port, active, sessionID, name, eventHandler=None):
-        secsDefaultHandler.__init__(self, address, port, active, sessionID, name, eventHandler)
+    def __init__(self, address, port, active, sessionID, name, eventHandler=None, customConnectionHandler=None):
+        secsHandler.__init__(self, address, port, active, sessionID, name, eventHandler, customConnectionHandler)
 
-        self.communicationState = gemCommunicationState.WAIT_CR_FROM_HOST
-        self.communicationDelay = 10
+        # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
+        self.communicationState = Fysom({
+            'initial': 'DISABLED',  # 1
+            'events': [
+                {'name': 'enable', 'src': 'DISABLED', 'dst': 'ENABLED'},  # 2
+                {'name': 'disable', 'src': ['ENABLED', 'NOT_COMMUNICATING', 'COMMUNICATING', 'EQUIPMENT_INITIATED_CONNECT', 'WAIT_DELAY', 'WAIT_CRA', "HOST_INITIATED_CONNECT", "WAIT_CR_FROM_HOST"], 'dst': 'DISABLED'}, #3
+                {'name': 'select', 'src': 'NOT_COMMUNICATING', 'dst': 'EQUIPMENT_INITIATED_CONNECT'},  # 5
+                {'name': 'communicationreqfail', 'src': 'WAIT_CRA', 'dst': 'WAIT_DELAY'},  # 6
+                {'name': 'delayexpired', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 7
+                {'name': 'messagereceived', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 8
+                {'name': 's1f14received', 'src': 'WAIT_CRA', 'dst': 'COMMUNICATING'},  # 9
+                {'name': 'communicationfail', 'src': 'COMMUNICATING', 'dst': 'NOT_COMMUNICATING'},  # 14
+                {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'], 'dst': 'COMMUNICATING'},  # 15 (WAIT_CR_FROM_HOST is running in background - AND state - so if s1f13 is received we go all communicating)
+            ],
+            'callbacks': {
+                'onWAIT_CRA': self._onStateWaitCRA,
+                'onWAIT_DELAY': self._onStateWaitDelay,
+                'onleaveWAIT_CRA': self._onStateLeaveWaitCRA,
+                'onleaveWAIT_DELAY': self._onStateLeaveWaitDelay,
+                'onCOMMUNICATING': self._onStateCommunicating,
+                # 'onselect': self.onStateSelect,
+            },
+            'autoforward': [
+                {'src': 'ENABLED', 'dst': 'NOT_COMMUNICATING'},  # 4
+                {'src': 'EQUIPMENT_INITIATED_CONNECT', 'dst': 'WAIT_CRA'},  # 5
+                {'src': 'HOST_INITIATED_CONNECT', 'dst': 'WAIT_CR_FROM_HOST'},  # 10
+            ]
+        })
+
+        self.waitCRATimer = None
+        self.commDelayTimer = None
+        self.commDelayTimeout = 10
 
         self.reportIDCounter = 1000
 
         self.reportSubscriptions = {}
+
+        self.registerCallback(1, 1, self.S1F1Handler)
+        self.registerCallback(1, 13, self.S1F13Handler)
+        self.registerCallback(6, 11, self.S6F11Handler)
+        self.registerCallback(10, 1, self.S10F1Handler)
 
     def _serializeData(self):
         """Returns data for serialization
@@ -98,61 +132,120 @@ class gemDefaultHandler(secsDefaultHandler):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        data = secsDefaultHandler._serializeData(self)
-        data.update({'communicationState': self.communicationState, 'communicationDelay': self.communicationDelay, 'reportIDCounter': self.reportIDCounter, 'reportSubscriptions': self.reportSubscriptions})
+        data = secsHandler._serializeData(self)
+        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.commDelayTimeout, 'reportIDCounter': self.reportIDCounter, 'reportSubscriptions': self.reportSubscriptions})
         return data
 
-    def _setConnection(self, connection):
-        """Set the connection of the for this models. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`.
+    def enable(self):
+        """Enables the connection"""
+        self.connection.enable()
+        self.communicationState.enable()
 
-        :param connection: The connection the model uses
-        :type connection: :class:`secsgem.hsmsConnections.hsmsConnection`
+    def disable(self):
+        """Disables the connection"""
+        self.connection.disable()
+        self.communicationState.disable()
+
+    def _onHsmsPacketReceived(self, packet):
+        """Packet received from hsms layer
+
+        :param packet: received data packet
+        :type packet: object
         """
-        secsDefaultHandler._setConnection(self, connection)
+        message = self.secsDecode(packet)
 
-        self.connection.registerCallback(1, 1, self.S1F1Handler)
-        self.connection.registerCallback(1, 13, self.S1F13Handler)
-        self.connection.registerCallback(6, 11, self.S6F11Handler)
-        self.connection.registerCallback(10, 1, self.S10F1Handler)
+        if message is None:
+            logging.info("< %s", packet)
+        else:
+            logging.info("< %s\n%s", packet, message)
 
-    def _clearConnection(self):
-        """Clear the connection associated with the model instance. Called by :class:`secsgem.hsmsHandler.hsmsConnectionManager`."""
-        self.connection.unregisterCallback(1, 1, self.S1F1Handler)
-        self.connection.unregisterCallback(1, 13, self.S1F13Handler)
-        self.connection.unregisterCallback(6, 11, self.S6F11Handler)
-        self.connection.unregisterCallback(10, 1, self.S10F1Handler)
+        if self.communicationState.isstate('WAIT_CRA'):
+            if packet.header.stream == 1 and packet.header.function == 13:
+                if self.isHost:
+                    self.sendStreamFunction(self.streamFunction(1, 14)({"COMMACK": 1, "DATA": {}}))
+                else:
+                    self.sendStreamFunction(self.streamFunction(1, 14)({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}}))
 
-        secsDefaultHandler._clearConnection(self)
+                self.communicationState.s1f13received()
+            elif packet.header.stream == 1 and packet.header.function == 14:
+                self.communicationState.s1f14received()
+        elif self.communicationState.isstate('WAIT_DELAY'):
+            pass
+        elif self.communicationState.isstate('COMMUNICATING'):
+            # check if callbacks available for this stream and function
+            callbackIndex = "s"+str(packet.header.stream)+"f"+str(packet.header.function)
+            if callbackIndex in self.callbacks:
+                threading.Thread(target=self._runCallbacks, args=(callbackIndex, packet), name="secsgem_gemHandler_callback_{}".format(callbackIndex)).start()
+            else:
+                self._queuePacket(packet)
 
-    def _postInit(self):
-        """Event called by :class:`secsgem.hsmsHandler.hsmsConnectionManager` after the connection is established (including Select, Linktest, ...)."""
-        secsDefaultHandler._postInit(self)
+    def _onHsmsSelect(self):
+        """Selected received from hsms layer"""
+        self.communicationState.select()
 
-        if not self.communicationState == gemCommunicationState.COMMUNICATING:
-            while self.establishCommunication() != 0:
-                self.communicationState = gemCommunicationState.WAIT_DELAY
-                time.sleep(self.communicationDelay)
+    def _onWaitCRATimeout(self):
+        """Linktest time timed out, so send linktest request"""
+        self.communicationState.communicationreqfail()
 
-            self.communicationState = gemCommunicationState.COMMUNICATING
+    def _onWaitCommDelayTimeout(self):
+        """Linktest time timed out, so send linktest request"""
+        self.communicationState.delayexpired()
 
-    def establishCommunication(self):
-        """Function to establish GEM communication with equipment.
+    def _onStateWaitCRA(self, data):
+        """Connection state model changed to state WAIT_CRA
 
-        :returns: 0: OK, 1: denied, -1: error
-        :rtype: integer
+        :param data: event attributes
+        :type data: object
         """
+        self.waitCRATimer = threading.Timer(self.connection.T3, self._onWaitCRATimeout)
+        self.waitCRATimer.start()
+
         if self.isHost:
-            function = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(1, 13)()))
+            self.sendStreamFunction(self.streamFunction(1, 13)())
         else:
-            function = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(1, 13)("secsgem", "0.0.3")), True)
+            self.sendStreamFunction(self.streamFunction(1, 13)("secsgem", "0.0.3"))
 
-        self.communicationState = gemCommunicationState.WAIT_CRA
+    def _onStateWaitDelay(self, data):
+        """Connection state model changed to state WAIT_DELAY
 
-        if function._stream == 1 and function._function == 14:
-            return function.COMMACK
-        else:
-            print "establishCommunication unknown response " + function
-            return -1
+        :param data: event attributes
+        :type data: object
+        """
+        self.commDelayTimer = threading.Timer(self.commDelayTimeout, self._onWaitCommDelayTimeout)
+        self.commDelayTimer.start()
+
+    def _onStateLeaveWaitCRA(self, data):
+        """Connection state model changed to state WAIT_CRA
+
+        :param data: event attributes
+        :type data: object
+        """
+        if self.waitCRATimer is not None:
+            self.waitCRATimer.cancel()
+
+    def _onStateLeaveWaitDelay(self, data):
+        """Connection state model changed to state WAIT_DELAY
+
+        :param data: event attributes
+        :type data: object
+        """
+        if self.commDelayTimer is not None:
+            self.commDelayTimer.cancel()
+
+    def _onStateCommunicating(self, data):
+        self.fireEvent("HandlerCommunicating", {'handler': self}, True)
+
+    def _onConnectionClosed(self):
+        """Connection was closed
+
+        :param data: event attributes
+        :type data: object
+        """
+        # call parent handlers
+        secsHandler._onConnectionClosed(self)
+
+        # update communication state
+        self.communicationState.communicationfail()
 
     def clearCollectionEvents(self):
         """Clear all collection events"""
@@ -183,13 +276,13 @@ class gemDefaultHandler(secsDefaultHandler):
         self.reportSubscriptions[reportID] = dvs
 
         # create report
-        self.connection.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "VID": dvs}]}))
+        self.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": reportID, "VID": dvs}]}))
 
         # link event report to collection event
-        self.connection.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [reportID]}]}))
+        self.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [reportID]}]}))
 
         # enable collection event
-        self.connection.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
+        self.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
 
     def sendRemoteCommand(self, RCMD, params):
         """Send a remote command
@@ -205,7 +298,7 @@ class gemDefaultHandler(secsDefaultHandler):
             s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
 
         # send remote command
-        return self.secsDecode(self.connection.sendAndWaitForResponse(s2f41))
+        return self.secsDecode(self.sendAndWaitForResponse(s2f41))
 
     def sendProcessProgram(self, PPID, PPBODY):
         """Send a process program
@@ -216,7 +309,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPBODY: string
         """
         # send remote command
-        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 3)({"PPID": PPID, "PPBODY": PPBODY}))).ACKC7
+        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 3)({"PPID": PPID, "PPBODY": PPBODY}))).ACKC7
 
     def requestProcessProgram(self, PPID):
         """Request a process program
@@ -225,7 +318,7 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPID: string
         """
         # send remote command
-        s7f6 = self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 5)(PPID)))
+        s7f6 = self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 5)(PPID)))
         return (s7f6.PPID, s7f6.PPBODY)
 
     def deleteProcessPrograms(self, PPIDs):
@@ -235,13 +328,13 @@ class gemDefaultHandler(secsDefaultHandler):
         :type PPIDs: list of strings
         """
         # send remote command
-        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 17)(PPIDs))).ACKC7
+        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 17)(PPIDs))).ACKC7
 
     def getProcessProgramList(self):
         """Get process program list
         """
         # send remote command
-        return self.secsDecode(self.connection.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
+        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
 
     def S1F1Handler(self, connection, packet):
         """Callback handler for Stream 1, Function 1, Are You There
@@ -266,8 +359,6 @@ class gemDefaultHandler(secsDefaultHandler):
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
         connection.sendResponse(self.streamFunction(1, 14)({"COMMACK": 0}), packet.header.system)
-
-        self.communicationState = gemCommunicationState.COMMUNICATING
 
     def S6F11Handler(self, connection, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request

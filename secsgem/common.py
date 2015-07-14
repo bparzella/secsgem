@@ -20,6 +20,7 @@ import sys
 import inspect
 import logging
 import types
+import threading
 
 
 def formatHex(text):
@@ -138,28 +139,30 @@ class EventHandler:
             genericHandler = getattr(self.target, "_onEvent", None)
             if callable(genericHandler):
                 logging.debug("%s.%s: posting event %s to %s._onEvent" % (callingClass, callingMethod, eventName, self.target.__class__.__name__))
-                genericHandler(eventName, params)
-                handled = True
+                if genericHandler(eventName, params) != False:
+                    handled = True
 
             specificHandler = getattr(self.target, "_onEvent" + eventName, None)
             if callable(specificHandler):
                 logging.debug("%s.%s: posting event %s to %s._onEvent%s" % (callingClass, callingMethod, eventName, self.target.__class__.__name__, eventName))
-                specificHandler(params)
-                handled = True
+                if specificHandler(params) == True:
+                    handled = True
 
         if eventName in self.eventHandlers:
             for eventHandler in self.eventHandlers[eventName]:
                 logging.debug("%s.%s: posting event %s to %s" % (callingClass, callingMethod, eventName, functionName(eventHandler)))
-                eventHandler(eventName, params)
-                handled = True
+                if eventHandler(eventName, params) != False:
+                    handled = True
 
         if self.genericHandler:
             logging.debug("%s.%s: posting event %s to %s" % (callingClass, callingMethod, eventName, functionName(self.genericHandler)))
-            self.genericHandler(eventName, params)
-            handled = True
+            if self.genericHandler(eventName, params) != False:
+                handled = True
 
         if not handled:
             logging.debug("%s.%s: unhandled event %s" % (callingClass, callingMethod, eventName))
+
+        return handled
 
     def addEventHandler(self, eventName, handler):
         """Register handler for an event. Multiple handlers can be registered for one event.
@@ -197,7 +200,7 @@ class EventProducer:
     def __init__(self, eventHandler):
         self.parentEventHandler = eventHandler
 
-    def fireEvent(self, eventName, data):
+    def fireEvent(self, eventName, data, async=False):
         """Fire an event
 
         :param eventName: event to fire
@@ -206,4 +209,7 @@ class EventProducer:
         :type data: dict
         """
         if self.parentEventHandler:
-            self.parentEventHandler.fireEvent(eventName, data)
+            if async:
+                threading.Thread(target=self.parentEventHandler.fireEvent, args=(eventName, data), name="EventProducer_fireEventAsync_{}".format(eventName)).start()
+            else:
+                self.parentEventHandler.fireEvent(eventName, data)
