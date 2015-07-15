@@ -28,6 +28,8 @@ def formatHex(text):
 
     **Example**::
 
+        >>> import secsgem
+        >>>
         >>> data = "asdfg"
         >>> secsgem.common.formatHex(data)
         '61:73:64:66:67'
@@ -80,7 +82,7 @@ class StreamFunctionCallbackHandler:
         :param callback: method to call when stream and functions is received
         :type callback: def callback(connection)
         """
-        name = "s"+str(stream)+"f"+str(function)
+        name = "s" + str(stream) + "f" + str(function)
 
         if name not in self.callbacks:
             self.callbacks[name] = []
@@ -97,7 +99,7 @@ class StreamFunctionCallbackHandler:
         :param callback: method to remove from callback list
         :type callback: def callback(connection)
         """
-        name = "s"+str(stream)+"f"+str(function)
+        name = "s" + str(stream) + "f" + str(function)
 
         if callback in self.callbacks[name]:
             self.callbacks[name].remove(callback)
@@ -110,106 +112,109 @@ class EventHandler:
     :type target: object
     :params events: dictionary of event names with handlers
     :type events: dict
-    :param genericHandler: receiver function for all events
-    :type genericHandler: def handler(eventName, data)
+    :param generic_handler: receiver function for all events
+    :type generic_handler: def handler(eventName, data)
     """
-    def __init__(self, target=None, events={}, genericHandler=None):
+    def __init__(self, target=None, events=None, generic_handler=None):
         self.eventHandlers = {}
         self.target = target
-        self.genericHandler = genericHandler
+        self.genericHandler = generic_handler
+
+        if not events:
+            events = {}
 
         for event in events:
             self.addEventHandler(event, events[event])
 
-    def fireEvent(self, eventName, params):
+    def fireEvent(self, event_name, params):
         """Fire an event
 
-        :param eventName: event to fire
-        :type eventName: string
+        :param event_name: event to fire
+        :type event_name: string
         :param params: parameters for event
         :type params: dict
         """
         handled = False
 
         stack = inspect.stack()
-        callingClass = stack[2][0].f_locals["self"].__class__.__name__
-        callingMethod = stack[2][0].f_code.co_name
+        calling_class = stack[2][0].f_locals["self"].__class__.__name__
+        calling_method = stack[2][0].f_code.co_name
 
         if self.target:
-            genericHandler = getattr(self.target, "_onEvent", None)
-            if callable(genericHandler):
-                logging.debug("%s.%s: posting event %s to %s._onEvent" % (callingClass, callingMethod, eventName, self.target.__class__.__name__))
-                if genericHandler(eventName, params) != False:
+            generic_handler = getattr(self.target, "_onEvent", None)
+            if callable(generic_handler):
+                logging.debug("%s.%s: posting event %s to %s._onEvent" % (calling_class, calling_method, event_name, self.target.__class__.__name__))
+                if generic_handler(event_name, params) is not False:
                     handled = True
 
-            specificHandler = getattr(self.target, "_onEvent" + eventName, None)
-            if callable(specificHandler):
-                logging.debug("%s.%s: posting event %s to %s._onEvent%s" % (callingClass, callingMethod, eventName, self.target.__class__.__name__, eventName))
-                if specificHandler(params) == True:
+            specific_handler = getattr(self.target, "_onEvent" + event_name, None)
+            if callable(specific_handler):
+                logging.debug("%s.%s: posting event %s to %s._onEvent%s" % (calling_class, calling_method, event_name, self.target.__class__.__name__, event_name))
+                if specific_handler(params):
                     handled = True
 
-        if eventName in self.eventHandlers:
-            for eventHandler in self.eventHandlers[eventName]:
-                logging.debug("%s.%s: posting event %s to %s" % (callingClass, callingMethod, eventName, functionName(eventHandler)))
-                if eventHandler(eventName, params) != False:
+        if event_name in self.eventHandlers:
+            for eventHandler in self.eventHandlers[event_name]:
+                logging.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(eventHandler)))
+                if eventHandler(event_name, params) is not False:
                     handled = True
 
         if self.genericHandler:
-            logging.debug("%s.%s: posting event %s to %s" % (callingClass, callingMethod, eventName, functionName(self.genericHandler)))
-            if self.genericHandler(eventName, params) != False:
+            logging.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(self.genericHandler)))
+            if self.genericHandler(event_name, params) is not False:
                 handled = True
 
         if not handled:
-            logging.debug("%s.%s: unhandled event %s" % (callingClass, callingMethod, eventName))
+            logging.debug("%s.%s: unhandled event %s" % (calling_class, calling_method, event_name))
 
         return handled
 
-    def addEventHandler(self, eventName, handler):
+    def addEventHandler(self, event_name, handler):
         """Register handler for an event. Multiple handlers can be registered for one event.
 
-        :param eventName: event to register handler for
-        :type eventName: string
+        :param event_name: event to register handler for
+        :type event_name: string
         :param handler: method to call when event is received
-        :type handler: def handler(eventName, handler)
+        :type handler: def handler(event_name, handler)
         """
-        if eventName not in self.eventHandlers:
-            self.eventHandlers[eventName] = []
+        if event_name not in self.eventHandlers:
+            self.eventHandlers[event_name] = []
 
-        self.eventHandlers[eventName].append(handler)
+        self.eventHandlers[event_name].append(handler)
 
-    def removeEventHandler(self, eventName, handler):
+    def removeEventHandler(self, event_name, handler):
         """Unregister handler for an event.
 
-        :param eventName: event to unregister handler for
-        :type eventName: string
+        :param event_name: event to unregister handler for
+        :type event_name: string
         :param handler: method to unregister
-        :type handler: def handler(eventName, handler)
+        :type handler: def handler(event_name, handler)
         """
-        if eventName not in self.eventHandlers:
+        if event_name not in self.eventHandlers:
             return
 
-        self.eventHandlers[eventName].remove(handler)
+        self.eventHandlers[event_name].remove(handler)
 
 
 class EventProducer:
     """Class for event production. Provides functionality for sending events.
 
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
+    :param event_handler: object for event handling
+    :type event_handler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, eventHandler):
-        self.parentEventHandler = eventHandler
+    def __init__(self, event_handler):
+        self.parentEventHandler = event_handler
 
-    def fireEvent(self, eventName, data, async=False):
+    def fireEvent(self, event_name, data, async=False):
         """Fire an event
 
-        :param eventName: event to fire
-        :type eventName: string
+        :param event_name: event to fire
+        :type event_name: string
         :param data: parameters for event
         :type data: dict
         """
         if self.parentEventHandler:
             if async:
-                threading.Thread(target=self.parentEventHandler.fireEvent, args=(eventName, data), name="EventProducer_fireEventAsync_{}".format(eventName)).start()
+                threading.Thread(target=self.parentEventHandler.fireEvent, args=(event_name, data), name="EventProducer_fireEventAsync_{}".format(event_name)).start()
             else:
-                self.parentEventHandler.fireEvent(eventName, data)
+                self.parentEventHandler.fireEvent(event_name, data)

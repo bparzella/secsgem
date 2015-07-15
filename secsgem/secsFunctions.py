@@ -26,14 +26,15 @@ class secsS00F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS00F00()
         S0F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 0
-    _function = 0
+    stream = 0
+    function = 0
 
     _formatDescriptor = None
 
@@ -43,14 +44,15 @@ class secsS01F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F00()
         S1F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 1
-    _function = 0
+    stream = 1
+    function = 0
 
     _formatDescriptor = None
 
@@ -60,14 +62,15 @@ class secsS01F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F01()
         S1F1 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 1
-    _function = 1
+    stream = 1
+    function = 1
 
     _formatDescriptor = None
 
@@ -84,14 +87,15 @@ class secsS01F02E(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F02E({"MDLN": "secsgem", "SOFTREV": "0.0.3"})
         S1F2 { [MDLN: A 'secsgem', SOFTREV: A '0.0.3'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 1
-    _function = 2
+    stream = 1
+    function = 2
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
@@ -104,14 +108,15 @@ class secsS01F02H(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F02H()
         S1F2 { [] }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 1
-    _function = 2
+    stream = 1
+    function = 2
 
     _formatDescriptor = secsVarList({}, 0)
 
@@ -128,14 +133,15 @@ class secsS01F03(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F03([1, 6, 12])
         S1F3 { [U4 1, U4 6, U4 12] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 1
-    _function = 3
+    stream = 1
+    function = 3
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -152,14 +158,15 @@ class secsS01F04(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F04([secsgem.secsVarU1(value=1), "text", secsgem.secsVarU4(value=1337)])
         S1F4 { [U1 1, A 'text', U4 1337] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 1
-    _function = 4
+    stream = 1
+    function = 4
 
     _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
@@ -176,6 +183,7 @@ class secsS01F11(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F11([1, 1337])
         S1F11 { [U4 1, U4 1337] }
 
@@ -184,8 +192,8 @@ class secsS01F11(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 1
-    _function = 11
+    stream = 1
+    function = 11
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -206,14 +214,15 @@ class secsS01F12(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}, {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}])
         S1F12 { [[SVID: U4 1, SVNAME: A 'SV1', UNITS: A 'mm'], [SVID: U4 1337, SVNAME: A 'SV2', UNITS: A '']] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 1
-    _function = 12
+    stream = 1
+    function = 12
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("SVID", secsVarU4(1)),
@@ -234,14 +243,15 @@ class secsS01F13E(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F13E({"MDLN": "secsgem", "SOFTREV": "0.0.3"})
         S1F13 { [MDLN: A 'secsgem', SOFTREV: A '0.0.3'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 1
-    _function = 13
+    stream = 1
+    function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
@@ -254,14 +264,15 @@ class secsS01F13H(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F13H()
         S1F13 { [] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 1
-    _function = 13
+    stream = 1
+    function = 13
 
     _formatDescriptor = secsVarList({}, 0)
 
@@ -281,14 +292,15 @@ class secsS01F14E(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F14E({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
         S1F14 { [COMMACK: B 1, DATA: [MDLN: A 'secsgem', SOFTREV: A '0.0.3']] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 1
-    _function = 14
+    stream = 1
+    function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
@@ -312,14 +324,15 @@ class secsS01F14H(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS01F14H({"COMMACK": 1, "DATA": {}})
         S1F14 { [COMMACK: B 1, DATA: []] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 1
-    _function = 14
+    stream = 1
+    function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
@@ -332,14 +345,15 @@ class secsS02F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F00()
         S2F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 2
-    _function = 0
+    stream = 2
+    function = 0
 
     _formatDescriptor = None
 
@@ -356,6 +370,7 @@ class secsS02F13(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F13([1, 1337])
         S2F13 { [U4 1, U4 1337] }
 
@@ -364,8 +379,8 @@ class secsS02F13(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 13
+    stream = 2
+    function = 13
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -382,14 +397,15 @@ class secsS02F14(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F14([secsgem.secsVarU1(value=1), "text"])
         S2F14 { [U1 1, A 'text'] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 14
+    stream = 2
+    function = 14
 
     _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
@@ -409,14 +425,15 @@ class secsS02F15(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F15([{"ECID": 1, "ECV": secsgem.secsVarU4(value=10)}, {"ECID": 1337, "ECV": "text"}])
         S2F15 { [[ECID: U4 1, ECV: U4 10], [ECID: U4 1337, ECV: A 'text']] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 15
+    stream = 2
+    function = 15
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
@@ -433,14 +450,15 @@ class secsS02F16(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F16(1)
         S2F16 { B 1 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 2
-    _function = 16
+    stream = 2
+    function = 16
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -457,6 +475,7 @@ class secsS02F29(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F29([1, 1337])
         S2F29 { [U4 1, U4 1337] }
 
@@ -465,8 +484,8 @@ class secsS02F29(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 29
+    stream = 2
+    function = 29
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -490,14 +509,15 @@ class secsS02F30(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.secsVarU1(value=0), "ECMAX": secsgem.secsVarU1(value=100), "ECDEF": secsgem.secsVarU1(value=50), "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
         S2F30 { [[ECID: U4 1, ECNAME: A 'EC1', ECMIN: U1 0, ECMAX: U1 100, ECDEF: U1 50, UNITS: A 'mm'], [ECID: U4 1337, ECNAME: A 'EC2', ECMIN: A '', ECMAX: A '', ECDEF: A '', UNITS: A '']] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 30
+    stream = 2
+    function = 30
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
@@ -530,14 +550,15 @@ class secsS02F33(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, {"RPTID": 1001, "VID": [1, 2355]}]})
         S2F33 { [DATAID: U4 1, DATA: [[RPTID: U4 1000, VID: [A '12', A '1337']], [RPTID: U4 1001, VID: [A '1', A '2355']]]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 33
+    stream = 2
+    function = 33
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -561,14 +582,15 @@ class secsS02F34(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F34(0)
         S2F34 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 2
-    _function = 34
+    stream = 2
+    function = 34
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -594,14 +616,15 @@ class secsS02F35(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
         S2F35 { [DATAID: U4 1, DATA: [[CEID: U4 1337, RPTID: [U4 1000, U4 1001]]]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 35
+    stream = 2
+    function = 35
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -625,14 +648,15 @@ class secsS02F36(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F36(0)
         S2F36 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 2
-    _function = 36
+    stream = 2
+    function = 36
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -652,14 +676,15 @@ class secsS02F37(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F37({"CEED": True, "CEID": [1337]})
         S2F37 { [CEED: TF True, CEID: [U4 1337]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 37
+    stream = 2
+    function = 37
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("CEED", secsVarBoolean(1)),
@@ -678,14 +703,15 @@ class secsS02F38(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F38(0)
         S2F38 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 2
-    _function = 38
+    stream = 2
+    function = 38
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -708,14 +734,15 @@ class secsS02F41(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
         S2F41 { [RCMD: A 'COMMAND', PARAMS: [[CPNAME: A 'PARAM1', CPVAL: A 'VAL1'], [CPNAME: A 'PARAM2', CPVAL: A 'VAL2']]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 41
+    stream = 2
+    function = 41
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("RCMD", secsVarString()),
@@ -746,14 +773,15 @@ class secsS02F42(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS02F42({"HCACK": 1, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": 2}, {"CPNAME": "PARAM2", "CPACK": 3}]})
         S2F42 { [HCACK: B 1, PARAMS: [[CPNAME: A 'PARAM1', CPACK: B 2], [CPNAME: A 'PARAM2', CPACK: B 3]]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 2
-    _function = 42
+    stream = 2
+    function = 42
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("HCACK", secsVarBinary(1)),
@@ -771,14 +799,15 @@ class secsS05F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS05F00()
         S5F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 5
-    _function = 0
+    stream = 5
+    function = 0
 
     _formatDescriptor = None
 
@@ -796,14 +825,15 @@ class secsS05F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS05F01({"ALCD": 1, "ALID": 100, "ALTX": "text"})
         S5F1 { [ALCD: B 1, ALID: U4 100, ALTX: A 'text'] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 5
-    _function = 1
+    stream = 5
+    function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("ALCD", secsVarBinary(1)),
@@ -821,14 +851,15 @@ class secsS05F02(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS05F02(0)
         S5F02 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 5
-    _function = 2
+    stream = 5
+    function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -838,14 +869,15 @@ class secsS06F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS06F00()
         S6F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 6
-    _function = 0
+    stream = 6
+    function = 0
 
     _formatDescriptor = None
 
@@ -872,14 +904,15 @@ class secsS06F11(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.secsVarU4(value=100)]}]})
         S6F11 { [DATAID: U4 1, CEID: U4 1337, RPT: [[RPTID: U4 1000, V: [A 'VAR', U4 100]]]] }
 
     :param value: parameters for this function (see example)
     :type value: list
     """
-    _stream = 6
-    _function = 11
+    stream = 6
+    function = 11
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -904,14 +937,15 @@ class secsS06F12(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS06F12(0)
         S6F12 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 6
-    _function = 12
+    stream = 6
+    function = 12
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -921,14 +955,15 @@ class secsS07F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F00()
         S7F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 7
-    _function = 0
+    stream = 7
+    function = 0
 
     _formatDescriptor = None
 
@@ -945,14 +980,15 @@ class secsS07F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F01({"PPID": "program", "LENGTH": 4})
         S7F1 { [PPID: A 'program', LENGTH: U4 4] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 1
+    stream = 7
+    function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -969,14 +1005,15 @@ class secsS07F02(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F02(0)
         S7F2 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 7
-    _function = 2
+    stream = 7
+    function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -993,14 +1030,15 @@ class secsS07F03(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F03({"PPID": "program", "PPBODY": "data"})
         S7F3 { [PPID: A 'program', PPBODY: B <4 bytes>] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 3
+    stream = 7
+    function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -1017,14 +1055,15 @@ class secsS07F04(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F04(0)
         S7F4 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 7
-    _function = 4
+    stream = 7
+    function = 4
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1038,14 +1077,15 @@ class secsS07F05(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F05("program")
         S7F5 { A 'program' }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 7
-    _function = 5
+    stream = 7
+    function = 5
 
     _formatDescriptor = secsVarString()
 
@@ -1062,14 +1102,15 @@ class secsS07F06(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F06({"PPID": "program", "PPBODY": "data"})
         S7F6 { [PPID: A 'program', PPBODY: B <4 bytes>] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 6
+    stream = 7
+    function = 6
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -1089,14 +1130,15 @@ class secsS07F17(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F17(["program1", "program2"])
         S7F17 { [A 'program1', A 'program2'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 17
+    stream = 7
+    function = 17
 
     _formatDescriptor = secsVarArray(secsVarString())
 
@@ -1110,14 +1152,15 @@ class secsS07F18(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F18(0)
         S7F18 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 7
-    _function = 18
+    stream = 7
+    function = 18
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1127,14 +1170,15 @@ class secsS07F19(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F19()
         S7F19 { None }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 19
+    stream = 7
+    function = 19
 
     _formatDescriptor = None
 
@@ -1151,14 +1195,15 @@ class secsS07F20(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS07F20(["program1", "program2"])
         S7F20 { [A 'program1', A 'program2'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 7
-    _function = 20
+    stream = 7
+    function = 20
 
     _formatDescriptor = secsVarArray(secsVarString())
 
@@ -1168,14 +1213,15 @@ class secsS09F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F00()
         S9F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 9
-    _function = 0
+    stream = 9
+    function = 0
 
     _formatDescriptor = None
 
@@ -1189,14 +1235,15 @@ class secsS09F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F01("HEADERDATA")
         S9F1 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 1
+    stream = 9
+    function = 1
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1210,14 +1257,15 @@ class secsS09F03(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F03("HEADERDATA")
         S9F3 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 3
+    stream = 9
+    function = 3
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1231,14 +1279,15 @@ class secsS09F05(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F05("HEADERDATA")
         S9F5 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 5
+    stream = 9
+    function = 5
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1252,14 +1301,15 @@ class secsS09F07(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F07("HEADERDATA")
         S9F7 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 7
+    stream = 9
+    function = 7
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1273,14 +1323,15 @@ class secsS09F09(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F09("HEADERDATA")
         S9F9 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 9
+    stream = 9
+    function = 9
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1294,14 +1345,15 @@ class secsS09F11(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F11("HEADERDATA")
         S9F11 { B <10 bytes> }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 9
-    _function = 11
+    stream = 9
+    function = 11
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1318,14 +1370,15 @@ class secsS09F13(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS09F13({"MEXP": "S01E01", "EDID": "data"})
         S9F13 { [MEXP: A 'S01E01', EDID: A 'data'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 9
-    _function = 13
+    stream = 9
+    function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MEXP", secsVarString(6)),
@@ -1338,14 +1391,15 @@ class secsS10F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS10F00()
         S10F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 10
-    _function = 0
+    stream = 10
+    function = 0
 
     _formatDescriptor = None
 
@@ -1362,14 +1416,15 @@ class secsS10F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS10F01({"TID": 0, "TEXT": "hello?"})
         S10F1 { [TID: B 0, TEXT: A 'hello?'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 10
-    _function = 1
+    stream = 10
+    function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
@@ -1386,14 +1441,15 @@ class secsS10F02(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS10F02(0)
         S10F2 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 10
-    _function = 2
+    stream = 10
+    function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1410,14 +1466,15 @@ class secsS10F03(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS10F03({"TID": 0, "TEXT": "hello!"})
         S10F3 { [TID: B 0, TEXT: A 'hello!'] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 10
-    _function = 3
+    stream = 10
+    function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
@@ -1434,14 +1491,15 @@ class secsS10F04(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS10F04(0)
         S10F4 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 10
-    _function = 4
+    stream = 10
+    function = 4
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1451,14 +1509,15 @@ class secsS12F00(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F00()
         S12F0 { None }
 
     :param value: function has no parameters
     :type value: None
     """
-    _stream = 12
-    _function = 0
+    stream = 12
+    function = 0
 
     _formatDescriptor = None
 
@@ -1491,6 +1550,7 @@ class secsS12F01(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F01({"MID": "materialID",
                 "IDTYP": 0,
                 "FNLOC": 0,
@@ -1512,8 +1572,8 @@ class secsS12F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 1
+    stream = 12
+    function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1545,14 +1605,15 @@ class secsS12F02(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F02(0)
         S12F2 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 12
-    _function = 2
+    stream = 12
+    function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1576,6 +1637,7 @@ class secsS12F03(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F03({"MID": "materialID",
                 "IDTYP": 0,
                 "MAPFT": 0,
@@ -1591,8 +1653,8 @@ class secsS12F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 3
+    stream = 12
+    function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1635,6 +1697,7 @@ class secsS12F04(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F04({"MID": "materialID",
                 "IDTYP": 0,
                 "FNLOC": 0,
@@ -1656,8 +1719,8 @@ class secsS12F04(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 4
+    stream = 12
+    function = 4
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1694,14 +1757,15 @@ class secsS12F05(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F05({"MID": "materialID", "IDTYP": 0, "MAPFT": 0, "MLCL": 0})
         S12F5 { [MID: A 'materialID', IDTYP: B 0, MAPFT: B 0, MLCL: U4 0] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 5
+    stream = 12
+    function = 5
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1720,14 +1784,15 @@ class secsS12F06(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F06(0)
         S12F6 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 12
-    _function = 6
+    stream = 12
+    function = 6
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1750,14 +1815,15 @@ class secsS12F07(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F07({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
         S12F7 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 7
+    stream = 12
+    function = 7
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1780,14 +1846,15 @@ class secsS12F08(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F08(0)
         S12F8 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 12
-    _function = 8
+    stream = 12
+    function = 8
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1806,14 +1873,15 @@ class secsS12F09(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F09({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
         S12F9 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 9
+    stream = 12
+    function = 9
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1832,14 +1900,15 @@ class secsS12F10(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F10(0)
         S12F10 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 12
-    _function = 10
+    stream = 12
+    function = 10
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1862,14 +1931,15 @@ class secsS12F11(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F11({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
         S12F11 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 11
+    stream = 12
+    function = 11
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1892,14 +1962,15 @@ class secsS12F12(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F12(0)
         S12F12 { B 0 }
 
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    _stream = 12
-    _function = 12
+    stream = 12
+    function = 12
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1916,14 +1987,15 @@ class secsS12F13(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F13({"MID": "materialID", "IDTYP": 0})
         S12F13 { [MID: A 'materialID', IDTYP: B 0] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 13
+    stream = 12
+    function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1949,14 +2021,15 @@ class secsS12F14(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F14({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
         S12F14 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 14
+    stream = 12
+    function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1982,14 +2055,15 @@ class secsS12F15(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F15({"MID": "materialID", "IDTYP": 0})
         S12F15 { [MID: A 'materialID', IDTYP: B 0] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 15
+    stream = 12
+    function = 15
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2011,14 +2085,15 @@ class secsS12F16(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F16({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
         S12F16 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 16
+    stream = 12
+    function = 16
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2041,14 +2116,15 @@ class secsS12F17(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F17({"MID": "materialID", "IDTYP": 0, "SDBIN": 1})
         S12F17 { [MID: A 'materialID', IDTYP: B 0, SDBIN: B 1] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 17
+    stream = 12
+    function = 17
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2075,14 +2151,15 @@ class secsS12F18(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F18({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
         S12F18 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 18
+    stream = 12
+    function = 18
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2108,14 +2185,15 @@ class secsS12F19(secsStreamFunction):
 
     **Example**::
 
+        >>> import secsgem
         >>> secsgem.secsS12F19({"MAPER": 1, "DATLC": 0})
         S12F19 { [MAPER: B 1, DATLC: U1 0] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    _stream = 12
-    _function = 19
+    stream = 12
+    function = 19
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MAPER", secsVarBinary(1)),

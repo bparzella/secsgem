@@ -37,14 +37,14 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
     :type port: integer
     :param active: Is the connection active (*True*) or passive (*False*)
     :type active: boolean
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
-    :param connectionHandler: object for connection handling (ie multi server)
-    :type connectionHandler: object
+    :param event_handler: object for event handling
+    :type event_handler: :class:`secsgem.common.EventHandler`
+    :param custom_connection_handler: object for connection handling (ie multi server)
+    :type custom_connection_handler: :class:`secsgem.hsmsConnections.hsmsMultiPassiveServer`
     """
 
     ceids = {}
@@ -88,16 +88,16 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
     secsStreamsFunctionsHost = copy.deepcopy(secsFunctions.secsStreamsFunctionsHost)
     secsStreamsFunctionsEquipment = copy.deepcopy(secsFunctions.secsStreamsFunctionsEquipment)
 
-    def __init__(self, address, port, active, sessionID, name, eventHandler=None, customConnectionHandler=None):
+    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         StreamFunctionCallbackHandler.__init__(self)
-        hsmsHandler.__init__(self, address, port, active, sessionID, name, eventHandler, customConnectionHandler)
+        hsmsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
         self.isHost = True
 
-    def _runCallbacks(self, callbackIndex, response):
+    def _runCallbacks(self, callback_index, response):
         handeled = False
         try:
-            for callback in self.callbacks[callbackIndex]:
-                if callback(self, response) != False:
+            for callback in self.callbacks[callback_index]:
+                if not callback(self, response) is False:
                     handeled = True
 
             if not handeled:
@@ -112,7 +112,7 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         """Packet received from hsms layer
 
         :param packet: received data packet
-        :type packet: object
+        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
         message = self.secsDecode(packet)
 
@@ -122,9 +122,9 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
             logging.info("< %s\n%s", packet, message)
 
         # check if callbacks available for this stream and function
-        callbackIndex = "s"+str(packet.header.stream)+"f"+str(packet.header.function)
-        if callbackIndex in self.callbacks:
-            threading.Thread(target=self._runCallbacks, args=(callbackIndex, packet), name="secsgem_secsHandler_callback_{}".format(callbackIndex)).start()
+        callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
+        if callback_index in self.callbacks:
+            threading.Thread(target=self._runCallbacks, args=(callback_index, packet), name="secsgem_secsHandler_callback_{}".format(callback_index)).start()
         else:
             self._queuePacket(packet)
 
@@ -157,30 +157,30 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
 
         return self.secsDecode(packet)
 
-    def requestSVs(self, SVs):
+    def requestSVs(self, svs):
         """Request contents of supplied Service Variables.
 
-        :param SVs: Service Variables to request
-        :type SVs: list
+        :param svs: Service Variables to request
+        :type svs: list
         :returns: values of requested Service Variables
         :rtype: list
         """
         if not self.connection:
             return None
 
-        packet = self.sendAndWaitForResponse(self.streamFunction(1, 3)(SVs))
+        packet = self.sendAndWaitForResponse(self.streamFunction(1, 3)(svs))
 
         return self.secsDecode(packet)
 
-    def requestSV(self, SV):
+    def requestSV(self, sv):
         """Request contents of one Service Variable.
 
-        :param SV: id of Service Variable
-        :type SV: int
+        :param sv: id of Service Variable
+        :type sv: int
         :returns: value of requested Service Variable
         :rtype: various
         """
-        return self.requestSVs([SV])[0]
+        return self.requestSVs([sv])[0]
 
     def listECs(self):
         """Get list of available Equipment Constants.
@@ -195,66 +195,66 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
 
         return self.secsDecode(packet)
 
-    def requestECs(self, ECs):
+    def requestECs(self, ecs):
         """Request contents of supplied Equipment Constants.
 
-        :param ECs: Equipment Constants to request
-        :type ECs: list
+        :param ecs: Equipment Constants to request
+        :type ecs: list
         :returns: values of requested Equipment Constants
         :rtype: list
         """
         if not self.connection:
             return None
 
-        packet = self.sendAndWaitForResponse(self.streamFunction(2, 13)(ECs))
+        packet = self.sendAndWaitForResponse(self.streamFunction(2, 13)(ecs))
 
         return self.secsDecode(packet)
 
-    def requestEC(self, EC):
+    def requestEC(self, ec):
         """Request contents of one Equipment Constant.
 
-        :param EC: id of Equipment Constant
-        :type EC: int
+        :param ec: id of Equipment Constant
+        :type ec: int
         :returns: value of requested Equipment Constant
         :rtype: various
         """
-        return self.requestECs([EC])
+        return self.requestECs([ec])
 
-    def setECs(self, ECs):
+    def setECs(self, ecs):
         """Set contents of supplied Equipment Constants.
 
-        :param ECs: list containing list of id / value pairs
-        :type ECs: list
+        :param ecs: list containing list of id / value pairs
+        :type ecs: list
         """
         if not self.connection:
             return None
 
-        packet = self.sendAndWaitForResponse(self.streamFunction(2, 15)(ECs))
+        packet = self.sendAndWaitForResponse(self.streamFunction(2, 15)(ecs))
 
         return self.secsDecode(packet).get()
 
-    def setEC(self, EC, value):
+    def setEC(self, ec, value):
         """Set contents of one Equipment Constant.
 
-        :param EC: id of Equipment Constant
-        :type EC: int
+        :param ec: id of Equipment Constant
+        :type ec: int
         :param value: new content of Equipment Constant
         :type value: various
         """
-        return self.setECs([[EC, value]])
+        return self.setECs([[ec, value]])
 
-    def sendEquipmentTerminal(self, terminalID, text):
+    def sendEquipmentTerminal(self, terminal_id, text):
         """Set text to equipment terminal
 
-        :param terminalID: ID of terminal
-        :type terminalID: int
-        :param value: text to send
-        :type value: string
+        :param terminal_id: ID of terminal
+        :type terminal_id: int
+        :param text: text to send
+        :type text: string
         """
         if not self.connection:
             return None
 
-        return self.sendAndWaitForResponse(self.streamFunction(10, 3)({"TID": terminalID, "TEXT": text}))
+        return self.sendAndWaitForResponse(self.streamFunction(10, 3)({"TID": terminal_id, "TEXT": text}))
 
     def getCEIDName(self, ceid):
         """Get the name of a collection event
@@ -273,8 +273,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
     def getDVIDName(self, dvid):
         """Get the name of a data value
 
-        :param ceid: ID of data value
-        :type ceid: integer
+        :param dvid: ID of data value
+        :type dvid: integer
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
@@ -302,19 +302,19 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :rtype: secsSxFx class
         """
         if self.isHost:
-            secsStreamsFunctions = self.secsStreamsFunctionsHost
+            secs_streams_functions = self.secsStreamsFunctionsHost
         else:
-            secsStreamsFunctions = self.secsStreamsFunctionsEquipment
+            secs_streams_functions = self.secsStreamsFunctionsEquipment
 
-        if stream not in secsStreamsFunctions:
+        if stream not in secs_streams_functions:
             logging.warning("unknown function S%02dF%02d", stream, function)
             return None
         else:
-            if function not in secsStreamsFunctions[stream]:
+            if function not in secs_streams_functions[stream]:
                 logging.warning("unknown function S%02dF%02d", stream, function)
                 return None
             else:
-                return secsStreamsFunctions[stream][function]
+                return secs_streams_functions[stream][function]
 
     def secsDecode(self, packet):
         """Get object of decoded stream and function class, or None if no class is available.
@@ -325,20 +325,20 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :rtype: secsSxFx object
         """
         if self.isHost:
-            secsStreamsFunctions = self.secsStreamsFunctionsEquipment
+            secs_streams_functions = self.secsStreamsFunctionsEquipment
         else:
-            secsStreamsFunctions = self.secsStreamsFunctionsHost
+            secs_streams_functions = self.secsStreamsFunctionsHost
 
-        if packet.header.stream not in secsStreamsFunctions:
+        if packet.header.stream not in secs_streams_functions:
             logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        if packet.header.function not in secsStreamsFunctions[packet.header.stream]:
+        if packet.header.function not in secs_streams_functions[packet.header.stream]:
             logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        logging.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
-        function = secsStreamsFunctions[packet.header.stream][packet.header.function]()
+        logging.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secs_streams_functions[packet.header.stream][packet.header.function].__name__))
+        function = secs_streams_functions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
         logging.debug("decoded {}".format(function))
         return function

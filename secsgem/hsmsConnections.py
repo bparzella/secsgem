@@ -29,7 +29,7 @@ import errno
 
 from hsmsPackets import hsmsPacket
 
-from common import isWindows, StreamFunctionCallbackHandler, EventProducer
+from common import isWindows
 
 # TODO: timeouts (T7, T8)
 
@@ -71,7 +71,7 @@ class hsmsConnection(object):
     selectTimeout = 0.5
     """ Timeout for select calls """
 
-    sendBlockSize = 1024*1024
+    sendBlockSize = 1024 * 1024
     """ Block size for outbound data """
 
     T3 = 45.0
@@ -142,12 +142,8 @@ class hsmsConnection(object):
 
         # send event
 
-    def disconnect(self, separate=False):
-        """Close connection
-
-        :param separate: use Separate instead of Deselect
-        :type separate: boolean
-        """
+    def disconnect(self):
+        """Close connection"""
         # return if thread isn't running
         if not self.threadRunning:
             return
@@ -383,7 +379,7 @@ class hsmsPassiveConnection(hsmsConnection):
         """
         # only stop if enabled
         if self.enabled:
-            #mark connection as disabled
+            # mark connection as disabled
             self.enabled = False
 
             # stop connection thread if it is running
@@ -717,7 +713,7 @@ class hsmsActiveConnection(hsmsConnection):
         """Wait until timeout elapsed or connection thread is stopped
 
         :param timeout: number of seconds to wait
-        :type timeout: integer
+        :type timeout: float
         :returns: False if thread was stopped
         :rtype: boolean
         """

@@ -19,17 +19,17 @@ import logging
 
 from hsmsHandler import hsmsHandler
 from hsmsConnections import hsmsMultiPassiveServer
-from common import EventProducer, EventHandler
+from common import EventProducer
 
 
 class hsmsConnectionManager(EventProducer):
     """High level class that handles multiple active and passive connections and the model for them.
 
-    :param eventHandler: object for event handling
-    :type eventHandler: :class:`secsgem.common.EventHandler`
+    :param event_handler: object for event handling
+    :type event_handler: :class:`secsgem.common.EventHandler`
     """
-    def __init__(self, eventHandler=None):
-        EventProducer.__init__(self, eventHandler)
+    def __init__(self, event_handler=None):
+        EventProducer.__init__(self, event_handler)
 
         self.handlers = {}
 
@@ -60,51 +60,47 @@ class hsmsConnectionManager(EventProducer):
 
         return None
 
-    def getConnectionID(self, address, port):
+    def getConnectionID(self, address):
         """Generates connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
         :type address: string
-        :param port: The TCP port for the affected remote.
-        :type port: integer
-        :param sessionID: Session / device ID for the affected remote
-        :type sessionID: integer
         """
-        return "%s" % (address)
+        return "%s" % address
 
-    def _updateRequiredServers(self, additionalPort=-1):
+    def _updateRequiredServers(self, additional_port=-1):
         """Starts server if any active handler is found
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        requiredPorts = []
+        required_ports = []
 
-        if additionalPort > 0:
-            requiredPorts.append(additionalPort)
+        if additional_port > 0:
+            required_ports.append(additional_port)
 
         for handlerID in self.handlers.keys():
             handler = self.handlers[handlerID]
             if not handler.active:
-                if not handler.port in requiredPorts:
-                    requiredPorts.append(handler.port)
+                if handler.port not in required_ports:
+                    required_ports.append(handler.port)
 
         for serverPort in self.servers.keys():
-            if not serverPort in requiredPorts:
+            if serverPort not in required_ports:
                 logging.debug("hsmsConnectionManager._updateRequiredServers: stopping server on port {0}".format(serverPort))
                 self.servers[serverPort].stop()
                 del self.servers[serverPort]
 
-        for requiredPort in requiredPorts:
+        for requiredPort in required_ports:
             if requiredPort not in self.servers:
                 logging.debug("hsmsConnectionManager._updateRequiredServers: starting server on port {0}".format(requiredPort))
                 self.servers[requiredPort] = hsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
-    def _onEvent(self, eventName, data):
+    def _onEvent(self, event_name, data):
         """Callback function for disconnection event
 
-        :param eventName: Name of the event
-        :type eventName: string
+        :param event_name: Name of the event
+        :type event_name: string
         :param data: Data supplied with event
         :type data: dict
 
@@ -112,14 +108,14 @@ class hsmsConnectionManager(EventProducer):
         """
         connection = data['connection']
 
-        connectionID = self.getConnectionID(connection.remoteIP, connection.remotePort)
+        connection_id = self.getConnectionID(connection.remoteIP)
 
-        if connectionID in self.handlers.keys():
-            data['handler'] = self.handlers[connectionID]
+        if connection_id in self.handlers.keys():
+            data['handler'] = self.handlers[connection_id]
 
-        self.fireEvent(eventName, data)
+        self.fireEvent(event_name, data)
 
-    def addPeer(self, name, address, port, active, sessionID, connectionHandler=hsmsHandler):
+    def addPeer(self, name, address, port, active, session_id, connection_handler=hsmsHandler):
         """Add a new connection
 
         :param name: Name of the peers configuration
@@ -130,29 +126,29 @@ class hsmsConnectionManager(EventProducer):
         :type port: integer
         :param active: Is the connection active (*True*) or passive (*False*)
         :type active: boolean
-        :param sessionID: session / device ID of peer
-        :type sessionID: integer
-        :param connectionHandler: Model handling this connection
-        :type connectionHandler: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
+        :param session_id: session / device ID of peer
+        :type session_id: integer
+        :param connection_handler: Model handling this connection
+        :type connection_handler: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
         """
         logging.debug("hsmsConnectionManager.addPeer: new remote %s at %s:%d", name, address, port)
 
-        connectionID = self.getConnectionID(address, port)
+        connection_id = self.getConnectionID(address)
 
         self._updateRequiredServers(port)
 
         if active:
-            handler = connectionHandler(address, port, active, sessionID, name, self.parentEventHandler)
+            handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler)
         else:
-            handler = connectionHandler(address, port, active, sessionID, name, self.parentEventHandler, self.servers[port])
+            handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self.servers[port])
 
         handler.enable()
 
-        self.handlers[connectionID] = handler
+        self.handlers[connection_id] = handler
 
         return handler
 
-    def removePeer(self, name, address, port, sessionID):
+    def removePeer(self, name, address, port):
         """Remove a previously added connection
 
         :param name: Name of the peers configuration
@@ -161,20 +157,18 @@ class hsmsConnectionManager(EventProducer):
         :type address: string
         :param port: TCP port of peer
         :type port: integer
-        :param sessionID: session / device ID of peer
-        :type sessionID: integer
         """
         logging.debug("hsmsConnectionManager.removePeer: disconnecting from %s at %s:%d", name, address, port)
 
-        connectionID = self.getConnectionID(address, port)
+        connection_id = self.getConnectionID(address)
 
-        if connectionID in self.handlers.keys():
-            handler = self.handlers[connectionID]
+        if connection_id in self.handlers.keys():
+            handler = self.handlers[connection_id]
 
             handler.disconnect()
             handler.disable()
 
-            del self.handlers[connectionID]
+            del self.handlers[connection_id]
 
             self._updateRequiredServers()
 
@@ -184,7 +178,7 @@ class hsmsConnectionManager(EventProducer):
 
         for handlerID in self.handlers.keys():
             handler = self.handlers[handlerID]
-            handler.connection.disconnect(separate=True)
+            handler.connection.disconnect()
 
         self.handlers.clear()
 
