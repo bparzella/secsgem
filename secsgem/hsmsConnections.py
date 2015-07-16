@@ -46,14 +46,14 @@ hsmsSTypes = {
 }
 
 
-def isErrorCodeEWouldBlock(errorcode):
+def is_errorcode_ewouldblock(errorcode):
     if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
         return True
 
     return False
 
 
-class hsmsConnection(object):
+class HsmsConnection(object):
     """Connection class used for active and passive hsms connections.
 
     :param active: Is the connection active (*True*) or passive (*False*)
@@ -62,10 +62,10 @@ class hsmsConnection(object):
     :type address: string
     :param port: TCP port of remote host
     :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param delegate: target for messages
-    :type delegate: object
+    :type delegate: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
     """
 
     selectTimeout = 0.5
@@ -83,12 +83,12 @@ class hsmsConnection(object):
     T6 = 5.0
     """ Control Transaction Timeout """
 
-    def __init__(self, active, address, port, sessionID=0, delegate=None):
+    def __init__(self, active, address, port, session_id=0, delegate=None):
         # set parameters
         self.active = active
         self.remoteAddress = address
         self.remotePort = port
-        self.sessionID = sessionID
+        self.sessionID = session_id
         self.delegate = delegate
 
         # connection socket
@@ -110,7 +110,7 @@ class hsmsConnection(object):
         # flag set during disconnection
         self.disconnecting = False
 
-    def _serializeData(self):
+    def _serialize_data(self):
         """Returns data for serialization
 
         :returns: data to serialize for this object
@@ -121,7 +121,7 @@ class hsmsConnection(object):
     def __str__(self):
         return ("Active" if self.active else "Passive") + " connection to " + self.remoteAddress + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID)
 
-    def _startReceiver(self):
+    def _start_receiver(self):
         """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
 
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
@@ -130,8 +130,8 @@ class hsmsConnection(object):
         # mark connection as connected
         self.connected = True
 
-        if self.delegate and hasattr(self.delegate, '_onConnectionEstablished') and callable(getattr(self.delegate, '_onConnectionEstablished')):
-            self.delegate._onConnectionEstablished()
+        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
+            self.delegate.on_connection_established()
 
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress, self.remotePort)).start()
@@ -141,6 +141,9 @@ class hsmsConnection(object):
             pass
 
         # send event
+
+    def _on_hsms_connection_close(self, data):
+        pass
 
     def disconnect(self):
         """Close connection"""
@@ -161,7 +164,7 @@ class hsmsConnection(object):
         # clear disconnecting flag, no selects coming any more
         self.disconnecting = False
 
-    def sendPacket(self, packet):
+    def send_packet(self, packet):
         """Send the ASCII coded packet to the remote host
 
         :param packet: encoded data to be transmitted
@@ -173,7 +176,7 @@ class hsmsConnection(object):
         data = packet.encode()
 
         # split data into blocks
-        blocks = [data[i:i+self.sendBlockSize] for i in range(0, len(data), self.sendBlockSize)]
+        blocks = [data[i: i + self.sendBlockSize] for i in range(0, len(data), self.sendBlockSize)]
 
         for block in blocks:
             retry = True
@@ -192,7 +195,7 @@ class hsmsConnection(object):
                     retry = False
                 except socket.error, e:
                     errorcode = e[0]
-                    if not isErrorCodeEWouldBlock(errorcode):
+                    if not is_errorcode_ewouldblock(errorcode):
                         # raise if not EWOULDBLOCK
                         raise e
                     # it is EWOULDBLOCK, so retry sending
@@ -221,8 +224,8 @@ class hsmsConnection(object):
         response = hsmsPacket.decode(data)
 
         # redirect packet to hsms handler
-        if self.delegate and hasattr(self.delegate, '_onConnectionPacketReceived') and callable(getattr(self.delegate, '_onConnectionPacketReceived')):
-            self.delegate._onConnectionPacketReceived(response)
+        if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
+            self.delegate.on_connection_packet_received(response)
 
         # return True if more data is available
         if len(self.receiveBuffer) > 0:
@@ -241,29 +244,29 @@ class hsmsConnection(object):
             # check if shutdown requested
             while not self.stopThread:
                 # check if data available
-                selectResult = select.select([self.sock], [], [self.sock], self.selectTimeout)
+                select_result = select.select([self.sock], [], [self.sock], self.selectTimeout)
 
                 # check if disconnection was started
                 if self.disconnecting:
                     time.sleep(0.2)
                     continue
 
-                if selectResult[0]:
+                if select_result[0]:
                     try:
                         # get data from socket
-                        recvData = self.sock.recv(1024)
+                        recv_data = self.sock.recv(1024)
 
                         # check if socket was closed
-                        if len(recvData) == 0:
+                        if len(recv_data) == 0:
                             self.connected = False
                             self.stopThread = True
                             continue
 
                         # add received data to input buffer
-                        self.receiveBuffer += recvData
+                        self.receiveBuffer += recv_data
                     except socket.error, e:
                         errorcode = e[0]
-                        if not isErrorCodeEWouldBlock(errorcode):
+                        if not is_errorcode_ewouldblock(errorcode):
                             raise e
 
                     # handle data in input buffer
@@ -276,15 +279,15 @@ class hsmsConnection(object):
             logging.error(result)
 
         # notify listeners of disconnection
-        if self.delegate and hasattr(self.delegate, '_onBeforeConnectionClosed') and callable(getattr(self.delegate, '_onBeforeConnectionClosed')):
-            self.delegate._onBeforeConnectionClosed()
+        if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
+            self.delegate.on_before_connection_closed()
 
         # close the socket
         self.sock.close()
 
         # notify listeners of disconnection
-        if self.delegate and hasattr(self.delegate, '_onConnectionClosed') and callable(getattr(self.delegate, '_onConnectionClosed')):
-            self.delegate._onConnectionClosed()
+        if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
+            self.delegate.on_connection_closed()
 
         # reset all flags
         self.connected = False
@@ -295,10 +298,10 @@ class hsmsConnection(object):
         self.receiveBuffer = ""
 
         # notify inherited classes of disconnection
-        if hasattr(self.__class__, '_onHsmsConnectionClose') and callable(getattr(self.__class__, '_onHsmsConnectionClose')):
-            self._onHsmsConnectionClose({'connection': self})
+        if hasattr(self.__class__, '_on_hsms_connection_close') and callable(getattr(self.__class__, '_on_hsms_connection_close')):
+            self._on_hsms_connection_close({'connection': self})
 
-    def getNextSystemCounter(self):
+    def get_next_system_counter(self):
         """Returns the next System.
 
         :returns: System for the next command
@@ -308,7 +311,7 @@ class hsmsConnection(object):
         return self.systemCounter
 
 
-class hsmsPassiveConnection(hsmsConnection):
+class HsmsPassiveConnection(HsmsConnection):
     """Server class for single passive (incoming) connection
 
     Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
@@ -317,8 +320,8 @@ class hsmsPassiveConnection(hsmsConnection):
     :type address: string
     :param port: TCP port of target host
     :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param delegate: target for messages
     :type delegate: object
 
@@ -340,9 +343,9 @@ class hsmsPassiveConnection(hsmsConnection):
         connection.disconnect()
 
     """
-    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+    def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
-        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
         # initially not enabled
         self.enabled = False
@@ -351,13 +354,13 @@ class hsmsPassiveConnection(hsmsConnection):
         self.serverThread = None
         self.stopServerThread = False
 
-    def _onHsmsConnectionClose(self, data):
+    def _on_hsms_connection_close(self, data):
         """Signal from super that the connection was closed
 
         This is required to initiate the reconnect if the connection is still enabled
         """
         if self.enabled:
-            self.__startServerThread()
+            self.__start_server_thread()
 
     def enable(self):
         """Enable the connection.
@@ -370,7 +373,7 @@ class hsmsPassiveConnection(hsmsConnection):
             self.enabled = True
 
             # start the connection thread
-            self.__startServerThread()
+            self.__start_server_thread()
 
     def disable(self):
         """Disable the connection.
@@ -393,11 +396,11 @@ class hsmsPassiveConnection(hsmsConnection):
             # disconnect super class
             self.disconnect()
 
-    def __startServerThread(self):
-        self.serverThread = threading.Thread(target=self.__serverThread, name="secsgem_hsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
+    def __start_server_thread(self):
+        self.serverThread = threading.Thread(target=self.__server_thread, name="secsgem_hsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
         self.serverThread.start()
 
-    def __serverThread(self):
+    def __server_thread(self):
         """Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
@@ -424,13 +427,14 @@ class hsmsPassiveConnection(hsmsConnection):
             self.sock.setblocking(0)
 
             # start the receiver thread
-            self._startReceiver()
+            self._start_receiver()
 
             sock.close()
 
             return
 
-class hsmsMultiPassiveConnection(hsmsConnection):
+
+class HsmsMultiPassiveConnection(HsmsConnection):
     """Connection class for single connection from hsmsMultiPassiveServer
 
     Handles connections incoming connection from hsmsMultiPassiveServer
@@ -439,8 +443,8 @@ class hsmsMultiPassiveConnection(hsmsConnection):
     :type address: string
     :param port: TCP port of target host
     :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param delegate: target for messages
     :type delegate: object
 
@@ -449,14 +453,14 @@ class hsmsMultiPassiveConnection(hsmsConnection):
         # TODO: create example
 
     """
-    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+    def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
-        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
         # initially not enabled
         self.enabled = False
 
-    def _onConnected(self, sock, address):
+    def on_connected(self, sock, address):
         # setup socket
         self.sock = sock
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -465,7 +469,7 @@ class hsmsMultiPassiveConnection(hsmsConnection):
         self.sock.setblocking(0)
 
         # start the receiver thread
-        self._startReceiver()
+        self._start_receiver()
 
     def enable(self):
         self.enabled = True
@@ -476,7 +480,7 @@ class hsmsMultiPassiveConnection(hsmsConnection):
             self.disconnect()
 
 
-class hsmsMultiPassiveServer(object):
+class HsmsMultiPassiveServer(object):
     """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
 
     :param port: TCP port to listen on
@@ -503,19 +507,19 @@ class hsmsMultiPassiveServer(object):
 
         self.listenThread = None
 
-    def createConnection(self, address, port=5000, sessionID=0, delegate=None):
+    def create_connection(self, address, port=5000, session_id=0, delegate=None):
         """ Create and remember connection for the server
 
         :param address: IP address of target host
         :type address: string
         :param port: TCP port of target host
         :type port: integer
-        :param sessionID: session / device ID to use for connection
-        :type sessionID: integer
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
         :param delegate: target for messages
         :type delegate: object
         """
-        connection = hsmsMultiPassiveConnection(address, port, sessionID, delegate)
+        connection = HsmsMultiPassiveConnection(address, port, session_id, delegate)
         connection.handler = self
 
         self.connections[address] = connection
@@ -538,11 +542,11 @@ class hsmsMultiPassiveServer(object):
 
         logging.debug("hsmsMultiPassiveServer.start: listening")
 
-    def stop(self, terminateConnections=True):
+    def stop(self, terminate_connections=True):
         """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
 
-        :param terminateConnections: terminate all connection made by this server
-        :type terminateConnections: boolean
+        :param terminate_connections: terminate all connection made by this server
+        :type terminate_connections: boolean
         """
         self.stopThread = True
 
@@ -554,7 +558,7 @@ class hsmsMultiPassiveServer(object):
 
         self.stopThread = False
 
-        if terminateConnections:
+        if terminate_connections:
             for address in self.connections:
                 connection = self.connections[address]
                 connection.disconnect()
@@ -566,21 +570,21 @@ class hsmsMultiPassiveServer(object):
 
         .. warning:: Do not call this directly, used internally.
         """
-        (sock, (sourceIP, sourcePort)) = accept_result
+        (sock, (source_ip, source_port)) = accept_result
 
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-        if sourceIP not in self.connections:
+        if source_ip not in self.connections:
             sock.close()
             return
 
-        connection = self.connections[sourceIP]
+        connection = self.connections[source_ip]
 
         if not connection.enabled:
             sock.close()
             return
 
-        connection._onConnected(sock, sourceIP)
+        connection.on_connected(sock, source_ip)
 
     def _listen_thread(self):
         """Thread listening for incoming connections
@@ -591,16 +595,16 @@ class hsmsMultiPassiveServer(object):
         try:
             while not self.stopThread:
                 # check for data in the input buffer
-                selectResult = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
+                select_result = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
 
-                if selectResult[0]:
+                if select_result[0]:
                     accept_result = None
 
                     try:
                         accept_result = self.listenSock.accept()
                     except socket.error, e:
                         errorcode = e[0]
-                        if not isErrorCodeEWouldBlock(errorcode):
+                        if not is_errorcode_ewouldblock(errorcode):
                             raise e
 
                     if accept_result is None:
@@ -621,15 +625,15 @@ class hsmsMultiPassiveServer(object):
         self.threadRunning = False
 
 
-class hsmsActiveConnection(hsmsConnection):
+class HsmsActiveConnection(HsmsConnection):
     """Client class for single active (outgoing) connection
 
     :param address: IP address of target host
     :type address: string
     :param port: TCP port of target host
     :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param delegate: target for messages
     :type delegate: object
 
@@ -650,9 +654,9 @@ class hsmsActiveConnection(hsmsConnection):
         client.registerCallback(0, 0, S0F0Handler)
 
     """
-    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+    def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
-        hsmsConnection.__init__(self, True, address, port, sessionID, delegate)
+        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
         # initially not enabled
         self.enabled = False
@@ -664,13 +668,13 @@ class hsmsActiveConnection(hsmsConnection):
         # flag if this is the first connection since enable
         self.firstConnection = True
 
-    def _onHsmsConnectionClose(self, data):
+    def _on_hsms_connection_close(self, data):
         """Signal from super that the connection was closed
 
         This is required to initiate the reconnect if the connection is still enabled
         """
         if self.enabled:
-            self.__startConnectThread()
+            self.__start_connect_thread()
 
     def enable(self):
         """Enable the connection.
@@ -686,7 +690,7 @@ class hsmsActiveConnection(hsmsConnection):
             self.enabled = True
 
             # start the connection thread
-            self.__startConnectThread()
+            self.__start_connect_thread()
 
     def disable(self):
         """Disable the connection.
@@ -695,7 +699,7 @@ class hsmsActiveConnection(hsmsConnection):
         """
         # only stop if enabled
         if self.enabled:
-            #mark connection as disabled
+            # mark connection as disabled
             self.enabled = False
 
             # stop connection thread if it is running
@@ -727,11 +731,11 @@ class hsmsActiveConnection(hsmsConnection):
 
         return True
 
-    def __startConnectThread(self):
-        self.connectionThread = threading.Thread(target=self.__connectThread, name="secsgem_hsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
+    def __start_connect_thread(self):
+        self.connectionThread = threading.Thread(target=self.__connect_thread, name="secsgem_hsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
         self.connectionThread.start()
 
-    def __connectThread(self):
+    def __connect_thread(self):
         """Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
@@ -773,6 +777,6 @@ class hsmsActiveConnection(hsmsConnection):
         self.sock.setblocking(0)
 
         # start the receiver thread
-        self._startReceiver()
+        self._start_receiver()
 
         return True

@@ -20,7 +20,7 @@ import logging
 import time
 import threading
 
-from hsmsConnections import hsmsActiveConnection, hsmsPassiveConnection, hsmsSTypes
+from hsmsConnections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
 from hsmsPackets import hsmsPacket, hsmsRejectReqHeader, hsmsStreamFunctionHeader, hsmsSelectReqHeader, \
     hsmsSelectRspHeader, hsmsLinktestReqHeader, hsmsLinktestRspHeader, hsmsDeselectReqHeader, hsmsDeselectRspHeader, \
     hsmsSeparateReqHeader
@@ -48,7 +48,7 @@ class hsmsHandler(EventProducer):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.hsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
 
     **Example**::
 
@@ -112,14 +112,14 @@ class hsmsHandler(EventProducer):
         # setup connection
         if self.active:
             if custom_connection_handler is None:
-                self.connection = hsmsActiveConnection(self.address, self.port, self.sessionID, self)
+                self.connection = HsmsActiveConnection(self.address, self.port, self.sessionID, self)
             else:
-                self.connection = custom_connection_handler.createConnection(self.address, self.port, self.sessionID, self)
+                self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
         else:
             if custom_connection_handler is None:
-                self.connection = hsmsPassiveConnection(self.address, self.port, self.sessionID, self)
+                self.connection = HsmsPassiveConnection(self.address, self.port, self.sessionID, self)
             else:
-                self.connection = custom_connection_handler.createConnection(self.address, self.port, self.sessionID, self)
+                self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
 
     def _onStateConnect(self, data):
         """Connection state model got event connect
@@ -171,7 +171,7 @@ class hsmsHandler(EventProducer):
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._onLinktestTimer)
         self.linktestTimer.start()
 
-    def _onConnectionEstablished(self):
+    def on_connection_established(self):
         """Connection was established"""
         # update connection state
         self.connected = True
@@ -180,12 +180,12 @@ class hsmsHandler(EventProducer):
 
         self.fireEvent("HsmsConnected", {'connection': self})
 
-    def _onBeforeConnectionClosed(self):
+    def on_before_connection_closed(self):
         """Connection is about to be closed"""
         # send separate request
         self.sendSeparateReq()
 
-    def _onConnectionClosed(self):
+    def on_connection_closed(self):
         """Connection was closed"""
         # update connection state
         self.connected = False
@@ -206,7 +206,7 @@ class hsmsHandler(EventProducer):
         for event in self.eventQueue:
             event.set()
 
-    def _onConnectionPacketReceived(self, packet):
+    def on_connection_packet_received(self, packet):
         """Packet received by connection
 
         :param packet: received data packet
@@ -266,7 +266,7 @@ class hsmsHandler(EventProducer):
             if not self.connectionState.isstate("SELECTED"):
                 logging.info("< %s", packet)
                 logging.warning("received message when not selected")
-                self.connection.sendPacket(hsmsPacket(hsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
+                self.connection.send_packet(hsmsPacket(hsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
 
                 return True
 
@@ -340,8 +340,8 @@ class hsmsHandler(EventProducer):
         :param packet: packet to be sent
         :type packet: :class:`secsgem.secsFunctionBase.secsStreamFunction`
         """
-        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
-        self.connection.sendPacket(out_packet)
+        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        self.connection.send_packet(out_packet)
 
     def waitforSystem(self, system, is_control=False):
         """Wait for an message with supplied system
@@ -393,8 +393,8 @@ class hsmsHandler(EventProducer):
         :returns: Packet that was received
         :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
-        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.getNextSystemCounter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
-        self.connection.sendPacket(out_packet)
+        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        self.connection.send_packet(out_packet)
 
         return self.waitforSystem(out_packet.header.system, (packet.stream == 0))
 
@@ -407,7 +407,7 @@ class hsmsHandler(EventProducer):
         :type system: integer
         """
         out_packet = hsmsPacket(hsmsStreamFunctionHeader(system, function.stream, function.function, False, self.sessionID), function.encode())
-        self.connection.sendPacket(out_packet)
+        self.connection.send_packet(out_packet)
 
     def sendSelectReq(self):
         """Send a Select Request to the remote host
@@ -415,10 +415,10 @@ class hsmsHandler(EventProducer):
         :returns: System of the sent request
         :rtype: integer
         """
-        system_id = self.connection.getNextSystemCounter()
+        system_id = self.connection.get_next_system_counter()
 
         packet = hsmsPacket(hsmsSelectReqHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
         return system_id
 
@@ -429,7 +429,7 @@ class hsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = hsmsPacket(hsmsSelectRspHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
     def waitforSelectRsp(self, system_id):
         """Wait for an incoming Select Response
@@ -449,10 +449,10 @@ class hsmsHandler(EventProducer):
         :returns: System of the sent request
         :rtype: integer
         """
-        system_id = self.connection.getNextSystemCounter()
+        system_id = self.connection.get_next_system_counter()
 
         packet = hsmsPacket(hsmsLinktestReqHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
         return system_id
 
@@ -463,7 +463,7 @@ class hsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = hsmsPacket(hsmsLinktestRspHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
     def waitforLinktestRsp(self, system_id):
         """Wait for an incoming Linktest Response
@@ -481,10 +481,10 @@ class hsmsHandler(EventProducer):
         :returns: System of the sent request
         :rtype: integer
         """
-        system_id = self.connection.getNextSystemCounter()
+        system_id = self.connection.get_next_system_counter()
 
         packet = hsmsPacket(hsmsDeselectReqHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
         return system_id
 
@@ -495,7 +495,7 @@ class hsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = hsmsPacket(hsmsDeselectRspHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
     def waitforDeselectRsp(self, system_id):
         """Wait for an incoming Deselect Response
@@ -520,13 +520,13 @@ class hsmsHandler(EventProducer):
         :type reason: integer
         """
         packet = hsmsPacket(hsmsRejectReqHeader(system_id, s_type, reason))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
     def sendSeparateReq(self):
         """Send a Separate Request to the remote host"""
-        system_id = self.connection.getNextSystemCounter()
+        system_id = self.connection.get_next_system_counter()
 
         packet = hsmsPacket(hsmsSeparateReqHeader(system_id))
-        self.connection.sendPacket(packet)
+        self.connection.send_packet(packet)
 
         return system_id

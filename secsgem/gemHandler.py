@@ -40,7 +40,7 @@ class gemHandler(secsHandler):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.hsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
     """
 
     ceids = secsHandler.ceids
@@ -240,10 +240,10 @@ class gemHandler(secsHandler):
         """
         self.fireEvent("HandlerCommunicating", {'handler': self}, True)
 
-    def _onConnectionClosed(self):
+    def on_connection_closed(self):
         """Connection was closed"""
         # call parent handlers
-        secsHandler._onConnectionClosed(self)
+        secsHandler.on_connection_closed(self)
 
         # update communication state
         self.communicationState.communicationfail()

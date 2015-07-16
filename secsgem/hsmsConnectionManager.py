@@ -18,7 +18,7 @@
 import logging
 
 from hsmsHandler import hsmsHandler
-from hsmsConnections import hsmsMultiPassiveServer
+from hsmsConnections import HsmsMultiPassiveServer
 from common import EventProducer
 
 
@@ -93,7 +93,7 @@ class hsmsConnectionManager(EventProducer):
         for requiredPort in required_ports:
             if requiredPort not in self.servers:
                 logging.debug("hsmsConnectionManager._updateRequiredServers: starting server on port {0}".format(requiredPort))
-                self.servers[requiredPort] = hsmsMultiPassiveServer(requiredPort)
+                self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
     def _onEvent(self, event_name, data):

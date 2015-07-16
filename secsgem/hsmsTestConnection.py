@@ -23,7 +23,7 @@ import time
 import threading
 
 
-class hsmsTestConnection(object):
+class HsmsTestConnection(object):
     """Connection class for single connection from hsmsMultiPassiveServer
 
     Handles connections incoming connection from hsmsMultiPassiveServer
@@ -32,10 +32,10 @@ class hsmsTestConnection(object):
     :type address: string
     :param port: TCP port of target host
     :type port: integer
-    :param sessionID: session / device ID to use for connection
-    :type sessionID: integer
+    :param session_id: session / device ID to use for connection
+    :type session_id: integer
     :param delegate: target for messages
-    :type delegate: object
+    :type delegate: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
 
     **Example**::
 
@@ -45,9 +45,13 @@ class hsmsTestConnection(object):
 
     T3 = 10
     T6 = 5
+    T7 = 10
 
-    def __init__(self, address, port=5000, sessionID=0, delegate=None):
+    def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initially not enabled
+        self.address = address
+        self.port = port
+        self.sessionID = session_id
         self.delegate = delegate
 
         self.enabled = False
@@ -64,16 +68,15 @@ class hsmsTestConnection(object):
         # send connection enabled event
         self.connected = True
 
-        if self.delegate and hasattr(self.delegate, '_onConnectionEstablished') and callable(getattr(self.delegate, '_onConnectionEstablished')):
-            self.delegate._onConnectionEstablished()
-
+        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
+            self.delegate.on_connection_established()
 
     def simulate_disconnect(self):
         self.disconnect()
 
     def simulate_packet(self, packet):
-        if self.delegate and hasattr(self.delegate, '_onConnectionPacketReceived') and callable(getattr(self.delegate, '_onConnectionPacketReceived')):
-            self.delegate._onConnectionPacketReceived(packet)
+        if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
+            self.delegate.on_connection_packet_received(packet)
 
     def enable(self):
         self.enabled = True
@@ -81,35 +84,35 @@ class hsmsTestConnection(object):
     def disable(self):
         self.enabled = False
 
-    def getNextSystemCounter(self):
+    def get_next_system_counter(self):
         self.systemCounter += 1
         return self.systemCounter
 
-    def sendPacket(self, packet):
+    def send_packet(self, packet):
         logging.info("> %s", packet)
         self.packets.append(packet)
 
     def disconnect(self):
         if self.connected:
             # notify listeners of disconnection
-            if self.delegate and hasattr(self.delegate, '_onBeforeConnectionClosed') and callable(getattr(self.delegate, '_onBeforeConnectionClosed')):
-                self.delegate._onBeforeConnectionClosed()
+            if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
+                self.delegate.on_before_connection_closed()
 
             # notify listeners of disconnection
-            if self.delegate and hasattr(self.delegate, '_onConnectionClosed') and callable(getattr(self.delegate, '_onConnectionClosed')):
-                self.delegate._onConnectionClosed()
+            if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
+                self.delegate.on_connection_closed()
 
         self.connected = False
 
 
-class hsmsTestServer(object):
+class HsmsTestServer(object):
     """Server class for testing"""
 
     def __init__(self):
         self.connection = None
 
-    def createConnection(self, address, port=5000, sessionID=0, delegate=None):
-        connection = hsmsTestConnection(address, port, sessionID, delegate)
+    def create_connection(self, address, port=5000, session_id=0, delegate=None):
+        connection = HsmsTestConnection(address, port, session_id, delegate)
         connection.handler = self
 
         self.connection = connection
@@ -119,8 +122,8 @@ class hsmsTestServer(object):
     def start(self):
         logging.debug("hsmsTestServer.start: server started")
 
-    def stop(self, terminateConnections=True):
-        if terminateConnections:
+    def stop(self, terminate_connections=True):
+        if terminate_connections:
             self.connection.disconnect()
 
         logging.debug("hsmsTestServer.stop: server stopped")
@@ -131,10 +134,10 @@ class hsmsTestServer(object):
             time.sleep(0.1)
 
     def simulate_disconnect(self):
-       self.connection.simulate_disconnect()
+        self.connection.simulate_disconnect()
 
     def expect_packet(self, system_id=None, s_type=None, stream=None, function=None, timeout=5):
-        endTime = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
+        end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
 
         while True:
             for packet in self.connection.packets:
@@ -145,15 +148,21 @@ class hsmsTestServer(object):
                 if s_type is not None and packet.header.sType == s_type:
                     match = True
 
+                if stream is not None and packet.header.stream == stream:
+                    match = True
+
+                if function is not None and packet.header.function == function:
+                    match = True
+
                 if match:
                     self.connection.packets.remove(packet)
                     return packet
 
-                if datetime.datetime.now() > endTime:
+                if datetime.datetime.now() > end_time:
                     return None
 
     def simulate_packet(self, packet):
         return self.connection.simulate_packet(packet)
 
-    def getNextSystemCounter(self):
-        return self.connection.getNextSystemCounter()
+    def get_next_system_counter(self):
+        return self.connection.get_next_system_counter()

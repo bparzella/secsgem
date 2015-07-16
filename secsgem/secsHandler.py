@@ -44,7 +44,7 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.hsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
     """
 
     ceids = {}

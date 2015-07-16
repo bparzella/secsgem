@@ -28,7 +28,7 @@ def S1F1Handler(connection, packet):
 	s1f2 = secsS01F02H()
 	responsePacket = hsmsPacket(hsmsStreamFunctionHeader(1, 2, False, packet.header.system), s1f2.encode())
 	
-	connection.sendPacket(responsePacket)
+	connection.send_packet(responsePacket)
 	
 def S1F13Handler(connection, packet):
 	global earlyS1F13
@@ -37,19 +37,19 @@ def S1F13Handler(connection, packet):
 	s1f14 = secsS01F14H({"COMMACK": 0})
 	responsePacket = hsmsPacket(hsmsStreamFunctionHeader(1, 14, False, packet.header.system), s1f14.encode())
 
-	connection.sendPacket(responsePacket)
+	connection.send_packet(responsePacket)
 
 def S6F11Handler(connection, packet):
 	s6f12 = secsS06F12(0)
 	responsePacket = hsmsPacket(hsmsStreamFunctionHeader(6, 12, False, packet.header.system), s6f12.encode())
 
-	connection.sendPacket(responsePacket)
+	connection.send_packet(responsePacket)
 
 def S5F1Handler(connection, packet):
 	s5f2 = secsS05F02(0)
 	responsePacket = hsmsPacket(hsmsStreamFunctionHeader(5, 2, False, packet.header.system), s5f2.encode())
 
-	connection.sendPacket(responsePacket)
+	connection.send_packet(responsePacket)
 
 server = hsmsServer(13002)
 
@@ -64,7 +64,7 @@ if not earlyS1F13:
 	s1f13 = secsS10F13H()
 	packet = hsmsPacket(hsmsStreamFunctionHeader(1,13, False), s1f13.encode())
 
-	client.sendPacket(packet)
+	client.send_packet(packet)
 	packet = client.waitforStreamFunction(1,14)
 
 try:

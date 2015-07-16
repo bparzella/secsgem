@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 import unittest
+import time
 
 import secsgem
 import secsgem.hsmsTestConnection
@@ -21,7 +22,7 @@ import secsgem.hsmsTestConnection
 
 class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsmsTestConnection.hsmsTestServer()
+        self.server = secsgem.hsmsTestConnection.HsmsTestServer()
 
         self.client = secsgem.secsHandler("127.0.0.1", 5000, False, 0, "test", None, self.server)
 
@@ -49,7 +50,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def testSelection(self):
         self.server.simulate_connect()
 
-        self.server.simulate_packet(secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(self.server.getNextSystemCounter())))
+        self.server.simulate_packet(secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(self.server.get_next_system_counter())))
         self.assertIsNotNone(self.server.expect_packet(s_type=2))
 
         self.assertEqual(self.client.connectionState.current, 'SELECTED')
@@ -57,7 +58,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def testSelectedDisconnect(self):
         self.server.simulate_connect()
 
-        self.server.simulate_packet(secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(self.server.getNextSystemCounter())))
+        self.server.simulate_packet(secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(self.server.get_next_system_counter())))
         self.assertIsNotNone(self.server.expect_packet(s_type=2))
 
         self.server.simulate_disconnect()
@@ -66,7 +67,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
 class TestSecsConnectionStateModelActive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsmsTestConnection.hsmsTestServer()
+        self.server = secsgem.hsmsTestConnection.HsmsTestServer()
 
         self.client = secsgem.secsHandler("127.0.0.1", 5000, True, 0, "test", None, self.server)
 
