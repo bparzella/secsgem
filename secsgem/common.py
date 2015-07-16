@@ -116,6 +116,8 @@ class EventHandler:
     :type generic_handler: def handler(eventName, data)
     """
     def __init__(self, target=None, events=None, generic_handler=None):
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.eventHandlers = {}
         self.target = target
         self.genericHandler = generic_handler
@@ -143,29 +145,29 @@ class EventHandler:
         if self.target:
             generic_handler = getattr(self.target, "_onEvent", None)
             if callable(generic_handler):
-                logging.debug("%s.%s: posting event %s to %s._onEvent" % (calling_class, calling_method, event_name, self.target.__class__.__name__))
+                self.logger.debug("%s.%s: posting event %s to %s._onEvent" % (calling_class, calling_method, event_name, self.target.__class__.__name__))
                 if generic_handler(event_name, params) is not False:
                     handled = True
 
             specific_handler = getattr(self.target, "_onEvent" + event_name, None)
             if callable(specific_handler):
-                logging.debug("%s.%s: posting event %s to %s._onEvent%s" % (calling_class, calling_method, event_name, self.target.__class__.__name__, event_name))
+                self.logger.debug("%s.%s: posting event %s to %s._onEvent%s" % (calling_class, calling_method, event_name, self.target.__class__.__name__, event_name))
                 if specific_handler(params):
                     handled = True
 
         if event_name in self.eventHandlers:
             for eventHandler in self.eventHandlers[event_name]:
-                logging.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(eventHandler)))
+                self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(eventHandler)))
                 if eventHandler(event_name, params) is not False:
                     handled = True
 
         if self.genericHandler:
-            logging.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(self.genericHandler)))
+            self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(self.genericHandler)))
             if self.genericHandler(event_name, params) is not False:
                 handled = True
 
         if not handled:
-            logging.debug("%s.%s: unhandled event %s" % (calling_class, calling_method, event_name))
+            self.logger.debug("%s.%s: unhandled event %s" % (calling_class, calling_method, event_name))
 
         return handled
 

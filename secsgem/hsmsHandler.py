@@ -73,6 +73,8 @@ class hsmsHandler(EventProducer):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         EventProducer.__init__(self, event_handler)
 
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.address = address
         self.port = port
         self.active = active
@@ -213,7 +215,7 @@ class hsmsHandler(EventProducer):
         :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
         if packet.header.sType > 0:
-            logging.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType])
+            self.logger.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType])
 
             # check if it is a select request
             if packet.header.sType == 0x01:
@@ -264,8 +266,8 @@ class hsmsHandler(EventProducer):
                 self._queuePacket(packet)
         else:
             if not self.connectionState.isstate("SELECTED"):
-                logging.info("< %s", packet)
-                logging.warning("received message when not selected")
+                self.logger.info("< %s", packet)
+                self.logger.warning("received message when not selected")
                 self.connection.send_packet(hsmsPacket(hsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
 
                 return True
@@ -274,7 +276,7 @@ class hsmsHandler(EventProducer):
             if hasattr(self, '_onHsmsPacketReceived') and callable(getattr(self, '_onHsmsPacketReceived')):
                 self._onHsmsPacketReceived(packet)
             else:
-                logging.info("< %s", packet)
+                self.logger.info("< %s", packet)
 
     def _serializeData(self):
         """Returns data for serialization
@@ -352,7 +354,7 @@ class hsmsHandler(EventProducer):
         :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
         """
         if not self.connected:
-            logging.warning("waitforSystem: handler not connected waiting for response for system {0}".format(system))
+            self.logger.warning("handler not connected waiting for response for system {0}".format(system))
             return None
 
         if is_control:
@@ -378,7 +380,7 @@ class hsmsHandler(EventProducer):
                 if event.wait(1):
                     event.clear()
                 elif not self.connected or self.connection.disconnecting or time.time() > timeout:
-                    logging.warning("waitforSystem: response for system {0} not received within timeout".format(system))
+                    self.logger.warning("response for system {0} not received within timeout".format(system))
                     return None
 
         self.eventQueue.remove(event)

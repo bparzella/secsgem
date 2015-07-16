@@ -48,6 +48,8 @@ class HsmsTestConnection(object):
     T7 = 10
 
     def __init__(self, address, port=5000, session_id=0, delegate=None):
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         # initially not enabled
         self.address = address
         self.port = port
@@ -89,7 +91,7 @@ class HsmsTestConnection(object):
         return self.systemCounter
 
     def send_packet(self, packet):
-        logging.info("> %s", packet)
+        self.logger.info("> %s", packet)
         self.packets.append(packet)
 
     def disconnect(self):
@@ -109,6 +111,8 @@ class HsmsTestServer(object):
     """Server class for testing"""
 
     def __init__(self):
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.connection = None
 
     def create_connection(self, address, port=5000, session_id=0, delegate=None):
@@ -120,13 +124,13 @@ class HsmsTestServer(object):
         return connection
 
     def start(self):
-        logging.debug("hsmsTestServer.start: server started")
+        self.logger.debug("server started")
 
     def stop(self, terminate_connections=True):
         if terminate_connections:
             self.connection.disconnect()
 
-        logging.debug("hsmsTestServer.stop: server stopped")
+        self.logger.debug("server stopped")
 
     def simulate_connect(self):
         threading.Thread(target=self.connection.simulate_connect).start()

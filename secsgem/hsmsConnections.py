@@ -84,6 +84,8 @@ class HsmsConnection(object):
     """ Control Transaction Timeout """
 
     def __init__(self, active, address, port, session_id=0, delegate=None):
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         # set parameters
         self.active = active
         self.remoteAddress = address
@@ -170,7 +172,7 @@ class HsmsConnection(object):
         :param packet: encoded data to be transmitted
         :type packet: string / byte array
         """
-        logging.info("> %s", packet)
+        self.logger.info("> %s", packet)
 
         # encode the packet
         data = packet.encode()
@@ -276,7 +278,7 @@ class HsmsConnection(object):
         except Exception, e:
             result = 'hsmsClient.ReceiverThread : exception {0}\n'.format(e)
             result += ''.join(traceback.format_stack())
-            logging.error(result)
+            self.logger.error(result)
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
@@ -461,7 +463,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
 
     def on_connected(self, sock, address):
         """Connected callback for :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
-        
+
         :param sock: Socket for new connection
         :type sock: :class:`Socket`
         :param address: IP address of remote host
@@ -510,6 +512,8 @@ class HsmsMultiPassiveServer(object):
     """ Timeout for select calls """
 
     def __init__(self, port=5000):
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.listenSock = None
 
         self.port = port
@@ -554,7 +558,7 @@ class HsmsMultiPassiveServer(object):
         self.listenThread = threading.Thread(target=self._listen_thread, args=(), name="secsgem_hsmsMultiPassiveServer_listenThread_{}".format(self.port))
         self.listenThread.start()
 
-        logging.debug("hsmsMultiPassiveServer.start: listening")
+        self.logger.debug("listening")
 
     def stop(self, terminate_connections=True):
         """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
@@ -577,7 +581,7 @@ class HsmsMultiPassiveServer(object):
                 connection = self.connections[address]
                 connection.disconnect()
 
-        logging.debug("hsmsMultiPassiveServer.stop: server stopped")
+        self.logger.debug("server stopped")
 
     def _initialize_connection_thread(self, accept_result):
         """Setup connection
@@ -627,14 +631,14 @@ class HsmsMultiPassiveServer(object):
                     if self.stopThread:
                         continue
 
-                    logging.debug("hsmsMultiPassiveServer._listen_thread: connection from %s:%d", accept_result[1][0], accept_result[1][1])
+                    self.logger.debug("connection from %s:%d", accept_result[1][0], accept_result[1][1])
 
                     threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
 
         except Exception, e:
             result = 'hsmsServer._listen_thread : exception {0}\n'.format(e)
             result += ''.join(traceback.format_stack())
-            logging.error(result)
+            self.logger.error(result)
 
         self.threadRunning = False
 
@@ -778,13 +782,13 @@ class HsmsActiveConnection(HsmsConnection):
         # setup socket
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-        logging.debug("hsmsClient.connect: connecting to %s:%d", self.remoteAddress, self.remotePort)
+        self.logger.debug("connecting to %s:%d", self.remoteAddress, self.remotePort)
 
         # try to connect socket
         try:
             self.sock.connect((self.remoteAddress, self.remotePort))
         except socket.error:
-            logging.debug("hsmsClient.connect: connecting to %s:%d failed", self.remoteAddress, self.remotePort)
+            self.logger.debug("connecting to %s:%d failed", self.remoteAddress, self.remotePort)
             return False
 
         # make socket nonblocking

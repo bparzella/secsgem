@@ -84,6 +84,8 @@ class gemHandler(secsHandler):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         secsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
         self.communicationState = Fysom({
             'initial': 'DISABLED',  # 1
@@ -155,9 +157,9 @@ class gemHandler(secsHandler):
         message = self.secsDecode(packet)
 
         if message is None:
-            logging.info("< %s", packet)
+            self.logger.info("< %s", packet)
         else:
-            logging.info("< %s\n%s", packet, message)
+            self.logger.info("< %s\n%s", packet, message)
 
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:

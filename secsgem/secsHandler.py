@@ -91,6 +91,9 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         StreamFunctionCallbackHandler.__init__(self)
         hsmsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.isHost = True
 
     def _runCallbacks(self, callback_index, response):
@@ -106,7 +109,7 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         except Exception, e:
             result = 'secsHandler.CallbackRunner : exception {0}\n'.format(e)
             result += ''.join(traceback.format_stack())
-            logging.error(result)
+            self.logger.error(result)
 
     def _onHsmsPacketReceived(self, packet):
         """Packet received from hsms layer
@@ -117,9 +120,9 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         message = self.secsDecode(packet)
 
         if message is None:
-            logging.info("< %s", packet)
+            self.logger.info("< %s", packet)
         else:
-            logging.info("< %s\n%s", packet, message)
+            self.logger.info("< %s\n%s", packet, message)
 
         # check if callbacks available for this stream and function
         callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
@@ -307,11 +310,11 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
             secs_streams_functions = self.secsStreamsFunctionsEquipment
 
         if stream not in secs_streams_functions:
-            logging.warning("unknown function S%02dF%02d", stream, function)
+            self.logger.warning("unknown function S%02dF%02d", stream, function)
             return None
         else:
             if function not in secs_streams_functions[stream]:
-                logging.warning("unknown function S%02dF%02d", stream, function)
+                self.logger.warning("unknown function S%02dF%02d", stream, function)
                 return None
             else:
                 return secs_streams_functions[stream][function]
@@ -330,15 +333,15 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
             secs_streams_functions = self.secsStreamsFunctionsHost
 
         if packet.header.stream not in secs_streams_functions:
-            logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
+            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
         if packet.header.function not in secs_streams_functions[packet.header.stream]:
-            logging.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
+            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        logging.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secs_streams_functions[packet.header.stream][packet.header.function].__name__))
+        self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secs_streams_functions[packet.header.stream][packet.header.function].__name__))
         function = secs_streams_functions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
-        logging.debug("decoded {}".format(function))
+        self.logger.debug("decoded {}".format(function))
         return function

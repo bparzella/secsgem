@@ -31,6 +31,8 @@ class hsmsConnectionManager(EventProducer):
     def __init__(self, event_handler=None):
         EventProducer.__init__(self, event_handler)
 
+        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
         self.handlers = {}
 
         self.servers = {}
@@ -86,13 +88,13 @@ class hsmsConnectionManager(EventProducer):
 
         for serverPort in self.servers.keys():
             if serverPort not in required_ports:
-                logging.debug("hsmsConnectionManager._updateRequiredServers: stopping server on port {0}".format(serverPort))
+                self.logger.debug("stopping server on port {0}".format(serverPort))
                 self.servers[serverPort].stop()
                 del self.servers[serverPort]
 
         for requiredPort in required_ports:
             if requiredPort not in self.servers:
-                logging.debug("hsmsConnectionManager._updateRequiredServers: starting server on port {0}".format(requiredPort))
+                self.logger.debug("starting server on port {0}".format(requiredPort))
                 self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
@@ -131,7 +133,7 @@ class hsmsConnectionManager(EventProducer):
         :param connection_handler: Model handling this connection
         :type connection_handler: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
         """
-        logging.debug("hsmsConnectionManager.addPeer: new remote %s at %s:%d", name, address, port)
+        self.logger.debug("new remote %s at %s:%d", name, address, port)
 
         connection_id = self.getConnectionID(address)
 
@@ -158,7 +160,7 @@ class hsmsConnectionManager(EventProducer):
         :param port: TCP port of peer
         :type port: integer
         """
-        logging.debug("hsmsConnectionManager.removePeer: disconnecting from %s at %s:%d", name, address, port)
+        self.logger.debug("disconnecting from %s at %s:%d", name, address, port)
 
         connection_id = self.getConnectionID(address)
 
