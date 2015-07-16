@@ -298,8 +298,7 @@ class HsmsConnection(object):
         self.receiveBuffer = ""
 
         # notify inherited classes of disconnection
-        if hasattr(self.__class__, '_on_hsms_connection_close') and callable(getattr(self.__class__, '_on_hsms_connection_close')):
-            self._on_hsms_connection_close({'connection': self})
+        self._on_hsms_connection_close({'connection': self})
 
     def get_next_system_counter(self):
         """Returns the next System.
@@ -461,6 +460,13 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         self.enabled = False
 
     def on_connected(self, sock, address):
+        """Connected callback for :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
+        
+        :param sock: Socket for new connection
+        :type sock: :class:`Socket`
+        :param address: IP address of remote host
+        :type address: string
+        """
         # setup socket
         self.sock = sock
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -472,9 +478,17 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         self._start_receiver()
 
     def enable(self):
+        """Enable the connection.
+
+        Starts the connection process to the passive remote.
+        """
         self.enabled = True
 
     def disable(self):
+        """Disable the connection.
+
+        Stops all connection attempts, and closes the connection
+        """
         self.enabled = False
         if self.connected:
             self.disconnect()

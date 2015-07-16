@@ -377,9 +377,10 @@ class hsmsPacket:
             >>>
             >>> secsgem.formatHex(packetData)
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
-
+            >>>
             >>> secsgem.hsmsPackets.hsmsPacket.decode(packetData)
             secsgem.hsmsPackets.hsmsPacket({'header': secsgem.hsmsPackets.hsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5}), 'data': ''})
+
 
         """
         data_length = len(text) - 14
