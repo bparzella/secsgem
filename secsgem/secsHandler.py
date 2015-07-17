@@ -18,7 +18,6 @@
 import logging
 import threading
 
-import traceback
 import copy
 
 from hsmsHandler import hsmsHandler
@@ -107,9 +106,7 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
                 self._queuePacket(response)
 
         except Exception, e:
-            result = 'secsHandler.CallbackRunner : exception {0}\n'.format(e)
-            result += ''.join(traceback.format_stack())
-            self.logger.error(result)
+            self.logger.error('exception {0}'.format(e), exc_info=True)
 
     def _onHsmsPacketReceived(self, packet):
         """Packet received from hsms layer

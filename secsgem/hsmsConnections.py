@@ -23,7 +23,6 @@ import struct
 import time
 
 import threading
-import traceback
 
 import errno
 
@@ -276,9 +275,7 @@ class HsmsConnection(object):
                         pass
 
         except Exception, e:
-            result = 'hsmsClient.ReceiverThread : exception {0}\n'.format(e)
-            result += ''.join(traceback.format_stack())
-            self.logger.error(result)
+            self.logger.error('exception {0}'.format(e), exc_info=True)
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
@@ -636,9 +633,7 @@ class HsmsMultiPassiveServer(object):
                     threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
 
         except Exception, e:
-            result = 'hsmsServer._listen_thread : exception {0}\n'.format(e)
-            result += ''.join(traceback.format_stack())
-            self.logger.error(result)
+            self.logger.error('exception {0}'.format(e), exc_info=True)
 
         self.threadRunning = False
 
