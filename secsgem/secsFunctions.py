@@ -33,8 +33,8 @@ class secsS00F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 0
-    function = 0
+    _stream = 0
+    _function = 0
 
     _formatDescriptor = None
 
@@ -51,8 +51,8 @@ class secsS01F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 1
-    function = 0
+    _stream = 1
+    _function = 0
 
     _formatDescriptor = None
 
@@ -69,8 +69,8 @@ class secsS01F01(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 1
-    function = 1
+    _stream = 1
+    _function = 1
 
     _formatDescriptor = None
 
@@ -94,8 +94,8 @@ class secsS01F02E(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 1
-    function = 2
+    _stream = 1
+    _function = 2
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
@@ -115,8 +115,8 @@ class secsS01F02H(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 1
-    function = 2
+    _stream = 1
+    _function = 2
 
     _formatDescriptor = secsVarList({}, 0)
 
@@ -140,8 +140,8 @@ class secsS01F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 1
-    function = 3
+    _stream = 1
+    _function = 3
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -165,8 +165,8 @@ class secsS01F04(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 1
-    function = 4
+    _stream = 1
+    _function = 4
 
     _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
@@ -192,8 +192,8 @@ class secsS01F11(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 1
-    function = 11
+    _stream = 1
+    _function = 11
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -221,8 +221,8 @@ class secsS01F12(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 1
-    function = 12
+    _stream = 1
+    _function = 12
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("SVID", secsVarU4(1)),
@@ -250,8 +250,8 @@ class secsS01F13E(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 1
-    function = 13
+    _stream = 1
+    _function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MDLN", secsVarString(20)),
@@ -271,8 +271,8 @@ class secsS01F13H(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 1
-    function = 13
+    _stream = 1
+    _function = 13
 
     _formatDescriptor = secsVarList({}, 0)
 
@@ -299,8 +299,8 @@ class secsS01F14E(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 1
-    function = 14
+    _stream = 1
+    _function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
@@ -331,8 +331,8 @@ class secsS01F14H(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 1
-    function = 14
+    _stream = 1
+    _function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("COMMACK", secsVarBinary(1)),
@@ -352,8 +352,8 @@ class secsS02F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 2
-    function = 0
+    _stream = 2
+    _function = 0
 
     _formatDescriptor = None
 
@@ -379,8 +379,8 @@ class secsS02F13(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 13
+    _stream = 2
+    _function = 13
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -404,8 +404,8 @@ class secsS02F14(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 14
+    _stream = 2
+    _function = 14
 
     _formatDescriptor = secsVarArray(secsVarDynamic(secsVarString))
 
@@ -432,8 +432,8 @@ class secsS02F15(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 15
+    _stream = 2
+    _function = 15
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
@@ -457,8 +457,8 @@ class secsS02F16(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 2
-    function = 16
+    _stream = 2
+    _function = 16
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -484,8 +484,8 @@ class secsS02F29(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 29
+    _stream = 2
+    _function = 29
 
     _formatDescriptor = secsVarArray(secsVarU4(1))
 
@@ -516,8 +516,8 @@ class secsS02F30(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 30
+    _stream = 2
+    _function = 30
 
     _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
                         ("ECID", secsVarU4(1)),
@@ -557,8 +557,8 @@ class secsS02F33(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 33
+    _stream = 2
+    _function = 33
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -589,8 +589,8 @@ class secsS02F34(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 2
-    function = 34
+    _stream = 2
+    _function = 34
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -623,8 +623,8 @@ class secsS02F35(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 35
+    _stream = 2
+    _function = 35
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -655,8 +655,8 @@ class secsS02F36(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 2
-    function = 36
+    _stream = 2
+    _function = 36
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -683,8 +683,8 @@ class secsS02F37(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 37
+    _stream = 2
+    _function = 37
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("CEED", secsVarBoolean(1)),
@@ -710,8 +710,8 @@ class secsS02F38(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 2
-    function = 38
+    _stream = 2
+    _function = 38
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -741,8 +741,8 @@ class secsS02F41(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 41
+    _stream = 2
+    _function = 41
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("RCMD", secsVarString()),
@@ -780,8 +780,8 @@ class secsS02F42(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 2
-    function = 42
+    _stream = 2
+    _function = 42
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("HCACK", secsVarBinary(1)),
@@ -806,8 +806,8 @@ class secsS05F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 5
-    function = 0
+    _stream = 5
+    _function = 0
 
     _formatDescriptor = None
 
@@ -832,8 +832,8 @@ class secsS05F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 5
-    function = 1
+    _stream = 5
+    _function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("ALCD", secsVarBinary(1)),
@@ -858,8 +858,8 @@ class secsS05F02(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 5
-    function = 2
+    _stream = 5
+    _function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -876,8 +876,8 @@ class secsS06F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 6
-    function = 0
+    _stream = 6
+    _function = 0
 
     _formatDescriptor = None
 
@@ -911,8 +911,8 @@ class secsS06F11(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
-    stream = 6
-    function = 11
+    _stream = 6
+    _function = 11
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("DATAID", secsVarU4(1)),
@@ -944,8 +944,8 @@ class secsS06F12(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 6
-    function = 12
+    _stream = 6
+    _function = 12
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -962,8 +962,8 @@ class secsS07F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 7
-    function = 0
+    _stream = 7
+    _function = 0
 
     _formatDescriptor = None
 
@@ -987,8 +987,8 @@ class secsS07F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 1
+    _stream = 7
+    _function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -1012,8 +1012,8 @@ class secsS07F02(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 7
-    function = 2
+    _stream = 7
+    _function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1037,8 +1037,8 @@ class secsS07F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 3
+    _stream = 7
+    _function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -1062,8 +1062,8 @@ class secsS07F04(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 7
-    function = 4
+    _stream = 7
+    _function = 4
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1084,8 +1084,8 @@ class secsS07F05(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 7
-    function = 5
+    _stream = 7
+    _function = 5
 
     _formatDescriptor = secsVarString()
 
@@ -1109,8 +1109,8 @@ class secsS07F06(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 6
+    _stream = 7
+    _function = 6
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("PPID", secsVarString()),
@@ -1137,8 +1137,8 @@ class secsS07F17(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 17
+    _stream = 7
+    _function = 17
 
     _formatDescriptor = secsVarArray(secsVarString())
 
@@ -1159,8 +1159,8 @@ class secsS07F18(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 7
-    function = 18
+    _stream = 7
+    _function = 18
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1177,8 +1177,8 @@ class secsS07F19(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 19
+    _stream = 7
+    _function = 19
 
     _formatDescriptor = None
 
@@ -1202,8 +1202,8 @@ class secsS07F20(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 7
-    function = 20
+    _stream = 7
+    _function = 20
 
     _formatDescriptor = secsVarArray(secsVarString())
 
@@ -1220,8 +1220,8 @@ class secsS09F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 9
-    function = 0
+    _stream = 9
+    _function = 0
 
     _formatDescriptor = None
 
@@ -1242,8 +1242,8 @@ class secsS09F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 1
+    _stream = 9
+    _function = 1
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1264,8 +1264,8 @@ class secsS09F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 3
+    _stream = 9
+    _function = 3
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1286,8 +1286,8 @@ class secsS09F05(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 5
+    _stream = 9
+    _function = 5
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1308,8 +1308,8 @@ class secsS09F07(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 7
+    _stream = 9
+    _function = 7
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1330,8 +1330,8 @@ class secsS09F09(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 9
+    _stream = 9
+    _function = 9
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1352,8 +1352,8 @@ class secsS09F11(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 9
-    function = 11
+    _stream = 9
+    _function = 11
 
     _formatDescriptor = secsVarBinary(10)
 
@@ -1377,8 +1377,8 @@ class secsS09F13(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 9
-    function = 13
+    _stream = 9
+    _function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("MEXP", secsVarString(6)),
@@ -1398,8 +1398,8 @@ class secsS10F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 10
-    function = 0
+    _stream = 10
+    _function = 0
 
     _formatDescriptor = None
 
@@ -1423,8 +1423,8 @@ class secsS10F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 10
-    function = 1
+    _stream = 10
+    _function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
@@ -1448,8 +1448,8 @@ class secsS10F02(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 10
-    function = 2
+    _stream = 10
+    _function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1473,8 +1473,8 @@ class secsS10F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 10
-    function = 3
+    _stream = 10
+    _function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                         ("TID", secsVarBinary(1)),
@@ -1498,8 +1498,8 @@ class secsS10F04(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 10
-    function = 4
+    _stream = 10
+    _function = 4
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1516,8 +1516,8 @@ class secsS12F00(secsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
-    stream = 12
-    function = 0
+    _stream = 12
+    _function = 0
 
     _formatDescriptor = None
 
@@ -1572,8 +1572,8 @@ class secsS12F01(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 1
+    _stream = 12
+    _function = 1
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1612,8 +1612,8 @@ class secsS12F02(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 12
-    function = 2
+    _stream = 12
+    _function = 2
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1653,8 +1653,8 @@ class secsS12F03(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 3
+    _stream = 12
+    _function = 3
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1719,8 +1719,8 @@ class secsS12F04(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 4
+    _stream = 12
+    _function = 4
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1764,8 +1764,8 @@ class secsS12F05(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 5
+    _stream = 12
+    _function = 5
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1791,8 +1791,8 @@ class secsS12F06(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 12
-    function = 6
+    _stream = 12
+    _function = 6
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1822,8 +1822,8 @@ class secsS12F07(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 7
+    _stream = 12
+    _function = 7
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1853,8 +1853,8 @@ class secsS12F08(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 12
-    function = 8
+    _stream = 12
+    _function = 8
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1880,8 +1880,8 @@ class secsS12F09(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 9
+    _stream = 12
+    _function = 9
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1907,8 +1907,8 @@ class secsS12F10(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 12
-    function = 10
+    _stream = 12
+    _function = 10
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1938,8 +1938,8 @@ class secsS12F11(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 11
+    _stream = 12
+    _function = 11
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -1969,8 +1969,8 @@ class secsS12F12(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
-    stream = 12
-    function = 12
+    _stream = 12
+    _function = 12
 
     _formatDescriptor = secsVarBinary(1)
 
@@ -1994,8 +1994,8 @@ class secsS12F13(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 13
+    _stream = 12
+    _function = 13
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2028,8 +2028,8 @@ class secsS12F14(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 14
+    _stream = 12
+    _function = 14
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2062,8 +2062,8 @@ class secsS12F15(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 15
+    _stream = 12
+    _function = 15
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2092,8 +2092,8 @@ class secsS12F16(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 16
+    _stream = 12
+    _function = 16
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2123,8 +2123,8 @@ class secsS12F17(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 17
+    _stream = 12
+    _function = 17
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2158,8 +2158,8 @@ class secsS12F18(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 18
+    _stream = 12
+    _function = 18
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MID", secsVarString(16)),
@@ -2192,8 +2192,8 @@ class secsS12F19(secsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
-    stream = 12
-    function = 19
+    _stream = 12
+    _function = 19
 
     _formatDescriptor = secsVarList(OrderedDict((
                             ("MAPER", secsVarBinary(1)),

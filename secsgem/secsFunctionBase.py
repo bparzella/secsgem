@@ -42,12 +42,15 @@ class secsStreamFunction(object):
     :type value: various
     """
 
-    stream = 0
-    function = 0
+    _stream = 0
+    _function = 0
 
     _formatDescriptor = None
 
     def __init__(self, value=None):
+        self.__dict__["stream"] = self._stream
+        self.__dict__["function"] = self._function
+
         if self._formatDescriptor is None:
             self.__dict__["format"] = None
         else:
