@@ -143,10 +143,14 @@ class gemHandler(secsHandler):
         self.connection.enable()
         self.communicationState.enable()
 
+        self.logger.info("Connection enabled")
+
     def disable(self):
         """Disables the connection"""
         self.connection.disable()
         self.communicationState.disable()
+
+        self.logger.info("Connection disabled")
 
     def _onHsmsPacketReceived(self, packet):
         """Packet received from hsms layer
@@ -199,6 +203,8 @@ class gemHandler(secsHandler):
         :param data: event attributes
         :type data: object
         """
+        self.logger.debug("connectionState -> WAIT_CRA")
+
         self.waitCRATimer = threading.Timer(self.connection.T3, self._onWaitCRATimeout)
         self.waitCRATimer.start()
 
@@ -213,6 +219,8 @@ class gemHandler(secsHandler):
         :param data: event attributes
         :type data: object
         """
+        self.logger.debug("connectionState -> WAIT_DELAY")
+
         self.commDelayTimer = threading.Timer(self.commDelayTimeout, self._onWaitCommDelayTimeout)
         self.commDelayTimer.start()
 
@@ -240,10 +248,14 @@ class gemHandler(secsHandler):
         :param data: event attributes
         :type data: object
         """
+        self.logger.debug("connectionState -> COMMUNICATING")
+
         self.fireEvent("HandlerCommunicating", {'handler': self}, True)
 
     def on_connection_closed(self):
         """Connection was closed"""
+        self.logger.info("Connection was closed")
+
         # call parent handlers
         secsHandler.on_connection_closed(self)
 
@@ -252,6 +264,8 @@ class gemHandler(secsHandler):
 
     def clearCollectionEvents(self):
         """Clear all collection events"""
+        self.logger.info("Clearing collection events")
+
         # clear subscribed reports
         self.reportSubscriptions = {}
 
@@ -271,6 +285,8 @@ class gemHandler(secsHandler):
         :param report_id: optional - ID for report, autonumbering if None
         :type report_id: integer
         """
+        self.logger.info("Subscribing to collection event {0}".format(ceid))
+
         if report_id is None:
             report_id = self.reportIDCounter
             self.reportIDCounter += 1
@@ -295,6 +311,8 @@ class gemHandler(secsHandler):
         :param params: DV IDs to add for collection event
         :type params: list of strings
         """
+        self.logger.info("Send RCMD {0}".format(rcmd))
+
         s2f41 = self.streamFunction(2, 41)()
         s2f41.RCMD = rcmd
         for param in params:
@@ -312,6 +330,8 @@ class gemHandler(secsHandler):
         :type ppbody: string
         """
         # send remote command
+        self.logger.info("Send process program {0}".format(ppid))
+
         return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 3)({"ppid": ppid, "ppbody": ppbody}))).ACKC7
 
     def requestProcessProgram(self, ppid):
@@ -320,6 +340,8 @@ class gemHandler(secsHandler):
         :param ppid: Transferred process programs ID
         :type ppid: string
         """
+        self.logger.info("Request process program {0}".format(ppid))
+
         # send remote command
         s7f6 = self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 5)(ppid)))
         return s7f6.PPID, s7f6.PPBODY
@@ -330,12 +352,16 @@ class gemHandler(secsHandler):
         :param ppids: Process programs to delete
         :type ppids: list of strings
         """
+        self.logger.info("Delete process programs {0}".format(ppids))
+
         # send remote command
         return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 17)(ppids))).ACKC7
 
     def getProcessProgramList(self):
         """Get process program list
         """
+        self.logger.info("Get process program list")
+
         # send remote command
         return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
 

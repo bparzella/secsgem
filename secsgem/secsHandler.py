@@ -129,16 +129,18 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
             self._queuePacket(packet)
 
     def disableCEIDs(self):
-        """Disable all Collection Events.
-        """
+        """Disable all Collection Events."""
+        self.logger.info("Disable all collection events")
+
         if not self.connection:
             return None
 
         return self.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": False, "CEID": []}))
 
     def disableCEIDReports(self):
-        """Disable all Collection Event Reports.
-        """
+        """Disable all Collection Event Reports."""
+        self.logger.info("Disable all collection event reports")
+
         if not self.connection:
             return None
 
@@ -150,6 +152,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: available Service Variables
         :rtype: list
         """
+        self.logger.info("Get list of service variables")
+
         if not self.connection:
             return None
 
@@ -165,6 +169,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: values of requested Service Variables
         :rtype: list
         """
+        self.logger.info("Get value of service variables {0}".format(svs))
+
         if not self.connection:
             return None
 
@@ -180,6 +186,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: value of requested Service Variable
         :rtype: various
         """
+        self.logger.info("Get value of service variable {0}".format(sv))
+
         return self.requestSVs([sv])[0]
 
     def listECs(self):
@@ -188,6 +196,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: available Equipment Constants
         :rtype: list
         """
+        self.logger.info("Get list of equipment constants")
+
         if not self.connection:
             return None
 
@@ -203,6 +213,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: values of requested Equipment Constants
         :rtype: list
         """
+        self.logger.info("Get value of equipment constants {0}".format(ecs))
+
         if not self.connection:
             return None
 
@@ -218,6 +230,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :returns: value of requested Equipment Constant
         :rtype: various
         """
+        self.logger.info("Get value of equipment constant {0}".format(ec))
+
         return self.requestECs([ec])
 
     def setECs(self, ecs):
@@ -226,6 +240,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :param ecs: list containing list of id / value pairs
         :type ecs: list
         """
+        self.logger.info("Set value of equipment constants {0}".format(ecs))
+
         if not self.connection:
             return None
 
@@ -241,6 +257,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :param value: new content of Equipment Constant
         :type value: various
         """
+        self.logger.info("Set value of equipment constant {0} to {1}".format(ec, value))
+
         return self.setECs([[ec, value]])
 
     def sendEquipmentTerminal(self, terminal_id, text):
@@ -251,6 +269,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
         :param text: text to send
         :type text: string
         """
+        self.logger.info("Send text to terminal {0}".format(terminal_id))
+
         if not self.connection:
             return None
 
@@ -286,6 +306,8 @@ class secsHandler(StreamFunctionCallbackHandler, hsmsHandler):
 
     def areYouThere(self):
         """Check if remote is still replying"""
+        self.logger.info("Requesting 'are you there'")
+
         if not self.connection:
             return None
 
