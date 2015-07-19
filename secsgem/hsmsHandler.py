@@ -102,9 +102,9 @@ class hsmsHandler(EventProducer):
                 {'name': 'timeoutT7', 'src': 'NOT_SELECTED', 'dst': 'NOT_CONNECTED'},
             ],
             'callbacks': {
-                'onNOT_SELECTED': self._onStateConnect,
-                'onNOT_CONNECTED': self._onStateDisconnect,
-                'onSELECTED': self._onStateSelect,
+                'onNOT_SELECTED': self._on_state_connect,
+                'onNOT_CONNECTED': self._on_state_disconnect,
+                'onSELECTED': self._on_state_select,
             },
             'autoforward': [
                 {'src': 'CONNECTED', 'dst': 'NOT_SELECTED'}
@@ -123,14 +123,14 @@ class hsmsHandler(EventProducer):
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
 
-    def _onStateConnect(self, data):
+    def _on_state_connect(self, data):
         """Connection state model got event connect
 
         :param data: event attributes
         :type data: object
         """
         # start linktest timer
-        self.linktestTimer = threading.Timer(self.linktestTimeout, self._onLinktestTimer)
+        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
         self.linktestTimer.start()
 
         # start select process if connection is active
@@ -138,7 +138,7 @@ class hsmsHandler(EventProducer):
             system_id = self.sendSelectReq()
             self.waitforSelectRsp(system_id)
 
-    def _onStateDisconnect(self, data):
+    def _on_state_disconnect(self, data):
         """Connection state model got event disconnect
 
         :param data: event attributes
@@ -150,7 +150,7 @@ class hsmsHandler(EventProducer):
 
         self.linktestTimer = None
 
-    def _onStateSelect(self, data):
+    def _on_state_select(self, data):
         """Connection state model got event select
 
         :param data: event attributes
@@ -163,14 +163,14 @@ class hsmsHandler(EventProducer):
         if hasattr(self, '_onHsmsSelect') and callable(getattr(self, '_onHsmsSelect')):
             self._onHsmsSelect()
 
-    def _onLinktestTimer(self):
+    def _on_linktest_timer(self):
         """Linktest time timed out, so send linktest request"""
         # send linktest request and wait for response
         system_id = self.sendLinktestReq()
         self.waitforLinktestRsp(system_id)
 
         # restart the timer
-        self.linktestTimer = threading.Timer(self.linktestTimeout, self._onLinktestTimer)
+        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
         self.linktestTimer.start()
 
     def on_connection_established(self):
