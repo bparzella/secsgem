@@ -28,7 +28,10 @@ class SecsVar(object):
     formatCode = -1
 
     def __init__(self):
-        self.value = None
+        self.__dict__["value"] = None
+
+    def set(self, value):
+        raise NotImplementedError("Function set not implemented on SecsVar")
 
     def encode_item_header(self, length):
         """Encode item header depending on the number of length bytes required.
@@ -43,75 +46,76 @@ class SecsVar(object):
         if length > 0xFFFFFF:
             raise ValueError("Encoding {} not possible, data length too big {}".format(self.__class__.__name__, length))
 
-        if (length > 0xFFFF):
-            lengthBytes = 3
-            formatByte = (self.formatCode << 2) | lengthBytes
-            return chr(formatByte) + chr((length & 0xFF0000) >> 16) + chr((length & 0x00FF00) >> 8) + chr((length & 0x0000FF))
-        elif (length > 0xFF):
-            lengthBytes = 2
-            formatByte = (self.formatCode << 2) | lengthBytes
-            return chr(formatByte) + chr((length & 0x00FF00) >> 8) + chr((length & 0x0000FF))
+        if length > 0xFFFF:
+            length_bytes = 3
+            format_byte = (self.formatCode << 2) | length_bytes
+            return chr(format_byte) + chr((length & 0xFF0000) >> 16) + chr((length & 0x00FF00) >> 8) + chr((length & 0x0000FF))
+        elif length > 0xFF:
+            length_bytes = 2
+            format_byte = (self.formatCode << 2) | length_bytes
+            return chr(format_byte) + chr((length & 0x00FF00) >> 8) + chr((length & 0x0000FF))
         else:
-            lengthBytes = 1
-            formatByte = (self.formatCode << 2) | lengthBytes
-            return chr(formatByte) + chr((length & 0x0000FF))
+            length_bytes = 1
+            format_byte = (self.formatCode << 2) | length_bytes
+            return chr(format_byte) + chr((length & 0x0000FF))
 
-    def decode_item_header(self, data, textPos=0):
+    def decode_item_header(self, data, text_pos=0):
         """Encode item header depending on the number of length bytes required.
 
         :param data: encoded data
         :type data: string
-        :param textPos: start of item header in data
-        :type textPos: integer
+        :param text_pos: start of item header in data
+        :type text_pos: integer
         :returns: start position for next item, format code, length item of data
         :rtype: (integer, integer, integer)
         """
         if DEBUG_DECODE:
-            print "{}--Decoded item header for {} starting at {}".format((" " * DEBUG_DECODE_DEPTH), self.__class__.__name__, textPos)
+            print "{}--Decoded item header for {} starting at {}".format((" " * DEBUG_DECODE_DEPTH), self.__class__.__name__, text_pos)
 
         if data == "":
             raise ValueError("Decoding for {} without any text".format(self.__class__.__name__))
 
         # parse format byte
-        formatByte = ord(data[textPos])
-        formatCode = (formatByte & 0b11111100) >> 2
-        lengthBytes = (formatByte & 0b00000011)
+        format_byte = ord(data[text_pos])
+        format_code = (format_byte & 0b11111100) >> 2
+        length_bytes = (format_byte & 0b00000011)
 
-        textPos += 1
+        text_pos += 1
 
         # read 1-3 length bytes
         length = 0
-        for i in range(lengthBytes):
+        for i in range(length_bytes):
             length <<= 8
-            length += ord(data[textPos])
+            length += ord(data[text_pos])
 
-            textPos += 1
+            text_pos += 1
 
-        if self.formatCode >= 0 and formatCode != self.formatCode:
-            raise ValueError("Decoding data for {} ({}) has invalid format {}".format(self.__class__.__name__, self.formatCode,  formatCode))
+        if 0 <= self.formatCode != format_code:
+            raise ValueError("Decoding data for {} ({}) has invalid format {}".format(self.__class__.__name__, self.formatCode, format_code))
 
         if DEBUG_DECODE:
-            print "{}Decoded item header with data @{} / format {} / length {}".format((" " * DEBUG_DECODE_DEPTH), textPos, formatCode, length)
+            print "{}Decoded item header with data @{} / format {} / length {}".format((" " * DEBUG_DECODE_DEPTH), text_pos, format_code, length)
 
-        return (textPos, formatCode, length)
+        return text_pos, format_code, length
 
 
 class SecsVarDynamic(SecsVar):
     """Variable with interchangable type.
 
-    :param defaultType: the default type for internal value
-    :type defaultType: type
+    :param default_type: the default type for internal value
+    :type default_type: type
     :param length: max number of items in type
     :type length: integer
     :param value: initial value
     :type value: various
     """
-    def __init__(self, defaultType, length=-1, value=None):
-        self.value = defaultType(length)
 
-        self.defaultType = defaultType
+    def __init__(self, default_type, length=-1, value=None):
+        super(SecsVarDynamic, self).__init__()
+
+        self.value = default_type(length)
+        self.defaultType = default_type
         self.length = length
-
         if value is not None:
             self.value.set(value)
 
@@ -164,23 +168,23 @@ class SecsVarDynamic(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
-        if formatCode == SecsVarArray.formatCode:
+        if format_code == SecsVarArray.formatCode:
             self.value = SecsVarArray(SecsVarDynamic(SecsVarString, self.length))
-        elif formatCode == SecsVarBinary.formatCode:
+        elif format_code == SecsVarBinary.formatCode:
             self.value = SecsVarBinary(self.length)
-        elif formatCode == SecsVarBoolean.formatCode:
+        elif format_code == SecsVarBoolean.formatCode:
             self.value = SecsVarBoolean(self.length)
-        elif formatCode == SecsVarString.formatCode:
+        elif format_code == SecsVarString.formatCode:
             self.value = SecsVarString(self.length)
-        elif formatCode == SecsVarI4.formatCode:
+        elif format_code == SecsVarI4.formatCode:
             self.value = SecsVarI4(self.length)
-        elif formatCode == SecsVarU1.formatCode:
+        elif format_code == SecsVarU1.formatCode:
             self.value = SecsVarU1(self.length)
-        elif formatCode == SecsVarU2.formatCode:
+        elif format_code == SecsVarU2.formatCode:
             self.value = SecsVarU2(self.length)
-        elif formatCode == SecsVarU4.formatCode:
+        elif format_code == SecsVarU4.formatCode:
             self.value = SecsVarU4(self.length)
 
         return self.value.decode(data, start)
@@ -199,23 +203,23 @@ class SecsVarList(SecsVar):
 
     :param data: internal data values
     :type data: OrderedDict
-    :param fieldCount: number of fields in the list
-    :type fieldCount: integer
+    :param field_count: number of fields in the list
+    :type field_count: integer
     :param value: initial value
     :type value: dict/list
     """
     formatCode = 0
 
-    def __init__(self, data, fieldCount=-1, value=None):
+    def __init__(self, data, field_count=-1, value=None):
+        super(SecsVarList, self).__init__()
+
         self.__dict__["data"] = data
-        self.__dict__["fieldCount"] = fieldCount
-
-        # check if fieldCount parameter matches amount of fields in the list
+        self.__dict__["fieldCount"] = field_count
         if self.fieldCount >= 0:
-            if not len(data) == fieldCount:
-                raise ValueError("Definition has invalid field count (expected: {}, actual: {})".format(self.fieldCount, len(data)))
+            if not len(data) == field_count:
+                raise ValueError(
+                    "Definition has invalid field count (expected: {}, actual: {})".format(self.fieldCount, len(data)))
 
-        # set the value if passed
         if value is not None:
             self.set(value)
 
@@ -223,10 +227,10 @@ class SecsVarList(SecsVar):
         data = ""
         first = True
 
-        for fieldName in self.data:
+        for field_name in self.data:
             if not first:
                 data += ", "
-            data += "{}: {}".format(fieldName, self.data[fieldName].__repr__())
+            data += "{}: {}".format(field_name, self.data[field_name].__repr__())
             first = False
 
         return "[{}]".format(data)
@@ -241,14 +245,14 @@ class SecsVarList(SecsVar):
         :type value: dict/list
         """
         if isinstance(value, dict):
-            for fieldName in value:
-                self.data[fieldName].set(value[fieldName])
+            for field_name in value:
+                self.data[field_name].set(value[field_name])
         elif isinstance(value, list):
             if not len(value) == self.fieldCount:
                 raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.length, len(self.data)))
             counter = 0
-            for fieldName in self.data:
-                self.data[fieldName].set(value[counter])
+            for field_name in self.data:
+                self.data[field_name].set(value[counter])
                 counter += 1
         else:
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
@@ -260,8 +264,8 @@ class SecsVarList(SecsVar):
         :rtype: list
         """
         data = []
-        for fieldName in self.data:
-            data.append(self.data[fieldName].get())
+        for field_name in self.data:
+            data.append(self.data[field_name].get())
 
         return data
 
@@ -273,8 +277,8 @@ class SecsVarList(SecsVar):
         """
         result = self.encode_item_header(len(self.data))
 
-        for fieldName in self.data:
-            result += self.data[fieldName].encode()
+        for field_name in self.data:
+            result += self.data[field_name].encode()
 
         return result
 
@@ -288,33 +292,33 @@ class SecsVarList(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         global DEBUG_DECODE_DEPTH
 
         # list
         for i in range(length):
             DEBUG_DECODE_DEPTH += 2
-            fieldName = self.data.keys()[i]
-            textPos = self.data[fieldName].decode(data, textPos)
+            field_name = self.data.keys()[i]
+            text_pos = self.data[field_name].decode(data, text_pos)
             DEBUG_DECODE_DEPTH -= 2
 
-        return textPos
+        return text_pos
 
     def __getattr__(self, name):
-        if name not in self.data:
+        if name not in self.__dict__["data"]:
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
-        if isinstance(self.data[name], SecsVarArray) or isinstance(self.data[name], SecsVarList):
-            return self.data[name]
+        if isinstance(self.__dict__["data"][name], SecsVarArray) or isinstance(self.data[name], SecsVarList):
+            return self.__dict__["data"][name]
         else:
-            return self.data[name].get()
+            return self.__dict__["data"][name].get()
 
     def __setattr__(self, name, value):
-        if name not in self.data:
+        if name not in self.__dict__["data"]:
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
-        self.data[name].set(value)
+        self.__dict__["data"][name].set(value)
 
     def clone(self):
         """Returns copy of the object
@@ -322,11 +326,11 @@ class SecsVarList(SecsVar):
         :returns: copy
         :rtype: SecsVarList
         """
-        newData = OrderedDict()
+        new_data = OrderedDict()
         for item in self.data:
-            newData[item] = self.data[item].clone()
+            new_data[item] = self.data[item].clone()
 
-        return SecsVarList(newData, self.fieldCount)
+        return SecsVarList(new_data, self.fieldCount)
 
 
 class SecsVarArray(SecsVar):
@@ -334,19 +338,19 @@ class SecsVarArray(SecsVar):
 
     :param data: internal data definition/sample
     :type data: SecsVar
-    :param fieldCount: number of fields in the list
-    :type fieldCount: integer
+    :param field_count: number of fields in the list
+    :type field_count: integer
     :param value: initial value
     :type value: list
     """
     formatCode = 0
 
-    def __init__(self, data, fieldCount=-1, value=None):
-        self.__dict__["itemDecriptor"] = data
-        self.__dict__["fieldCount"] = fieldCount
-        self.__dict__["data"] = []
+    def __init__(self, data, field_count=-1, value=None):
+        super(SecsVarArray, self).__init__()
 
-        # set the value if passed
+        self.__dict__["itemDecriptor"] = data
+        self.__dict__["fieldCount"] = field_count
+        self.__dict__["data"] = []
         if value is not None:
             self.set(value)
 
@@ -380,9 +384,9 @@ class SecsVarArray(SecsVar):
         :param value: new value
         :type value: various
         """
-        newObject = self.itemDecriptor.clone()
-        newObject.set(data)
-        self.data.append(newObject)
+        new_object = self.__dict__["itemDecriptor"].clone()
+        new_object.set(data)
+        self.data.append(new_object)
 
     def set(self, value):
         """Set the internal value to the provided value
@@ -393,16 +397,16 @@ class SecsVarArray(SecsVar):
         if not isinstance(value, list):
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
-        if self.fieldCount >= 0:
-            if not len(value) == self.fieldCount:
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.fieldCount, len(value)))
+        if self.__dict__["fieldCount"] >= 0:
+            if not len(value) == self.__dict__["fieldCount"]:
+                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.__dict__["fieldCount"], len(value)))
 
         self.__dict__["data"] = []
 
         for counter in range(len(value)):
-            newObject = self.itemDecriptor.clone()
-            newObject.set(value[counter])
-            self.data.append(newObject)
+            new_object = self.__dict__["itemDecriptor"].clone()
+            new_object.set(value[counter])
+            self.data.append(new_object)
 
     def get(self):
         """Return the internal value
@@ -439,7 +443,7 @@ class SecsVarArray(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         global DEBUG_DECODE_DEPTH
 
@@ -448,12 +452,12 @@ class SecsVarArray(SecsVar):
 
         for counter in range(length):
             DEBUG_DECODE_DEPTH += 2
-            newObject = self.itemDecriptor.clone()
-            textPos = newObject.decode(data, textPos)
-            self.data.append(newObject)
+            new_object = self.__dict__["itemDecriptor"].clone()
+            text_pos = new_object.decode(data, text_pos)
+            self.data.append(new_object)
             DEBUG_DECODE_DEPTH -= 2
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -461,12 +465,12 @@ class SecsVarArray(SecsVar):
         :returns: copy
         :rtype: SecsVarArray
         """
-        itemDecriptor = self.itemDecriptor.clone()
-        newData = []
+        item_decriptor = self.__dict__["itemDecriptor"].clone()
+        new_data = []
         for item in self.data:
-            newData.append(item.get())
+            new_data.append(item.get())
 
-        return SecsVarArray(itemDecriptor, self.fieldCount, newData)
+        return SecsVarArray(item_decriptor, self.__dict__["fieldCount"], new_data)
 
 
 class SecsVarBinary(SecsVar):
@@ -480,9 +484,10 @@ class SecsVarBinary(SecsVar):
     formatCode = 010
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarBinary, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -513,7 +518,7 @@ class SecsVarBinary(SecsVar):
         if not isinstance(value, str):
             value = chr(value)
 
-        if self.length >= 0 and len(value) != self.length:
+        if 0 <= self.length != len(value):
             raise ValueError("Value longer than {} chars".format(self.length))
 
         self.value = value
@@ -563,20 +568,20 @@ class SecsVarBinary(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         # string
         result = None
 
         if length > 0:
-            result = data[textPos:textPos+length]
+            result = data[text_pos:text_pos + length]
 
             if DEBUG_DECODE:
                 print "{}Decoded {} bytes".format((" " * DEBUG_DECODE_DEPTH), len(result))
 
         self.set(result)
 
-        return textPos + length
+        return text_pos + length
 
     def clone(self):
         """Returns copy of the object
@@ -598,9 +603,10 @@ class SecsVarBoolean(SecsVar):
     formatCode = 011
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarBoolean, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -623,7 +629,7 @@ class SecsVarBoolean(SecsVar):
         :type value: list/boolean
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -674,22 +680,22 @@ class SecsVarBoolean(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
         for i in range(length):
-            resultText = data[textPos]
-            result.append(bool(struct.unpack(">b", resultText)[0]))
+            result_text = data[text_pos]
+            result.append(bool(struct.unpack(">b", result_text)[0]))
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 1
+            text_pos += 1
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -711,9 +717,10 @@ class SecsVarString(SecsVar):
     formatCode = 020
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarString, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -732,7 +739,7 @@ class SecsVarString(SecsVar):
         if not isinstance(value, str):
             value = str(value)
 
-        if self.length >= 0 and len(value) > self.length:
+        if 0 <= self.length < len(value):
             raise ValueError("Value longer than {} chars".format(self.length))
 
         self.value = value
@@ -767,20 +774,20 @@ class SecsVarString(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         # string
         result = None
 
         if length > 0:
-            result = data[textPos:textPos+length]
+            result = data[text_pos:text_pos + length]
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result)
 
         self.set(result)
 
-        return textPos + length
+        return text_pos + length
 
     def clone(self):
         """Returns copy of the object
@@ -802,9 +809,10 @@ class SecsVarI1(SecsVar):
     formatCode = 031
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarI1, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -827,7 +835,7 @@ class SecsVarI1(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -878,26 +886,26 @@ class SecsVarI1(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
         for i in range(length):
-            resultText = data[textPos:textPos]
+            result_text = data[text_pos:text_pos]
 
-            if len(resultText) != 1:
+            if len(result_text) != 1:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">b", resultText)[0])
+            result.append(struct.unpack(">b", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 1
+            text_pos += 1
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -919,9 +927,10 @@ class SecsVarI2(SecsVar):
     formatCode = 032
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarI2, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -944,7 +953,7 @@ class SecsVarI2(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -977,7 +986,7 @@ class SecsVarI2(SecsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encode_item_header(len(self.value)*2)
+        result = self.encode_item_header(len(self.value) * 2)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -995,26 +1004,26 @@ class SecsVarI2(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
-        for i in range(length/2):
-            resultText = data[textPos:textPos+2]
+        for i in range(length / 2):
+            result_text = data[text_pos:text_pos + 2]
 
-            if len(resultText) != 2:
+            if len(result_text) != 2:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">h", resultText)[0])
+            result.append(struct.unpack(">h", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 2
+            text_pos += 2
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -1036,9 +1045,10 @@ class SecsVarI4(SecsVar):
     formatCode = 034
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarI4, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -1061,7 +1071,7 @@ class SecsVarI4(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -1094,7 +1104,7 @@ class SecsVarI4(SecsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encode_item_header(len(self.value)*4)
+        result = self.encode_item_header(len(self.value) * 4)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1112,26 +1122,26 @@ class SecsVarI4(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
-        for i in range(length/4):
-            resultText = data[textPos:textPos+4]
+        for i in range(length / 4):
+            result_text = data[text_pos:text_pos + 4]
 
-            if len(resultText) != 4:
+            if len(result_text) != 4:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">l", resultText)[0])
+            result.append(struct.unpack(">l", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 4
+            text_pos += 4
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -1153,9 +1163,10 @@ class SecsVarU1(SecsVar):
     formatCode = 051
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarU1, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -1178,7 +1189,7 @@ class SecsVarU1(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -1229,26 +1240,26 @@ class SecsVarU1(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
         for i in range(length):
-            resultText = data[textPos]
+            result_text = data[text_pos]
 
-            if len(resultText) != 1:
+            if len(result_text) != 1:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">B", resultText)[0])
+            result.append(struct.unpack(">B", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 1
+            text_pos += 1
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -1270,9 +1281,10 @@ class SecsVarU2(SecsVar):
     formatCode = 052
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarU2, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -1295,7 +1307,7 @@ class SecsVarU2(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -1328,7 +1340,7 @@ class SecsVarU2(SecsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encode_item_header(len(self.value)*2)
+        result = self.encode_item_header(len(self.value) * 2)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1346,26 +1358,26 @@ class SecsVarU2(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
-        for i in range(length/2):
-            resultText = data[textPos:textPos+2]
+        for i in range(length / 2):
+            result_text = data[text_pos:text_pos + 2]
 
-            if len(resultText) != 2:
+            if len(result_text) != 2:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">H", resultText)[0])
+            result.append(struct.unpack(">H", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 2
+            text_pos += 2
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
@@ -1387,9 +1399,10 @@ class SecsVarU4(SecsVar):
     formatCode = 054
 
     def __init__(self, length=-1, value=None):
+        super(SecsVarU4, self).__init__()
+
         self.value = None
         self.length = length
-
         if value is not None:
             self.set(value)
 
@@ -1412,7 +1425,7 @@ class SecsVarU4(SecsVar):
         :type value: list/integer
         """
         if isinstance(value, list):
-            if self.length >= 0 and len(value) > self.length:
+            if 0 <= self.length < len(value):
                 raise ValueError("Value longer than {} chars".format(self.length))
 
             self.value = value
@@ -1445,7 +1458,7 @@ class SecsVarU4(SecsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encode_item_header(len(self.value)*4)
+        result = self.encode_item_header(len(self.value) * 4)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1463,26 +1476,26 @@ class SecsVarU4(SecsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decode_item_header(data, start)
+        (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         result = []
 
-        for i in range(length/4):
-            resultText = data[textPos:textPos+4]
+        for i in range(length / 4):
+            result_text = data[text_pos:text_pos + 4]
 
-            if len(resultText) != 4:
+            if len(result_text) != 4:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
 
-            result.append(struct.unpack(">L", resultText)[0])
+            result.append(struct.unpack(">L", result_text)[0])
 
             if DEBUG_DECODE:
                 print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
-            textPos += 4
+            text_pos += 4
 
         self.set(result)
 
-        return textPos
+        return text_pos
 
     def clone(self):
         """Returns copy of the object
