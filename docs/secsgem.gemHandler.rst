@@ -1,7 +1,7 @@
-secsgem.gemHandler module
+secsgem.GemHandler module
 ==============================
 
-.. automodule:: secsgem.gemHandler
+.. automodule:: secsgem.GemHandler
     :members:
     :undoc-members:
     :inherited-members:

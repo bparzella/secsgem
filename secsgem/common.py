@@ -23,7 +23,7 @@ import types
 import threading
 
 
-def formatHex(text):
+def format_hex(text):
     """Returns byte arrays (string) formated as hex numbers.
 
     **Example**::
@@ -31,7 +31,7 @@ def formatHex(text):
         >>> import secsgem
         >>>
         >>> data = "asdfg"
-        >>> secsgem.common.formatHex(data)
+        >>> secsgem.common.format_hex(data)
         '61:73:64:66:67'
 
 
@@ -43,7 +43,7 @@ def formatHex(text):
     return ":".join("{0:02x}".format(ord(c)) for c in text)
 
 
-def isWindows():
+def is_windows():
     """Returns True if running on windows
 
     :returns: Is windows system
@@ -55,7 +55,7 @@ def isWindows():
     return False
 
 
-def functionName(function):
+def function_name(function):
     """Gets name of function or method
 
     :returns: function/method name
@@ -72,7 +72,7 @@ class StreamFunctionCallbackHandler:
     def __init__(self):
         self.callbacks = {}
 
-    def registerCallback(self, stream, function, callback):
+    def register_callback(self, stream, function, callback):
         """Register the function callback for stream and function. Multiple callbacks can be registered for one function.
 
         :param stream: stream to register callback for
@@ -89,7 +89,7 @@ class StreamFunctionCallbackHandler:
 
         self.callbacks[name].append(callback)
 
-    def unregisterCallback(self, stream, function, callback):
+    def unregister_callback(self, stream, function, callback):
         """Unregister the function callback for stream and function. Multiple callbacks can be registered for one function, only the supplied callback will be removed.
 
         :param stream: stream to unregister callback for
@@ -126,9 +126,9 @@ class EventHandler:
             events = {}
 
         for event in events:
-            self.addEventHandler(event, events[event])
+            self.add_event_handler(event, events[event])
 
-    def fireEvent(self, event_name, params):
+    def fire_event(self, event_name, params):
         """Fire an event
 
         :param event_name: event to fire
@@ -143,26 +143,26 @@ class EventHandler:
         calling_method = stack[2][0].f_code.co_name
 
         if self.target:
-            generic_handler = getattr(self.target, "_onEvent", None)
+            generic_handler = getattr(self.target, "_on_event", None)
             if callable(generic_handler):
-                self.logger.debug("%s.%s: posting event %s to %s._onEvent" % (calling_class, calling_method, event_name, self.target.__class__.__name__))
+                self.logger.debug("%s.%s: posting event %s to %s._on_event" % (calling_class, calling_method, event_name, self.target.__class__.__name__))
                 if generic_handler(event_name, params) is not False:
                     handled = True
 
-            specific_handler = getattr(self.target, "_onEvent" + event_name, None)
+            specific_handler = getattr(self.target, "_on_event_" + event_name, None)
             if callable(specific_handler):
-                self.logger.debug("%s.%s: posting event %s to %s._onEvent%s" % (calling_class, calling_method, event_name, self.target.__class__.__name__, event_name))
+                self.logger.debug("%s.%s: posting event %s to %s._on_event_%s" % (calling_class, calling_method, event_name, self.target.__class__.__name__, event_name))
                 if specific_handler(params):
                     handled = True
 
         if event_name in self.eventHandlers:
             for eventHandler in self.eventHandlers[event_name]:
-                self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(eventHandler)))
+                self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, function_name(eventHandler)))
                 if eventHandler(event_name, params) is not False:
                     handled = True
 
         if self.genericHandler:
-            self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, functionName(self.genericHandler)))
+            self.logger.debug("%s.%s: posting event %s to %s" % (calling_class, calling_method, event_name, function_name(self.genericHandler)))
             if self.genericHandler(event_name, params) is not False:
                 handled = True
 
@@ -171,7 +171,7 @@ class EventHandler:
 
         return handled
 
-    def addEventHandler(self, event_name, handler):
+    def add_event_handler(self, event_name, handler):
         """Register handler for an event. Multiple handlers can be registered for one event.
 
         :param event_name: event to register handler for
@@ -184,7 +184,7 @@ class EventHandler:
 
         self.eventHandlers[event_name].append(handler)
 
-    def removeEventHandler(self, event_name, handler):
+    def remove_event_handler(self, event_name, handler):
         """Unregister handler for an event.
 
         :param event_name: event to unregister handler for
@@ -207,7 +207,7 @@ class EventProducer:
     def __init__(self, event_handler):
         self.parentEventHandler = event_handler
 
-    def fireEvent(self, event_name, data, async=False):
+    def fire_event(self, event_name, data, async=False):
         """Fire an event
 
         :param event_name: event to fire
@@ -217,6 +217,6 @@ class EventProducer:
         """
         if self.parentEventHandler:
             if async:
-                threading.Thread(target=self.parentEventHandler.fireEvent, args=(event_name, data), name="EventProducer_fireEventAsync_{}".format(event_name)).start()
+                threading.Thread(target=self.parentEventHandler.fire_event, args=(event_name, data), name="EventProducer_fireEventAsync_{}".format(event_name)).start()
             else:
-                self.parentEventHandler.fireEvent(event_name, data)
+                self.parentEventHandler.fire_event(event_name, data)

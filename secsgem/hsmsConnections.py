@@ -26,9 +26,9 @@ import threading
 
 import errno
 
-from hsmsPackets import hsmsPacket
+from hsmsPackets import HsmsPacket
 
-from common import isWindows
+from common import is_windows
 
 # TODO: timeouts (T7, T8)
 
@@ -64,7 +64,7 @@ class HsmsConnection(object):
     :param session_id: session / device ID to use for connection
     :type session_id: integer
     :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
+    :type delegate: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
     """
 
     selectTimeout = 0.5
@@ -222,7 +222,7 @@ class HsmsConnection(object):
         self.receiveBuffer = self.receiveBuffer[length:]
 
         # decode received packet
-        response = hsmsPacket.decode(data)
+        response = HsmsPacket.decode(data)
 
         # redirect packet to hsms handler
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
@@ -325,14 +325,14 @@ class HsmsPassiveConnection(HsmsConnection):
 
     **Example**::
 
-        def S1F1Handler(connection, packet):
+        def s01f01_handler(connection, packet):
             print "S1F1 received"
 
         def onConnect(connection):
             print "Connected"
 
         server = secsgem.hsmsConnections.hsmsPassiveConnection(5000, eventHandler=EventHandler(events={'RemoteConnected': onConnect}))
-        server.registerCallback(1, 1, S1F1Handler)
+        server.register_callback(1, 1, s01f01_handler)
 
         connection = server.waitForConnection()
 
@@ -405,7 +405,7 @@ class HsmsPassiveConnection(HsmsConnection):
         """
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not isWindows():
+        if not is_windows():
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         sock.bind(('', self.remotePort))
@@ -416,7 +416,7 @@ class HsmsPassiveConnection(HsmsConnection):
             if accept_result is None:
                 continue
 
-            (self.sock, (sourceIP, sourcePort)) = accept_result
+            (self.sock, (_, _)) = accept_result
 
             # setup socket
             self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -469,6 +469,8 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         # setup socket
         self.sock = sock
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+
+        _ = address
 
         # make socket nonblocking
         self.sock.setblocking(0)
@@ -545,7 +547,7 @@ class HsmsMultiPassiveServer(object):
         """Starts the server and returns. It will launch a listener running in background to wait for incoming connections."""
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not isWindows():
+        if not is_windows():
             self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         self.listenSock.bind(('', self.port))
@@ -660,11 +662,11 @@ class HsmsActiveConnection(HsmsConnection):
         def onConnect(event, data):
             print "Connected"
             client = data["connection"]
-            packet = secsgem.hsmsPacket(secsgem.hsmsSelectReqHeader(client.getNextSystemCounter()))
+            packet = secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(client.getNextSystemCounter()))
             client.sendPacket(packet)
 
         client = secsgem.hsmsActiveConnection("10.211.55.33", 5000, 0, eventHandler=secsgem.EventHandler(events={'HsmsConnectionEstablished': onConnect}))
-        client.registerCallback(0, 0, S0F0Handler)
+        client.register_callback(0, 0, S0F0Handler)
 
     """
     def __init__(self, address, port=5000, session_id=0, delegate=None):

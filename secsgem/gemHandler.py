@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Handler for GEM commands. Used in combination with :class:`secsgem.hsmsHandler.hsmsConnectionManager`"""
+"""Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
 
 import logging
@@ -21,10 +21,10 @@ import threading
 
 from fysom import Fysom
 
-from secsHandler import secsHandler
+from secsHandler import SecsHandler
 
 
-class gemHandler(secsHandler):
+class GemHandler(SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -43,7 +43,7 @@ class gemHandler(secsHandler):
     :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
     """
 
-    ceids = secsHandler.ceids
+    ceids = SecsHandler.ceids
     """Dictionary of available collection events, CEID is the key
 
     :param name: Name of the data value
@@ -52,7 +52,7 @@ class gemHandler(secsHandler):
     :type CEID: integer
     """
 
-    dvs = secsHandler.dvs
+    dvs = SecsHandler.dvs
     """Dictionary of available data values, DVID is the key
 
     :param name: Name of the collection event
@@ -61,7 +61,7 @@ class gemHandler(secsHandler):
     :type dv: list of integers
     """
 
-    alarms = secsHandler.alarms
+    alarms = SecsHandler.alarms
     """Dictionary of available alarms, ALID is the key
 
     :param alarmText: Description of the alarm
@@ -72,7 +72,7 @@ class gemHandler(secsHandler):
     :type ceidOff: integer
     """
 
-    rcmds = secsHandler.rcmds
+    rcmds = SecsHandler.rcmds
     """Dictionary of available remote commands, command is the key
 
     :param params: description of the parameters
@@ -82,7 +82,7 @@ class gemHandler(secsHandler):
     """
 
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        secsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+        SecsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -101,11 +101,11 @@ class gemHandler(secsHandler):
                 {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'], 'dst': 'COMMUNICATING'},  # 15 (WAIT_CR_FROM_HOST is running in background - AND state - so if s1f13 is received we go all communicating)
             ],
             'callbacks': {
-                'onWAIT_CRA': self._onStateWaitCRA,
-                'onWAIT_DELAY': self._onStateWaitDelay,
-                'onleaveWAIT_CRA': self._onStateLeaveWaitCRA,
-                'onleaveWAIT_DELAY': self._onStateLeaveWaitDelay,
-                'onCOMMUNICATING': self._onStateCommunicating,
+                'onWAIT_CRA': self._on_state_wait_cra,
+                'onWAIT_DELAY': self._on_state_wait_delay,
+                'onleaveWAIT_CRA': self._on_state_leave_wait_cra,
+                'onleaveWAIT_DELAY': self._on_state_leave_wait_delay,
+                'onCOMMUNICATING': self._on_state_communicating,
                 # 'onselect': self.onStateSelect,
             },
             'autoforward': [
@@ -123,18 +123,18 @@ class gemHandler(secsHandler):
 
         self.reportSubscriptions = {}
 
-        self.registerCallback(1, 1, self.S1F1Handler)
-        self.registerCallback(1, 13, self.S1F13Handler)
-        self.registerCallback(6, 11, self.S6F11Handler)
-        self.registerCallback(10, 1, self.S10F1Handler)
+        self.register_callback(1, 1, self.s01f01_handler)
+        self.register_callback(1, 13, self.s01f13_handler)
+        self.register_callback(6, 11, self.s06f11_handler)
+        self.register_callback(10, 1, self.s10f01_handler)
 
-    def _serializeData(self):
+    def _serialize_data(self):
         """Returns data for serialization
 
         :returns: data to serialize for this object
         :rtype: dict
         """
-        data = secsHandler._serializeData(self)
+        data = SecsHandler._serialize_data(self)
         data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.commDelayTimeout, 'reportIDCounter': self.reportIDCounter, 'reportSubscriptions': self.reportSubscriptions})
         return data
 
@@ -152,13 +152,13 @@ class gemHandler(secsHandler):
 
         self.logger.info("Connection disabled")
 
-    def _onHsmsPacketReceived(self, packet):
+    def _on_hsms_packet_received(self, packet):
         """Packet received from hsms layer
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        message = self.secsDecode(packet)
+        message = self.secs_decode(packet)
 
         if message is None:
             self.logger.info("< %s", packet)
@@ -168,9 +168,9 @@ class gemHandler(secsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.sendStreamFunction(self.streamFunction(1, 14)({"COMMACK": 1, "DATA": {}}))
+                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": {}}))
                 else:
-                    self.sendStreamFunction(self.streamFunction(1, 14)({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}}))
+                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}}))
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -181,23 +181,23 @@ class gemHandler(secsHandler):
             # check if callbacks available for this stream and function
             callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
             if callback_index in self.callbacks:
-                threading.Thread(target=self._runCallbacks, args=(callback_index, packet), name="secsgem_gemHandler_callback_{}".format(callback_index)).start()
+                threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_gemHandler_callback_{}".format(callback_index)).start()
             else:
-                self._queuePacket(packet)
+                self._queue_packet(packet)
 
-    def _onHsmsSelect(self):
+    def _on_hsms_select(self):
         """Selected received from hsms layer"""
         self.communicationState.select()
 
-    def _onWaitCRATimeout(self):
+    def _on_wait_cra_timeout(self):
         """Linktest time timed out, so send linktest request"""
         self.communicationState.communicationreqfail()
 
-    def _onWaitCommDelayTimeout(self):
+    def _on_wait_comm_delay_timeout(self):
         """Linktest time timed out, so send linktest request"""
         self.communicationState.delayexpired()
 
-    def _onStateWaitCRA(self, data):
+    def _on_state_wait_cra(self, _):
         """Connection state model changed to state WAIT_CRA
 
         :param data: event attributes
@@ -205,15 +205,15 @@ class gemHandler(secsHandler):
         """
         self.logger.debug("connectionState -> WAIT_CRA")
 
-        self.waitCRATimer = threading.Timer(self.connection.T3, self._onWaitCRATimeout)
+        self.waitCRATimer = threading.Timer(self.connection.T3, self._on_wait_cra_timeout)
         self.waitCRATimer.start()
 
         if self.isHost:
-            self.sendStreamFunction(self.streamFunction(1, 13)())
+            self.send_stream_function(self.stream_function(1, 13)())
         else:
-            self.sendStreamFunction(self.streamFunction(1, 13)("secsgem", "0.0.3"))
+            self.send_stream_function(self.stream_function(1, 13)("secsgem", "0.0.3"))
 
-    def _onStateWaitDelay(self, data):
+    def _on_state_wait_delay(self, _):
         """Connection state model changed to state WAIT_DELAY
 
         :param data: event attributes
@@ -221,10 +221,10 @@ class gemHandler(secsHandler):
         """
         self.logger.debug("connectionState -> WAIT_DELAY")
 
-        self.commDelayTimer = threading.Timer(self.commDelayTimeout, self._onWaitCommDelayTimeout)
+        self.commDelayTimer = threading.Timer(self.commDelayTimeout, self._on_wait_comm_delay_timeout)
         self.commDelayTimer.start()
 
-    def _onStateLeaveWaitCRA(self, data):
+    def _on_state_leave_wait_cra(self, _):
         """Connection state model changed to state WAIT_CRA
 
         :param data: event attributes
@@ -233,7 +233,7 @@ class gemHandler(secsHandler):
         if self.waitCRATimer is not None:
             self.waitCRATimer.cancel()
 
-    def _onStateLeaveWaitDelay(self, data):
+    def _on_state_leave_wait_delay(self, _):
         """Connection state model changed to state WAIT_DELAY
 
         :param data: event attributes
@@ -242,7 +242,7 @@ class gemHandler(secsHandler):
         if self.commDelayTimer is not None:
             self.commDelayTimer.cancel()
 
-    def _onStateCommunicating(self, data):
+    def _on_state_communicating(self, _):
         """Connection state model changed to state COMMUNICATING
 
         :param data: event attributes
@@ -250,19 +250,19 @@ class gemHandler(secsHandler):
         """
         self.logger.debug("connectionState -> COMMUNICATING")
 
-        self.fireEvent("HandlerCommunicating", {'handler': self}, True)
+        self.fire_event("handler_communicating", {'handler': self}, True)
 
     def on_connection_closed(self):
         """Connection was closed"""
         self.logger.info("Connection was closed")
 
         # call parent handlers
-        secsHandler.on_connection_closed(self)
+        SecsHandler.on_connection_closed(self)
 
         # update communication state
         self.communicationState.communicationfail()
 
-    def clearCollectionEvents(self):
+    def clear_collection_events(self):
         """Clear all collection events"""
         self.logger.info("Clearing collection events")
 
@@ -270,12 +270,12 @@ class gemHandler(secsHandler):
         self.reportSubscriptions = {}
 
         # disable all ceids
-        self.disableCEIDs()
+        self.disable_ceids()
 
         # delete all reports
-        self.disableCEIDReports()
+        self.disable_ceid_reports()
 
-    def subscribeCollectionEvent(self, ceid, dvs, report_id=None):
+    def subscribe_collection_event(self, ceid, dvs, report_id=None):
         """Subscribe to a collection event
 
         :param ceid: ID of the collection event
@@ -295,15 +295,15 @@ class gemHandler(secsHandler):
         self.reportSubscriptions[report_id] = dvs
 
         # create report
-        self.sendAndWaitForResponse(self.streamFunction(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}))
+        self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}))
 
         # link event report to collection event
-        self.sendAndWaitForResponse(self.streamFunction(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}))
+        self.send_and_waitfor_response(self.stream_function(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}))
 
         # enable collection event
-        self.sendAndWaitForResponse(self.streamFunction(2, 37)({"CEED": True, "CEID": [ceid]}))
+        self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
-    def sendRemoteCommand(self, rcmd, params):
+    def send_remote_command(self, rcmd, params):
         """Send a remote command
 
         :param rcmd: Name of command
@@ -313,15 +313,15 @@ class gemHandler(secsHandler):
         """
         self.logger.info("Send RCMD {0}".format(rcmd))
 
-        s2f41 = self.streamFunction(2, 41)()
+        s2f41 = self.stream_function(2, 41)()
         s2f41.RCMD = rcmd
         for param in params:
             s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
 
         # send remote command
-        return self.secsDecode(self.sendAndWaitForResponse(s2f41))
+        return self.secs_decode(self.send_and_waitfor_response(s2f41))
 
-    def sendProcessProgram(self, ppid, ppbody):
+    def send_process_program(self, ppid, ppbody):
         """Send a process program
 
         :param ppid: Transferred process programs ID
@@ -332,9 +332,9 @@ class gemHandler(secsHandler):
         # send remote command
         self.logger.info("Send process program {0}".format(ppid))
 
-        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 3)({"ppid": ppid, "ppbody": ppbody}))).ACKC7
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)({"ppid": ppid, "ppbody": ppbody}))).ACKC7
 
-    def requestProcessProgram(self, ppid):
+    def request_process_program(self, ppid):
         """Request a process program
 
         :param ppid: Transferred process programs ID
@@ -343,10 +343,10 @@ class gemHandler(secsHandler):
         self.logger.info("Request process program {0}".format(ppid))
 
         # send remote command
-        s7f6 = self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 5)(ppid)))
+        s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
         return s7f6.PPID, s7f6.PPBODY
 
-    def deleteProcessPrograms(self, ppids):
+    def delete_process_programs(self, ppids):
         """Delete a list of process program
 
         :param ppids: Process programs to delete
@@ -355,51 +355,51 @@ class gemHandler(secsHandler):
         self.logger.info("Delete process programs {0}".format(ppids))
 
         # send remote command
-        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 17)(ppids))).ACKC7
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).ACKC7
 
-    def getProcessProgramList(self):
+    def get_process_program_list(self):
         """Get process program list
         """
         self.logger.info("Get process program list")
 
         # send remote command
-        return self.secsDecode(self.sendAndWaitForResponse(self.streamFunction(7, 19)())).get()
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
-    def S1F1Handler(self, handler, packet):
+    def s01f01_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 1, Are You There
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.hsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        handler.sendResponse(self.streamFunction(1, 2)(), packet.header.system)
+        handler.send_response(self.stream_function(1, 2)(), packet.header.system)
 
-    def S1F13Handler(self, handler, packet):
+    def s01f13_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.hsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        handler.sendResponse(self.streamFunction(1, 14)({"COMMACK": 0}), packet.header.system)
+        handler.send_response(self.stream_function(1, 14)({"COMMACK": 0}), packet.header.system)
 
-    def S6F11Handler(self, handler, packet):
+    def s06f11_handler(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.hsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        message = self.secsDecode(packet)
+        message = self.secs_decode(packet)
 
         for report in message.RPT:
             report_dvs = self.reportSubscriptions[report.RPTID]
@@ -408,27 +408,27 @@ class gemHandler(secsHandler):
             values = []
 
             for i, s in enumerate(report_dvs):
-                values.append({"dvid": s, "value": report_values[i], "name": self.getDVIDName(s)})
+                values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
 
             print values
 
-            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.getCEIDName(message.CEID), "handler": self.connection, 'peer': self}
-            self.fireEvent("CollectionEventReceived", data)
+            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
+            self.fire_event("collection_event_received", data)
 
-        handler.sendResponse(self.streamFunction(6, 12)(0), packet.header.system)
+        handler.send_response(self.stream_function(6, 12)(0), packet.header.system)
 
-    def S10F1Handler(self, handler, packet):
+    def s10f01_handler(self, handler, packet):
         """Callback handler for Stream 10, Function 1, Terminal Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.registerCallback`
+        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.hsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        s10f1 = self.secsDecode(packet)
+        s10f1 = self.secs_decode(packet)
 
-        handler.sendResponse(self.streamFunction(10, 2)(0), packet.header.system)
+        handler.send_response(self.stream_function(10, 2)(0), packet.header.system)
 
-        self.fireEvent("TerminalReceived", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
+        self.fire_event("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})

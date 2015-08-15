@@ -25,48 +25,48 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 earlyS1F13 = False
 
 def S1F1Handler(connection, packet):
-	connection.sendResponse(secsS01F02H(), packet.header.system)
+	connection.send_response(SecsS01F02H(), packet.header.system)
 	
 def S1F13Handler(connection, packet):
 	global earlyS1F13
 	earlyS1F13 = True
 	
-	connection.sendResponse(secsS01F14H({"COMMACK": 0}), packet.header.system)
+	connection.send_response(SecsS01F14H({"COMMACK": 0}), packet.header.system)
 	
 def S6F11Handler(connection, packet):
-	connection.sendResponse(secsS06F12(0), packet.header.system)
+	connection.send_response(SecsS06F12(0), packet.header.system)
 
 def S5F1Handler(connection, packet):
-	connection.sendResponse(secsS05F02(0), packet.header.system)
+	connection.send_response(SecsS05F02(0), packet.header.system)
 	
 client = hsmsClient("10.211.55.32", 5000)
 
-client.registerCallback( 1,  1, S1F1Handler)
-client.registerCallback( 1, 13, S1F13Handler)
-client.registerCallback( 5,  1, S5F1Handler)
-client.registerCallback( 6, 11, S6F11Handler)
+client.register_callback( 1,  1, S1F1Handler)
+client.register_callback( 1, 13, S1F13Handler)
+client.register_callback( 5,  1, S5F1Handler)
+client.register_callback( 6, 11, S6F11Handler)
 
 connection = client.connect()
 
 if not earlyS1F13:
-	packet = connection.sendAndWaitForResponse(secsS01F13H())
+	packet = connection.send_and_waitfor_response(SecsS01F13H())
 
 #disable all ceids
-packet = connection.sendAndWaitForResponse(secsS02F37({"CEED": False, "CEID": []}))
+packet = connection.send_and_waitfor_response(SecsS02F37({"CEED": False, "CEID": []}))
 
 #delete all reports
-packet = connection.sendAndWaitForResponse(secsS02F33({"DATAID": 0, "DATA": []}))
+packet = connection.send_and_waitfor_response(SecsS02F33({"DATAID": 0, "DATA": []}))
 
 #create reports
-packet = connection.sendAndWaitForResponse(secsS02F33({"DATAID": 0, "DATA": [{"RPTID": 1000, "RPT": [400]}]}))
+packet = connection.send_and_waitfor_response(SecsS02F33({"DATAID": 0, "DATA": [{"RPTID": 1000, "RPT": [400]}]}))
 
 #link event reports
-packet = connection.sendAndWaitForResponse(secsS02F35({"DATAID": 0, "DATA": [{"CEID": 469, "CE": [1000]}]}))
+packet = connection.send_and_waitfor_response(SecsS02F35({"DATAID": 0, "DATA": [{"CEID": 469, "CE": [1000]}]}))
 
 #enable ceids
-packet = connection.sendAndWaitForResponse(secsS02F37({"CEED": True, "CEID": [469]}))
+packet = connection.send_and_waitfor_response(SecsS02F37({"CEED": True, "CEID": [469]}))
 
-packet = connection.sendAndWaitForResponse(secsS10F11())
+packet = connection.send_and_waitfor_response(secsS10F11())
 
 try:
 	while connection.connected:

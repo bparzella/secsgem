@@ -15,27 +15,27 @@
 #####################################################################
 """Base class for for SECS stream and functions"""
 
-from secsVariables import secsVarList
+from secsVariables import SecsVarList
 
 
-class secsStreamFunction(object):
+class SecsStreamFunction(object):
     """Secs stream and function base class
 
     This class is inherited to create a stream/function class. To create a function specific content the class variables :attr:`stream`, :attr:`function` and :attr:`_formatDescriptor` must be overridden.
 
     **Example**::
 
-        class secsS02F30(secsStreamFunction):
+        class SecsS02F30(SecsStreamFunction):
             stream = 2
             function = 30
 
-            _formatDescriptor = secsVarArray(secsVarList(OrderedDict((
-                                ("ECID", secsVarU4(1)),
-                                ("ECNAME", secsVarString()),
-                                ("ECMIN", secsVarDynamic(secsVarString)),
-                                ("ECMAX", secsVarDynamic(secsVarString)),
-                                ("ECDEF", secsVarDynamic(secsVarString)),
-                                ("UNITS", secsVarString()),
+            _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
+                                ("ECID", SecsVarU4(1)),
+                                ("ECNAME", SecsVarString()),
+                                ("ECMIN", SecsVarDynamic(SecsVarString)),
+                                ("ECMAX", SecsVarDynamic(SecsVarString)),
+                                ("ECDEF", SecsVarDynamic(SecsVarString)),
+                                ("UNITS", SecsVarString()),
                                 )), 6))
 
     :param value: set the value of stream/function parameters
@@ -65,13 +65,13 @@ class secsStreamFunction(object):
         return "{} {}".format(function, data)
 
     def __getattr__(self, name):
-        if not isinstance(self.format, secsVarList):
+        if not isinstance(self.format, SecsVarList):
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
         return self.format.__getattr__(name)
 
     def __setattr__(self, name, value):
-        if not isinstance(self.format, secsVarList):
+        if not isinstance(self.format, SecsVarList):
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
         self.format.__setattr__(name, value)

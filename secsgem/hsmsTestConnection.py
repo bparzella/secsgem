@@ -35,7 +35,7 @@ class HsmsTestConnection(object):
     :param session_id: session / device ID to use for connection
     :type session_id: integer
     :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
+    :type delegate: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
 
     **Example**::
 

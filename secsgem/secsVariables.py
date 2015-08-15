@@ -23,14 +23,14 @@ DEBUG_DECODE = False
 DEBUG_DECODE_DEPTH = 0
 
 
-class secsVar(object):
-    """Base class for SECS variables. Due to the python types, wrapper classes for variables are required. If constructor is called with secsVar or subclass only the value is copied."""
+class SecsVar(object):
+    """Base class for SECS variables. Due to the python types, wrapper classes for variables are required. If constructor is called with SecsVar or subclass only the value is copied."""
     formatCode = -1
 
     def __init__(self):
         self.value = None
 
-    def encodeItemHeader(self, length):
+    def encode_item_header(self, length):
         """Encode item header depending on the number of length bytes required.
 
         :param length: number of bytes in data
@@ -56,7 +56,7 @@ class secsVar(object):
             formatByte = (self.formatCode << 2) | lengthBytes
             return chr(formatByte) + chr((length & 0x0000FF))
 
-    def decodeItemHeader(self, data, textPos=0):
+    def decode_item_header(self, data, textPos=0):
         """Encode item header depending on the number of length bytes required.
 
         :param data: encoded data
@@ -96,7 +96,7 @@ class secsVar(object):
         return (textPos, formatCode, length)
 
 
-class secsVarDynamic(secsVar):
+class SecsVarDynamic(SecsVar):
     """Variable with interchangable type.
 
     :param defaultType: the default type for internal value
@@ -133,7 +133,7 @@ class secsVarDynamic(secsVar):
         :param value: new value
         :type value: various
         """
-        if isinstance(value, secsVar):
+        if isinstance(value, SecsVar):
             self.value = value
         else:
             self.value.set(value)
@@ -164,24 +164,24 @@ class secsVarDynamic(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
-        if formatCode == secsVarArray.formatCode:
-            self.value = secsVarArray(secsVarDynamic(secsVarString, self.length))
-        elif formatCode == secsVarBinary.formatCode:
-            self.value = secsVarBinary(self.length)
-        elif formatCode == secsVarBoolean.formatCode:
-            self.value = secsVarBoolean(self.length)
-        elif formatCode == secsVarString.formatCode:
-            self.value = secsVarString(self.length)
-        elif formatCode == secsVarI4.formatCode:
-            self.value = secsVarI4(self.length)
-        elif formatCode == secsVarU1.formatCode:
-            self.value = secsVarU1(self.length)
-        elif formatCode == secsVarU2.formatCode:
-            self.value = secsVarU2(self.length)
-        elif formatCode == secsVarU4.formatCode:
-            self.value = secsVarU4(self.length)
+        if formatCode == SecsVarArray.formatCode:
+            self.value = SecsVarArray(SecsVarDynamic(SecsVarString, self.length))
+        elif formatCode == SecsVarBinary.formatCode:
+            self.value = SecsVarBinary(self.length)
+        elif formatCode == SecsVarBoolean.formatCode:
+            self.value = SecsVarBoolean(self.length)
+        elif formatCode == SecsVarString.formatCode:
+            self.value = SecsVarString(self.length)
+        elif formatCode == SecsVarI4.formatCode:
+            self.value = SecsVarI4(self.length)
+        elif formatCode == SecsVarU1.formatCode:
+            self.value = SecsVarU1(self.length)
+        elif formatCode == SecsVarU2.formatCode:
+            self.value = SecsVarU2(self.length)
+        elif formatCode == SecsVarU4.formatCode:
+            self.value = SecsVarU4(self.length)
 
         return self.value.decode(data, start)
 
@@ -189,16 +189,16 @@ class secsVarDynamic(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarDynamic
+        :rtype: SecsVarDynamic
         """
-        return secsVarDynamic(self.defaultType, self.length, self.value.get())
+        return SecsVarDynamic(self.defaultType, self.length, self.value.get())
 
 
-class secsVarList(secsVar):
+class SecsVarList(SecsVar):
     """List variable type. List with items of different types
 
     :param data: internal data values
-    :type data: dict
+    :type data: OrderedDict
     :param fieldCount: number of fields in the list
     :type fieldCount: integer
     :param value: initial value
@@ -271,7 +271,7 @@ class secsVarList(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.data))
+        result = self.encode_item_header(len(self.data))
 
         for fieldName in self.data:
             result += self.data[fieldName].encode()
@@ -288,7 +288,7 @@ class secsVarList(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         global DEBUG_DECODE_DEPTH
 
@@ -305,7 +305,7 @@ class secsVarList(secsVar):
         if name not in self.data:
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
-        if isinstance(self.data[name], secsVarArray) or isinstance(self.data[name], secsVarList):
+        if isinstance(self.data[name], SecsVarArray) or isinstance(self.data[name], SecsVarList):
             return self.data[name]
         else:
             return self.data[name].get()
@@ -320,20 +320,20 @@ class secsVarList(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarList
+        :rtype: SecsVarList
         """
         newData = OrderedDict()
         for item in self.data:
             newData[item] = self.data[item].clone()
 
-        return secsVarList(newData, self.fieldCount)
+        return SecsVarList(newData, self.fieldCount)
 
 
-class secsVarArray(secsVar):
+class SecsVarArray(SecsVar):
     """List variable type. List with items of same type
 
     :param data: internal data definition/sample
-    :type data: secsVar
+    :type data: SecsVar
     :param fieldCount: number of fields in the list
     :type fieldCount: integer
     :param value: initial value
@@ -366,7 +366,7 @@ class secsVarArray(secsVar):
         return len(self.data)
 
     def __getitem__(self, key):
-        if isinstance(self.data[key], secsVarArray) or isinstance(self.data[key], secsVarList):
+        if isinstance(self.data[key], SecsVarArray) or isinstance(self.data[key], SecsVarList):
             return self.data[key]
         else:
             return self.data[key].get()
@@ -422,7 +422,7 @@ class secsVarArray(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.data))
+        result = self.encode_item_header(len(self.data))
 
         for item in self.data:
             result += item.encode()
@@ -439,7 +439,7 @@ class secsVarArray(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         global DEBUG_DECODE_DEPTH
 
@@ -459,17 +459,17 @@ class secsVarArray(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarArray
+        :rtype: SecsVarArray
         """
         itemDecriptor = self.itemDecriptor.clone()
         newData = []
         for item in self.data:
             newData.append(item.get())
 
-        return secsVarArray(itemDecriptor, self.fieldCount, newData)
+        return SecsVarArray(itemDecriptor, self.fieldCount, newData)
 
 
-class secsVarBinary(secsVar):
+class SecsVarBinary(SecsVar):
     """Secs type for binary data
 
     :param length: number of items this value
@@ -546,7 +546,7 @@ class secsVarBinary(secsVar):
         else:
             length = len(self.value)
 
-        result = self.encodeItemHeader(length)
+        result = self.encode_item_header(length)
 
         if self.value is not None:
             result += self.value
@@ -563,7 +563,7 @@ class secsVarBinary(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         # string
         result = None
@@ -582,12 +582,12 @@ class secsVarBinary(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarBinary
+        :rtype: SecsVarBinary
         """
-        return secsVarBinary(self.length, self.value)
+        return SecsVarBinary(self.length, self.value)
 
 
-class secsVarBoolean(secsVar):
+class SecsVarBoolean(SecsVar):
     """Secs type for boolean data
 
     :param length: number of items this value
@@ -656,7 +656,7 @@ class secsVarBoolean(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value))
+        result = self.encode_item_header(len(self.value))
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -674,7 +674,7 @@ class secsVarBoolean(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -695,12 +695,12 @@ class secsVarBoolean(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarBoolean
+        :rtype: SecsVarBoolean
         """
-        return secsVarBoolean(self.length, self.value)
+        return SecsVarBoolean(self.length, self.value)
 
 
-class secsVarString(secsVar):
+class SecsVarString(SecsVar):
     """Secs type for string data
 
     :param length: number of items this value
@@ -751,7 +751,7 @@ class secsVarString(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value))
+        result = self.encode_item_header(len(self.value))
 
         result += self.value
 
@@ -767,7 +767,7 @@ class secsVarString(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         # string
         result = None
@@ -786,12 +786,129 @@ class secsVarString(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarString
+        :rtype: SecsVarString
         """
-        return secsVarString(self.length, self.value)
+        return SecsVarString(self.length, self.value)
 
 
-class secsVarI2(secsVar):
+class SecsVarI1(SecsVar):
+    """Secs type for 1 byte signed data
+
+    :param length: number of items this value
+    :type length: integer
+    :param value: initial value
+    :type value: list/integer
+    """
+    formatCode = 031
+
+    def __init__(self, length=-1, value=None):
+        self.value = None
+        self.length = length
+
+        if value is not None:
+            self.set(value)
+
+    def __repr__(self):
+        return "I1 {}".format(self.get())
+
+    def __len__(self):
+        return len(self.value)
+
+    def __getitem__(self, key):
+        return self.value[key]
+
+    def __setitem__(self, key, item):
+        self.value[key] = item
+
+    def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: list/integer
+        """
+        if isinstance(value, list):
+            if self.length >= 0 and len(value) > self.length:
+                raise ValueError("Value longer than {} chars".format(self.length))
+
+            self.value = value
+        else:
+            if self.length >= 0 and self.length != 1:
+                raise ValueError("Value longer than {} chars".format(self.length))
+
+            self.value = [int(value)]
+
+    def get(self):
+        """Return the internal value
+
+        :returns: internal value
+        :rtype: list/integer
+        """
+        if self.value is None:
+            return None
+
+        if len(self.value) == 1:
+            if self.value:
+                return self.value[0]
+            else:
+                return []
+
+        return self.value
+
+    def encode(self):
+        """Encode the value to secs data
+
+        :returns: encoded data bytes
+        :rtype: string
+        """
+        result = self.encode_item_header(len(self.value))
+
+        for counter in range(len(self.value)):
+            value = self.value[counter]
+            result += struct.pack(">b", value)
+
+        return result
+
+    def decode(self, data, start=0):
+        """Decode the secs byte data to the value
+
+        :param data: encoded data bytes
+        :type data: string
+        :param start: start position of value the data
+        :type start: integer
+        :returns: new start position
+        :rtype: integer
+        """
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
+
+        result = []
+
+        for i in range(length):
+            resultText = data[textPos:textPos]
+
+            if len(resultText) != 1:
+                raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
+
+            result.append(struct.unpack(">b", resultText)[0])
+
+            if DEBUG_DECODE:
+                print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
+
+            textPos += 1
+
+        self.set(result)
+
+        return textPos
+
+    def clone(self):
+        """Returns copy of the object
+
+        :returns: copy
+        :rtype: SecsVarI1
+        """
+        return SecsVarI1(self.length, self.value)
+
+
+class SecsVarI2(SecsVar):
     """Secs type for 2 byte signed data
 
     :param length: number of items this value
@@ -860,7 +977,7 @@ class secsVarI2(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value)*2)
+        result = self.encode_item_header(len(self.value)*2)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -878,7 +995,7 @@ class secsVarI2(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -903,12 +1020,12 @@ class secsVarI2(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarI2
+        :rtype: SecsVarI2
         """
-        return secsVarI2(self.length, self.value)
+        return SecsVarI2(self.length, self.value)
 
 
-class secsVarI4(secsVar):
+class SecsVarI4(SecsVar):
     """Secs type for 4 byte signed data
 
     :param length: number of items this value
@@ -977,7 +1094,7 @@ class secsVarI4(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value)*4)
+        result = self.encode_item_header(len(self.value)*4)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -995,7 +1112,7 @@ class secsVarI4(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -1020,12 +1137,12 @@ class secsVarI4(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarI4
+        :rtype: SecsVarI4
         """
-        return secsVarI4(self.length, self.value)
+        return SecsVarI4(self.length, self.value)
 
 
-class secsVarU1(secsVar):
+class SecsVarU1(SecsVar):
     """Secs type for 1 byte unsigned data
 
     :param length: number of items this value
@@ -1094,7 +1211,7 @@ class secsVarU1(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value))
+        result = self.encode_item_header(len(self.value))
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1112,7 +1229,7 @@ class secsVarU1(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -1137,12 +1254,12 @@ class secsVarU1(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarU1
+        :rtype: SecsVarU1
         """
-        return secsVarU1(self.length, self.value)
+        return SecsVarU1(self.length, self.value)
 
 
-class secsVarU2(secsVar):
+class SecsVarU2(SecsVar):
     """Secs type for 2 byte unsigned data
 
     :param length: number of items this value
@@ -1211,7 +1328,7 @@ class secsVarU2(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value)*2)
+        result = self.encode_item_header(len(self.value)*2)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1229,7 +1346,7 @@ class secsVarU2(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -1254,12 +1371,12 @@ class secsVarU2(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarU2
+        :rtype: SecsVarU2
         """
-        return secsVarU2(self.length, self.value)
+        return SecsVarU2(self.length, self.value)
 
 
-class secsVarU4(secsVar):
+class SecsVarU4(SecsVar):
     """Secs type for 4 byte unsigned data
 
     :param length: number of items this value
@@ -1328,7 +1445,7 @@ class secsVarU4(secsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encodeItemHeader(len(self.value)*4)
+        result = self.encode_item_header(len(self.value)*4)
 
         for counter in range(len(self.value)):
             value = self.value[counter]
@@ -1346,7 +1463,7 @@ class secsVarU4(secsVar):
         :returns: new start position
         :rtype: integer
         """
-        (textPos, formatCode, length) = self.decodeItemHeader(data, start)
+        (textPos, formatCode, length) = self.decode_item_header(data, start)
 
         result = []
 
@@ -1371,6 +1488,6 @@ class secsVarU4(secsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: secsVarU4
+        :rtype: SecsVarU4
         """
-        return secsVarU4(self.length, self.value)
+        return SecsVarU4(self.length, self.value)

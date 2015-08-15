@@ -21,18 +21,16 @@ import time
 import threading
 
 from hsmsConnections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
-from hsmsPackets import hsmsPacket, hsmsRejectReqHeader, hsmsStreamFunctionHeader, hsmsSelectReqHeader, \
-    hsmsSelectRspHeader, hsmsLinktestReqHeader, hsmsLinktestRspHeader, hsmsDeselectReqHeader, hsmsDeselectRspHeader, \
-    hsmsSeparateReqHeader
+from hsmsPackets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
+    HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
+    HsmsSeparateReqHeader
 
 from common import EventProducer
 
 from fysom import Fysom
 
-# TODO: cesetup after S1F13/14 handling
 
-
-class hsmsHandler(EventProducer):
+class HsmsHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -54,14 +52,14 @@ class hsmsHandler(EventProducer):
 
         import secsgem
 
-        def S1F1Handler(connection, packet):
+        def s01f01_handler(connection, packet):
             print "S1F1 received"
 
         def onConnect(event, data):
             print "Connected"
 
-        client = secsgem.hsmsHandler("10.211.55.33", 5000, True, 0, "test", eventHandler=secsgem.EventHandler(events={'RemoteConnected': onConnect}))
-        client.registerCallback(1, 1, S1F1Handler)
+        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test", eventHandler=secsgem.EventHandler(events={'RemoteConnected': onConnect}))
+        client.register_callback(1, 1, s01f01_handler)
 
         client.enable()
 
@@ -123,7 +121,7 @@ class hsmsHandler(EventProducer):
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
 
-    def _on_state_connect(self, data):
+    def _on_state_connect(self, _):
         """Connection state model got event connect
 
         :param data: event attributes
@@ -135,10 +133,10 @@ class hsmsHandler(EventProducer):
 
         # start select process if connection is active
         if self.active:
-            system_id = self.sendSelectReq()
-            self.waitforSelectRsp(system_id)
+            system_id = self.send_select_req()
+            self.waitfor_select_rsp(system_id)
 
-    def _on_state_disconnect(self, data):
+    def _on_state_disconnect(self, _):
         """Connection state model got event disconnect
 
         :param data: event attributes
@@ -150,24 +148,24 @@ class hsmsHandler(EventProducer):
 
         self.linktestTimer = None
 
-    def _on_state_select(self, data):
+    def _on_state_select(self, _):
         """Connection state model got event select
 
         :param data: event attributes
         :type data: object
         """
         # send event
-        self.fireEvent('HsmsSelected', {'connection': self})
+        self.fire_event('hsms_selected', {'connection': self})
 
         # notify hsms handler of selection
-        if hasattr(self, '_onHsmsSelect') and callable(getattr(self, '_onHsmsSelect')):
-            self._onHsmsSelect()
+        if hasattr(self, '_on_hsms_select') and callable(getattr(self, '_on_hsms_select')):
+            self._on_hsms_select()
 
     def _on_linktest_timer(self):
         """Linktest time timed out, so send linktest request"""
         # send linktest request and wait for response
-        system_id = self.sendLinktestReq()
-        self.waitforLinktestRsp(system_id)
+        system_id = self.send_linktest_req()
+        self.waitfor_linktest_rsp(system_id)
 
         # restart the timer
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
@@ -180,12 +178,12 @@ class hsmsHandler(EventProducer):
 
         self.connectionState.connect()
 
-        self.fireEvent("HsmsConnected", {'connection': self})
+        self.fire_event("hsms_connected", {'connection': self})
 
     def on_before_connection_closed(self):
         """Connection is about to be closed"""
         # send separate request
-        self.sendSeparateReq()
+        self.send_separate_req()
 
     def on_connection_closed(self):
         """Connection was closed"""
@@ -193,13 +191,13 @@ class hsmsHandler(EventProducer):
         self.connected = False
         self.connectionState.disconnect()
 
-        self.fireEvent("HsmsDisconnected", {'connection': self})
+        self.fire_event("hsms_disconnected", {'connection': self})
 
-    def _queuePacket(self, packet):
+    def _queue_packet(self, packet):
         """Add packet to event queue
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
         # add to event queue
         self.packetQueue.append(packet)
@@ -212,7 +210,7 @@ class hsmsHandler(EventProducer):
         """Packet received by connection
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
         if packet.header.sType > 0:
             self.logger.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType])
@@ -221,9 +219,9 @@ class hsmsHandler(EventProducer):
             if packet.header.sType == 0x01:
                 # if we are disconnecting send reject else send response
                 if self.connection.disconnecting:
-                    self.sendRejectRsp(packet.header.system, packet.header.sType, 4)
+                    self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
                 else:
-                    self.sendSelectRsp(packet.header.system)
+                    self.send_select_rsp(packet.header.system)
 
                     # update connection state
                     self.connectionState.select()
@@ -234,15 +232,15 @@ class hsmsHandler(EventProducer):
                 self.connectionState.select()
 
                 # queue packet to notify waiting threads
-                self._queuePacket(packet)
+                self._queue_packet(packet)
 
             # check if it is a deselect request
             elif packet.header.sType == 0x03:
                 # if we are disconnecting send reject else send response
                 if self.connection.disconnecting:
-                    self.sendRejectRsp(packet.header.system, packet.header.sType, 4)
+                    self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
                 else:
-                    self.sendDeselectRsp(packet.header.system)
+                    self.send_deselect_rsp(packet.header.system)
                     # update connection state
                     self.connectionState.deselect()
 
@@ -251,34 +249,34 @@ class hsmsHandler(EventProducer):
                 self.connectionState.deselect()
 
                 # queue packet to notify waiting threads
-                self._queuePacket(packet)
+                self._queue_packet(packet)
 
             # check if it is a linktest request
             elif packet.header.sType == 0x05:
                 # if we are disconnecting send reject else send response
                 if self.connection.disconnecting:
-                    self.sendRejectRsp(packet.header.system, packet.header.sType, 4)
+                    self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
                 else:
-                    self.sendLinktestRsp(packet.header.system)
+                    self.send_linktest_rsp(packet.header.system)
 
             else:
                 # queue packet if not handeled
-                self._queuePacket(packet)
+                self._queue_packet(packet)
         else:
             if not self.connectionState.isstate("SELECTED"):
                 self.logger.info("< %s", packet)
                 self.logger.warning("received message when not selected")
-                self.connection.send_packet(hsmsPacket(hsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
+                self.connection.send_packet(HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
 
                 return True
 
             # redirect packet to hsms handler
-            if hasattr(self, '_onHsmsPacketReceived') and callable(getattr(self, '_onHsmsPacketReceived')):
-                self._onHsmsPacketReceived(packet)
+            if hasattr(self, '_on_hsms_packet_received') and callable(getattr(self, '_on_hsms_packet_received')):
+                self._on_hsms_packet_received(packet)
             else:
                 self.logger.info("< %s", packet)
 
-    def _serializeData(self):
+    def _serialize_data(self):
         """Returns data for serialization
 
         :returns: data to serialize for this object
@@ -294,7 +292,7 @@ class hsmsHandler(EventProducer):
         """Disables the connection"""
         self.connection.disable()
 
-    def waitforStreamFunction(self, stream, function, is_control=False):
+    def waitfor_stream_function(self, stream, function, is_control=False):
         """Wait for an incoming stream and function and return the receive data
 
         :param stream: number of stream to wait for
@@ -304,7 +302,7 @@ class hsmsHandler(EventProducer):
         :param is_control: is it a control packet
         :type is_control: bool
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
         if is_control:
             # setup timeout to T6
@@ -336,22 +334,22 @@ class hsmsHandler(EventProducer):
 
         return found_packet
 
-    def sendStreamFunction(self, packet):
+    def send_stream_function(self, packet):
         """Send the packet and wait for the response
 
         :param packet: packet to be sent
-        :type packet: :class:`secsgem.secsFunctionBase.secsStreamFunction`
+        :type packet: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
         """
-        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
         self.connection.send_packet(out_packet)
 
-    def waitforSystem(self, system, is_control=False):
+    def waitfor_system(self, system, is_control=False):
         """Wait for an message with supplied system
 
         :param system: number of system to wait for
         :type system: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
         if not self.connected:
             self.logger.warning("handler not connected waiting for response for system {0}".format(system))
@@ -387,31 +385,31 @@ class hsmsHandler(EventProducer):
 
         return found_packet
 
-    def sendAndWaitForResponse(self, packet):
+    def send_and_waitfor_response(self, packet):
         """Send the packet and wait for the response
 
         :param packet: packet to be sent
-        :type packet: :class:`secsgem.secsFunctionBase.secsStreamFunction`
+        :type packet: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        out_packet = hsmsPacket(hsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+        out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
         self.connection.send_packet(out_packet)
 
-        return self.waitforSystem(out_packet.header.system, (packet.stream == 0))
+        return self.waitfor_system(out_packet.header.system, (packet.stream == 0))
 
-    def sendResponse(self, function, system):
+    def send_response(self, function, system):
         """Send response function for system
 
         :param function: function to be sent
-        :type function: :class:`secsgem.secsFunctionBase.secsStreamFunction`
+        :type function: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
         :param system: system to reply to
         :type system: integer
         """
-        out_packet = hsmsPacket(hsmsStreamFunctionHeader(system, function.stream, function.function, False, self.sessionID), function.encode())
+        out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False, self.sessionID), function.encode())
         self.connection.send_packet(out_packet)
 
-    def sendSelectReq(self):
+    def send_select_req(self):
         """Send a Select Request to the remote host
 
         :returns: System of the sent request
@@ -419,33 +417,33 @@ class hsmsHandler(EventProducer):
         """
         system_id = self.connection.get_next_system_counter()
 
-        packet = hsmsPacket(hsmsSelectReqHeader(system_id))
+        packet = HsmsPacket(HsmsSelectReqHeader(system_id))
         self.connection.send_packet(packet)
 
         return system_id
 
-    def sendSelectRsp(self, system_id):
+    def send_select_rsp(self, system_id):
         """Send a Select Response to the remote host
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        packet = hsmsPacket(hsmsSelectRspHeader(system_id))
+        packet = HsmsPacket(HsmsSelectRspHeader(system_id))
         self.connection.send_packet(packet)
 
-    def waitforSelectRsp(self, system_id):
+    def waitfor_select_rsp(self, system_id):
         """Wait for an incoming Select Response
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        result = self.waitforSystem(system_id, True)
+        result = self.waitfor_system(system_id, True)
 
         return result
 
-    def sendLinktestReq(self):
+    def send_linktest_req(self):
         """Send a Linktest Request to the remote host
 
         :returns: System of the sent request
@@ -453,31 +451,31 @@ class hsmsHandler(EventProducer):
         """
         system_id = self.connection.get_next_system_counter()
 
-        packet = hsmsPacket(hsmsLinktestReqHeader(system_id))
+        packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
         self.connection.send_packet(packet)
 
         return system_id
 
-    def sendLinktestRsp(self, system_id):
+    def send_linktest_rsp(self, system_id):
         """Send a Linktest Response to the remote host
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        packet = hsmsPacket(hsmsLinktestRspHeader(system_id))
+        packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
         self.connection.send_packet(packet)
 
-    def waitforLinktestRsp(self, system_id):
+    def waitfor_linktest_rsp(self, system_id):
         """Wait for an incoming Linktest Response
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        return self.waitforSystem(system_id, True)
+        return self.waitfor_system(system_id, True)
 
-    def sendDeselectReq(self):
+    def send_deselect_req(self):
         """Send a Deselect Request to the remote host
 
         :returns: System of the sent request
@@ -485,33 +483,33 @@ class hsmsHandler(EventProducer):
         """
         system_id = self.connection.get_next_system_counter()
 
-        packet = hsmsPacket(hsmsDeselectReqHeader(system_id))
+        packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
         self.connection.send_packet(packet)
 
         return system_id
 
-    def sendDeselectRsp(self, system_id):
+    def send_deselect_rsp(self, system_id):
         """Send a Deselect Response to the remote host
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        packet = hsmsPacket(hsmsDeselectRspHeader(system_id))
+        packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
         self.connection.send_packet(packet)
 
-    def waitforDeselectRsp(self, system_id):
+    def waitfor_deselect_rsp(self, system_id):
         """Wait for an incoming Deselect Response
 
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.hsmsPacket`
+        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
-        result = self.waitforSystem(system_id, True)
+        result = self.waitfor_system(system_id, True)
 
         return result
 
-    def sendRejectRsp(self, system_id, s_type, reason):
+    def send_reject_rsp(self, system_id, s_type, reason):
         """Send a Reject Response to the remote host
 
         :param system_id: System of the request to reply for
@@ -521,14 +519,14 @@ class hsmsHandler(EventProducer):
         :param reason: reason for rejection
         :type reason: integer
         """
-        packet = hsmsPacket(hsmsRejectReqHeader(system_id, s_type, reason))
+        packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
         self.connection.send_packet(packet)
 
-    def sendSeparateReq(self):
+    def send_separate_req(self):
         """Send a Separate Request to the remote host"""
         system_id = self.connection.get_next_system_counter()
 
-        packet = hsmsPacket(hsmsSeparateReqHeader(system_id))
+        packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
         self.connection.send_packet(packet)
 
         return system_id

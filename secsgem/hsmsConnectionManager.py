@@ -17,12 +17,12 @@
 
 import logging
 
-from hsmsHandler import hsmsHandler
+from hsmsHandler import HsmsHandler
 from hsmsConnections import HsmsMultiPassiveServer
 from common import EventProducer
 
 
-class hsmsConnectionManager(EventProducer):
+class HsmsConnectionManager(EventProducer):
     """High level class that handles multiple active and passive connections and the model for them.
 
     :param event_handler: object for event handling
@@ -39,7 +39,7 @@ class hsmsConnectionManager(EventProducer):
 
         self.stopping = False
 
-    def hasConnectionTo(self, index):
+    def has_connection_to(self, index):
         """Check if connection to certain peer exists.
 
         :param index: Name of the reqested handler.
@@ -62,7 +62,8 @@ class hsmsConnectionManager(EventProducer):
 
         return None
 
-    def getConnectionID(self, address):
+    @staticmethod
+    def get_connection_id(address):
         """Generates connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
@@ -70,7 +71,7 @@ class hsmsConnectionManager(EventProducer):
         """
         return "%s" % address
 
-    def _updateRequiredServers(self, additional_port=-1):
+    def _update_required_servers(self, additional_port=-1):
         """Starts server if any active handler is found
 
         .. warning:: Do not call this directly, for internal use only.
@@ -98,7 +99,7 @@ class hsmsConnectionManager(EventProducer):
                 self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
-    def _onEvent(self, event_name, data):
+    def _on_event(self, event_name, data):
         """Callback function for disconnection event
 
         :param event_name: Name of the event
@@ -110,14 +111,14 @@ class hsmsConnectionManager(EventProducer):
         """
         connection = data['connection']
 
-        connection_id = self.getConnectionID(connection.remoteIP)
+        connection_id = self.get_connection_id(connection.remoteIP)
 
         if connection_id in self.handlers.keys():
             data['handler'] = self.handlers[connection_id]
 
-        self.fireEvent(event_name, data)
+        self.fire_event(event_name, data)
 
-    def addPeer(self, name, address, port, active, session_id, connection_handler=hsmsHandler):
+    def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsHandler):
         """Add a new connection
 
         :param name: Name of the peers configuration
@@ -131,13 +132,13 @@ class hsmsConnectionManager(EventProducer):
         :param session_id: session / device ID of peer
         :type session_id: integer
         :param connection_handler: Model handling this connection
-        :type connection_handler: inherited from :class:`secsgem.hsmsHandler.hsmsHandler`
+        :type connection_handler: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
         """
         self.logger.debug("new remote %s at %s:%d", name, address, port)
 
-        connection_id = self.getConnectionID(address)
+        connection_id = self.get_connection_id(address)
 
-        self._updateRequiredServers(port)
+        self._update_required_servers(port)
 
         if active:
             handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler)
@@ -150,7 +151,7 @@ class hsmsConnectionManager(EventProducer):
 
         return handler
 
-    def removePeer(self, name, address, port):
+    def remove_peer(self, name, address, port):
         """Remove a previously added connection
 
         :param name: Name of the peers configuration
@@ -162,17 +163,17 @@ class hsmsConnectionManager(EventProducer):
         """
         self.logger.debug("disconnecting from %s at %s:%d", name, address, port)
 
-        connection_id = self.getConnectionID(address)
+        connection_id = self.get_connection_id(address)
 
         if connection_id in self.handlers.keys():
             handler = self.handlers[connection_id]
 
-            handler.disconnect()
+            handler.connection.disconnect()
             handler.disable()
 
             del self.handlers[connection_id]
 
-            self._updateRequiredServers()
+            self._update_required_servers()
 
     def stop(self):
         """Stop all servers and terminate the connections"""
@@ -184,4 +185,4 @@ class hsmsConnectionManager(EventProducer):
 
         self.handlers.clear()
 
-        self._updateRequiredServers()
+        self._update_required_servers()
