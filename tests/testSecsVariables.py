@@ -97,6 +97,7 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar = SecsVarDynamic([SecsVarU4])
 
         self.assertRaises(ValueError, secsvar.set, "testString")
+        self.assertRaises(ValueError, secsvar.set, SecsVarString(value="testString"))
         self.assertRaises(ValueError, SecsVarDynamic, [SecsVarU4], value="testString")
 
     def testConstructorWrongLengthString(self):
@@ -158,6 +159,11 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar = SecsVarDynamic([SecsVarString], 5)
 
         self.assertRaises(ValueError, secsvar.decode, "")
+
+    def testDecodeWrongType(self):
+        secsvar = SecsVarDynamic([SecsVarString], 5)
+
+        self.assertRaises(ValueError, secsvar.decode, "\xB1\x04\x00\x00\x059")
 
     def testDecodeItemHeaderIllegalPosition(self):
         secsvar = SecsVarDynamic([SecsVarU4], value=1337)

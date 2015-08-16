@@ -151,6 +151,9 @@ class SecsVarDynamic(SecsVar):
         :type value: various
         """
         if isinstance(value, SecsVar):
+            if not isinstance(value, tuple(self.types)):
+                raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.__class__.__name__, self.types))
+
             self.value = value
         else:
             self.value.set(value)
@@ -211,6 +214,8 @@ class SecsVarDynamic(SecsVar):
             self.value = SecsVarU2(self.length)
         elif format_code == SecsVarU4.formatCode and self.__type_supported(SecsVarU4):
             self.value = SecsVarU4(self.length)
+        else:
+            raise ValueError("Unsupported format {} for this instance of SecsVarDynamic, allowed {}".format(format_code, self.types))
 
         return self.value.decode(data, start)
 
