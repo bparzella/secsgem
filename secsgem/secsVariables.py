@@ -178,8 +178,20 @@ class SecsVarDynamic(SecsVar):
             self.value = SecsVarBoolean(self.length)
         elif format_code == SecsVarString.formatCode:
             self.value = SecsVarString(self.length)
+        elif format_code == SecsVarI8.formatCode:
+            self.value = SecsVarI8(self.length)
+        elif format_code == SecsVarI1.formatCode:
+            self.value = SecsVarI1(self.length)
+        elif format_code == SecsVarI2.formatCode:
+            self.value = SecsVarI2(self.length)
         elif format_code == SecsVarI4.formatCode:
             self.value = SecsVarI4(self.length)
+        elif format_code == SecsVarF8.formatCode:
+            self.value = SecsVarF8(self.length)
+        elif format_code == SecsVarF4.formatCode:
+            self.value = SecsVarF4(self.length)
+        elif format_code == SecsVarU8.formatCode:
+            self.value = SecsVarU8(self.length)
         elif format_code == SecsVarU1.formatCode:
             self.value = SecsVarU1(self.length)
         elif format_code == SecsVarU2.formatCode:
