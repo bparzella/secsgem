@@ -32,9 +32,9 @@ class SecsStreamFunction(object):
             _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
                                 ("ECID", SecsVarU4(1)),
                                 ("ECNAME", SecsVarString()),
-                                ("ECMIN", SecsVarDynamic(SecsVarString)),
-                                ("ECMAX", SecsVarDynamic(SecsVarString)),
-                                ("ECDEF", SecsVarDynamic(SecsVarString)),
+                                ("ECMIN", SecsVarDynamic([SecsVarString])),
+                                ("ECMAX", SecsVarDynamic([SecsVarString])),
+                                ("ECDEF", SecsVarDynamic([SecsVarString])),
                                 ("UNITS", SecsVarString()),
                                 )), 6))
 
