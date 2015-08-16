@@ -18,8 +18,8 @@
 from collections import OrderedDict
 
 from secsFunctionBase import SecsStreamFunction
-from secsVariables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI2, SecsVarI4, SecsVarU1, \
-    SecsVarU2, SecsVarU4, SecsVarBoolean, SecsVarDynamic
+from secsVariables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI1, SecsVarI2, SecsVarI4,\
+    SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
 
 class SecsS00F00(SecsStreamFunction):
@@ -169,7 +169,7 @@ class SecsS01F04(SecsStreamFunction):
     _stream = 1
     _function = 4
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic(SecsVarString))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([]))
 
 
 class SecsS01F11(SecsStreamFunction):
@@ -408,7 +408,19 @@ class SecsS02F14(SecsStreamFunction):
     _stream = 2
     _function = 14
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic(SecsVarString))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
+                                                     SecsVarBinary,
+                                                     SecsVarBoolean,
+                                                     SecsVarU1,
+                                                     SecsVarU2,
+                                                     SecsVarU4,
+                                                     SecsVarU8,
+                                                     SecsVarF4,
+                                                     SecsVarF8,
+                                                     SecsVarI1,
+                                                     SecsVarI2,
+                                                     SecsVarI4,
+                                                     SecsVarI8]))
 
 
 class SecsS02F15(SecsStreamFunction):
@@ -438,7 +450,19 @@ class SecsS02F15(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
         ("ECID", SecsVarU4(1)),
-        ("ECV", SecsVarDynamic(SecsVarString)),
+        ("ECV", SecsVarDynamic([SecsVarString,
+                                SecsVarBinary,
+                                SecsVarBoolean,
+                                SecsVarU1,
+                                SecsVarU2,
+                                SecsVarU4,
+                                SecsVarU8,
+                                SecsVarF4,
+                                SecsVarF8,
+                                SecsVarI1,
+                                SecsVarI2,
+                                SecsVarI4,
+                                SecsVarI8])),
     )), 2))
 
 
@@ -523,9 +547,45 @@ class SecsS02F30(SecsStreamFunction):
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
         ("ECID", SecsVarU4(1)),
         ("ECNAME", SecsVarString()),
-        ("ECMIN", SecsVarDynamic(SecsVarString)),
-        ("ECMAX", SecsVarDynamic(SecsVarString)),
-        ("ECDEF", SecsVarDynamic(SecsVarString)),
+        ("ECMIN", SecsVarDynamic([SecsVarString,
+                                  SecsVarBinary,
+                                  SecsVarBoolean,
+                                  SecsVarU1,
+                                  SecsVarU2,
+                                  SecsVarU4,
+                                  SecsVarU8,
+                                  SecsVarF4,
+                                  SecsVarF8,
+                                  SecsVarI1,
+                                  SecsVarI2,
+                                  SecsVarI4,
+                                  SecsVarI8])),
+        ("ECMAX", SecsVarDynamic([SecsVarString,
+                                  SecsVarBinary,
+                                  SecsVarBoolean,
+                                  SecsVarU1,
+                                  SecsVarU2,
+                                  SecsVarU4,
+                                  SecsVarU8,
+                                  SecsVarF4,
+                                  SecsVarF8,
+                                  SecsVarI1,
+                                  SecsVarI2,
+                                  SecsVarI4,
+                                  SecsVarI8])),
+        ("ECDEF", SecsVarDynamic([SecsVarString,
+                                  SecsVarBinary,
+                                  SecsVarBoolean,
+                                  SecsVarU1,
+                                  SecsVarU2,
+                                  SecsVarU4,
+                                  SecsVarU8,
+                                  SecsVarF4,
+                                  SecsVarF8,
+                                  SecsVarI1,
+                                  SecsVarI2,
+                                  SecsVarI4,
+                                  SecsVarI8])),
         ("UNITS", SecsVarString()),
     )), 6))
 
@@ -922,7 +982,7 @@ class SecsS06F11(SecsStreamFunction):
             SecsVarList(OrderedDict((
                 ("RPTID", SecsVarU4(1)),
                 ("V", SecsVarArray(
-                    SecsVarDynamic(SecsVarString)
+                    SecsVarDynamic([])
                 )),
             )), 2)
         )),
@@ -1591,7 +1651,7 @@ class SecsS12F01(SecsStreamFunction):
         ("YDIES", SecsVarU4(1)),
         ("ROWCT", SecsVarU4(1)),
         ("COLCT", SecsVarU4(1)),
-        ("NULBC", SecsVarDynamic(SecsVarU1)),
+        ("NULBC", SecsVarDynamic([SecsVarString, SecsVarU1])),
         ("PRDCT", SecsVarU4(1)),
         ("PRAXI", SecsVarBinary(1)),
     )), 15)
@@ -1666,7 +1726,7 @@ class SecsS12F03(SecsStreamFunction):
         ("ORLOC", SecsVarBinary(1)),
         ("PRAXI", SecsVarBinary(1)),
         ("BCEQU", SecsVarU1()),
-        ("NULBC", SecsVarDynamic(SecsVarU1)),
+        ("NULBC", SecsVarDynamic([SecsVarString, SecsVarU1])),
     )), 9)
 
 
@@ -1739,7 +1799,7 @@ class SecsS12F04(SecsStreamFunction):
         ("COLCT", SecsVarU4(1)),
         ("PRDCT", SecsVarU4(1)),
         ("BCEQU", SecsVarU1()),
-        ("NULBC", SecsVarDynamic(SecsVarU1)),
+        ("NULBC", SecsVarDynamic([SecsVarString, SecsVarU1])),
         ("MLCL", SecsVarU4(1)),
     )), 15)
 

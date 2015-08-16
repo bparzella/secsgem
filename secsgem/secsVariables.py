@@ -102,19 +102,23 @@ class SecsVar(object):
 class SecsVarDynamic(SecsVar):
     """Variable with interchangable type.
 
-    :param default_type: the default type for internal value
-    :type default_type: type
+    :param types: list of supported types, default first. empty list means all types are support, SecsVarString default
+    :type types: list of SecsVar classes
     :param length: max number of items in type
     :type length: integer
     :param value: initial value
     :type value: various
     """
 
-    def __init__(self, default_type, length=-1, value=None):
+    def __init__(self, types, length=-1, value=None):
         super(SecsVarDynamic, self).__init__()
 
-        self.value = default_type(length)
-        self.defaultType = default_type
+        if not types:
+            self.value = SecsVarString(length)
+        else:
+            self.value = types[0](length)
+
+        self.types = types
         self.length = length
         if value is not None:
             self.value.set(value)
@@ -130,6 +134,15 @@ class SecsVarDynamic(SecsVar):
 
     def __setitem__(self, key, item):
         self.value.__setitem__(key, item)
+
+    def __type_supported(self, typ):
+        if not self.types:
+            return True
+
+        if typ in self.types:
+            return True
+
+        return False
 
     def set(self, value):
         """Set the internal value to the provided value
@@ -170,33 +183,33 @@ class SecsVarDynamic(SecsVar):
         """
         (text_pos, format_code, length) = self.decode_item_header(data, start)
 
-        if format_code == SecsVarArray.formatCode:
-            self.value = SecsVarArray(SecsVarDynamic(SecsVarString, self.length))
-        elif format_code == SecsVarBinary.formatCode:
+        if format_code == SecsVarArray.formatCode and self.__type_supported(SecsVarArray):
+            self.value = SecsVarArray(SecsVarDynamic([], self.length))
+        elif format_code == SecsVarBinary.formatCode and self.__type_supported(SecsVarBinary):
             self.value = SecsVarBinary(self.length)
-        elif format_code == SecsVarBoolean.formatCode:
+        elif format_code == SecsVarBoolean.formatCode and self.__type_supported(SecsVarBoolean):
             self.value = SecsVarBoolean(self.length)
-        elif format_code == SecsVarString.formatCode:
+        elif format_code == SecsVarString.formatCode and self.__type_supported(SecsVarString):
             self.value = SecsVarString(self.length)
-        elif format_code == SecsVarI8.formatCode:
+        elif format_code == SecsVarI8.formatCode and self.__type_supported(SecsVarI8):
             self.value = SecsVarI8(self.length)
-        elif format_code == SecsVarI1.formatCode:
+        elif format_code == SecsVarI1.formatCode and self.__type_supported(SecsVarI1):
             self.value = SecsVarI1(self.length)
-        elif format_code == SecsVarI2.formatCode:
+        elif format_code == SecsVarI2.formatCode and self.__type_supported(SecsVarI2):
             self.value = SecsVarI2(self.length)
-        elif format_code == SecsVarI4.formatCode:
+        elif format_code == SecsVarI4.formatCode and self.__type_supported(SecsVarI4):
             self.value = SecsVarI4(self.length)
-        elif format_code == SecsVarF8.formatCode:
+        elif format_code == SecsVarF8.formatCode and self.__type_supported(SecsVarF8):
             self.value = SecsVarF8(self.length)
-        elif format_code == SecsVarF4.formatCode:
+        elif format_code == SecsVarF4.formatCode and self.__type_supported(SecsVarF4):
             self.value = SecsVarF4(self.length)
-        elif format_code == SecsVarU8.formatCode:
+        elif format_code == SecsVarU8.formatCode and self.__type_supported(SecsVarU8):
             self.value = SecsVarU8(self.length)
-        elif format_code == SecsVarU1.formatCode:
+        elif format_code == SecsVarU1.formatCode and self.__type_supported(SecsVarU1):
             self.value = SecsVarU1(self.length)
-        elif format_code == SecsVarU2.formatCode:
+        elif format_code == SecsVarU2.formatCode and self.__type_supported(SecsVarU2):
             self.value = SecsVarU2(self.length)
-        elif format_code == SecsVarU4.formatCode:
+        elif format_code == SecsVarU4.formatCode and self.__type_supported(SecsVarU4):
             self.value = SecsVarU4(self.length)
 
         return self.value.decode(data, start)
@@ -207,7 +220,7 @@ class SecsVarDynamic(SecsVar):
         :returns: copy
         :rtype: SecsVarDynamic
         """
-        return SecsVarDynamic(self.defaultType, self.length, self.value.get())
+        return SecsVarDynamic(self.types, self.length, self.value.get())
 
 
 class SecsVarList(SecsVar):
