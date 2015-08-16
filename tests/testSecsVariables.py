@@ -18,7 +18,7 @@ import unittest
 from secsgem.secsVariables import *
 
 
-class testSecsVar(unittest.TestCase):
+class TestSecsVar(unittest.TestCase):
     def testEncodeItemHeader(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
@@ -85,88 +85,88 @@ class testSecsVar(unittest.TestCase):
         self.assertRaises(ValueError, secsvar.decode_item_header, "somerandomdata")
 
 
-class testSecsVarDynamic(unittest.TestCase):
+class TestSecsVarDynamic(unittest.TestCase):
     def testConstructorU4(self):
-        secsvar = SecsVarDynamic(SecsVarU4)
+        secsvar = SecsVarDynamic([SecsVarU4])
 
         secsvar.set(10)
 
         self.assertEqual(10, secsvar.get())
 
     def testConstructorWrongType(self):
-        secsvar = SecsVarDynamic(SecsVarU4)
+        secsvar = SecsVarDynamic([SecsVarU4])
 
         self.assertRaises(ValueError, secsvar.set, "testString")
-        self.assertRaises(ValueError, SecsVarDynamic, SecsVarU4, value="testString")
+        self.assertRaises(ValueError, SecsVarDynamic, [SecsVarU4], value="testString")
 
     def testConstructorWrongLengthString(self):
-        secsvar = SecsVarDynamic(SecsVarString, length=5)
+        secsvar = SecsVarDynamic([SecsVarString], length=5)
 
         self.assertRaises(ValueError, secsvar.set, "testString")
 
     def testConstructorLen(self):
-        secsvar = SecsVarDynamic(SecsVarString)
+        secsvar = SecsVarDynamic([SecsVarString])
 
         secsvar.set("asdfg")
 
         self.assertEqual(5, len(secsvar))
 
     def testConstructorSetGetU4(self):
-        secsvar = SecsVarDynamic(SecsVarU4)
+        secsvar = SecsVarDynamic([SecsVarU4])
 
         secsvar.set(10)
 
         self.assertEqual(10, secsvar.get())
 
     def testConstructorSetGetString(self):
-        secsvar = SecsVarDynamic(SecsVarString)
+        secsvar = SecsVarDynamic([SecsVarString])
 
         secsvar.set("testString")
 
         self.assertEqual("testString", secsvar.get())
 
     def testEncodeString(self):
-        secsvar = SecsVarDynamic(SecsVarString, value="testString")
+        secsvar = SecsVarDynamic([SecsVarString], value="testString")
 
         self.assertEqual(secsvar.encode(), "A\ntestString")
 
     def testEncodeU4(self):
-        secsvar = SecsVarDynamic(SecsVarU4, value=1337)
+        secsvar = SecsVarDynamic([SecsVarU4], value=1337)
 
         self.assertEqual(secsvar.encode(), "\xB1\x04\x00\x00\x059")
 
     def testDecodeString(self):
-        secsvar = SecsVarDynamic(SecsVarString)
+        secsvar = SecsVarDynamic([SecsVarString])
 
         secsvar.decode("A\ntestString")
 
         self.assertEqual(secsvar.get(), "testString")
 
     def testDecodeU4(self):
-        secsvar = SecsVarDynamic(SecsVarU4)
+        secsvar = SecsVarDynamic([SecsVarU4])
 
         secsvar.decode("\xB1\x04\x00\x00\x059")
 
         self.assertEqual(secsvar.get(), 1337)
 
     def testDecodeValueTooLong(self):
-        secsvar = SecsVarDynamic(SecsVarString, 5)
+        secsvar = SecsVarDynamic([SecsVarString], 5)
 
-        self.assertRaises(ValueError, secsvar.decode, ("A\ntestString"))
+        self.assertRaises(ValueError, secsvar.decode, "A\ntestString")
 
     def testDecodeEmptyValue(self):
-        secsvar = SecsVarDynamic(SecsVarString, 5)
+        secsvar = SecsVarDynamic([SecsVarString], 5)
 
-        self.assertRaises(ValueError, secsvar.decode, (""))
+        self.assertRaises(ValueError, secsvar.decode, "")
 
     def testDecodeItemHeaderIllegalPosition(self):
-        secsvar = SecsVarDynamic(SecsVarU4, value=1337)
+        secsvar = SecsVarDynamic([SecsVarU4], value=1337)
 
-        self.assertRaises(IndexError, secsvar.decode, ("\xB1\x00"), 10)
+        self.assertRaises(IndexError, secsvar.decode, "\xB1\x00", 10)
 
     def testDecodeItemHeaderIllegalData(self):
         # dummy object, just to have format code set
-        secsvar = SecsVarDynamic(SecsVarU4, value=1337)
+        secsvar = SecsVarDynamic([SecsVarU4], value=1337)
 
         # two bytes
         self.assertRaises(ValueError, secsvar.decode, "somerandomdata")
