@@ -21,13 +21,13 @@ from secsVariables import SecsVarList
 class SecsStreamFunction(object):
     """Secs stream and function base class
 
-    This class is inherited to create a stream/function class. To create a function specific content the class variables :attr:`stream`, :attr:`function` and :attr:`_formatDescriptor` must be overridden.
+    This class is inherited to create a stream/function class. To create a function specific content the class variables :attr:`_stream`, :attr:`_function` and :attr:`_formatDescriptor` must be overridden.
 
     **Example**::
 
         class SecsS02F30(SecsStreamFunction):
-            stream = 2
-            function = 30
+            _stream = 2
+            _function = 30
 
             _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
                                 ("ECID", SecsVarU4(1)),
