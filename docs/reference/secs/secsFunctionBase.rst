@@ -1,5 +1,5 @@
-secsgem.secsFunctionBase module
-===============================
+secsFunctionBase
+================
 
 .. automodule:: secsgem.secsFunctionBase
     :members:

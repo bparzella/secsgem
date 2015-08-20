@@ -1,5 +1,5 @@
-secsgem.gemHandler module
-==============================
+gemHandler
+==========
 
 .. automodule:: secsgem.gemHandler
     :members:

@@ -1,5 +1,5 @@
-secsgem.hsmsConnections module
-==============================
+hsmsConnections
+===============
 
 .. automodule:: secsgem.hsmsConnections
     :members:

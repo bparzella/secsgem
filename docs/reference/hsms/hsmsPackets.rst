@@ -1,5 +1,5 @@
-secsgem.hsmsPackets module
-==========================
+hsmsPackets
+===========
 
 .. automodule:: secsgem.hsmsPackets
     :members:

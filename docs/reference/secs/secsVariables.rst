@@ -1,5 +1,5 @@
-secsgem.secsVariables module
-============================
+secsVariables
+=============
 
 .. automodule:: secsgem.secsVariables
     :members:

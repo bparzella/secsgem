@@ -1,5 +1,5 @@
-secsgem.hsmsHandler module
-==============================
+hsmsHandler
+===========
 
 .. automodule:: secsgem.hsmsHandler
     :members:

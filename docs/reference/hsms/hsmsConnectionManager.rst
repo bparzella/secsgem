@@ -1,5 +1,5 @@
-secsgem.hsmsConnectionManager module
-====================================
+hsmsConnectionManager
+=====================
 
 .. automodule:: secsgem.hsmsConnectionManager
     :members:
