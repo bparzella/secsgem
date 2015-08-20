@@ -95,9 +95,9 @@ class HsmsHandler(EventProducer):
             'events': [
                 {'name': 'connect', 'src': 'NOT_CONNECTED', 'dst': 'CONNECTED'},
                 {'name': 'disconnect', 'src': ['CONNECTED', 'NOT_SELECTED', 'SELECTED'], 'dst': 'NOT_CONNECTED'},
-                {'name': 'select', 'src': 'NOT_SELECTED', 'dst': 'SELECTED'},
+                {'name': 'select', 'src': ['CONNECTED', 'NOT_SELECTED'], 'dst': 'SELECTED'},
                 {'name': 'deselect', 'src': 'SELECTED', 'dst': 'NOT_SELECTED'},
-                {'name': 'timeoutT7', 'src': 'NOT_SELECTED', 'dst': 'NOT_CONNECTED'},
+                {'name': 'timeoutT7', 'src': ['CONNECTED', 'NOT_SELECTED'], 'dst': 'NOT_CONNECTED'},
             ],
             'callbacks': {
                 'onNOT_SELECTED': self._on_state_connect,
@@ -174,9 +174,9 @@ class HsmsHandler(EventProducer):
     def on_connection_established(self):
         """Connection was established"""
         # update connection state
-        self.connected = True
-
         self.connectionState.connect()
+
+        self.connected = True
 
         self.fire_event("hsms_connected", {'connection': self})
 
