@@ -121,7 +121,7 @@ class SecsVarDynamic(SecsVar):
         self.types = types
         self.length = length
         if value is not None:
-            self.value.set(value)
+            self.set(value)
 
     def __repr__(self):
         return self.value.__repr__()
