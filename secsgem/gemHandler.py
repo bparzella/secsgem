@@ -368,10 +368,10 @@ class GemHandler(SecsHandler):
     def s01f01_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 1, Are You There
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
@@ -380,10 +380,10 @@ class GemHandler(SecsHandler):
     def s01f13_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
@@ -392,10 +392,10 @@ class GemHandler(SecsHandler):
     def s06f11_handler(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """
@@ -420,10 +420,10 @@ class GemHandler(SecsHandler):
     def s10f01_handler(self, handler, packet):
         """Callback handler for Stream 10, Function 1, Terminal Request
 
-        .. seealso:: :func:`secsgem.hsmsConnections.hsmsConnection.register_callback`
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler
+        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
         :param packet: complete message received
         :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
         """

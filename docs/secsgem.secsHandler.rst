@@ -1,7 +1,7 @@
-secsgem.SecsHandler module
+secsgem.secsHandler module
 ==========================
 
-.. automodule:: secsgem.SecsHandler
+.. automodule:: secsgem.secsHandler
     :members:
     :undoc-members:
     :show-inheritance:

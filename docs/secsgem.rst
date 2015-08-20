@@ -7,13 +7,14 @@ Submodules
 .. toctree::
 
    secsgem.hsmsConnections
-   secsgem.HsmsHandler
+   secsgem.hsmsConnectionManager
+   secsgem.hsmsHandler
    secsgem.hsmsPackets
    secsgem.secsFunctionBase
    secsgem.secsFunctions
-   secsgem.SecsHandler
+   secsgem.secsHandler
    secsgem.secsVariables
-   secsgem.GemHandler
+   secsgem.gemHandler
    secsgem.common
 
 Module contents

@@ -1,7 +1,7 @@
-secsgem.HsmsHandler module
+secsgem.hsmsHandler module
 ==============================
 
-.. automodule:: secsgem.HsmsHandler
+.. automodule:: secsgem.hsmsHandler
     :members:
     :undoc-members:
     :inherited-members:
