@@ -1,5 +1,5 @@
 Class reference
-==============
+===============
 
 .. toctree::
 

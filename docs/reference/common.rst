@@ -1,5 +1,5 @@
-Common reference
-================
+Common functionality
+====================
 
 .. automodule:: secsgem.common
     :members:
