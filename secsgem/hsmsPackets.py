@@ -369,7 +369,7 @@ class HsmsPacket:
 
             >>> import secsgem
             >>>
-            >>> packetData = "\x00\x00\x00\x0b\xff\xff\x00\x00\x00\x05\x00\x00\x00\x02"
+            >>> packetData = "\\x00\\x00\\x00\\x0b\\xff\\xff\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x02"
             >>>
             >>> secsgem.format_hex(packetData)
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
