@@ -30,6 +30,7 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 #sys.path.insert(0, os.path.abspath('.'))
 
 sys.path.append(os.path.abspath('../../'))
+sys.path.append(os.path.abspath('../'))
 
 # -- General configuration ------------------------------------------------
 
