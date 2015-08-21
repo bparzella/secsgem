@@ -14,9 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from hsms import *
-from secs import *
-
-from gem import *
-
-from common import *
+from functionbase import *
+from functions import *
+from handler import *
+from variables import *

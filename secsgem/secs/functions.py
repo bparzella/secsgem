@@ -1,5 +1,5 @@
 #####################################################################
-# secsFunctions.py
+# functions.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -17,8 +17,8 @@
 
 from collections import OrderedDict
 
-from secsFunctionBase import SecsStreamFunction
-from secsVariables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI1, SecsVarI2, SecsVarI4,\
+from functionbase import SecsStreamFunction
+from variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI1, SecsVarI2, SecsVarI4,\
     SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
 

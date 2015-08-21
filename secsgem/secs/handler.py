@@ -1,5 +1,5 @@
 #####################################################################
-# secsHandler.py
+# handler.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -17,14 +17,13 @@
 
 import logging
 import threading
-
 import copy
 
-from hsmsHandler import HsmsHandler
+from secsgem.common import StreamFunctionCallbackHandler
 
-from common import StreamFunctionCallbackHandler
+from secsgem.hsms.handler import HsmsHandler
 
-import secsFunctions
+import functions
 
 
 class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
@@ -43,7 +42,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
     ceids = {}
@@ -84,8 +83,8 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
     :type CEID: list of integers
     """
 
-    secsStreamsFunctionsHost = copy.deepcopy(secsFunctions.secsStreamsFunctionsHost)
-    secsStreamsFunctionsEquipment = copy.deepcopy(secsFunctions.secsStreamsFunctionsEquipment)
+    secsStreamsFunctionsHost = copy.deepcopy(functions.secsStreamsFunctionsHost)
+    secsStreamsFunctionsEquipment = copy.deepcopy(functions.secsStreamsFunctionsEquipment)
 
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         StreamFunctionCallbackHandler.__init__(self)
@@ -112,7 +111,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         """Packet received from hsms layer
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         message = self.secs_decode(packet)
 
@@ -342,7 +341,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         """Get object of decoded stream and function class, or None if no class is available.
 
         :param packet: packet to get object for
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         :return: matching stream and function object
         :rtype: secsSxFx object
         """

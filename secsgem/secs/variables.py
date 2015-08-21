@@ -1,5 +1,5 @@
 #####################################################################
-# secsVariables.py
+# variables.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -31,6 +31,11 @@ class SecsVar(object):
         self.__dict__["value"] = None
 
     def set(self, value):
+        """Set the internal value to the provided value
+
+        :param value: new value
+        :type value: various
+        """
         raise NotImplementedError("Function set not implemented on SecsVar")
 
     def encode_item_header(self, length):
@@ -103,7 +108,7 @@ class SecsVarDynamic(SecsVar):
     """Variable with interchangable type.
 
     :param types: list of supported types, default first. empty list means all types are support, SecsVarString default
-    :type types: list of SecsVar classes
+    :type types: list of :class:`secsgem.secs.variables.SecsVar` classes
     :param length: max number of items in type
     :type length: integer
     :param value: initial value
@@ -146,6 +151,22 @@ class SecsVarDynamic(SecsVar):
 
     def set(self, value):
         """Set the internal value to the provided value
+
+        In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.SecsVar` class, to avoid confusion.
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> var = secsgem.SecsVarDynamic([secsgem.SecsVarString, secsgem.SecsVarU1])
+            >>> var.set(10)
+            >>> var
+            A '10'
+            >>> var.set(secsgem.SecsVarU1(value=10))
+            >>> var
+            U1 10
+
+        If no type is provided the default type is used which might not be the expected type.
 
         :param value: new value
         :type value: various
@@ -223,7 +244,7 @@ class SecsVarDynamic(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarDynamic
+        :rtype: :class:`secsgem.secs.variables.SecsVarDynamic`
         """
         return SecsVarDynamic(self.types, self.length, self.value.get())
 
@@ -354,7 +375,7 @@ class SecsVarList(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarList
+        :rtype: :class:`secsgem.secs.variables.SecsVarList`
         """
         new_data = OrderedDict()
         for item in self.data:
@@ -367,7 +388,7 @@ class SecsVarArray(SecsVar):
     """List variable type. List with items of same type
 
     :param data: internal data definition/sample
-    :type data: SecsVar
+    :type data: :class:`secsgem.secs.variables.SecsVar`
     :param field_count: number of fields in the list
     :type field_count: integer
     :param value: initial value
@@ -493,7 +514,7 @@ class SecsVarArray(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarArray
+        :rtype: :class:`secsgem.secs.variables.SecsVarArray`
         """
         item_decriptor = self.__dict__["itemDecriptor"].clone()
         new_data = []
@@ -617,7 +638,7 @@ class SecsVarBinary(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarBinary
+        :rtype: :class:`secsgem.secs.variables.SecsVarBinary`
         """
         return SecsVarBinary(self.length, self.value)
 
@@ -731,7 +752,7 @@ class SecsVarBoolean(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarBoolean
+        :rtype: :class:`secsgem.secs.variables.SecsVarBoolean`
         """
         return SecsVarBoolean(self.length, self.value)
 
@@ -823,7 +844,7 @@ class SecsVarString(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarString
+        :rtype: :class:`secsgem.secs.variables.SecsVarString`
         """
         return SecsVarString(self.length, self.value)
 
@@ -941,7 +962,7 @@ class SecsVarI8(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarI8
+        :rtype: :class:`secsgem.secs.variables.SecsVarI8`
         """
         return SecsVarI8(self.length, self.value)
 
@@ -1059,7 +1080,7 @@ class SecsVarI1(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarI1
+        :rtype: :class:`secsgem.secs.variables.SecsVarI1`
         """
         return SecsVarI1(self.length, self.value)
 
@@ -1177,7 +1198,7 @@ class SecsVarI2(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarI2
+        :rtype: :class:`secsgem.secs.variables.SecsVarI2`
         """
         return SecsVarI2(self.length, self.value)
 
@@ -1295,7 +1316,7 @@ class SecsVarI4(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarI4
+        :rtype: :class:`secsgem.secs.variables.SecsVarI4`
         """
         return SecsVarI4(self.length, self.value)
 
@@ -1413,7 +1434,7 @@ class SecsVarF8(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarF8
+        :rtype: :class:`secsgem.secs.variables.SecsVarF8`
         """
         return SecsVarF8(self.length, self.value)
 
@@ -1531,7 +1552,7 @@ class SecsVarF4(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarF4
+        :rtype: :class:`secsgem.secs.variables.SecsVarF4`
         """
         return SecsVarF4(self.length, self.value)
 
@@ -1649,7 +1670,7 @@ class SecsVarU8(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarU8
+        :rtype: :class:`secsgem.secs.variables.SecsVarU8`
         """
         return SecsVarU8(self.length, self.value)
 
@@ -1767,7 +1788,7 @@ class SecsVarU1(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarU1
+        :rtype: :class:`secsgem.secs.variables.SecsVarU1`
         """
         return SecsVarU1(self.length, self.value)
 
@@ -1885,7 +1906,7 @@ class SecsVarU2(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarU2
+        :rtype: :class:`secsgem.secs.variables.SecsVarU2`
         """
         return SecsVarU2(self.length, self.value)
 
@@ -2003,6 +2024,6 @@ class SecsVarU4(SecsVar):
         """Returns copy of the object
 
         :returns: copy
-        :rtype: SecsVarU4
+        :rtype: :class:`secsgem.secs.variables.SecsVarU4`
         """
         return SecsVarU4(self.length, self.value)

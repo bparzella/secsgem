@@ -1,5 +1,5 @@
 #####################################################################
-# hsmsConnectionManager.py
+# connectionmanager.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -17,9 +17,10 @@
 
 import logging
 
-from hsmsHandler import HsmsHandler
-from hsmsConnections import HsmsMultiPassiveServer
-from common import EventProducer
+from secsgem.common import EventProducer
+
+from handler import HsmsHandler
+from connections import HsmsMultiPassiveServer
 
 
 class HsmsConnectionManager(EventProducer):
@@ -132,7 +133,7 @@ class HsmsConnectionManager(EventProducer):
         :param session_id: session / device ID of peer
         :type session_id: integer
         :param connection_handler: Model handling this connection
-        :type connection_handler: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
+        :type connection_handler: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
         """
         self.logger.debug("new remote %s at %s:%d", name, address, port)
 

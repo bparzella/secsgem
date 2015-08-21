@@ -1,5 +1,5 @@
 #####################################################################
-# hsmsHandler.py
+# handler.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -16,18 +16,16 @@
 """Contains class to create model for hsms endpoints."""
 
 import logging
-
 import time
 import threading
 
-from hsmsConnections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
-from hsmsPackets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
+from secsgem.common import EventProducer
+from secsgem.common.fysom import Fysom
+
+from connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
+from packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
     HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
     HsmsSeparateReqHeader
-
-from common import EventProducer
-
-from fysom import Fysom
 
 
 class HsmsHandler(EventProducer):
@@ -46,7 +44,7 @@ class HsmsHandler(EventProducer):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
     **Example**::
 
@@ -197,7 +195,7 @@ class HsmsHandler(EventProducer):
         """Add packet to event queue
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         # add to event queue
         self.packetQueue.append(packet)
@@ -210,7 +208,7 @@ class HsmsHandler(EventProducer):
         """Packet received by connection
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if packet.header.sType > 0:
             self.logger.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType])
@@ -302,7 +300,7 @@ class HsmsHandler(EventProducer):
         :param is_control: is it a control packet
         :type is_control: bool
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if is_control:
             # setup timeout to T6
@@ -338,7 +336,7 @@ class HsmsHandler(EventProducer):
         """Send the packet and wait for the response
 
         :param packet: packet to be sent
-        :type packet: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
+        :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
         self.connection.send_packet(out_packet)
@@ -349,7 +347,7 @@ class HsmsHandler(EventProducer):
         :param system: number of system to wait for
         :type system: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if not self.connected:
             self.logger.warning("handler not connected waiting for response for system {0}".format(system))
@@ -389,9 +387,9 @@ class HsmsHandler(EventProducer):
         """Send the packet and wait for the response
 
         :param packet: packet to be sent
-        :type packet: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
+        :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.connection.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
         self.connection.send_packet(out_packet)
@@ -402,7 +400,7 @@ class HsmsHandler(EventProducer):
         """Send response function for system
 
         :param function: function to be sent
-        :type function: :class:`secsgem.secsFunctionBase.SecsStreamFunction`
+        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         :param system: system to reply to
         :type system: integer
         """
@@ -437,7 +435,7 @@ class HsmsHandler(EventProducer):
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         result = self.waitfor_system(system_id, True)
 
@@ -471,7 +469,7 @@ class HsmsHandler(EventProducer):
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         return self.waitfor_system(system_id, True)
 
@@ -503,7 +501,7 @@ class HsmsHandler(EventProducer):
         :param system_id: System of the request to reply for
         :type system_id: integer
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         result = self.waitfor_system(system_id, True)
 

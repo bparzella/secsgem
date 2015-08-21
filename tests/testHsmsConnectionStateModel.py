@@ -14,15 +14,14 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 import unittest
-import time
 
 import secsgem
-import secsgem.hsmsTestConnection
+import secsgem.hsms.testconnection
 
 
 class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsmsTestConnection.HsmsTestServer()
+        self.server = secsgem.hsms.testconnection.HsmsTestServer()
 
         self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, self.server)
 
@@ -65,9 +64,10 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
         self.assertEqual(self.client.connectionState.current, 'NOT_CONNECTED')
 
+
 class TestSecsConnectionStateModelActive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsmsTestConnection.HsmsTestServer()
+        self.server = secsgem.hsms.testconnection.HsmsTestServer()
 
         self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", None, self.server)
 

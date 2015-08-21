@@ -26,6 +26,9 @@ Table of contents
 .. toctree::
    :maxdepth: 4
 
+   hsms
+   secs
+   gem
    reference
 
 * :ref:`genindex`

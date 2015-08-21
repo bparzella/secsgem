@@ -15,7 +15,7 @@
 #####################################################################
 import unittest
 
-from secsgem.secsFunctions import *
+from secsgem.secs.functions import *
 
 
 class testSecsFunctionNoData(object):

@@ -107,6 +107,7 @@ pygments_style = 'sphinx'
 #keep_warnings = False
 
 autodoc_default_flags = ["members", "undoc-members", "show-inheritance", "inherited-members"]
+autodoc_member_order = "bysource"
 
 # -- Options for HTML output ----------------------------------------------
 

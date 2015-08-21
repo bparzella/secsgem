@@ -14,9 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from hsms import *
-from secs import *
-
-from gem import *
-
-from common import *
+from connections import *
+from connectionmanager import *
+from packets import *
+from handler import *

@@ -1,5 +1,5 @@
 #####################################################################
-# common.py
+# __init__.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #

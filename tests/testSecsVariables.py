@@ -15,7 +15,7 @@
 #####################################################################
 import unittest
 
-from secsgem.secsVariables import *
+from secsgem.secs.variables import *
 
 
 class TestSecsVar(unittest.TestCase):

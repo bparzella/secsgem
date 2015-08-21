@@ -1,5 +1,5 @@
 #####################################################################
-# gemHandler.py
+# handler.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -15,13 +15,11 @@
 #####################################################################
 """Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
-
 import logging
 import threading
 
-from fysom import Fysom
-
-from secsHandler import SecsHandler
+from secsgem.common.fysom import Fysom
+from secsgem.secs.handler import SecsHandler
 
 
 class GemHandler(SecsHandler):
@@ -40,7 +38,7 @@ class GemHandler(SecsHandler):
     :param event_handler: object for event handling
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
+    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
     ceids = SecsHandler.ceids
@@ -156,7 +154,7 @@ class GemHandler(SecsHandler):
         """Packet received from hsms layer
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.HsmsPacket`
         """
         message = self.secs_decode(packet)
 
@@ -371,9 +369,9 @@ class GemHandler(SecsHandler):
         .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         handler.send_response(self.stream_function(1, 2)(), packet.header.system)
 
@@ -383,9 +381,9 @@ class GemHandler(SecsHandler):
         .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         handler.send_response(self.stream_function(1, 14)({"COMMACK": 0}), packet.header.system)
 
@@ -395,9 +393,9 @@ class GemHandler(SecsHandler):
         .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         message = self.secs_decode(packet)
 
@@ -423,9 +421,9 @@ class GemHandler(SecsHandler):
         .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsmsHandler.HsmsHandler`
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsmsPackets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         s10f1 = self.secs_decode(packet)
 

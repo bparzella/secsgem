@@ -1,5 +1,5 @@
 #####################################################################
-# hsmsConnections.py
+# connections.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #
@@ -16,19 +16,16 @@
 """Contains objects and functions to create and handle hsms connection."""
 
 import logging
-
 import socket
 import select
 import struct
 import time
-
 import threading
-
 import errno
 
-from hsmsPackets import HsmsPacket
+from secsgem.common import is_windows
 
-from common import is_windows
+from packets import HsmsPacket
 
 # TODO: timeouts (T7, T8)
 
@@ -64,7 +61,7 @@ class HsmsConnection(object):
     :param session_id: session / device ID to use for connection
     :type session_id: integer
     :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
+    :type delegate: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
     """
 
     selectTimeout = 0.5
@@ -126,7 +123,7 @@ class HsmsConnection(object):
         """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
 
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
-        .. seealso:: :class:`secsgem.hsmsConnections.hsmsActiveConnection`, :class:`secsgem.hsmsConnections.hsmsPassiveConnection`, :class:`secsgem.hsmsConnections.hsmsMultiPassiveConnection`
+        .. seealso:: :class:`secsgem.hsms.connections.HsmsActiveConnection`, :class:`secsgem.hsms.connections.HsmsPassiveConnection`, :class:`secsgem.hsms.connections.HsmsMultiPassiveConnection`
         """
         # mark connection as connected
         self.connected = True
@@ -325,20 +322,7 @@ class HsmsPassiveConnection(HsmsConnection):
 
     **Example**::
 
-        def s01f01_handler(connection, packet):
-            print "S1F1 received"
-
-        def onConnect(connection):
-            print "Connected"
-
-        server = secsgem.hsmsConnections.hsmsPassiveConnection(5000, eventHandler=EventHandler(events={'RemoteConnected': onConnect}))
-        server.register_callback(1, 1, s01f01_handler)
-
-        connection = server.waitForConnection()
-
-        time.sleep(3)
-
-        connection.disconnect()
+        # TODO: create example
 
     """
     def __init__(self, address, port=5000, session_id=0, delegate=None):
@@ -395,7 +379,7 @@ class HsmsPassiveConnection(HsmsConnection):
             self.disconnect()
 
     def __start_server_thread(self):
-        self.serverThread = threading.Thread(target=self.__server_thread, name="secsgem_hsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
+        self.serverThread = threading.Thread(target=self.__server_thread, name="secsgem_HsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
         self.serverThread.start()
 
     def __server_thread(self):
@@ -459,7 +443,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         self.enabled = False
 
     def on_connected(self, sock, address):
-        """Connected callback for :class:`secsgem.hsmsConnections.HsmsMultiPassiveServer`
+        """Connected callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
         :param sock: Socket for new connection
         :type sock: :class:`Socket`
@@ -654,19 +638,7 @@ class HsmsActiveConnection(HsmsConnection):
 
     **Example**::
 
-        import secsgem
-
-        def S0F0Handler(connection, packet):
-            print "S0F0 received:", packet
-
-        def onConnect(event, data):
-            print "Connected"
-            client = data["connection"]
-            packet = secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(client.getNextSystemCounter()))
-            client.sendPacket(packet)
-
-        client = secsgem.hsmsActiveConnection("10.211.55.33", 5000, 0, eventHandler=secsgem.EventHandler(events={'HsmsConnectionEstablished': onConnect}))
-        client.register_callback(0, 0, S0F0Handler)
+        # TODO: create example
 
     """
     def __init__(self, address, port=5000, session_id=0, delegate=None):
@@ -747,7 +719,7 @@ class HsmsActiveConnection(HsmsConnection):
         return True
 
     def __start_connect_thread(self):
-        self.connectionThread = threading.Thread(target=self.__connect_thread, name="secsgem_hsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
+        self.connectionThread = threading.Thread(target=self.__connect_thread, name="secsgem_HsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
         self.connectionThread.start()
 
     def __connect_thread(self):

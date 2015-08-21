@@ -1,5 +1,5 @@
 #####################################################################
-# secsFunctionBase.py
+# functionbase.py
 #
 # (c) Copyright 2015, Benjamin Parzella. All rights reserved.
 #
@@ -15,7 +15,7 @@
 #####################################################################
 """Base class for for SECS stream and functions"""
 
-from secsVariables import SecsVarList
+from variables import SecsVarList
 
 
 class SecsStreamFunction(object):

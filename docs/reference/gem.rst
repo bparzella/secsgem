@@ -3,4 +3,4 @@ GEM
 
 .. toctree::
 
-   gem/gemHandler
+   gem/handler

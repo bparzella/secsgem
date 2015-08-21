@@ -3,7 +3,7 @@ SECS
 
 .. toctree::
 
-   secs/secsFunctionBase
-   secs/secsFunctions
-   secs/secsHandler
-   secs/secsVariables
+   secs/variables
+   secs/functionbase
+   secs/functions
+   secs/handler
