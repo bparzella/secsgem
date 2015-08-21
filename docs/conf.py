@@ -41,6 +41,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.autorun',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -106,6 +107,7 @@ pygments_style = 'sphinx'
 # If true, keep warnings as "system message" paragraphs in the built documents.
 #keep_warnings = False
 
+autodoc_default_flags = ["members", "undoc-members", "show-inheritance", "inherited-members"]
 
 # -- Options for HTML output ----------------------------------------------
 
