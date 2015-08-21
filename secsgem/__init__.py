@@ -19,7 +19,4 @@ from secs import *
 
 from gem import *
 
-import gem
-import gem.handler
-
 from common import *

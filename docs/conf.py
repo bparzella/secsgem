@@ -29,6 +29,8 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+sys.path.append(os.path.abspath('../../'))
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
