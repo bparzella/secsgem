@@ -14,6 +14,17 @@ Currently there is no support for communication over serial port (SECS-I, SEMI E
 
 HSMS, SECS and GEM are standards from `SEMI <http://www.semi.org>`_.
 
+Namespaces
+----------
+
+All classes can be accessed with their full module name or directly from the secsgem module.
+
+   >>> secsgem.format_hex("Hallo")
+   '48:61:6c:6c:6f'
+
+   >>> secsgem.common.format_hex("Hello")
+   '48:65:6c:6c:6f'
+
 Thanks
 ------
 

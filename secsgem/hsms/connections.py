@@ -417,9 +417,9 @@ class HsmsPassiveConnection(HsmsConnection):
 
 
 class HsmsMultiPassiveConnection(HsmsConnection):
-    """Connection class for single connection from hsmsMultiPassiveServer
+    """Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
-    Handles connections incoming connection from hsmsMultiPassiveServer
+    Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
     :param address: IP address of target host
     :type address: string
