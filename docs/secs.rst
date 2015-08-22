@@ -8,3 +8,4 @@ It specifies data types that contain the data and streams and functions that use
 .. toctree::
 
    secs/variables
+   secs/functions

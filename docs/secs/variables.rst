@@ -139,6 +139,8 @@ The items of the array can be accessed with the index operator.
     >>> v[1]
     2
 
+A new item can be appended to the array with the :func:`secsgem.secs.variables.SecsVarArray.append` method.
+
 SecsVarList
 -----------
 
