@@ -50,14 +50,10 @@ class HsmsHandler(EventProducer):
 
         import secsgem
 
-        def s01f01_handler(connection, packet):
-            print "S1F1 received"
-
         def onConnect(event, data):
             print "Connected"
 
-        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test", eventHandler=secsgem.EventHandler(events={'RemoteConnected': onConnect}))
-        client.register_callback(1, 1, s01f01_handler)
+        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test", event_handler=secsgem.EventHandler(events={'hsms_connected': onConnect}))
 
         client.enable()
 

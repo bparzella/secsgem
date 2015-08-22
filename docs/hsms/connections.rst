@@ -110,5 +110,7 @@ It creates and removes :class:`secsgem.hsms.connections.HsmsActiveConnection` an
     >>> handler.enable()
     >>> handler.waitfor_linktest_rsp(handler.send_linktest_req())
     secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 13, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
+    >>> handler.disable()
+    >>> manager.stop()
 
 Connection manager works with :doc:`handlers <handler>` which take care of a lot of the required communication on the matching level (:class:`secsgem.hsms.handler.HsmsHandler`, :class:`secsgem.secs.handler.SecsHandler` and :class:`secsgem.gem.handler.GemHandler`).
