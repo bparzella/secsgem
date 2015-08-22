@@ -129,7 +129,7 @@ class HsmsConnection(object):
         self.connected = True
 
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
-            self.delegate.on_connection_established()
+            self.delegate.on_connection_established(self)
 
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress, self.remotePort)).start()
@@ -223,7 +223,7 @@ class HsmsConnection(object):
 
         # redirect packet to hsms handler
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
-            self.delegate.on_connection_packet_received(response)
+            self.delegate.on_connection_packet_received(self, response)
 
         # return True if more data is available
         if len(self.receiveBuffer) > 0:
@@ -276,14 +276,14 @@ class HsmsConnection(object):
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
-            self.delegate.on_connection_before_closed()
+            self.delegate.on_connection_before_closed(self)
 
         # close the socket
         self.sock.close()
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
-            self.delegate.on_connection_closed()
+            self.delegate.on_connection_closed(self)
 
         # reset all flags
         self.connected = False

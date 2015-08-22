@@ -71,14 +71,14 @@ class HsmsTestConnection(object):
         self.connected = True
 
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
-            self.delegate.on_connection_established()
+            self.delegate.on_connection_established(self)
 
     def simulate_disconnect(self):
         self.disconnect()
 
     def simulate_packet(self, packet):
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
-            self.delegate.on_connection_packet_received(packet)
+            self.delegate.on_connection_packet_received(self, packet)
 
     def enable(self):
         self.enabled = True
@@ -98,11 +98,11 @@ class HsmsTestConnection(object):
         if self.connected:
             # notify listeners of disconnection
             if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
-                self.delegate.on_connection_before_closed()
+                self.delegate.on_connection_before_closed(self)
 
             # notify listeners of disconnection
             if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
-                self.delegate.on_connection_closed()
+                self.delegate.on_connection_closed(self)
 
         self.connected = False
 

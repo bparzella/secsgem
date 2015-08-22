@@ -250,12 +250,12 @@ class GemHandler(SecsHandler):
 
         self.fire_event("handler_communicating", {'handler': self}, True)
 
-    def on_connection_closed(self):
+    def on_connection_closed(self, connection):
         """Connection was closed"""
         self.logger.info("Connection was closed")
 
         # call parent handlers
-        SecsHandler.on_connection_closed(self)
+        SecsHandler.on_connection_closed(self, connection)
 
         # update communication state
         self.communicationState.communicationfail()

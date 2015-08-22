@@ -169,7 +169,7 @@ class HsmsHandler(EventProducer):
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
         self.linktestTimer.start()
 
-    def on_connection_established(self):
+    def on_connection_established(self, _):
         """Connection was established"""
         # update connection state
         self.connectionState.connect()
@@ -178,12 +178,12 @@ class HsmsHandler(EventProducer):
 
         self.fire_event("hsms_connected", {'connection': self})
 
-    def on_connection_before_closed(self):
+    def on_connection_before_closed(self, _):
         """Connection is about to be closed"""
         # send separate request
         self.send_separate_req()
 
-    def on_connection_closed(self):
+    def on_connection_closed(self, _):
         """Connection was closed"""
         # update connection state
         self.connected = False
@@ -204,7 +204,7 @@ class HsmsHandler(EventProducer):
         for event in self.eventQueue:
             event.set()
 
-    def on_connection_packet_received(self, packet):
+    def on_connection_packet_received(self, _, packet):
         """Packet received by connection
 
         :param packet: received data packet
