@@ -178,7 +178,7 @@ class HsmsHandler(EventProducer):
 
         self.fire_event("hsms_connected", {'connection': self})
 
-    def on_before_connection_closed(self):
+    def on_connection_before_closed(self):
         """Connection is about to be closed"""
         # send separate request
         self.send_separate_req()

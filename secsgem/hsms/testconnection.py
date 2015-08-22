@@ -97,8 +97,8 @@ class HsmsTestConnection(object):
     def disconnect(self):
         if self.connected:
             # notify listeners of disconnection
-            if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
-                self.delegate.on_before_connection_closed()
+            if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
+                self.delegate.on_connection_before_closed()
 
             # notify listeners of disconnection
             if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):

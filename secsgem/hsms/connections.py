@@ -275,8 +275,8 @@ class HsmsConnection(object):
             self.logger.error('exception {0}'.format(e), exc_info=True)
 
         # notify listeners of disconnection
-        if self.delegate and hasattr(self.delegate, 'on_before_connection_closed') and callable(getattr(self.delegate, 'on_before_connection_closed')):
-            self.delegate.on_before_connection_closed()
+        if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
+            self.delegate.on_connection_before_closed()
 
         # close the socket
         self.sock.close()
