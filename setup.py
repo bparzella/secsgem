@@ -17,7 +17,7 @@ setup(
     long_description=long_description,
 
     url='https://github.com/bparzella/secsgem',
-    download_url='https://github.com/bparzella/secsgem/tarball/0.0.3',
+    download_url='https://github.com/bparzella/secsgem/tarball/v0.0.3',
 
     author='Benjamin Parzella',
     author_email='bparzella@gmail.com',
