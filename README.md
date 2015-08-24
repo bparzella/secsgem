@@ -4,7 +4,7 @@ Simple Python SECS/GEM implementation
 This module is still work in progress. I'd love to get your input, your use case, whether you are experienced or not in SECS.
 
 ##Installation
-To install the latest official release (might be old):
+To install the latest official release (v0.0.3, 2015-08-23, https://pypi.python.org/pypi/secsgem):
 
 ```bash
 $ pip install secsgem
