@@ -121,6 +121,8 @@ class GemHandler(SecsHandler):
 
         self.reportSubscriptions = {}
 
+        self.waitEventList = []
+
         self.register_callback(1, 1, self.s01f01_handler)
         self.register_callback(1, 13, self.s01f13_handler)
         self.register_callback(6, 11, self.s06f11_handler)
@@ -250,6 +252,9 @@ class GemHandler(SecsHandler):
 
         self.fire_event("handler_communicating", {'handler': self}, True)
 
+        for event in self.waitEventList:
+            event.set()
+
     def on_connection_closed(self, connection):
         """Connection was closed"""
         self.logger.info("Connection was closed")
@@ -362,6 +367,27 @@ class GemHandler(SecsHandler):
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
+
+    def waitfor_communicating(self, timeout=None):
+        """Wait until connection gets into communicating state. Returns immediately if state is communicating
+
+        :param timeout: seconds to wait before aborting
+        :type timeout: float
+        :returns: True if state is communicating, False if timed out
+        :rtype: bool
+        """
+        event = threading.Event()
+        self.waitEventList.append(event)
+
+        if self.communicationState.isstate("COMMUNICATING"):
+            self.waitEventList.remove(event)
+            return True
+
+        result = event.wait(timeout)
+
+        self.waitEventList.remove(event)
+
+        return result
 
     def s01f01_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 1, Are You There
