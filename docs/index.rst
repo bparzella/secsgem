@@ -37,9 +37,11 @@ Table of contents
 .. toctree::
    :maxdepth: 4
 
+   usecases
    hsms
    secs
    gem
+   customisation
    reference
 
 * :ref:`genindex`
