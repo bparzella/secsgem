@@ -68,10 +68,10 @@ class HsmsTestConnection(object):
 
     def simulate_connect(self):
         # send connection enabled event
-        self.connected = True
-
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
             self.delegate.on_connection_established(self)
+
+        self.connected = True
 
     def simulate_disconnect(self):
         self.disconnect()
