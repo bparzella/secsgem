@@ -7,3 +7,4 @@ GEM defines certain behaviors of the equipment and how to use the SECS messages 
 .. toctree::
 
    gem/handler
+   gem/compliance
