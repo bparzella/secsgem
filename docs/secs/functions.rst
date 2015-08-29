@@ -1,5 +1,5 @@
 Functions
----------
+=========
 
 A function is inherited from :class:`secsgem.secs.functionbase.SecsStreamFunction`.
 When inheriting a function only _stream, _function and _formatDescriptor must be overwritten.

@@ -1,5 +1,5 @@
 Streams and functions
----------------------
+=====================
 
 To create a new stream/function you only need to inherit :class:`secsgem.secs.functionbase.SecsStreamFunction`.
 Three members need to be overridden: _stream, _function and _formatDescriptor.

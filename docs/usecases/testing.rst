@@ -1,5 +1,5 @@
 Testing
--------
+=======
 
 secsgem can be used to make unit tests on your implementation of the SEMI standard.
 

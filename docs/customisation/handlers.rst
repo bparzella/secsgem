@@ -1,5 +1,5 @@
 Handlers
---------
+========
 
 Now we want to integrate the stream/function from the last example (:doc:`/customisation/streamfunction`) into the :class:`secsgem.gem.handler.GemHandler`.
 You create a new class inherited from the GemHandler and update the function list of that class::
