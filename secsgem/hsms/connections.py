@@ -95,9 +95,6 @@ class HsmsConnection(object):
         # buffer for received data
         self.receiveBuffer = ""
 
-        # system id counter
-        self.systemCounter = 1
-
         # receiving thread flags
         self.threadRunning = False
         self.stopThread = False
@@ -114,7 +111,7 @@ class HsmsConnection(object):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'active': self.active, 'remoteAddress': self.remoteAddress, 'remotePort': self.remotePort, 'sessionID': self.sessionID, 'systemCounter': self.systemCounter, 'connected': self.connected}
+        return {'active': self.active, 'remoteAddress': self.remoteAddress, 'remotePort': self.remotePort, 'sessionID': self.sessionID, 'connected': self.connected}
 
     def __str__(self):
         return ("Active" if self.active else "Passive") + " connection to " + self.remoteAddress + ":" + str(self.remotePort) + " sessionID=" + str(self.sessionID)
@@ -295,15 +292,6 @@ class HsmsConnection(object):
 
         # notify inherited classes of disconnection
         self._on_hsms_connection_close({'connection': self})
-
-    def get_next_system_counter(self):
-        """Returns the next System.
-
-        :returns: System for the next command
-        :rtype: integer
-        """
-        self.systemCounter += 1
-        return self.systemCounter
 
 
 class HsmsPassiveConnection(HsmsConnection):
