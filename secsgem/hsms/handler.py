@@ -336,7 +336,14 @@ class HsmsHandler(EventProducer):
             if found_packet is None:
                 if event.wait(1):
                     event.clear()
-                elif not self.connected or self.connection.disconnecting or time.time() > timeout:
+                elif not self.connected:
+                    self.logger.warning("handler disconnected while waiting for S{0}F{1}".format(stream, function))
+                    return None
+                elif self.connection.disconnecting:
+                    self.logger.warning("connection wants to disconnect while waiting for S{0}F{1}".format(stream, function))
+                    return None
+                elif time.time() > timeout:
+                    self.logger.warning("response for S{0}F{1} not received within timeout".format(stream, function))
                     return None
 
         self.eventQueue.remove(event)
@@ -386,7 +393,13 @@ class HsmsHandler(EventProducer):
             if found_packet is None:
                 if event.wait(1):
                     event.clear()
-                elif not self.connected or self.connection.disconnecting or time.time() > timeout:
+                elif not self.connected:
+                    self.logger.warning("handler disconnected while waiting for system {0}".format(system))
+                    return None
+                elif self.connection.disconnecting:
+                    self.logger.warning("connection wants to disconnect while waiting for system {0}".format(system))
+                    return None
+                elif time.time() > timeout:
                     self.logger.warning("response for system {0} not received within timeout".format(system))
                     return None
 
