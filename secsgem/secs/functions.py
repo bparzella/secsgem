@@ -238,9 +238,9 @@ class SecsS01F13(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F013(['secsgem', '0.0.3']) # E->H
+        >>> secsgem.SecsS01F13(['secsgem', '0.0.3']) # E->H
         S1F13 { [A 'secsgem', A '0.0.3'] }
-        >>> secsgem.SecsS01F013() #H->E
+        >>> secsgem.SecsS01F13() #H->E
         S1F13 { [] }
 
     :param value: parameters for this function (see example)
@@ -250,6 +250,7 @@ class SecsS01F13(SecsStreamFunction):
     _function = 13
 
     _formatDescriptor = SecsVarArray(SecsVarString(20))
+
 
 class SecsS01F14(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 14 - establish communication - acknowledge
@@ -2376,4 +2377,3 @@ secsStreamsFunctions = {
         19: SecsS12F19,
     },
 }
-
