@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 earlyS1F13 = False
 
 def S1F1Handler(connection, packet):
-	s1f2 = SecsS01F02H()
+	s1f2 = SecsS01F02()
 	responsePacket = HsmsPacket(HsmsStreamFunctionHeader(1, 2, False, packet.header.system), s1f2.encode())
 	
 	connection.send_packet(responsePacket)

@@ -76,10 +76,16 @@ class SecsS01F01(SecsStreamFunction):
     _formatDescriptor = None
 
 
-class SecsS01F02E(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 02 - on line data (Equipment)
+class SecsS01F02(SecsStreamFunction):
+    """Secs stream and function class for stream 01, function 02 - on line data
 
-    **Structure**::
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        If it is sent from the eqipment side it has the structure below, if it is sent from the host it is an empty list.
+        Be sure to fill the array accordingly.
+
+    **Structure E->H**::
 
         {
             MDLN: A[20]
@@ -89,37 +95,18 @@ class SecsS01F02E(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F02E({"MDLN": "secsgem", "SOFTREV": "0.0.3"})
-        S1F2 { [MDLN: A 'secsgem', SOFTREV: A '0.0.3'] }
-
-    :param value: parameters for this function (see example)
-    :type value: dict
-    """
-    _stream = 1
-    _function = 2
-
-    _formatDescriptor = SecsVarList(OrderedDict((
-        ("MDLN", SecsVarString(20)),
-        ("SOFTREV", SecsVarString(20)),
-    )), 2)
-
-
-class SecsS01F02H(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 02 - on line data (Host)
-
-    **Example**::
-
-        >>> import secsgem
-        >>> secsgem.SecsS01F02H()
+        >>> secsgem.SecsS01F02(['secsgem', '0.0.3']) # E->H
+        S1F2 { [A 'secsgem', A '0.0.3'] }
+        >>> secsgem.SecsS01F02() #H->E
         S1F2 { [] }
 
-    :param value: function has no parameters
-    :type value: None
+    :param value: parameters for this function (see example)
+    :type value: list
     """
     _stream = 1
     _function = 2
 
-    _formatDescriptor = SecsVarList(OrderedDict(()), 0)
+    _formatDescriptor = SecsVarArray(SecsVarString(20))
 
 
 class SecsS01F03(SecsStreamFunction):
@@ -232,10 +219,16 @@ class SecsS01F12(SecsStreamFunction):
     )), 3))
 
 
-class SecsS01F13E(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 13 - establish communication - request (Equipment)
+class SecsS01F13(SecsStreamFunction):
+    """Secs stream and function class for stream 01, function 13 - establish communication - request
 
-    **Structure**::
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        If it is sent from the eqipment side it has the structure below, if it is sent from the host it is an empty list.
+        Be sure to fill the array accordingly.
+
+    **Structure E->H**::
 
         {
             MDLN: A[20]
@@ -245,37 +238,64 @@ class SecsS01F13E(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F13E({"MDLN": "secsgem", "SOFTREV": "0.0.3"})
-        S1F13 { [MDLN: A 'secsgem', SOFTREV: A '0.0.3'] }
+        >>> secsgem.SecsS01F013(['secsgem', '0.0.3']) # E->H
+        S1F13 { [A 'secsgem', A '0.0.3'] }
+        >>> secsgem.SecsS01F013() #H->E
+        S1F13 { [] }
 
     :param value: parameters for this function (see example)
-    :type value: dict
+    :type value: list
     """
     _stream = 1
     _function = 13
 
-    _formatDescriptor = SecsVarList(OrderedDict((
-        ("MDLN", SecsVarString(20)),
-        ("SOFTREV", SecsVarString(20)),
-    )), 2)
+    _formatDescriptor = SecsVarArray(SecsVarString(20))
 
+class SecsS01F14(SecsStreamFunction):
+    """Secs stream and function class for stream 01, function 14 - establish communication - acknowledge
 
-class SecsS01F13H(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 13 - establish communication - request (Host)
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        See structure definition below for details.
+        Be sure to fill the array accordingly.
+
+    **Structure E->H**::
+
+        {
+            COMMACK: B[1]
+            DATA: {
+                MDLN: A[20]
+                SOFTREV: A[20]
+            }
+        }
+
+    **Structure H->E**::
+
+        {
+            COMMACK: B[1]
+            DATA: []
+        }
 
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F13H()
-        S1F13 { [] }
+        >>> secsgem.SecsS01F14E({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
+        S1F14 { [COMMACK: B 1, DATA: [MDLN: A 'secsgem', SOFTREV: A '0.0.3']] }
 
     :param value: parameters for this function (see example)
     :type value: dict
     """
     _stream = 1
-    _function = 13
+    _function = 14
 
-    _formatDescriptor = SecsVarList(OrderedDict(()), 0)
+    _formatDescriptor = SecsVarList(OrderedDict((
+        ("COMMACK", SecsVarBinary(1)),
+        ("DATA", SecsVarList(OrderedDict((
+            ("MDLN", SecsVarString(20)),
+            ("SOFTREV", SecsVarString(20)),
+        )), 2))
+    )), 2)
 
 
 class SecsS01F14E(SecsStreamFunction):
@@ -2262,20 +2282,20 @@ class SecsS12F19(SecsStreamFunction):
     )), 2)
 
 
-secsStreamsFunctionsHost = {
+secsStreamsFunctions = {
     0: {
         0: SecsS00F00,
     },
     1: {
         0: SecsS01F00,
         1: SecsS01F01,
-        2: SecsS01F02H,
+        2: SecsS01F02,
         3: SecsS01F03,
         4: SecsS01F04,
         11: SecsS01F11,
         12: SecsS01F12,
-        13: SecsS01F13H,
-        14: SecsS01F14H,
+        13: SecsS01F13,
+        14: SecsS01F14,
     },
     2: {
         0: SecsS02F00,
@@ -2357,97 +2377,3 @@ secsStreamsFunctionsHost = {
     },
 }
 
-secsStreamsFunctionsEquipment = {
-    0: {
-        0: SecsS00F00,
-    },
-    1: {
-        0: SecsS01F00,
-        1: SecsS01F01,
-        2: SecsS01F02E,
-        3: SecsS01F03,
-        4: SecsS01F04,
-        11: SecsS01F11,
-        12: SecsS01F12,
-        13: SecsS01F13E,
-        14: SecsS01F14E,
-    },
-    2: {
-        0: SecsS02F00,
-        13: SecsS02F13,
-        14: SecsS02F14,
-        15: SecsS02F15,
-        16: SecsS02F16,
-        29: SecsS02F29,
-        30: SecsS02F30,
-        33: SecsS02F33,
-        34: SecsS02F34,
-        35: SecsS02F35,
-        36: SecsS02F36,
-        37: SecsS02F37,
-        38: SecsS02F38,
-        41: SecsS02F41,
-        42: SecsS02F42,
-    },
-    5: {
-        0: SecsS05F00,
-        1: SecsS05F01,
-        2: SecsS05F02,
-    },
-    6: {
-        0: SecsS06F00,
-        11: SecsS06F11,
-        12: SecsS06F12,
-    },
-    7: {
-        1: SecsS07F01,
-        2: SecsS07F02,
-        3: SecsS07F03,
-        4: SecsS07F04,
-        5: SecsS07F05,
-        6: SecsS07F06,
-        17: SecsS07F17,
-        18: SecsS07F18,
-        19: SecsS07F19,
-        20: SecsS07F20,
-    },
-    9: {
-        0: SecsS09F00,
-        1: SecsS09F01,
-        3: SecsS09F03,
-        5: SecsS09F05,
-        7: SecsS09F07,
-        9: SecsS09F09,
-        11: SecsS09F11,
-        13: SecsS09F13,
-    },
-    10: {
-        0: SecsS10F00,
-        1: SecsS10F01,
-        2: SecsS10F02,
-        3: SecsS10F03,
-        4: SecsS10F04,
-    },
-    12: {
-        0: SecsS12F00,
-        1: SecsS12F01,
-        2: SecsS12F02,
-        3: SecsS12F03,
-        4: SecsS12F04,
-        5: SecsS12F05,
-        6: SecsS12F06,
-        7: SecsS12F07,
-        8: SecsS12F08,
-        9: SecsS12F09,
-        10: SecsS12F10,
-        11: SecsS12F11,
-        12: SecsS12F12,
-        13: SecsS12F13,
-        14: SecsS12F14,
-        15: SecsS12F15,
-        16: SecsS12F16,
-        17: SecsS12F17,
-        18: SecsS12F18,
-        19: SecsS12F19,
-    },
-}

@@ -83,8 +83,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
     :type CEID: list of integers
     """
 
-    secsStreamsFunctionsHost = copy.deepcopy(functions.secsStreamsFunctionsHost)
-    secsStreamsFunctionsEquipment = copy.deepcopy(functions.secsStreamsFunctionsEquipment)
+    secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
 
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         StreamFunctionCallbackHandler.__init__(self)
@@ -322,20 +321,15 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         :return: matching stream and function class
         :rtype: secsSxFx class
         """
-        if self.isHost:
-            secs_streams_functions = self.secsStreamsFunctionsHost
-        else:
-            secs_streams_functions = self.secsStreamsFunctionsEquipment
-
-        if stream not in secs_streams_functions:
+        if stream not in self.secsStreamsFunctions:
             self.logger.warning("unknown function S%02dF%02d", stream, function)
             return None
         else:
-            if function not in secs_streams_functions[stream]:
+            if function not in self.secsStreamsFunctions[stream]:
                 self.logger.warning("unknown function S%02dF%02d", stream, function)
                 return None
             else:
-                return secs_streams_functions[stream][function]
+                return self.secsStreamsFunctions[stream][function]
 
     def secs_decode(self, packet):
         """Get object of decoded stream and function class, or None if no class is available.
@@ -345,21 +339,16 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         :return: matching stream and function object
         :rtype: secsSxFx object
         """
-        if self.isHost:
-            secs_streams_functions = self.secsStreamsFunctionsEquipment
-        else:
-            secs_streams_functions = self.secsStreamsFunctionsHost
-
-        if packet.header.stream not in secs_streams_functions:
+        if packet.header.stream not in self.secsStreamsFunctions:
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        if packet.header.function not in secs_streams_functions[packet.header.stream]:
+        if packet.header.function not in self.secsStreamsFunctions[packet.header.stream]:
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, secs_streams_functions[packet.header.stream][packet.header.function].__name__))
-        function = secs_streams_functions[packet.header.stream][packet.header.function]()
+        self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, self.secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
+        function = self.secsStreamsFunctions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
         self.logger.debug("decoded {}".format(function))
         return function

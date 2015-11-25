@@ -8,13 +8,8 @@ You create a new class inherited from the GemHandler and update the function lis
         def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
             secsgem.GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
-        secsStreamsFunctionsHost = copy.deepcopy(secsgem.GemHandler.secsStreamsFunctionsHost)
-        secsStreamsFunctionsHost[1].update({
-            12: SecsS01F12_New,
-        })
-
-        secsStreamsFunctionsEquipment = copy.deepcopy(secsgem.GemHandler.secsStreamsFunctionsEquipment)
-        secsStreamsFunctionsEquipment[1].update({
+        secsStreamsFunctions = copy.deepcopy(secsgem.GemHandler.secsStreamsFunctions)
+        secsStreamsFunctions[1].update({
             12: SecsS01F12_New,
         })
 

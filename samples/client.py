@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s %(message)s', level=logging.DEBUG)
 earlyS1F13 = False
 
 def S1F1Handler(connection, packet):
-	connection.send_response(SecsS01F02H(), packet.header.system)
+	connection.send_response(SecsS01F02(), packet.header.system)
 	
 def S1F13Handler(connection, packet):
 	global earlyS1F13
