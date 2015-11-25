@@ -44,19 +44,19 @@ class GemHandler(SecsHandler):
     ceids = SecsHandler.ceids
     """Dictionary of available collection events, CEID is the key
 
-    :param name: Name of the data value
+    :param name: Name of the collection event
     :type name: string
-    :param CEID: Collection event the data value is used for
-    :type CEID: integer
+    :param dv: Data values available for collection event
+    :type dv: list of integers
     """
 
     dvs = SecsHandler.dvs
     """Dictionary of available data values, DVID is the key
 
-    :param name: Name of the collection event
+    :param name: Name of the data value
     :type name: string
-    :param dv: Data values available for collection event
-    :type dv: list of integers
+    :param CEID: Collection event the data value is used for
+    :type CEID: integer
     """
 
     alarms = SecsHandler.alarms
