@@ -15,3 +15,5 @@
 #####################################################################
 
 from handler import *
+from equipmenthandler import *
+from hosthandler import *
