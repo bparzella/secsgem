@@ -32,3 +32,5 @@ The handler sends the following events:
 +-------------------+----------------------------+
 | hsms_disconnected | Connection was terminated  |
 +-------------------+----------------------------+
+
+For an example on how to use these events see the code fragment above.

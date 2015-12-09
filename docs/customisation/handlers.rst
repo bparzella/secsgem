@@ -4,14 +4,13 @@ Handlers
 Now we want to integrate the stream/function from the last example (:doc:`/customisation/streamfunction`) into the :class:`secsgem.gem.handler.GemHandler`.
 You create a new class inherited from the GemHandler and update the function list of that class::
 
-    class NewHandler(secsgem.GemHandler):
+    class NewHandler(secsgem.GemHostHandler):
         def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-            secsgem.GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+            secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
-        secsStreamsFunctions = copy.deepcopy(secsgem.GemHandler.secsStreamsFunctions)
-        secsStreamsFunctions[1].update({
-            12: SecsS01F12_New,
-        })
+            self.secsStreamsFunctions[1].update({
+                12: SecsS01F12_New,
+            })
 
 You can also add new methods and properties to the class if required.
 

@@ -1,4 +1,5 @@
 Handler
 =======
 
-.. automodule:: secsgem.secs.handler
+.. autoclass:: secsgem.secs.handler.SecsHandler
+    :members:
