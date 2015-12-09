@@ -179,10 +179,10 @@ class HsmsHandler(EventProducer):
 
     def on_connection_established(self, _):
         """Connection was established"""
+        self.connected = True
+
         # update connection state
         self.connectionState.connect()
-
-        self.connected = True
 
         self.fire_event("hsms_connected", {'connection': self})
 

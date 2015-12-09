@@ -26,7 +26,7 @@ from secsgem.hsms.handler import HsmsHandler
 import functions
 
 
-class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
+class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -45,53 +45,128 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    ceids = {}
-    """Dictionary of available collection events, CEID is the key
-
-    :param name: Name of the collection event
-    :type name: string
-    :param dv: Data values available for collection event
-    :type dv: list of integers
-    """
-
-    dvs = {}
-    """Dictionary of available data values, DVID is the key
-
-    :param name: Name of the data value
-    :type name: string
-    :param CEID: Collection event the data value is used for
-    :type CEID: integer
-    """
-
-    alarms = {}
-    """Dictionary of available alarms, ALID is the key
-
-    :param alarmText: Description of the alarm
-    :type alarmText: string
-    :param ceidOn: Collection event for activated alarm
-    :type ceidOn: integer
-    :param ceidOff: Collection event for deactivated alarm
-    :type ceidOff: integer
-    """
-
-    rcmds = {}
-    """Dictionary of available remote commands, command is the key
-
-    :param params: description of the parameters
-    :type params: list of dictionary
-    :param CEID: Collection events the remote command uses
-    :type CEID: list of integers
-    """
-
-    secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
-
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         StreamFunctionCallbackHandler.__init__(self)
         HsmsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self.isHost = True
+        self._collectionEvents = {}
+        self._dataValues = {}
+        self._alarms = {}
+        self._remoteCommands = {}
+
+        self.secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
+
+    @property
+    def collection_events(self):
+        """Dictionary of available collection events
+
+        *Example*::
+
+            >>> handler.collection_events[123] = {'name': 'collectionEventName', 'dvids': [1, 5] }
+
+        **Key**
+
+        Id of the collection event (integer)
+
+        **Data**
+
+        Dictionary with the following fields
+
+            name
+                Name of the collection event (string)
+
+            dvids
+                Data values for the collection event (list of integers)
+
+        """
+        return self._collectionEvents
+
+    @property
+    def data_values(self):
+        """Dictionary of available data values
+
+        *Example*::
+
+            >>> handler.data_values[5] = {'name': 'dataValueName', 'ceid': 123 }
+
+        **Key**
+
+        Id of the data value (integer)
+
+        **Data**
+
+        Dictionary with the following fields
+
+            name
+                Name of the data value (string)
+
+            ceid
+                Collection event the data value is used for (integer)
+
+        """
+        return self._dataValues
+
+    @property
+    def alarms(self):
+        """Dictionary of available alarms
+
+        *Example*::
+
+            >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
+
+        **Key**
+
+        Id of the alarm (integer)
+
+        **Data**
+
+        Dictionary with the following fields
+
+            ceidon
+                Collection event id for alarm on (integer)
+
+            ceidoff
+                Collection event id for alarm off (integer)
+
+        """
+        return self._alarms
+
+    @property
+    def remote_commands(self):
+        """Dictionary of available remote commands
+
+        *Example*::
+
+            >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], 'ceids': [200, 343]}
+
+        **Key**
+
+        Name of the remote command (string)
+
+        **Data**
+
+        Dictionary with the following fields
+
+            params
+                Parameters for the remote command (list of dictionaries)
+
+                *Parameters*
+
+                    The dictionaries have the following fields
+
+                    name
+                        name of the parameter (string)
+
+                    format
+                        format character of the parameter (string)
+
+            ceids
+                Collection events ids the remote command might return (list of integers)
+
+        """
+        return self._remoteCommands
 
     def _run_callbacks(self, callback_index, response):
         handeled = False
@@ -282,9 +357,9 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if ceid in self.ceids:
-            if "name" in self.ceids[ceid]:
-                return self.ceids[ceid]["name"]
+        if ceid in self._collectionEvents:
+            if "name" in self._collectionEvents[ceid]:
+                return self._collectionEvents[ceid]["name"]
 
         return ""
 
@@ -296,9 +371,9 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler):
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if dvid in self.dvs:
-            if "name" in self.dvs[dvid]:
-                return self.dvs[dvid]["name"]
+        if dvid in self._dataValues:
+            if "name" in self._dataValues[dvid]:
+                return self._dataValues[dvid]["name"]
 
         return ""
 

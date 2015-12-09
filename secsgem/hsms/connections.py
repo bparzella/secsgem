@@ -125,9 +125,6 @@ class HsmsConnection(object):
         # mark connection as connected
         self.connected = True
 
-        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
-            self.delegate.on_connection_established(self)
-
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(), name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress, self.remotePort)).start()
 
@@ -136,6 +133,8 @@ class HsmsConnection(object):
             pass
 
         # send event
+        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
+            self.delegate.on_connection_established(self)
 
     def _on_hsms_connection_close(self, data):
         pass

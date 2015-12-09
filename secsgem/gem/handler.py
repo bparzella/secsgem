@@ -41,48 +41,12 @@ class GemHandler(SecsHandler):
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    ceids = SecsHandler.ceids
-    """Dictionary of available collection events, CEID is the key
-
-    :param name: Name of the collection event
-    :type name: string
-    :param dv: Data values available for collection event
-    :type dv: list of integers
-    """
-
-    dvs = SecsHandler.dvs
-    """Dictionary of available data values, DVID is the key
-
-    :param name: Name of the data value
-    :type name: string
-    :param CEID: Collection event the data value is used for
-    :type CEID: integer
-    """
-
-    alarms = SecsHandler.alarms
-    """Dictionary of available alarms, ALID is the key
-
-    :param alarmText: Description of the alarm
-    :type alarmText: string
-    :param ceidOn: Collection event for activated alarm
-    :type ceidOn: integer
-    :param ceidOff: Collection event for deactivated alarm
-    :type ceidOff: integer
-    """
-
-    rcmds = SecsHandler.rcmds
-    """Dictionary of available remote commands, command is the key
-
-    :param params: description of the parameters
-    :type params: list of dictionary
-    :param CEID: Collection events the remote command uses
-    :type CEID: list of integers
-    """
-
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         SecsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+
+        self.isHost = True
 
         # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
         self.communicationState = Fysom({
@@ -125,6 +89,8 @@ class GemHandler(SecsHandler):
 
         self.register_callback(1, 1, self.s01f01_handler)
         self.register_callback(1, 13, self.s01f13_handler)
+        self.register_callback(2, 33, self.s02f33_handler)
+        self.register_callback(2, 37, self.s02f37_handler)
         self.register_callback(6, 11, self.s06f11_handler)
         self.register_callback(10, 1, self.s10f01_handler)
 
@@ -170,7 +136,7 @@ class GemHandler(SecsHandler):
                 if self.isHost:
                     self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": {}}))
                 else:
-                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}}))
+                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]}))
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -211,7 +177,7 @@ class GemHandler(SecsHandler):
         if self.isHost:
             self.send_stream_function(self.stream_function(1, 13)())
         else:
-            self.send_stream_function(self.stream_function(1, 13)("secsgem", "0.0.3"))
+            self.send_stream_function(self.stream_function(1, 13)(["secsgem", "0.0.3"]))
 
     def _on_state_wait_delay(self, _):
         """Connection state model changed to state WAIT_DELAY
@@ -412,6 +378,38 @@ class GemHandler(SecsHandler):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         handler.send_response(self.stream_function(1, 14)({"COMMACK": 0}), packet.header.system)
+
+    def s02f33_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 33, Define Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        print message
+
+        handler.send_response(self.stream_function(2, 34)(0), packet.header.system)
+
+    def s02f37_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 37, En-/Disable Event Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        print message
+
+        handler.send_response(self.stream_function(2, 38)(0), packet.header.system)
 
     def s06f11_handler(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request

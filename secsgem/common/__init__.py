@@ -67,7 +67,7 @@ def function_name(function):
         return function.__self__.__class__.__name__ + "." + function.__name__
 
 
-class StreamFunctionCallbackHandler:
+class StreamFunctionCallbackHandler(object):
     """Base class for all connection classes. Provides functionality for registering and unregistering callbacks for streams and functions."""
     def __init__(self):
         self.callbacks = {}
@@ -105,7 +105,7 @@ class StreamFunctionCallbackHandler:
             self.callbacks[name].remove(callback)
 
 
-class EventHandler:
+class EventHandler(object):
     """Class for event handling. Provides functionality for managing events.
 
     :param target: receiver object for event callbacks
@@ -198,7 +198,7 @@ class EventHandler:
         self.eventHandlers[event_name].remove(handler)
 
 
-class EventProducer:
+class EventProducer(object):
     """Class for event production. Provides functionality for sending events.
 
     :param event_handler: object for event handling
