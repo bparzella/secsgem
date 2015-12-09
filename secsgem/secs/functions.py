@@ -292,73 +292,7 @@ class SecsS01F14(SecsStreamFunction):
 
     _formatDescriptor = SecsVarList(OrderedDict((
         ("COMMACK", SecsVarBinary(1)),
-        ("DATA", SecsVarList(OrderedDict((
-            ("MDLN", SecsVarString(20)),
-            ("SOFTREV", SecsVarString(20)),
-        )), 2))
-    )), 2)
-
-
-class SecsS01F14E(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 14 - establish communication - acknowledge (Equipment)
-
-    **Structure**::
-
-        {
-            COMMACK: B[1]
-            DATA: {
-                MDLN: A[20]
-                SOFTREV: A[20]
-            }
-        }
-
-    **Example**::
-
-        >>> import secsgem
-        >>> secsgem.SecsS01F14E({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
-        S1F14 { [COMMACK: B 1, DATA: [MDLN: A 'secsgem', SOFTREV: A '0.0.3']] }
-
-    :param value: parameters for this function (see example)
-    :type value: dict
-    """
-    _stream = 1
-    _function = 14
-
-    _formatDescriptor = SecsVarList(OrderedDict((
-        ("COMMACK", SecsVarBinary(1)),
-        ("DATA", SecsVarList(OrderedDict((
-            ("MDLN", SecsVarString(20)),
-            ("SOFTREV", SecsVarString(20)),
-        )), 2))
-    )), 2)
-
-
-class SecsS01F14H(SecsStreamFunction):
-    """Secs stream and function class for stream 01, function 14 - establish communication - acknowledge (Host)
-
-    **Structure**::
-
-        {
-            COMMACK: B[1]
-            DATA: {
-            }
-        }
-
-    **Example**::
-
-        >>> import secsgem
-        >>> secsgem.SecsS01F14H({"COMMACK": 1, "DATA": {}})
-        S1F14 { [COMMACK: B 1, DATA: []] }
-
-    :param value: parameters for this function (see example)
-    :type value: dict
-    """
-    _stream = 1
-    _function = 14
-
-    _formatDescriptor = SecsVarList(OrderedDict((
-        ("COMMACK", SecsVarBinary(1)),
-        ("DATA", SecsVarList(OrderedDict(()), 0))
+        ("DATA", SecsVarArray(SecsVarString(20)))
     )), 2)
 
 
