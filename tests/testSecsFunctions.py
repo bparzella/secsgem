@@ -212,3 +212,16 @@ class testS10E04(unittest.TestCase, testSecsFunctionSingleVariable):
     value1 = 217
     value2 = 135
     encoded1 = "!\x01\xd9"
+
+
+def check_stream_number(stream, cls):
+    assert stream == cls._stream
+
+def check_function_number(function, cls):
+    assert function == cls._function
+
+def test_streams_functions():
+    for stream in secsStreamsFunctions:
+        for function in secsStreamsFunctions[stream]:
+            yield (check_stream_number, stream, secsStreamsFunctions[stream][function])
+            yield (check_function_number, function, secsStreamsFunctions[stream][function])
