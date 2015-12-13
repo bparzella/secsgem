@@ -41,3 +41,38 @@ class GemEquipmentHandler(GemHandler):
         GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
         self.isHost = False
+
+        self.register_callback(2, 33, self.s02f33_handler)
+        self.register_callback(2, 37, self.s02f37_handler)
+
+    def s02f33_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 33, Define Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        print message
+
+        handler.send_response(self.stream_function(2, 34)(0), packet.header.system)
+
+    def s02f37_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 37, En-/Disable Event Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        print message
+
+        handler.send_response(self.stream_function(2, 38)(0), packet.header.system)
