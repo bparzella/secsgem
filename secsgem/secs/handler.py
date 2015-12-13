@@ -25,7 +25,6 @@ from secsgem.hsms.handler import HsmsHandler
 
 import functions
 
-
 class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
 
@@ -176,7 +175,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
                     handeled = True
 
             if not handeled:
-                self._queue_packet(response)
+                self.logger.warning("no callback wanted to handle handle %s\n%s", callback_index, response)
 
         except Exception, e:
             self.logger.error('exception {0}'.format(e), exc_info=True)
@@ -199,7 +198,9 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         if callback_index in self.callbacks:
             threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_secsHandler_callback_{}".format(callback_index)).start()
         else:
-            self._queue_packet(packet)
+            self.logger.warning("unexpected function received %s\n%s", callback_index, packet.header)
+            if packet.header.requireResponse:
+                self.send_response(functions.SecsS09F05(packet.header.encode()), packet.header.system)
 
     def disable_ceids(self):
         """Disable all Collection Events."""

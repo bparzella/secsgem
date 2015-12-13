@@ -20,12 +20,10 @@ secsgem can be used to make unit tests on your implementation of the SEMI standa
             self.connection.disable()
 
         def testLinktest(self):
-            linktestid = self.connection.send_linktest_req()
-            result_packet = self.connection.waitfor_linktest_rsp(linktestid)
+            result_packet = self.connection.send_linktest_req()
 
             self.assertEqual(result_packet.header.sType, 6)
             self.assertEqual(result_packet.header.sessionID, 65535)
-            self.assertEqual(result_packet.header.system, linktestid)
 
 
 See file samples/testExample.py

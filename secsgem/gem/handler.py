@@ -21,6 +21,7 @@ import threading
 from secsgem.common.fysom import Fysom
 from secsgem.secs.handler import SecsHandler
 
+from secsgem.secs.functions import SecsS09F05
 
 class GemHandler(SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
@@ -134,9 +135,9 @@ class GemHandler(SecsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": []}))
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": 1, "DATA": []}), packet.header.system)
                 else:
-                    self.send_stream_function(self.stream_function(1, 14)({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]}))
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]}), packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -149,7 +150,9 @@ class GemHandler(SecsHandler):
             if callback_index in self.callbacks:
                 threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_gemHandler_callback_{}".format(callback_index)).start()
             else:
-                self._queue_packet(packet)
+                self.logger.warning("unexpected function received %s\n%s", callback_index, packet.header)
+                if packet.header.requireResponse:
+                    self.send_response(SecsS09F05(packet.header.encode()), packet.header.system)
 
     def _on_hsms_select(self):
         """Selected received from hsms layer"""

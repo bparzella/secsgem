@@ -60,13 +60,6 @@ server.register_callback( 6, 11, S6F11Handler)
 
 server.Listen()
 
-if not earlyS1F13:
-	s1f13 = secsS10F13H()
-	packet = HsmsPacket(HsmsStreamFunctionHeader(1,13, False), s1f13.encode())
-
-	client.send_packet(packet)
-	packet = client.waitfor_stream_function(1,14)
-
 try:
 	while server.connected:
 		time.sleep(1)

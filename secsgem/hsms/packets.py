@@ -46,11 +46,32 @@ class HsmsHeader:
         self.system = system
 
     def __str__(self):
-        return '{sessionID:0x%04x, stream:%02d, function:%02d, pType:0x%02x, sType:0x%02x, system:0x%08x, requireResponse:%01d}' % \
+        return '{sessionID:0x%04x, stream:%02d, function:%02d, pType:0x%02x, sType:0x%02x, system:0x%08x, requireResponse:%r}' % \
             (self.sessionID, self.stream, self.function, self.pType, self.sType, self.system, self.requireResponse)
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__, self.__dict__)
+
+    def encode(self):
+        """Encode header to hsms packet
+
+        :returns: encoded header
+        :rtype: string
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> header = secsgem.hsms.packets.HsmsLinktestReqHeader(2)
+            >>> secsgem.common.format_hex(header.encode(0))
+            'ff:ff:00:00:00:05:00:00:00:02'
+
+        """
+        header_stream = self.stream
+        if self.requireResponse:
+            header_stream |= 0b10000000
+
+        return struct.pack(">HBBBBL", self.sessionID, header_stream, self.function, self.pType, self.sType, self.system)
 
 
 class HsmsSelectReqHeader(HsmsHeader):
@@ -350,13 +371,8 @@ class HsmsPacket:
 
         """
         length = 10 + len(self.data)
-        data_length_text = str(len(self.data)) + "s"
 
-        header_stream = self.header.stream
-        if self.header.requireResponse:
-            header_stream |= 0b10000000
-
-        return struct.pack(">LHBBBBL" + data_length_text, length, self.header.sessionID, header_stream, self.header.function, self.header.pType, self.header.sType, self.header.system, self.data)
+        return struct.pack(">L", length) + self.header.encode() + self.data
 
     @staticmethod
     def decode(text):

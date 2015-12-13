@@ -570,7 +570,7 @@ class SecsVarBinary(SecsVar):
             value = chr(value)
 
         if 0 <= self.length != len(value):
-            raise ValueError("Value longer than {} chars".format(self.length))
+            raise ValueError("Value longer than {} chars ({} chars)".format(self.length, len(value)))
 
         self.value = value
 

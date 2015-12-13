@@ -11,7 +11,7 @@ It also replies to incoming HSMS requests like linktest automatically.
     >>> client = secsgem.HsmsHandler("10.211.55.33", 5000, False, 0, "test", event_handler=secsgem.EventHandler(events={'hsms_connected': on_connect}))
     >>> client.enable()
     Connected
-    >>> client.waitfor_linktest_rsp(client.send_linktest_req())
+    >>> client.send_linktest_req()
     secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 7, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
     >>> client.disable()
 
