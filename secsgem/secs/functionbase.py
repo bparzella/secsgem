@@ -29,6 +29,14 @@ class SecsStreamFunction(object):
             _stream = 2
             _function = 30
 
+            _toHost = True
+            _toEquipment = False
+
+            _hasReply = False
+            _isReplyRequired = False
+
+            _isMultiBlock = True
+
             _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
                                 ("ECID", SecsVarU4(1)),
                                 ("ECNAME", SecsVarString()),
@@ -47,6 +55,14 @@ class SecsStreamFunction(object):
 
     _formatDescriptor = None
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
     def __init__(self, value=None):
         self.__dict__["stream"] = self._stream
         self.__dict__["function"] = self._function
@@ -55,6 +71,14 @@ class SecsStreamFunction(object):
             self.__dict__["format"] = None
         else:
             self.__dict__["format"] = self._formatDescriptor.clone()
+
+        self.__dict__["toHost"] = self._toHost
+        self.__dict__["toEquipment"] = self._toEquipment
+
+        self.__dict__["hasReply"] = self._hasReply
+        self.__dict__["isReplyRequired"] = self._isReplyRequired
+
+        self.__dict__["isMultiBlock"] = self._isMultiBlock
 
         if value is not None and self.format is not None:
             self.format.set(value)

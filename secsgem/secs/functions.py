@@ -39,6 +39,14 @@ class SecsS00F00(SecsStreamFunction):
 
     _formatDescriptor = None
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS01F00(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 00 - abort transaction stream 1
@@ -57,6 +65,14 @@ class SecsS01F00(SecsStreamFunction):
 
     _formatDescriptor = None
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS01F01(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 01 - are you online - request
@@ -74,6 +90,14 @@ class SecsS01F01(SecsStreamFunction):
     _function = 1
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS01F02(SecsStreamFunction):
@@ -108,6 +132,14 @@ class SecsS01F02(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarString(20))
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS01F03(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 03 - selected equipment status - request
@@ -133,6 +165,14 @@ class SecsS01F03(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarU4(1))
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS01F04(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 04 - selected equipment status - data
@@ -157,6 +197,14 @@ class SecsS01F04(SecsStreamFunction):
     _function = 4
 
     _formatDescriptor = SecsVarArray(SecsVarDynamic([]))
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
 
 
 class SecsS01F11(SecsStreamFunction):
@@ -184,6 +232,14 @@ class SecsS01F11(SecsStreamFunction):
     _function = 11
 
     _formatDescriptor = SecsVarArray(SecsVarU4(1))
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS01F12(SecsStreamFunction):
@@ -218,6 +274,14 @@ class SecsS01F12(SecsStreamFunction):
         ("UNITS", SecsVarString()),
     )), 3))
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS01F13(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 13 - establish communication - request
@@ -251,6 +315,14 @@ class SecsS01F13(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarString(20))
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS01F14(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 14 - establish communication - acknowledge
@@ -281,7 +353,7 @@ class SecsS01F14(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F14E({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
+        >>> secsgem.SecsS01F14({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
         S1F14 { [COMMACK: B 1, DATA: [MDLN: A 'secsgem', SOFTREV: A '0.0.3']] }
 
     :param value: parameters for this function (see example)
@@ -294,6 +366,14 @@ class SecsS01F14(SecsStreamFunction):
         ("COMMACK", SecsVarBinary(1)),
         ("DATA", SecsVarArray(SecsVarString(20)))
     )), 2)
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F00(SecsStreamFunction):
@@ -312,6 +392,14 @@ class SecsS02F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F13(SecsStreamFunction):
@@ -339,6 +427,14 @@ class SecsS02F13(SecsStreamFunction):
     _function = 13
 
     _formatDescriptor = SecsVarArray(SecsVarU4(1))
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS02F14(SecsStreamFunction):
@@ -376,6 +472,14 @@ class SecsS02F14(SecsStreamFunction):
                                                      SecsVarI2,
                                                      SecsVarI4,
                                                      SecsVarI8]))
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
 
 
 class SecsS02F15(SecsStreamFunction):
@@ -420,6 +524,14 @@ class SecsS02F15(SecsStreamFunction):
                                 SecsVarI8])),
     )), 2))
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS02F16(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 16 - new equipment constant - acknowledge
@@ -441,6 +553,14 @@ class SecsS02F16(SecsStreamFunction):
     _function = 16
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F29(SecsStreamFunction):
@@ -468,6 +588,14 @@ class SecsS02F29(SecsStreamFunction):
     _function = 29
 
     _formatDescriptor = SecsVarArray(SecsVarU4(1))
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS02F30(SecsStreamFunction):
@@ -544,6 +672,14 @@ class SecsS02F30(SecsStreamFunction):
         ("UNITS", SecsVarString()),
     )), 6))
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS02F33(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 33 - define report
@@ -588,6 +724,14 @@ class SecsS02F33(SecsStreamFunction):
         )),
     )), 2)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS02F34(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 34 - define report - acknowledge
@@ -609,6 +753,14 @@ class SecsS02F34(SecsStreamFunction):
     _function = 34
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F35(SecsStreamFunction):
@@ -654,6 +806,14 @@ class SecsS02F35(SecsStreamFunction):
         )),
     )), 2)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS02F36(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 36 - link event report - acknowledge
@@ -675,6 +835,14 @@ class SecsS02F36(SecsStreamFunction):
     _function = 36
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F37(SecsStreamFunction):
@@ -709,6 +877,14 @@ class SecsS02F37(SecsStreamFunction):
         )),
     )), 2)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS02F38(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 38 - en-/disable event report - acknowledge
@@ -730,6 +906,14 @@ class SecsS02F38(SecsStreamFunction):
     _function = 38
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS02F41(SecsStreamFunction):
@@ -770,6 +954,14 @@ class SecsS02F41(SecsStreamFunction):
         )),
     )), 2)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS02F42(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 42 - host command - acknowledge
@@ -809,6 +1001,14 @@ class SecsS02F42(SecsStreamFunction):
         )),
     )), 2)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS05F00(SecsStreamFunction):
     """Secs stream and function class for stream 05, function 00 - abort transaction stream 5
@@ -826,6 +1026,14 @@ class SecsS05F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS05F01(SecsStreamFunction):
@@ -857,6 +1065,14 @@ class SecsS05F01(SecsStreamFunction):
         ("ALTX", SecsVarString(120)),
     )), 3)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS05F02(SecsStreamFunction):
     """Secs stream and function class for stream 05, function 02 - alarm report - acknowledge
@@ -879,6 +1095,14 @@ class SecsS05F02(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(1)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS06F00(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 00 - abort transaction stream 6
@@ -896,6 +1120,14 @@ class SecsS06F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS06F11(SecsStreamFunction):
@@ -943,6 +1175,14 @@ class SecsS06F11(SecsStreamFunction):
         )),
     )), 3)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS06F12(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 12 - event report - acknowledge
@@ -965,6 +1205,14 @@ class SecsS06F12(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(1)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS07F00(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 00 - abort transaction stream 7
@@ -982,6 +1230,14 @@ class SecsS07F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS07F01(SecsStreamFunction):
@@ -1011,6 +1267,14 @@ class SecsS07F01(SecsStreamFunction):
         ("LENGTH", SecsVarU4(1)),
     )), 2)
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS07F02(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 02 - process program load - grant
@@ -1032,6 +1296,14 @@ class SecsS07F02(SecsStreamFunction):
     _function = 2
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS07F03(SecsStreamFunction):
@@ -1061,6 +1333,14 @@ class SecsS07F03(SecsStreamFunction):
         ("PPBODY", SecsVarBinary()),
     )), 2)
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS07F04(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 04 - process program - acknowledge
@@ -1083,6 +1363,14 @@ class SecsS07F04(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(1)
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS07F05(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 05 - process program - request
@@ -1104,6 +1392,14 @@ class SecsS07F05(SecsStreamFunction):
     _function = 5
 
     _formatDescriptor = SecsVarString()
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS07F06(SecsStreamFunction):
@@ -1133,6 +1429,14 @@ class SecsS07F06(SecsStreamFunction):
         ("PPBODY", SecsVarBinary()),
     )), 2)
 
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS07F17(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 17 - delete process program - send
@@ -1158,6 +1462,14 @@ class SecsS07F17(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarString())
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS07F18(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 18 - delete process program - acknowledge
@@ -1180,6 +1492,14 @@ class SecsS07F18(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(1)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS07F19(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 19 - current equipment process program - request
@@ -1197,6 +1517,14 @@ class SecsS07F19(SecsStreamFunction):
     _function = 19
 
     _formatDescriptor = None
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS07F20(SecsStreamFunction):
@@ -1223,6 +1551,14 @@ class SecsS07F20(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(SecsVarString())
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS09F00(SecsStreamFunction):
     """Secs stream and function class for stream 09, function 00 - abort transaction stream 9
@@ -1240,6 +1576,14 @@ class SecsS09F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS09F01(SecsStreamFunction):
@@ -1263,6 +1607,14 @@ class SecsS09F01(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(10)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS09F03(SecsStreamFunction):
     """Secs stream and function class for stream 09, function 03 - unrecognized stream type
@@ -1284,6 +1636,14 @@ class SecsS09F03(SecsStreamFunction):
     _function = 3
 
     _formatDescriptor = SecsVarBinary(10)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS09F05(SecsStreamFunction):
@@ -1307,6 +1667,14 @@ class SecsS09F05(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(10)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS09F07(SecsStreamFunction):
     """Secs stream and function class for stream 09, function 07 - illegal data
@@ -1328,6 +1696,14 @@ class SecsS09F07(SecsStreamFunction):
     _function = 7
 
     _formatDescriptor = SecsVarBinary(10)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS09F09(SecsStreamFunction):
@@ -1351,6 +1727,14 @@ class SecsS09F09(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(10)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS09F11(SecsStreamFunction):
     """Secs stream and function class for stream 09, function 11 - data too long
@@ -1372,6 +1756,14 @@ class SecsS09F11(SecsStreamFunction):
     _function = 11
 
     _formatDescriptor = SecsVarBinary(10)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS09F13(SecsStreamFunction):
@@ -1401,6 +1793,14 @@ class SecsS09F13(SecsStreamFunction):
         ("EDID", SecsVarString(80)),
     )), 2)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS10F00(SecsStreamFunction):
     """Secs stream and function class for stream 10, function 00 - abort transaction stream 10
@@ -1418,6 +1818,14 @@ class SecsS10F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS10F01(SecsStreamFunction):
@@ -1447,6 +1855,14 @@ class SecsS10F01(SecsStreamFunction):
         ("TEXT", SecsVarString()),
     )), 2)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS10F02(SecsStreamFunction):
     """Secs stream and function class for stream 10, function 02 - terminal - acknowledge
@@ -1468,6 +1884,14 @@ class SecsS10F02(SecsStreamFunction):
     _function = 2
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS10F03(SecsStreamFunction):
@@ -1497,6 +1921,14 @@ class SecsS10F03(SecsStreamFunction):
         ("TEXT", SecsVarString()),
     )), 2)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS10F04(SecsStreamFunction):
     """Secs stream and function class for stream 10, function 04 - terminal single - acknowledge
@@ -1519,6 +1951,14 @@ class SecsS10F04(SecsStreamFunction):
 
     _formatDescriptor = SecsVarBinary(1)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS12F00(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 00 - abort transaction stream 12
@@ -1536,6 +1976,14 @@ class SecsS12F00(SecsStreamFunction):
     _function = 0
 
     _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F01(SecsStreamFunction):
@@ -1611,6 +2059,14 @@ class SecsS12F01(SecsStreamFunction):
         ("PRAXI", SecsVarBinary(1)),
     )), 15)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS12F02(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 02 - map setup data - acknowledge
@@ -1632,6 +2088,14 @@ class SecsS12F02(SecsStreamFunction):
     _function = 2
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F03(SecsStreamFunction):
@@ -1683,6 +2147,14 @@ class SecsS12F03(SecsStreamFunction):
         ("BCEQU", SecsVarU1()),
         ("NULBC", SecsVarDynamic([SecsVarString, SecsVarU1])),
     )), 9)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS12F04(SecsStreamFunction):
@@ -1758,6 +2230,14 @@ class SecsS12F04(SecsStreamFunction):
         ("MLCL", SecsVarU4(1)),
     )), 15)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
 
 class SecsS12F05(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 05 - map transmit inquire
@@ -1790,6 +2270,14 @@ class SecsS12F05(SecsStreamFunction):
         ("MLCL", SecsVarU4(1)),
     )), 4)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
 
 class SecsS12F06(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 06 - map transmit - grant
@@ -1811,6 +2299,14 @@ class SecsS12F06(SecsStreamFunction):
     _function = 6
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F07(SecsStreamFunction):
@@ -1852,6 +2348,14 @@ class SecsS12F07(SecsStreamFunction):
         )),
     )), 3)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS12F08(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 08 - map data type 1 - acknowledge
@@ -1873,6 +2377,14 @@ class SecsS12F08(SecsStreamFunction):
     _function = 8
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F09(SecsStreamFunction):
@@ -1906,6 +2418,14 @@ class SecsS12F09(SecsStreamFunction):
         ("BINLT", SecsVarU1()),
     )), 4)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS12F10(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 10 - map data type 2 - acknowledge
@@ -1927,6 +2447,14 @@ class SecsS12F10(SecsStreamFunction):
     _function = 10
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F11(SecsStreamFunction):
@@ -1968,6 +2496,14 @@ class SecsS12F11(SecsStreamFunction):
         )),
     )), 3)
 
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = True
+
 
 class SecsS12F12(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 12 - map data type 3 - acknowledge
@@ -1989,6 +2525,14 @@ class SecsS12F12(SecsStreamFunction):
     _function = 12
 
     _formatDescriptor = SecsVarBinary(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 class SecsS12F13(SecsStreamFunction):
@@ -2017,6 +2561,14 @@ class SecsS12F13(SecsStreamFunction):
         ("MID", SecsVarString(16)),
         ("IDTYP", SecsVarBinary(1)),
     )), 2)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS12F14(SecsStreamFunction):
@@ -2058,6 +2610,14 @@ class SecsS12F14(SecsStreamFunction):
         )),
     )), 3)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS12F15(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 15 - map data type 2 - request
@@ -2085,6 +2645,14 @@ class SecsS12F15(SecsStreamFunction):
         ("MID", SecsVarString(16)),
         ("IDTYP", SecsVarBinary(1)),
     )), 2)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS12F16(SecsStreamFunction):
@@ -2118,6 +2686,14 @@ class SecsS12F16(SecsStreamFunction):
         ("BINLT", SecsVarU1()),
     )), 4)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS12F17(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 17 - map data type 3 - request
@@ -2147,6 +2723,14 @@ class SecsS12F17(SecsStreamFunction):
         ("IDTYP", SecsVarBinary(1)),
         ("SDBIN", SecsVarBinary(1)),
     )), 3)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
 
 
 class SecsS12F18(SecsStreamFunction):
@@ -2188,6 +2772,14 @@ class SecsS12F18(SecsStreamFunction):
         )),
     )), 3)
 
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
 
 class SecsS12F19(SecsStreamFunction):
     """Secs stream and function class for stream 12, function 19 - map error report - send
@@ -2215,6 +2807,14 @@ class SecsS12F19(SecsStreamFunction):
         ("MAPER", SecsVarBinary(1)),
         ("DATLC", SecsVarU1(1)),
     )), 2)
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 
 secsStreamsFunctions = {
