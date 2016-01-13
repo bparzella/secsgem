@@ -2817,6 +2817,206 @@ class SecsS12F19(SecsStreamFunction):
     _isMultiBlock = False
 
 
+class SecsS14F00(SecsStreamFunction):
+    """Secs stream and function class for stream 14, function 00 - abort transaction stream 14
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS14F00()
+        S14F0 { None }
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 14
+    _function = 0
+
+    _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS14F01(SecsStreamFunction):
+    """Secs stream and function class for stream 14, function 01 - GetAttr request
+
+    **Structure**::
+
+        {
+            OBJSPEC: A[]
+            OBJTYPE: various
+            OBJID: [
+                DATA: various
+                ...
+            ]
+            FILTER: [
+                {
+                    ATTRID: various
+                    ATTRDATA: various
+                    ATTRRELN: U1[]
+                }
+                ...
+            ]
+            ATTRID: [
+                DATA: various
+                ...
+            ]
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS14F01({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], "FILTER": [], "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']})
+        S14F1 { [OBJSPEC: A '', OBJTYPE: A 'StripMap', OBJID: [A 'MAP001'], FILTER: [], ATTRID: [A 'OriginLocation', A 'Rows', A 'Columns', A 'CellStatus', A 'LotID']] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 14
+    _function = 1
+
+    _formatDescriptor = SecsVarList(OrderedDict((
+        ("OBJSPEC", SecsVarString()),
+        ("OBJTYPE", SecsVarDynamic([SecsVarString,
+                                    SecsVarU1,
+                                    SecsVarU2,
+                                    SecsVarU4,
+                                    SecsVarU8])),
+        ("OBJID", SecsVarArray(SecsVarDynamic([SecsVarString,
+                                               SecsVarU1,
+                                               SecsVarU2,
+                                               SecsVarU4,
+                                               SecsVarU8]))),
+        ("FILTER", SecsVarArray(
+            SecsVarList(OrderedDict((
+                ("ATTRID", SecsVarDynamic([SecsVarString,
+                                           SecsVarU1,
+                                           SecsVarU2,
+                                           SecsVarU4,
+                                           SecsVarU8])),
+                ("ATTRDATA", SecsVarDynamic([])),
+                ("ATTRRELN", SecsVarU1(1)),
+            )), 3)
+        )),
+        ("ATTRID", SecsVarArray(SecsVarDynamic([SecsVarString,
+                                               SecsVarU1,
+                                               SecsVarU2,
+                                               SecsVarU4,
+                                               SecsVarU8]))),
+    )), 5)
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+    RELATION = {
+        "EQUAL": 0,
+        "NOTEQUAL": 1,
+        "LESS": 2,
+        "LESSEQUAL": 3,
+        "GREATER": 4,
+        "GREATEREQUAL": 5,
+        "PRESENT": 6,
+        "NOTPRESENT": 7,
+    }
+
+
+class SecsS14F02(SecsStreamFunction):
+    """Secs stream and function class for stream 14, function 02 - GetAttr data
+
+    **Structure**::
+
+        {
+            DATA: [
+                {
+                    OBJID: various
+                    ATTRIBS: [
+                        {
+                            ATTRID: various
+                            ATTRDATA: various
+                        }
+                        ...
+                    ]
+                }
+                ...
+            ]
+            ERRORS: {
+                OBJACK: U1
+                ERROR: [
+                    {
+                        ERRCODE: various
+                        ERRTEXT: A[]
+                    }
+                    ...
+                ]
+            }
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS14F02({"DATA": [{"OBJID": "MAP001", "ATTRIBS": [{"ATTRID": "OriginLocation", "ATTRDATA": "0"},{"ATTRID": "Rows", "ATTRDATA": 4},{"ATTRID": "Columns", "ATTRDATA": 4},{"ATTRID": "CellStatus", "ATTRDATA": 6},{"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}], "ERRORS": {"OBJACK": 0}})
+        S14F2 { [DATA: [[OBJID: A 'MAP001', ATTRIBS: [[ATTRID: A 'OriginLocation', ATTRDATA: A '0'], [ATTRID: A 'Rows', ATTRDATA: A '4'], [ATTRID: A 'Columns', ATTRDATA: A '4'], [ATTRID: A 'CellStatus', ATTRDATA: A '6'], [ATTRID: A 'LotID', ATTRDATA: A 'LOT001']]]], ERRORS: [OBJACK: U1 0, ERROR: []]] }
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+    _stream = 14
+    _function = 2
+
+    _formatDescriptor = SecsVarList(OrderedDict((
+        ("DATA", SecsVarArray(
+            SecsVarList(OrderedDict((
+                ("OBJID", SecsVarDynamic([SecsVarString,
+                                          SecsVarU1,
+                                          SecsVarU2,
+                                          SecsVarU4,
+                                          SecsVarU8])),
+                ("ATTRIBS", SecsVarArray(
+                    SecsVarList(OrderedDict((
+                        ("ATTRID", SecsVarDynamic([SecsVarString,
+                                                   SecsVarU1,
+                                                   SecsVarU2,
+                                                   SecsVarU4,
+                                                   SecsVarU8])),
+                        ("ATTRDATA", SecsVarDynamic([])),
+                    )), 2)
+                )),
+            )), 2)
+        )),
+        ("ERRORS", SecsVarList(OrderedDict((
+            ("OBJACK", SecsVarU1(1)),
+            ("ERROR", SecsVarArray(
+                SecsVarList(OrderedDict((
+                    ("ERRCODE", SecsVarDynamic([SecsVarU1,
+                                                SecsVarU2,
+                                                SecsVarU4,
+                                                SecsVarU8])),
+                    ("ERRTEXT", SecsVarString()),
+                )), 2)
+            )),
+        )), 2)),
+    )), 2)
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
 secsStreamsFunctions = {
     0: {
         0: SecsS00F00,
@@ -2909,5 +3109,10 @@ secsStreamsFunctions = {
         17: SecsS12F17,
         18: SecsS12F18,
         19: SecsS12F19,
+    },
+    14: {
+        0: SecsS14F00,
+        1: SecsS14F01,
+        2: SecsS14F02,
     },
 }
