@@ -172,7 +172,7 @@ class SecsVarDynamic(SecsVar):
         :type value: various
         """
         if isinstance(value, SecsVar):
-            if not isinstance(value, tuple(self.types)):
+            if not isinstance(value, tuple(self.types)) and self.types:
                 raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.__class__.__name__, self.types))
 
             self.value = value

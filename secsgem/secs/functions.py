@@ -692,7 +692,7 @@ class SecsS02F33(SecsStreamFunction):
                 {
                     RPTID: U4[1]
                     RPT: [
-                        VID: A[n]
+                        VID: various[n]
                         ...
                     ]
                 }
@@ -718,7 +718,17 @@ class SecsS02F33(SecsStreamFunction):
             SecsVarList(OrderedDict((
                 ("RPTID", SecsVarU4(1)),
                 ("VID", SecsVarArray(
-                    SecsVarString()
+                    SecsVarDynamic([
+                        SecsVarU1,
+                        SecsVarU2,
+                        SecsVarU4,
+                        SecsVarU8,
+                        SecsVarI1,
+                        SecsVarI2,
+                        SecsVarI4,
+                        SecsVarI8,
+                        SecsVarString,
+                    ])
                 )),
             )), 2)
         )),
