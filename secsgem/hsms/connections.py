@@ -571,9 +571,13 @@ class HsmsMultiPassiveServer(object):
             # check all connections if connection with hostname can be resolved
             for connectionID in self.connections:
                 connection = self.connections[connectionID]
-                if source_ip == socket.gethostbyname(connection.remoteAddress):
-                    new_connection = connection
-                    named_connection_found = True
+                try:
+                    if source_ip == socket.gethostbyname(connection.remoteAddress):
+                        new_connection = connection
+                        named_connection_found = True
+                        break
+                except socket.gaierror:
+                    pass
 
             if not named_connection_found:
                 sock.close()
