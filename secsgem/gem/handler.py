@@ -129,9 +129,9 @@ class GemHandler(SecsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": 1, "DATA": []}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": 0, "DATA": []}), packet.header.system)
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": 0, "DATA": ["secsgem", "0.0.3"]}), packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
