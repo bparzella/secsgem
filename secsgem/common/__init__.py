@@ -19,6 +19,7 @@ import sys
 
 import inspect
 import logging
+import string
 import types
 import threading
 
@@ -65,6 +66,42 @@ def function_name(function):
         return function.__name__
     else:
         return function.__self__.__class__.__name__ + "." + function.__name__
+
+def indent_line(line, spaces=2):
+    """Indent line by a number of spaces
+
+    :param line: input text
+    :type line: string
+    :param spaces: number of spaces to prepend
+    :type spaces: integer
+    :returns: indented text
+    :rtype: string
+    """
+    return (' ' * spaces) + line
+
+def indent_block(block, spaces=2):
+    """Indent a multiline string by a number of spaces
+
+    :param block: input text
+    :type block: string
+    :param spaces: number of spaces to prepend to each line
+    :type spaces: integer
+    :returns: indented text
+    :rtype: string
+    """
+    lines = block.split('\n')
+    lines = filter(None, lines)
+    lines = map(lambda line, spc=spaces: indent_line(line, spc), lines)
+    return '\n'.join(lines)
+
+def printable_chars():
+    printables = []
+    printables.extend(string.printable)
+    printables.remove('\n')
+    printables.remove('\r')
+    printables.remove('\t')
+
+    return printables
 
 
 class StreamFunctionCallbackHandler(object):

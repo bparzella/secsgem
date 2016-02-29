@@ -16,6 +16,7 @@
 """Base class for for SECS stream and functions"""
 
 from variables import SecsVarList
+from secsgem.common import indent_block
 
 
 class SecsStreamFunction(object):
@@ -85,8 +86,10 @@ class SecsStreamFunction(object):
 
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
-        data = "{{ {} }}".format(self.format.__repr__())
-        return "{} {}".format(function, data)
+        if self.format is None:
+            return "{} {}".format(function, "W" if self._isReplyRequired else "")
+        data = "{}".format(self.format.__repr__())
+        return "{} {} \n{}".format(function, "W" if self._isReplyRequired else "", indent_block(data))
 
     def __getattr__(self, name):
         if not isinstance(self.format, SecsVarList):

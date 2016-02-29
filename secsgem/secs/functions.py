@@ -29,7 +29,7 @@ class SecsS00F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS00F00()
-        S0F0 { None }
+        S0F0
 
     :param value: function has no parameters
     :type value: None
@@ -55,7 +55,7 @@ class SecsS01F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F00()
-        S1F0 { None }
+        S1F0
 
     :param value: function has no parameters
     :type value: None
@@ -81,7 +81,7 @@ class SecsS01F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F01()
-        S1F1 { None }
+        S1F1 W
 
     :param value: function has no parameters
     :type value: None
@@ -120,9 +120,14 @@ class SecsS01F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F02(['secsgem', '0.0.3']) # E->H
-        S1F2 { [A 'secsgem', A '0.0.3'] }
+        S1F2
+          <L [2]
+            <A "secsgem">
+            <A "0.0.3">
+          >
         >>> secsgem.SecsS01F02() #H->E
-        S1F2 { [] }
+        S1F2
+          <L>
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -155,7 +160,12 @@ class SecsS01F03(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F03([1, 6, 12])
-        S1F3 { [U4 1, U4 6, U4 12] }
+        S1F3 W
+          <L [3]
+            <U4 1 >
+            <U4 6 >
+            <U4 12 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -188,7 +198,12 @@ class SecsS01F04(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F04([secsgem.SecsVarU1(value=1), "text", secsgem.SecsVarU4(value=1337)])
-        S1F4 { [U1 1, A 'text', U4 1337] }
+        S1F4
+          <L [3]
+            <U1 1 >
+            <A "text">
+            <U4 1337 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -221,7 +236,11 @@ class SecsS01F11(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F11([1, 1337])
-        S1F11 { [U4 1, U4 1337] }
+        S1F11 W
+          <L [2]
+            <U4 1 >
+            <U4 1337 >
+          >
 
     An empty list will return all available status variables.
 
@@ -260,7 +279,19 @@ class SecsS01F12(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}, {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}])
-        S1F12 { [[SVID: U4 1, SVNAME: A 'SV1', UNITS: A 'mm'], [SVID: U4 1337, SVNAME: A 'SV2', UNITS: A '']] }
+        S1F12
+          <L [2]
+            <L [3]
+              <U4 1 >
+              <A "SV1">
+              <A "mm">
+            >
+            <L [3]
+              <U4 1337 >
+              <A "SV2">
+              <A>
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -303,9 +334,14 @@ class SecsS01F13(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F13(['secsgem', '0.0.3']) # E->H
-        S1F13 { [A 'secsgem', A '0.0.3'] }
+        S1F13 W
+          <L [2]
+            <A "secsgem">
+            <A "0.0.3">
+          >
         >>> secsgem.SecsS01F13() #H->E
-        S1F13 { [] }
+        S1F13 W
+          <L>
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -353,8 +389,15 @@ class SecsS01F14(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F14({"COMMACK": 1, "DATA": {"MDLN": "secsgem", "SOFTREV": "0.0.3"}})
-        S1F14 { [COMMACK: B 1, DATA: [MDLN: A 'secsgem', SOFTREV: A '0.0.3']] }
+        >>> secsgem.SecsS01F14({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]})
+        S1F14
+          <L [2]
+            <B 0x1>
+            <L [2]
+              <A "secsgem">
+              <A "0.0.3">
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -383,7 +426,7 @@ class SecsS02F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F00()
-        S2F0 { None }
+        S2F0
 
     :param value: function has no parameters
     :type value: None
@@ -416,7 +459,11 @@ class SecsS02F13(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F13([1, 1337])
-        S2F13 { [U4 1, U4 1337] }
+        S2F13 W
+          <L [2]
+            <U4 1 >
+            <U4 1337 >
+          >
 
     An empty list will return all available equipment constants.
 
@@ -451,7 +498,11 @@ class SecsS02F14(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F14([secsgem.SecsVarU1(value=1), "text"])
-        S2F14 { [U1 1, A 'text'] }
+        S2F14
+          <L [2]
+            <U1 1 >
+            <A "text">
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -499,7 +550,17 @@ class SecsS02F15(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.SecsVarU4(value=10)}, {"ECID": 1337, "ECV": "text"}])
-        S2F15 { [[ECID: U4 1, ECV: U4 10], [ECID: U4 1337, ECV: A 'text']] }
+        S2F15 W
+          <L [2]
+            <L [2]
+              <U4 1 >
+              <U4 10 >
+            >
+            <L [2]
+              <U4 1337 >
+              <A "text">
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -544,7 +605,8 @@ class SecsS02F16(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F16(1)
-        S2F16 { B 1 }
+        S2F16
+          <B 0x1>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -577,7 +639,11 @@ class SecsS02F29(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F29([1, 1337])
-        S2F29 { [U4 1, U4 1337] }
+        S2F29 W
+          <L [2]
+            <U4 1 >
+            <U4 1337 >
+          >
 
     An empty list will return all available equipment constants.
 
@@ -619,7 +685,25 @@ class SecsS02F30(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(value=0), "ECMAX": secsgem.SecsVarU1(value=100), "ECDEF": secsgem.SecsVarU1(value=50), "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
-        S2F30 { [[ECID: U4 1, ECNAME: A 'EC1', ECMIN: U1 0, ECMAX: U1 100, ECDEF: U1 50, UNITS: A 'mm'], [ECID: U4 1337, ECNAME: A 'EC2', ECMIN: A '', ECMAX: A '', ECDEF: A '', UNITS: A '']] }
+        S2F30
+          <L [2]
+            <L [6]
+              <U4 1 >
+              <A "EC1">
+              <U1 0 >
+              <U1 100 >
+              <U1 50 >
+              <A "mm">
+            >
+            <L [6]
+              <U4 1337 >
+              <A "EC2">
+              <A>
+              <A>
+              <A>
+              <A>
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -704,7 +788,26 @@ class SecsS02F33(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, {"RPTID": 1001, "VID": [1, 2355]}]})
-        S2F33 { [DATAID: U4 1, DATA: [[RPTID: U4 1000, VID: [A '12', A '1337']], [RPTID: U4 1001, VID: [A '1', A '2355']]]] }
+        S2F33 W
+          <L [2]
+            <U4 1 >
+            <L [2]
+              <L [2]
+                <U4 1000 >
+                <L [2]
+                  <U1 12 >
+                  <U1 1337 >
+                >
+              >
+              <L [2]
+                <U4 1001 >
+                <L [2]
+                  <U1 1 >
+                  <U1 2355 >
+                >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -754,7 +857,8 @@ class SecsS02F34(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F34(0)
-        S2F34 { B 0 }
+        S2F34
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -796,7 +900,19 @@ class SecsS02F35(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
-        S2F35 { [DATAID: U4 1, DATA: [[CEID: U4 1337, RPTID: [U4 1000, U4 1001]]]] }
+        S2F35 W
+          <L [2]
+            <U4 1 >
+            <L [1]
+              <L [2]
+                <U4 1337 >
+                <L [2]
+                  <U4 1000 >
+                  <U4 1001 >
+                >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -836,7 +952,8 @@ class SecsS02F36(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F36(0)
-        S2F36 { B 0 }
+        S2F36
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -872,7 +989,13 @@ class SecsS02F37(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F37({"CEED": True, "CEID": [1337]})
-        S2F37 { [CEED: TF True, CEID: [U4 1337]] }
+        S2F37 W
+          <L [2]
+            <BOOLEAN True >
+            <L [1]
+              <U4 1337 >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -907,7 +1030,8 @@ class SecsS02F38(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F38(0)
-        S2F38 { B 0 }
+        S2F38
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -946,7 +1070,20 @@ class SecsS02F41(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
-        S2F41 { [RCMD: A 'COMMAND', PARAMS: [[CPNAME: A 'PARAM1', CPVAL: A 'VAL1'], [CPNAME: A 'PARAM2', CPVAL: A 'VAL2']]] }
+        S2F41 W
+          <L [2]
+            <A "COMMAND">
+            <L [2]
+              <L [2]
+                <A "PARAM1">
+                <A "VAL1">
+              >
+              <L [2]
+                <A "PARAM2">
+                <A "VAL2">
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -993,7 +1130,20 @@ class SecsS02F42(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F42({"HCACK": 1, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": 2}, {"CPNAME": "PARAM2", "CPACK": 3}]})
-        S2F42 { [HCACK: B 1, PARAMS: [[CPNAME: A 'PARAM1', CPACK: B 2], [CPNAME: A 'PARAM2', CPACK: B 3]]] }
+        S2F42
+          <L [2]
+            <B 0x1>
+            <L [2]
+              <L [2]
+                <A "PARAM1">
+                <B 0x2>
+              >
+              <L [2]
+                <A "PARAM2">
+                <B 0x3>
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1027,7 +1177,7 @@ class SecsS05F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS05F00()
-        S5F0 { None }
+        S5F0
 
     :param value: function has no parameters
     :type value: None
@@ -1061,7 +1211,12 @@ class SecsS05F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS05F01({"ALCD": 1, "ALID": 100, "ALTX": "text"})
-        S5F1 { [ALCD: B 1, ALID: U4 100, ALTX: A 'text'] }
+        S5F1
+          <L [3]
+            <B 0x1>
+            <U4 100 >
+            <A "text">
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1095,7 +1250,8 @@ class SecsS05F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS05F02(0)
-        S5F02 { B 0 }
+        S5F2
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1121,7 +1277,7 @@ class SecsS06F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS06F00()
-        S6F0 { None }
+        S6F0
 
     :param value: function has no parameters
     :type value: None
@@ -1164,7 +1320,20 @@ class SecsS06F11(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(value=100)]}]})
-        S6F11 { [DATAID: U4 1, CEID: U4 1337, RPT: [[RPTID: U4 1000, V: [A 'VAR', U4 100]]]] }
+        S6F11 W
+          <L [3]
+            <U4 1 >
+            <U4 1337 >
+            <L [1]
+              <L [2]
+                <U4 1000 >
+                <L [2]
+                  <A "VAR">
+                  <U4 100 >
+                >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1205,7 +1374,8 @@ class SecsS06F12(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS06F12(0)
-        S6F12 { B 0 }
+        S6F12
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1231,7 +1401,7 @@ class SecsS07F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F00()
-        S7F0 { None }
+        S7F0
 
     :param value: function has no parameters
     :type value: None
@@ -1264,7 +1434,11 @@ class SecsS07F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F01({"PPID": "program", "LENGTH": 4})
-        S7F1 { [PPID: A 'program', LENGTH: U4 4] }
+        S7F1 W
+          <L [2]
+            <A "program">
+            <U4 4 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1297,7 +1471,8 @@ class SecsS07F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F02(0)
-        S7F2 { B 0 }
+        S7F2
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1330,7 +1505,11 @@ class SecsS07F03(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F03({"PPID": "program", "PPBODY": "data"})
-        S7F3 { [PPID: A 'program', PPBODY: B <4 bytes>] }
+        S7F3 W
+          <L [2]
+            <A "program">
+            <B 0x64 0x61 0x74 0x61>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1363,7 +1542,8 @@ class SecsS07F04(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F04(0)
-        S7F4 { B 0 }
+        S7F4
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1393,7 +1573,8 @@ class SecsS07F05(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F05("program")
-        S7F5 { A 'program' }
+        S7F5 W
+          <A "program">
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1426,7 +1607,11 @@ class SecsS07F06(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F06({"PPID": "program", "PPBODY": "data"})
-        S7F6 { [PPID: A 'program', PPBODY: B <4 bytes>] }
+        S7F6
+          <L [2]
+            <A "program">
+            <B 0x64 0x61 0x74 0x61>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1462,7 +1647,11 @@ class SecsS07F17(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F17(["program1", "program2"])
-        S7F17 { [A 'program1', A 'program2'] }
+        S7F17 W
+          <L [2]
+            <A "program1">
+            <A "program2">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1492,7 +1681,8 @@ class SecsS07F18(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F18(0)
-        S7F18 { B 0 }
+        S7F18
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1518,7 +1708,7 @@ class SecsS07F19(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F19()
-        S7F19 { None }
+        S7F19 W
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1551,7 +1741,11 @@ class SecsS07F20(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS07F20(["program1", "program2"])
-        S7F20 { [A 'program1', A 'program2'] }
+        S7F20
+          <L [2]
+            <A "program1">
+            <A "program2">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1577,7 +1771,7 @@ class SecsS09F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F00()
-        S9F0 { None }
+        S9F0
 
     :param value: function has no parameters
     :type value: None
@@ -1607,7 +1801,8 @@ class SecsS09F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F01("HEADERDATA")
-        S9F1 { B <10 bytes> }
+        S9F1
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1637,7 +1832,8 @@ class SecsS09F03(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F03("HEADERDATA")
-        S9F3 { B <10 bytes> }
+        S9F3
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1667,7 +1863,8 @@ class SecsS09F05(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F05("HEADERDATA")
-        S9F5 { B <10 bytes> }
+        S9F5
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1697,7 +1894,8 @@ class SecsS09F07(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F07("HEADERDATA")
-        S9F7 { B <10 bytes> }
+        S9F7
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1727,7 +1925,8 @@ class SecsS09F09(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F09("HEADERDATA")
-        S9F9 { B <10 bytes> }
+        S9F9
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1757,7 +1956,8 @@ class SecsS09F11(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F11("HEADERDATA")
-        S9F11 { B <10 bytes> }
+        S9F11
+          <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1790,7 +1990,11 @@ class SecsS09F13(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS09F13({"MEXP": "S01E01", "EDID": "data"})
-        S9F13 { [MEXP: A 'S01E01', EDID: A 'data'] }
+        S9F13
+          <L [2]
+            <A "S01E01">
+            <A "data">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1819,7 +2023,7 @@ class SecsS10F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS10F00()
-        S10F0 { None }
+        S10F0
 
     :param value: function has no parameters
     :type value: None
@@ -1852,7 +2056,11 @@ class SecsS10F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS10F01({"TID": 0, "TEXT": "hello?"})
-        S10F1 { [TID: B 0, TEXT: A 'hello?'] }
+        S10F1
+          <L [2]
+            <B 0x0>
+            <A "hello?">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1885,7 +2093,8 @@ class SecsS10F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS10F02(0)
-        S10F2 { B 0 }
+        S10F2
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1918,7 +2127,11 @@ class SecsS10F03(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS10F03({"TID": 0, "TEXT": "hello!"})
-        S10F3 { [TID: B 0, TEXT: A 'hello!'] }
+        S10F3
+          <L [2]
+            <B 0x0>
+            <A "hello!">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -1951,7 +2164,8 @@ class SecsS10F04(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS10F04(0)
-        S10F4 { B 0 }
+        S10F4
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1977,7 +2191,7 @@ class SecsS12F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F00()
-        S12F0 { None }
+        S12F0
 
     :param value: function has no parameters
     :type value: None
@@ -2041,7 +2255,27 @@ class SecsS12F01(SecsStreamFunction):
                 "PRDCT": 100,
                 "PRAXI": 0,
                 })
-        S12F1 { [MID: A 'materialID', IDTYP: B 0, FNLOC: U2 0, FFROT: U2 0, ORLOC: B 0, RPSEL: U1 0, REF: [I4 [1, 2], I4 [2, 3]], DUTMS: A 'unit', XDIES: U4 100, YDIES: U4 100, ROWCT: U4 10, COLCT: U4 10, NULBC: A '{x}', PRDCT: U4 100, PRAXI: B 0] }
+        S12F1 W
+          <L [15]
+            <A "materialID">
+            <B 0x0>
+            <U2 0 >
+            <U2 0 >
+            <B 0x0>
+            <U1 0 >
+            <L [2]
+              <I4 1 2 >
+              <I4 2 3 >
+            >
+            <A "unit">
+            <U4 100 >
+            <U4 100 >
+            <U4 10 >
+            <U4 10 >
+            <A "{x}">
+            <U4 100 >
+            <B 0x0>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2089,7 +2323,8 @@ class SecsS12F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F02(0)
-        S12F2 { B 0 }
+        S12F2
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -2138,7 +2373,18 @@ class SecsS12F03(SecsStreamFunction):
                 "BCEQU": [1, 3, 5, 7],
                 "NULBC": "{x}",
                 })
-        S12F3 { [MID: A 'materialID', IDTYP: B 0, MAPFT: B 0, FNLOC: U2 0, FFROT: U2 0, ORLOC: B 0, PRAXI: B 0, BCEQU: U1 [1, 3, 5, 7], NULBC: A '{x}'] }
+        S12F3 W
+          <L [9]
+            <A "materialID">
+            <B 0x0>
+            <B 0x0>
+            <U2 0 >
+            <U2 0 >
+            <B 0x0>
+            <B 0x0>
+            <U1 1 3 5 7 >
+            <A "{x}">
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2212,7 +2458,27 @@ class SecsS12F04(SecsStreamFunction):
                 "NULBC": "{x}",
                 "MLCL": 0,
                 })
-        S12F4 { [MID: A 'materialID', IDTYP: B 0, FNLOC: U2 0, ORLOC: B 0, RPSEL: U1 0, REF: [I4 [1, 2], I4 [2, 3]], DUTMS: A 'unit', XDIES: U4 100, YDIES: U4 100, ROWCT: U4 10, COLCT: U4 10, PRDCT: U4 100, BCEQU: U1 [1, 3, 5, 7], NULBC: A '{x}', MLCL: U4 0] }
+        S12F4
+          <L [15]
+            <A "materialID">
+            <B 0x0>
+            <U2 0 >
+            <B 0x0>
+            <U1 0 >
+            <L [2]
+              <I4 1 2 >
+              <I4 2 3 >
+            >
+            <A "unit">
+            <U4 100 >
+            <U4 100 >
+            <U4 10 >
+            <U4 10 >
+            <U4 100 >
+            <U1 1 3 5 7 >
+            <A "{x}">
+            <U4 0 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2265,7 +2531,13 @@ class SecsS12F05(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F05({"MID": "materialID", "IDTYP": 0, "MAPFT": 0, "MLCL": 0})
-        S12F5 { [MID: A 'materialID', IDTYP: B 0, MAPFT: B 0, MLCL: U4 0] }
+        S12F5 W
+          <L [4]
+            <A "materialID">
+            <B 0x0>
+            <B 0x0>
+            <U4 0 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2300,7 +2572,8 @@ class SecsS12F06(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F06(0)
-        S12F6 { B 0 }
+        S12F6
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -2339,7 +2612,21 @@ class SecsS12F07(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F07({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
-        S12F7 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
+        S12F7 W
+          <L [3]
+            <A "materialID">
+            <B 0x0>
+            <L [2]
+              <L [2]
+                <I4 1 2 3 >
+                <U1 1 2 3 4 >
+              >
+              <L [2]
+                <I4 4 5 6 >
+                <U1 5 6 7 8 >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2378,7 +2665,8 @@ class SecsS12F08(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F08(0)
-        S12F8 { B 0 }
+        S12F8
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -2413,7 +2701,13 @@ class SecsS12F09(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F09({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
-        S12F9 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
+        S12F9 W
+          <L [4]
+            <A "materialID">
+            <B 0x0>
+            <I2 0 1 >
+            <U1 1 2 3 4 5 6 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2448,7 +2742,8 @@ class SecsS12F10(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F10(0)
-        S12F10 { B 0 }
+        S12F10
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -2487,7 +2782,21 @@ class SecsS12F11(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F11({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
-        S12F11 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
+        S12F11 W
+          <L [3]
+            <A "materialID">
+            <B 0x0>
+            <L [2]
+              <L [2]
+                <I2 1 2 >
+                <U1 1 2 3 4 >
+              >
+              <L [2]
+                <I2 3 4 >
+                <U1 5 6 7 8 >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2526,7 +2835,8 @@ class SecsS12F12(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F12(0)
-        S12F12 { B 0 }
+        S12F12
+          <B 0x0>
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -2559,7 +2869,11 @@ class SecsS12F13(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F13({"MID": "materialID", "IDTYP": 0})
-        S12F13 { [MID: A 'materialID', IDTYP: B 0] }
+        S12F13 W
+          <L [2]
+            <A "materialID">
+            <B 0x0>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2601,7 +2915,21 @@ class SecsS12F14(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F14({"MID": "materialID", "IDTYP": 0, "DATA": [{"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
-        S12F14 { [MID: A 'materialID', IDTYP: B 0, DATA: [[RSINF: I4 [1, 2, 3], BINLT: U1 [1, 2, 3, 4]], [RSINF: I4 [4, 5, 6], BINLT: U1 [5, 6, 7, 8]]]] }
+        S12F14
+          <L [3]
+            <A "materialID">
+            <B 0x0>
+            <L [2]
+              <L [2]
+                <I4 1 2 3 >
+                <U1 1 2 3 4 >
+              >
+              <L [2]
+                <I4 4 5 6 >
+                <U1 5 6 7 8 >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2643,7 +2971,11 @@ class SecsS12F15(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F15({"MID": "materialID", "IDTYP": 0})
-        S12F15 { [MID: A 'materialID', IDTYP: B 0] }
+        S12F15 W
+          <L [2]
+            <A "materialID">
+            <B 0x0>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2681,7 +3013,13 @@ class SecsS12F16(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F16({"MID": "materialID", "IDTYP": 0, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
-        S12F16 { [MID: A 'materialID', IDTYP: B 0, STRP: I2 [0, 1], BINLT: U2 [1, 2, 3, 4, 5, 6]] }
+        S12F16
+          <L [4]
+            <A "materialID">
+            <B 0x0>
+            <I2 0 1 >
+            <U1 1 2 3 4 5 6 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2720,7 +3058,12 @@ class SecsS12F17(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F17({"MID": "materialID", "IDTYP": 0, "SDBIN": 1})
-        S12F17 { [MID: A 'materialID', IDTYP: B 0, SDBIN: B 1] }
+        S12F17 W
+          <L [3]
+            <A "materialID">
+            <B 0x0>
+            <B 0x1>
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2763,7 +3106,21 @@ class SecsS12F18(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F18({"MID": "materialID", "IDTYP": 0, "DATA": [{"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
-        S12F18 { [MID: A 'materialID', IDTYP: B 0, DATA: [[XYPOS: I2 [1, 2], BINLT: U1 [1, 2, 3, 4]], [XYPOS: I2 [3, 4], BINLT: U1 [5, 6, 7, 8]]]] }
+        S12F18
+          <L [3]
+            <A "materialID">
+            <B 0x0>
+            <L [2]
+              <L [2]
+                <I2 1 2 >
+                <U1 1 2 3 4 >
+              >
+              <L [2]
+                <I2 3 4 >
+                <U1 5 6 7 8 >
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2805,7 +3162,11 @@ class SecsS12F19(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS12F19({"MAPER": 1, "DATLC": 0})
-        S12F19 { [MAPER: B 1, DATLC: U1 0] }
+        S12F19
+          <L [2]
+            <B 0x1>
+            <U1 0 >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2834,7 +3195,7 @@ class SecsS14F00(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS14F00()
-        S14F0 { None }
+        S14F0
 
     :param value: function has no parameters
     :type value: None
@@ -2883,7 +3244,22 @@ class SecsS14F01(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS14F01({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], "FILTER": [], "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']})
-        S14F1 { [OBJSPEC: A '', OBJTYPE: A 'StripMap', OBJID: [A 'MAP001'], FILTER: [], ATTRID: [A 'OriginLocation', A 'Rows', A 'Columns', A 'CellStatus', A 'LotID']] }
+        S14F1 W
+          <L [5]
+            <A>
+            <A "StripMap">
+            <L [1]
+              <A "MAP001">
+            >
+            <L>
+            <L [5]
+              <A "OriginLocation">
+              <A "Rows">
+              <A "Columns">
+              <A "CellStatus">
+              <A "LotID">
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -2976,7 +3352,40 @@ class SecsS14F02(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS14F02({"DATA": [{"OBJID": "MAP001", "ATTRIBS": [{"ATTRID": "OriginLocation", "ATTRDATA": "0"},{"ATTRID": "Rows", "ATTRDATA": 4},{"ATTRID": "Columns", "ATTRDATA": 4},{"ATTRID": "CellStatus", "ATTRDATA": 6},{"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}], "ERRORS": {"OBJACK": 0}})
-        S14F2 { [DATA: [[OBJID: A 'MAP001', ATTRIBS: [[ATTRID: A 'OriginLocation', ATTRDATA: A '0'], [ATTRID: A 'Rows', ATTRDATA: A '4'], [ATTRID: A 'Columns', ATTRDATA: A '4'], [ATTRID: A 'CellStatus', ATTRDATA: A '6'], [ATTRID: A 'LotID', ATTRDATA: A 'LOT001']]]], ERRORS: [OBJACK: U1 0, ERROR: []]] }
+        S14F2
+          <L [2]
+            <L [1]
+              <L [2]
+                <A "MAP001">
+                <L [5]
+                  <L [2]
+                    <A "OriginLocation">
+                    <A "0">
+                  >
+                  <L [2]
+                    <A "Rows">
+                    <A "4">
+                  >
+                  <L [2]
+                    <A "Columns">
+                    <A "4">
+                  >
+                  <L [2]
+                    <A "CellStatus">
+                    <A "6">
+                  >
+                  <L [2]
+                    <A "LotID">
+                    <A "LOT001">
+                  >
+                >
+              >
+            >
+            <L [2]
+              <U1 0 >
+              <L>
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -3052,7 +3461,20 @@ class SecsS14F03(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], "ATTRIBS": [ {"ATTRID": "CellStatus", "ATTRDATA": 3} ] })
-        S14F3 { [OBJSPEC: A '', OBJTYPE: A 'StripMap', OBJID: [A 'MAP001'], ATTRIBS: [[ATTRID: A 'CellStatus', ATTRDATA: A '3']]] }
+        S14F3 W
+          <L [4]
+            <A>
+            <A "StripMap">
+            <L [1]
+              <A "MAP001">
+            >
+            <L [1]
+              <L [2]
+                <A "CellStatus">
+                <A "3">
+              >
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -3128,7 +3550,40 @@ class SecsS14F04(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS14F04({"DATA": [{"OBJID": "MAP001", "ATTRIBS": [{"ATTRID": "OriginLocation", "ATTRDATA": "0"},{"ATTRID": "Rows", "ATTRDATA": 4},{"ATTRID": "Columns", "ATTRDATA": 4},{"ATTRID": "CellStatus", "ATTRDATA": 6},{"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}], "ERRORS": {"OBJACK": 0}})
-        S14F4 { [DATA: [[OBJID: A 'MAP001', ATTRIBS: [[ATTRID: A 'OriginLocation', ATTRDATA: A '0'], [ATTRID: A 'Rows', ATTRDATA: A '4'], [ATTRID: A 'Columns', ATTRDATA: A '4'], [ATTRID: A 'CellStatus', ATTRDATA: A '6'], [ATTRID: A 'LotID', ATTRDATA: A 'LOT001']]]], ERRORS: [OBJACK: U1 0, ERROR: []]] }
+        S14F4
+          <L [2]
+            <L [1]
+              <L [2]
+                <A "MAP001">
+                <L [5]
+                  <L [2]
+                    <A "OriginLocation">
+                    <A "0">
+                  >
+                  <L [2]
+                    <A "Rows">
+                    <A "4">
+                  >
+                  <L [2]
+                    <A "Columns">
+                    <A "4">
+                  >
+                  <L [2]
+                    <A "CellStatus">
+                    <A "6">
+                  >
+                  <L [2]
+                    <A "LotID">
+                    <A "LOT001">
+                  >
+                >
+              >
+            >
+            <L [2]
+              <U1 0 >
+              <L>
+            >
+          >
 
     :param value: parameters for this function (see example)
     :type value: dict

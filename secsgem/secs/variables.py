@@ -19,6 +19,8 @@ import struct
 
 from collections import OrderedDict
 
+from secsgem.common import indent_block, printable_chars
+
 DEBUG_DECODE = False
 DEBUG_DECODE_DEPTH = 0
 
@@ -161,10 +163,10 @@ class SecsVarDynamic(SecsVar):
             >>> var = secsgem.SecsVarDynamic([secsgem.SecsVarString, secsgem.SecsVarU1])
             >>> var.set(10)
             >>> var
-            A '10'
+            <A "10">
             >>> var.set(secsgem.SecsVarU1(value=10))
             >>> var
-            U1 10
+            <U1 10 >
 
         If no type is provided the default type is used which might not be the expected type.
 
@@ -275,16 +277,15 @@ class SecsVarList(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        if len(self.data) == 0:
+            return "<L>"
+
         data = ""
-        first = True
 
         for field_name in self.data:
-            if not first:
-                data += ", "
-            data += "{}: {}".format(field_name, self.data[field_name].__repr__())
-            first = False
+            data += "{}\n".format(indent_block(self.data[field_name].__repr__()))
 
-        return "[{}]".format(data)
+        return "<L [{}]\n{}\n>".format(len(self.data), data)
 
     def __len__(self):
         return len(self.data)
@@ -406,16 +407,15 @@ class SecsVarArray(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        if len(self.data) == 0:
+            return "<L>"
+
         data = ""
-        first = True
 
         for value in self.data:
-            if not first:
-                data += ", "
-            data += "{}".format(value.__repr__())
-            first = False
+            data += "{}\n".format(indent_block(value.__repr__()))
 
-        return "[{}]".format(data)
+        return "<L [{}]\n{}\n>".format(len(self.data), data)
 
     def __len__(self):
         return len(self.data)
@@ -543,10 +543,15 @@ class SecsVarBinary(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        if len(self.value) == 1:
-            return "B {}".format(self.get())
-        else:
-            return "B <{} bytes>".format(len(self.value))
+        if len(self.value) == 0:
+            return "<B>"
+
+        data = ""
+
+        for c in self.value:
+            data += "{} ".format(hex(ord(c)))
+
+        return "<B {}>".format(data.strip())
 
     def __len__(self):
         return len(self.value)
@@ -566,13 +571,16 @@ class SecsVarBinary(SecsVar):
         if value is None:
             return
 
-        if not isinstance(value, str):
+        if not isinstance(value, str) and not isinstance(value, list):
             value = chr(value)
 
         if 0 <= self.length != len(value):
             raise ValueError("Value longer than {} chars ({} chars)".format(self.length, len(value)))
 
-        self.value = value
+        if isinstance(value, list):
+            self.value = ''.join(chr(e) for e in value)
+        else:
+            self.value = value
 
     def get(self):
         """Return the internal value
@@ -662,7 +670,15 @@ class SecsVarBoolean(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "TF {}".format(self.get())
+        if len(self.value) == 0:
+            return "<BOOLEAN>"
+
+        data = ""
+
+        for boolean in self.value:
+            data += "{} ".format(boolean)
+
+        return "<BOOLEAN {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -776,7 +792,30 @@ class SecsVarString(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "A '{}'".format(self.value)
+        if len(self.value) == 0:
+            return "<A>"
+
+        data = ""
+        last_char_printable = False
+
+        for c in self.value:
+            if c in printable_chars():
+                if last_char_printable:
+                    data += "{}".format(c)
+                else:
+                    data += ' "{}'.format(c)
+            else:
+                if last_char_printable:
+                    data += '" {}'.format(hex(ord(c)))
+                else:
+                    data += ' {}'.format(hex(ord(c)))
+
+            last_char_printable = c in printable_chars()
+
+        if last_char_printable:
+            data += '"'
+
+        return "<A{}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -868,7 +907,15 @@ class SecsVarI8(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "I8 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<I8>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<I8 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -986,7 +1033,15 @@ class SecsVarI1(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "I1 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<I1>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<I1 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1104,7 +1159,15 @@ class SecsVarI2(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "I2 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<I2>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<I2 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1222,7 +1285,15 @@ class SecsVarI4(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "I4 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<I4>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<I4 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1340,7 +1411,15 @@ class SecsVarF8(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "F8 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<F8>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<F8 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1458,7 +1537,15 @@ class SecsVarF4(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "F4 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<F4>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<F4 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1576,7 +1663,15 @@ class SecsVarU8(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "U8 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<U8>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<U8 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1694,7 +1789,15 @@ class SecsVarU1(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "U1 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<U1>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<U1 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1812,7 +1915,15 @@ class SecsVarU2(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "U2 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<U2>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<U2 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
@@ -1930,7 +2041,15 @@ class SecsVarU4(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        return "U4 {}".format(self.get())
+        if len(self.value) == 0:
+            return "<U4>"
+
+        data = ""
+
+        for item in self.value:
+            data += "{} ".format(item)
+
+        return "<U4 {}>".format(data)
 
     def __len__(self):
         return len(self.value)
