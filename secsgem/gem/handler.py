@@ -45,6 +45,9 @@ class GemHandler(SecsHandler):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         SecsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
+        self.MDLN = "secsgem"  #: model number returned by S01E13/14
+        self.SOFTREV = "0.0.3"  #: software version returned by S01E13/14
+
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         self.isHost = True
@@ -129,9 +132,9 @@ class GemHandler(SecsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": 0, "DATA": []}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": []}), packet.header.system)
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": 0, "DATA": ["secsgem", "0.0.3"]}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": [self.MDLN, self.SOFTREV]}), packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -174,7 +177,7 @@ class GemHandler(SecsHandler):
         if self.isHost:
             self.send_stream_function(self.stream_function(1, 13)())
         else:
-            self.send_stream_function(self.stream_function(1, 13)(["secsgem", "0.0.3"]))
+            self.send_stream_function(self.stream_function(1, 13)([self.MDLN, self.SOFTREV]))
 
     def _on_state_wait_delay(self, _):
         """Connection state model changed to state WAIT_DELAY
@@ -227,6 +230,16 @@ class GemHandler(SecsHandler):
 
         # update communication state
         self.communicationState.communicationfail()
+
+    def on_commack_requested(self):
+        """Get the acknowledgement code for the connection request
+
+        override to accept or deny connection request
+
+        :returns: 0 when connection is accepted, 1 when connection is denied
+        :rtype: integer
+        """
+        return 0
 
     def send_remote_command(self, rcmd, params):
         """Send a remote command
@@ -333,4 +346,4 @@ class GemHandler(SecsHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        handler.send_response(self.stream_function(1, 14)({"COMMACK": 0}), packet.header.system)
+        handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested()}), packet.header.system)
