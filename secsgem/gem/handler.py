@@ -241,24 +241,6 @@ class GemHandler(SecsHandler):
         """
         return 0
 
-    def send_remote_command(self, rcmd, params):
-        """Send a remote command
-
-        :param rcmd: Name of command
-        :type rcmd: string
-        :param params: DV IDs to add for collection event
-        :type params: list of strings
-        """
-        self.logger.info("Send RCMD {0}".format(rcmd))
-
-        s2f41 = self.stream_function(2, 41)()
-        s2f41.RCMD = rcmd
-        for param in params:
-            s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
-
-        # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(s2f41))
-
     def send_process_program(self, ppid, ppbody):
         """Send a process program
 
@@ -283,25 +265,6 @@ class GemHandler(SecsHandler):
         # send remote command
         s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
         return s7f6.PPID, s7f6.PPBODY
-
-    def delete_process_programs(self, ppids):
-        """Delete a list of process program
-
-        :param ppids: Process programs to delete
-        :type ppids: list of strings
-        """
-        self.logger.info("Delete process programs {0}".format(ppids))
-
-        # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).ACKC7
-
-    def get_process_program_list(self):
-        """Get process program list
-        """
-        self.logger.info("Get process program list")
-
-        # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
     def waitfor_communicating(self, timeout=None):
         """Wait until connection gets into communicating state. Returns immediately if state is communicating
