@@ -802,15 +802,15 @@ class SecsVarString(SecsVar):
         for c in self.value:
             if c in printables:
                 if last_char_printable:
-                    data += "{}".format(c)
+                    data += c
                 else:
-                    data += ' "{}'.format(c)
+                    data += ' "' + c
                 last_char_printable = True
             else:
                 if last_char_printable:
-                    data += '" {}'.format(hex(ord(c)))
+                    data += '" ' + hex(ord(c))
                 else:
-                    data += ' {}'.format(hex(ord(c)))
+                    data += ' ' + hex(ord(c))
                 last_char_printable = False
 
         if last_char_printable:
