@@ -562,17 +562,30 @@ class HsmsMultiPassiveServer(object):
 
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
+        new_connection = None
+
+        # check if connection available with source ip
         if source_ip not in self.connections:
+            named_connection_found = False
+
+            # check all connections if connection with hostname can be resolved
+            for connectionID in self.connections:
+                connection = self.connections[connectionID]
+                if source_ip == socket.gethostbyname(connection.remoteAddress):
+                    new_connection = connection
+                    named_connection_found = True
+
+            if not named_connection_found:
+                sock.close()
+                return
+        else:
+            new_connection = self.connections[source_ip]
+
+        if not new_connection.enabled:
             sock.close()
             return
 
-        connection = self.connections[source_ip]
-
-        if not connection.enabled:
-            sock.close()
-            return
-
-        connection.on_connected(sock, source_ip)
+        new_connection.on_connected(sock, source_ip)
 
     def _listen_thread(self):
         """Thread listening for incoming connections
