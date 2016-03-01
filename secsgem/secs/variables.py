@@ -19,7 +19,7 @@ import struct
 
 from collections import OrderedDict
 
-from secsgem.common import indent_block, printable_chars
+from secsgem.common import indent_block
 
 DEBUG_DECODE = False
 DEBUG_DECODE_DEPTH = 0
@@ -795,22 +795,23 @@ class SecsVarString(SecsVar):
         if len(self.value) == 0:
             return "<A>"
 
+        printables = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ "
         data = ""
         last_char_printable = False
 
         for c in self.value:
-            if c in printable_chars():
+            if c in printables:
                 if last_char_printable:
                     data += "{}".format(c)
                 else:
                     data += ' "{}'.format(c)
+                last_char_printable = True
             else:
                 if last_char_printable:
                     data += '" {}'.format(hex(ord(c)))
                 else:
                     data += ' {}'.format(hex(ord(c)))
-
-            last_char_printable = c in printable_chars()
+                last_char_printable = False
 
         if last_char_printable:
             data += '"'

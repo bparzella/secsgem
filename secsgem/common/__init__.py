@@ -94,15 +94,6 @@ def indent_block(block, spaces=2):
     lines = map(lambda line, spc=spaces: indent_line(line, spc), lines)
     return '\n'.join(lines)
 
-def printable_chars():
-    printables = []
-    printables.extend(string.printable)
-    printables.remove('\n')
-    printables.remove('\r')
-    printables.remove('\t')
-
-    return printables
-
 
 class StreamFunctionCallbackHandler(object):
     """Base class for all connection classes. Provides functionality for registering and unregistering callbacks for streams and functions."""
