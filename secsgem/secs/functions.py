@@ -173,7 +173,15 @@ class SecsS01F03(SecsStreamFunction):
     _stream = 1
     _function = 3
 
-    _formatDescriptor = SecsVarArray(SecsVarU4(1))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
+                                                     SecsVarU1,
+                                                     SecsVarU2,
+                                                     SecsVarU4,
+                                                     SecsVarU8,
+                                                     SecsVarI1,
+                                                     SecsVarI2,
+                                                     SecsVarI4,
+                                                     SecsVarI8]))
 
     _toHost = False
     _toEquipment = True
@@ -250,7 +258,15 @@ class SecsS01F11(SecsStreamFunction):
     _stream = 1
     _function = 11
 
-    _formatDescriptor = SecsVarArray(SecsVarU4(1))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
+                                                     SecsVarU1,
+                                                     SecsVarU2,
+                                                     SecsVarU4,
+                                                     SecsVarU8,
+                                                     SecsVarI1,
+                                                     SecsVarI2,
+                                                     SecsVarI4,
+                                                     SecsVarI8]))
 
     _toHost = False
     _toEquipment = True
@@ -300,7 +316,15 @@ class SecsS01F12(SecsStreamFunction):
     _function = 12
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("SVID", SecsVarU4(1)),
+        ("SVID", SecsVarDynamic([SecsVarString,
+                                 SecsVarU1,
+                                 SecsVarU2,
+                                 SecsVarU4,
+                                 SecsVarU8,
+                                 SecsVarI1,
+                                 SecsVarI2,
+                                 SecsVarI4,
+                                 SecsVarI8])),
         ("SVNAME", SecsVarString()),
         ("UNITS", SecsVarString()),
     )), 3))
@@ -473,7 +497,15 @@ class SecsS02F13(SecsStreamFunction):
     _stream = 2
     _function = 13
 
-    _formatDescriptor = SecsVarArray(SecsVarU4(1))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
+                                                     SecsVarU1,
+                                                     SecsVarU2,
+                                                     SecsVarU4,
+                                                     SecsVarU8,
+                                                     SecsVarI1,
+                                                     SecsVarI2,
+                                                     SecsVarI4,
+                                                     SecsVarI8]))
 
     _toHost = False
     _toEquipment = True
@@ -522,7 +554,8 @@ class SecsS02F14(SecsStreamFunction):
                                                      SecsVarI1,
                                                      SecsVarI2,
                                                      SecsVarI4,
-                                                     SecsVarI8]))
+                                                     SecsVarI8,
+                                                     SecsVarArray]))
 
     _toHost = True
     _toEquipment = False
@@ -569,7 +602,15 @@ class SecsS02F15(SecsStreamFunction):
     _function = 15
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("ECID", SecsVarU4(1)),
+        ("ECID", SecsVarDynamic([SecsVarString,
+                                 SecsVarU1,
+                                 SecsVarU2,
+                                 SecsVarU4,
+                                 SecsVarU8,
+                                 SecsVarI1,
+                                 SecsVarI2,
+                                 SecsVarI4,
+                                 SecsVarI8])),
         ("ECV", SecsVarDynamic([SecsVarString,
                                 SecsVarBinary,
                                 SecsVarBoolean,
@@ -653,7 +694,15 @@ class SecsS02F29(SecsStreamFunction):
     _stream = 2
     _function = 29
 
-    _formatDescriptor = SecsVarArray(SecsVarU4(1))
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
+                                                     SecsVarU1,
+                                                     SecsVarU2,
+                                                     SecsVarU4,
+                                                     SecsVarU8,
+                                                     SecsVarI1,
+                                                     SecsVarI2,
+                                                     SecsVarI4,
+                                                     SecsVarI8]))
 
     _toHost = False
     _toEquipment = True
@@ -712,7 +761,15 @@ class SecsS02F30(SecsStreamFunction):
     _function = 30
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("ECID", SecsVarU4(1)),
+        ("ECID", SecsVarDynamic([SecsVarString,
+                                 SecsVarU1,
+                                 SecsVarU2,
+                                 SecsVarU4,
+                                 SecsVarU8,
+                                 SecsVarI1,
+                                 SecsVarI2,
+                                 SecsVarI4,
+                                 SecsVarI8])),
         ("ECNAME", SecsVarString()),
         ("ECMIN", SecsVarDynamic([SecsVarString,
                                   SecsVarBinary,

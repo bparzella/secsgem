@@ -109,6 +109,9 @@ class SecsStreamFunction(object):
     def __setitem__(self, key, item):
         self.format[key] = item
 
+    def __len__(self):
+        return len(self.format)
+
     def append(self, data):
         """Append data to list, if stream/function parameter is a list
 
