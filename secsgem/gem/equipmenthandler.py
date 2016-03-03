@@ -143,15 +143,9 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 33, self.s02f33_handler)
         self.register_callback(2, 37, self.s02f37_handler)
 
-        self._status_variables = {
-            10: StatusVariable(10, "SV 10", "mm", SecsVarU4),
-            "test": StatusVariable("test", "SV test", "deg", SecsVarString),
-        }
+        self._status_variables = {}
 
-        self._equipment_constants = {
-            10: EquipmentConstant(10, "EC 10", 1, 100, 5, "mm", SecsVarU4),
-            "test": EquipmentConstant("test", "EC test", "A", "Z", "DEF", "deg", SecsVarString),
-        }
+        self._equipment_constants = {}
 
     def on_sv_value_request(self, svid, sv):
         """Get the status variable value depending on its configuation.
@@ -193,7 +187,7 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.SecsVar`
         """
-        ec.value = value.get()
+        ec.value = value
 
     def _get_sv_value(self, sv):
         """Get the status variable value depending on its configuation
@@ -232,7 +226,7 @@ class GemEquipmentHandler(GemHandler):
         if ec.use_callback:
             self.on_ec_value_update(ec.id_type(value=ec.ecid), ec, value)
         else:
-            ec.value = value.get()
+            ec.value = value
 
     def s01f03_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 3, Equipment status request
@@ -336,7 +330,7 @@ class GemEquipmentHandler(GemHandler):
             if ec.ECID not in self._equipment_constants:
                 eac = 1
             else:
-                self._set_ec_value(ec.ECID, ec.ECV)
+                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV)
 
         handler.send_response(self.stream_function(2, 16)(eac), packet.header.system)
 
