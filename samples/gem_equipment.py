@@ -23,6 +23,9 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
+        self.MDLN = "gemequp"
+        self.SOFTREV = "1.0.0"
+
         self.sv1 = 123
         self.sv2 = "sample sv"
         self.status_variables.update({
