@@ -16,7 +16,10 @@
 """Handler for GEM equipment."""
 
 from secsgem.gem.handler import GemHandler
-from secsgem.secs.variables import SecsVarString, SecsVarU4, SecsVarArray
+from secsgem.secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, SecsVarI4
+
+from datetime import datetime
+from dateutil.tz import tzlocal
 
 class StatusVariable:
     """Status variable definition
@@ -143,9 +146,15 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 33, self.s02f33_handler)
         self.register_callback(2, 37, self.s02f37_handler)
 
-        self._status_variables = {}
+        self._time_format = 1
+        self._status_variables = {
+            "CLOCK": StatusVariable("CLOCK", "CLOCK", "", SecsVarString),
+        }
 
-        self._equipment_constants = {}
+        self._equipment_constants = {
+            "EstablishCommunicationsTimeout": EquipmentConstant("EstablishCommunicationsTimeout", "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
+            "TimeFormat": EquipmentConstant("TimeFormat", "TimeFormat", 0, 2, 1, "", SecsVarI4),
+        }
 
     @property
     def status_variables(self):
@@ -207,6 +216,20 @@ class GemEquipmentHandler(GemHandler):
         """
         ec.value = value
 
+    def _get_clock(self):
+        """Returns the clock depending on configured time format
+
+        :returns: time code
+        :rtype: string
+        """
+        now = datetime.now(tzlocal())
+        if self._time_format == 0:
+            return now.strftime("%y%m%d%H%M%S")
+        elif self._time_format == 2:
+            return now.isoformat()
+        else:
+            return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
+
     def _get_sv_value(self, sv):
         """Get the status variable value depending on its configuation
 
@@ -215,6 +238,9 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
+        if sv.svid == "CLOCK":
+            return sv.value_type(value=self._get_clock())
+
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(value=sv.svid), sv)
         else:
@@ -228,6 +254,11 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
+        if ec.ecid == "EstablishCommunicationsTimeout":
+            return ec.value_type(value=self.establishCommunicationTimeout)
+        if ec.ecid == "TimeFormat":
+            return ec.value_type(value=self._time_format)
+
         if ec.use_callback:
             return self.on_ec_value_request(ec.id_type(value=ec.ecid), ec)
         else:
@@ -241,6 +272,11 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.SecsVar`
         """
+        if ec.ecid == "EstablishCommunicationsTimeout":
+            self.establishCommunicationTimeout = value
+        if ec.ecid == "TimeFormat":
+            self._time_format = value
+
         if ec.use_callback:
             self.on_ec_value_update(ec.id_type(value=ec.ecid), ec, value)
         else:

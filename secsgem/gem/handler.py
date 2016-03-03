@@ -83,7 +83,7 @@ class GemHandler(SecsHandler):
 
         self.waitCRATimer = None
         self.commDelayTimer = None
-        self.commDelayTimeout = 10
+        self.establishCommunicationTimeout = 10
 
         self.reportIDCounter = 1000
 
@@ -99,7 +99,7 @@ class GemHandler(SecsHandler):
         :rtype: dict
         """
         data = SecsHandler._serialize_data(self)
-        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.commDelayTimeout, 'reportIDCounter': self.reportIDCounter})
+        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.establishCommunicationTimeout, 'reportIDCounter': self.reportIDCounter})
         return data
 
     def enable(self):
@@ -187,7 +187,7 @@ class GemHandler(SecsHandler):
         """
         self.logger.debug("connectionState -> WAIT_DELAY")
 
-        self.commDelayTimer = threading.Timer(self.commDelayTimeout, self._on_wait_comm_delay_timeout)
+        self.commDelayTimer = threading.Timer(self.establishCommunicationTimeout, self._on_wait_comm_delay_timeout)
         self.commDelayTimer.start()
 
     def _on_state_leave_wait_cra(self, _):
