@@ -1,7 +1,7 @@
 #####################################################################
 # gem_equipment.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2016, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,14 +25,14 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
 
         self.sv1 = 123
         self.sv2 = "sample sv"
-        self._status_variables.update({
+        self.status_variables.update({
             1: secsgem.StatusVariable(1, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4),
             "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString),
         })
 
         self.ec1 = 321
         self.ec2 = "sample ec"
-        self._equipment_constants.update({
+        self.equipment_constants.update({
             2: secsgem.EquipmentConstant(2, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4),
             "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.SecsVarString),
         })

@@ -147,6 +147,24 @@ class GemEquipmentHandler(GemHandler):
 
         self._equipment_constants = {}
 
+    @property
+    def status_variables(self):
+        """The list of the status variables
+
+        :returns: Status variable list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.StatusVariables`
+        """
+        return self._status_variables
+
+    @property
+    def equipment_constants(self):
+        """The list of the equipments contstants
+
+        :returns: Equipment constant list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        """
+        return self._equipment_constants
+
     def on_sv_value_request(self, svid, sv):
         """Get the status variable value depending on its configuation.
 
