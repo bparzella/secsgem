@@ -21,6 +21,11 @@ from secsgem.secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsV
 from datetime import datetime
 from dateutil.tz import tzlocal
 
+ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
+ECID_TIME_FORMAT = 2
+
+SVID_CLOCK = 1
+
 class StatusVariable:
     """Status variable definition
 
@@ -148,12 +153,12 @@ class GemEquipmentHandler(GemHandler):
 
         self._time_format = 1
         self._status_variables = {
-            "CLOCK": StatusVariable("CLOCK", "CLOCK", "", SecsVarString),
+            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
         }
 
         self._equipment_constants = {
-            "EstablishCommunicationsTimeout": EquipmentConstant("EstablishCommunicationsTimeout", "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
-            "TimeFormat": EquipmentConstant("TimeFormat", "TimeFormat", 0, 2, 1, "", SecsVarI4),
+            ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
+            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
         }
 
     @property
@@ -238,7 +243,7 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
-        if sv.svid == "CLOCK":
+        if sv.svid == SVID_CLOCK:
             return sv.value_type(value=self._get_clock())
 
         if sv.use_callback:
@@ -254,9 +259,9 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
-        if ec.ecid == "EstablishCommunicationsTimeout":
+        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             return ec.value_type(value=self.establishCommunicationTimeout)
-        if ec.ecid == "TimeFormat":
+        if ec.ecid == ECID_TIME_FORMAT:
             return ec.value_type(value=self._time_format)
 
         if ec.use_callback:
@@ -272,9 +277,9 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.SecsVar`
         """
-        if ec.ecid == "EstablishCommunicationsTimeout":
+        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             self.establishCommunicationTimeout = value
-        if ec.ecid == "TimeFormat":
+        if ec.ecid == ECID_TIME_FORMAT:
             self._time_format = value
 
         if ec.use_callback:

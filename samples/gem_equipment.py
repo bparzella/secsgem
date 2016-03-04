@@ -28,20 +28,22 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
 
         self.sv1 = 123
         self.sv2 = "sample sv"
+
         self.status_variables.update({
-            1: secsgem.StatusVariable(1, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4),
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4),
             "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString),
         })
 
         self.ec1 = 321
         self.ec2 = "sample ec"
+
         self.equipment_constants.update({
-            2: secsgem.EquipmentConstant(2, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4),
+            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4),
             "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.SecsVarString),
         })
 
     def on_sv_value_request(self, svid, sv):
-        if sv.svid == 1:
+        if sv.svid == 10:
             return sv.value_type(value=self.sv1)
         elif sv.svid == "SV2":
             return sv.value_type(value=self.sv2)
@@ -49,7 +51,7 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
         return []
 
     def on_ec_value_request(self, ecid, ec):
-        if ec.ecid == 2:
+        if ec.ecid == 20:
             return ec.value_type(value=self.ec1)
         elif ec.ecid == "EC2":
             return ec.value_type(value=self.ec2)
