@@ -385,7 +385,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         if not self.connection:
             return None
 
-        self.send_and_waitfor_response(self.stream_function(1, 1)())
+        return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
     def stream_function(self, stream, function):
         """Get class for stream and function
