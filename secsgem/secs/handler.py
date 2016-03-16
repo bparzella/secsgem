@@ -186,13 +186,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :param packet: received data packet
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        message = self.secs_decode(packet)
-
-        if message is None:
-            self.logger.info("< %s", packet)
-        else:
-            self.logger.info("< %s\n%s", packet, message)
-
         # check if callbacks available for this stream and function
         callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
         if callback_index in self.callbacks:
@@ -423,8 +416,8 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, self.secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
+        # self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, self.secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
         function = self.secsStreamsFunctions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
-        self.logger.debug("decoded {}".format(function))
+        # self.logger.debug("decoded {}".format(function))
         return function

@@ -273,10 +273,21 @@ class HsmsHandler(EventProducer):
 
                 # what to do if no sender for request waiting?
         else:
-            if not self.connectionState.isstate("SELECTED"):
+            if hasattr(self, 'secs_decode') and callable(getattr(self, 'secs_decode')):
+                message = self.secs_decode(packet)
+                if message is None:
+                    self.logger.info("< %s", packet)
+                else:
+                    self.logger.info("< %s\n%s", packet, message)
+            else:
                 self.logger.info("< %s", packet)
+
+            if not self.connectionState.isstate("SELECTED"):
                 self.logger.warning("received message when not selected")
-                self.connection.send_packet(HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4)))
+
+                out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4))
+                self.logger.info("> %s\n  %s", out_packet, hsmsSTypes[out_packet.header.sType])
+                self.connection.send_packet(out_packet)
 
                 return True
 
@@ -289,7 +300,7 @@ class HsmsHandler(EventProducer):
                 self._on_hsms_packet_received(packet)
             # just log if nobody is interested
             else:
-                self.logger.info("< %s", packet)
+                self.logger.warning("packet unhandled")
 
     def _get_queue_for_system(self, system_id):
         """Creates a new queue to receive responses for a certain system
@@ -333,6 +344,12 @@ class HsmsHandler(EventProducer):
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
+
+        if packet is None:
+            self.logger.info("> %s", out_packet)
+        else:
+            self.logger.info("> %s\n%s", out_packet, packet)
+
         self.connection.send_packet(out_packet)
 
     def send_and_waitfor_response(self, packet):
@@ -348,6 +365,12 @@ class HsmsHandler(EventProducer):
         response_queue = self._get_queue_for_system(system_id)
 
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, self.sessionID), packet.encode())
+
+        if packet is None:
+            self.logger.info("> %s", out_packet)
+        else:
+            self.logger.info("> %s\n%s", out_packet, packet)
+
         self.connection.send_packet(out_packet)
 
         try:
@@ -368,6 +391,12 @@ class HsmsHandler(EventProducer):
         :type system: integer
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False, self.sessionID), function.encode())
+
+        if function is None:
+            self.logger.info("> %s", out_packet)
+        else:
+            self.logger.info("> %s\n%s", out_packet, function)
+
         self.connection.send_packet(out_packet)
 
     def send_select_req(self):
@@ -381,6 +410,7 @@ class HsmsHandler(EventProducer):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsSelectReqHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
         try:
@@ -399,6 +429,7 @@ class HsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsSelectRspHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
     def send_linktest_req(self):
@@ -412,6 +443,7 @@ class HsmsHandler(EventProducer):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
         try:
@@ -430,6 +462,7 @@ class HsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
     def send_deselect_req(self):
@@ -443,6 +476,7 @@ class HsmsHandler(EventProducer):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
         try:
@@ -461,6 +495,7 @@ class HsmsHandler(EventProducer):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
     def send_reject_rsp(self, system_id, s_type, reason):
@@ -474,6 +509,7 @@ class HsmsHandler(EventProducer):
         :type reason: integer
         """
         packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
     def send_separate_req(self):
@@ -481,6 +517,7 @@ class HsmsHandler(EventProducer):
         system_id = self.get_next_system_counter()
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
+        self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
         self.connection.send_packet(packet)
 
         return system_id

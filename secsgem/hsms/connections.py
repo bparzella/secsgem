@@ -164,8 +164,6 @@ class HsmsConnection(object):
         :param packet: encoded data to be transmitted
         :type packet: string / byte array
         """
-        self.logger.info("> %s", packet)
-
         # encode the packet
         data = packet.encode()
 

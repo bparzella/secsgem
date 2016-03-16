@@ -122,13 +122,6 @@ class GemHandler(SecsHandler):
         :param packet: received data packet
         :type packet: :class:`secsgem.HsmsPacket`
         """
-        message = self.secs_decode(packet)
-
-        if message is None:
-            self.logger.info("< %s", packet)
-        else:
-            self.logger.info("< %s\n%s", packet, message)
-
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
