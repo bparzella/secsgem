@@ -179,6 +179,12 @@ class SecsVarDynamic(SecsVar):
 
             self.value = value
         else:
+            matched_type = self._match_type(value)
+
+            if matched_type is None:
+                raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'.format(value, value.__class__.__name__, self.types))
+
+            self.value = matched_type(self.length)
             self.value.set(value)
 
     def get(self):
@@ -187,7 +193,10 @@ class SecsVarDynamic(SecsVar):
         :returns: internal value
         :rtype: various
         """
-        return self.value.get()
+        if self.value:
+            return self.value.get()
+        else:
+            return None
 
     def encode(self):
         """Encode the value to secs data
@@ -241,6 +250,149 @@ class SecsVarDynamic(SecsVar):
             raise ValueError("Unsupported format {} for this instance of SecsVarDynamic, allowed {}".format(format_code, self.types))
 
         return self.value.decode(data, start)
+
+    def _match_type(self, value):
+        if isinstance(value, bool):
+            if self.__type_supported(SecsVarBoolean):
+                return SecsVarBoolean
+            # we continue here, bool might be handeled by int later
+
+        if isinstance(value, float):
+            if self.__type_supported(SecsVarF8):
+                return SecsVarF8
+            if self.__type_supported(SecsVarF4):
+                return SecsVarF4
+            if self.__type_supported(SecsVarString):
+                return SecsVarString
+            return None
+
+        if isinstance(value, int):
+            if value < 0:
+                if value >= -128:
+                    if self.__type_supported(SecsVarI1):
+                        return SecsVarI1
+                    elif self.__type_supported(SecsVarI2):
+                        return SecsVarI2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    return None
+                elif value >= -32768:
+                    if self.__type_supported(SecsVarI2):
+                        return SecsVarI2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    return None
+                elif value >= -2147483648:
+                    if self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    return None
+                else:
+                    if self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    return None
+            else:
+                if value <= 0x7F:
+                    if self.__type_supported(SecsVarI1):
+                        return SecsVarI1
+                    elif self.__type_supported(SecsVarU1):
+                        return SecsVarU1
+                    elif self.__type_supported(SecsVarI2):
+                        return SecsVarI2
+                    elif self.__type_supported(SecsVarU2):
+                        return SecsVarU2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0xFF:
+                    if self.__type_supported(SecsVarU1):
+                        return SecsVarU1
+                    elif self.__type_supported(SecsVarI2):
+                        return SecsVarI2
+                    elif self.__type_supported(SecsVarU2):
+                        return SecsVarU2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0x7FFF:
+                    if self.__type_supported(SecsVarI2):
+                        return SecsVarI2
+                    elif self.__type_supported(SecsVarU2):
+                        return SecsVarU2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0xFFFF:
+                    if self.__type_supported(SecsVarU2):
+                        return SecsVarU2
+                    elif self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0x7FFFFFFF:
+                    if self.__type_supported(SecsVarI4):
+                        return SecsVarI4
+                    elif self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0xFFFFFFFF:
+                    if self.__type_supported(SecsVarU4):
+                        return SecsVarU4
+                    elif self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                elif value <= 0x7FFFFFFFFFFFFFFF:
+                    if self.__type_supported(SecsVarI8):
+                        return SecsVarI8
+                    elif self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+                else:
+                    if self.__type_supported(SecsVarU8):
+                        return SecsVarU8
+                    return None
+
+        if self.__type_supported(SecsVarString):
+            return SecsVarString
+
+        if self.__type_supported(SecsVarBinary):
+            return SecsVarBinary
+
+        return None
 
     def clone(self):
         """Returns copy of the object
