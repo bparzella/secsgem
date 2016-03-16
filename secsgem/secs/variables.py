@@ -1268,7 +1268,7 @@ class SecsVarI1(SecsVar):
         result = []
 
         for i in range(length):
-            result_text = data[text_pos:text_pos]
+            result_text = data[text_pos:text_pos + 1]
 
             if len(result_text) != 1:
                 raise ValueError("No enough data found for {} with length {} at position {} ".format(self.__class__.__name__, length, start))
