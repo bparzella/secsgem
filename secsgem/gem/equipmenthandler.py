@@ -15,8 +15,9 @@
 #####################################################################
 """Handler for GEM equipment."""
 
+from secsgem.common.fysom import Fysom
 from secsgem.gem.handler import GemHandler
-from secsgem.secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, SecsVarI4
+from secsgem.secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary, SecsVarDynamic
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -24,7 +25,51 @@ from dateutil.tz import tzlocal
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
 
-SVID_CLOCK = 1
+SVID_CLOCK = 1001
+SVID_CONTROL_STATE = 1002
+SVID_EVENTS_ENABLED = 1003
+
+CEID_EQUIPMENT_OFFLINE = 1
+CEID_CONTROL_STATE_LOCAL = 2
+CEID_CONTROL_STATE_REMOTE = 3
+
+
+class DataValue:
+    """Data value definition
+
+    You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+    Custom parameters can be set with the keyword arguments,
+    they will be passed to the GemEquipmentHandlers callback
+    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
+
+    If use_callbacks is disabled, you can set the value with the value property.
+
+    :param dvid: ID of the data value
+    :type dvid: various
+    :param name: long name of the data value
+    :type name: string
+    :param value_type: type of the data value
+    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+    :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+    :type use_callback: boolean
+    """
+
+    def __init__(self, dvid, name, value_type, use_callback=True, **kwargs):
+        self.dvid = dvid
+        self.name = name
+        self.value_type = value_type
+        self.use_callback = use_callback
+        self.value = 0
+
+        if isinstance(self.dvid, int):
+            self.id_type = SecsVarU4
+        else:
+            self.id_type = SecsVarString
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
 
 class StatusVariable:
     """Status variable definition
@@ -58,6 +103,91 @@ class StatusVariable:
         self.value = 0
 
         if isinstance(self.svid, int):
+            self.id_type = SecsVarU4
+        else:
+            self.id_type = SecsVarString
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
+class CollectionEvent:
+    """Collection event definition
+
+    You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+    Custom parameters can be set with the keyword arguments,
+    they will be passed to the GemEquipmentHandlers callback
+    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
+
+    If use_callbacks is disabled, you can set the value with the value property.
+
+    :param ceid: ID of the collection event
+    :type ceid: various
+    :param name: long name of the collection event
+    :type name: string
+    :param data_values: data values available for this event
+    :type data_values: list of DVIDs
+    """
+
+    def __init__(self, ceid, name, data_values, **kwargs):
+        self.ceid = ceid
+        self.name = name
+        self.data_values = data_values
+
+        if isinstance(self.ceid, int):
+            self.id_type = SecsVarU4
+        else:
+            self.id_type = SecsVarString
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
+class CollectionEventLink:
+    """Representation for registered/linked collection event
+
+    :param ce: ID of the collection event
+    :type ce: :class:`secsgem.gem.equipmenthandler.CollectionEvent`
+    :param reports: list of the linked reports
+    :type reports: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
+    """
+
+    def __init__(self, ce, reports, **kwargs):
+        self.ce = ce
+        self._reports = reports
+        self.enabled = False
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+    @property
+    def reports(self):
+        """The list of the data values
+
+        :returns: List of linked reports
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
+        """
+
+        return self._reports
+
+
+class CollectionEventReport:
+    """Report definition for registered collection events
+
+    You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+    :param rptid: ID of the report
+    :type rptid: various
+    :param vars: long name of the collection event
+    :type vars: string
+    """
+
+    def __init__(self, rptid, variables, **kwargs):
+        self.rptid = rptid
+        self.vars = variables
+
+        if isinstance(self.rptid, int):
             self.id_type = SecsVarU4
         else:
             self.id_type = SecsVarString
@@ -132,16 +262,67 @@ class GemEquipmentHandler(GemHandler):
     :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+    :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+    :type initial_control_state: string
     """
 
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
+    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None, initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
         GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
 
         self.isHost = False
 
+        self.initialControlStates = ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+        self.initialControlState = initial_control_state
+
+        self.onlineControlStates = ["LOCAL", "REMOTE"]
+        self.onlineControlState = initial_online_control_state
+
+        self.controlState = Fysom({
+            'initial': "INIT",
+            'events': [
+                {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1
+                {'name': 'initial_offline', 'src': 'CONTROL', 'dst': 'OFFLINE'},  # 1
+                {'name': 'initial_equipment_offline', 'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
+                {'name': 'initial_attempt_online', 'src': 'OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 2
+                {'name': 'initial_host_offline', 'src': 'OFFLINE', 'dst': 'HOST_OFFLINE'},  # 2
+                {'name': 'switch_online', 'src': 'EQUIPMENT_OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 3
+                {'name': 'attempt_online_fail_equipment_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 4
+                {'name': 'attempt_online_fail_host_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'HOST_OFFLINE'},  # 4
+                {'name': 'attempt_online_success', 'src': 'ATTEMPT_ONLINE', 'dst': 'ONLINE'},  # 5
+                {'name': 'switch_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"], 'dst': 'EQUIPMENT_OFFLINE'},  # 6, 12
+                {'name': 'initial_online', 'src': 'CONTROL', 'dst': 'ONLINE'},  # 1
+                {'name': 'initial_online_local', 'src': 'ONLINE', 'dst': 'ONLINE_LOCAL'},  # 7
+                {'name': 'initial_online_remote', 'src': 'ONLINE', 'dst': 'ONLINE_REMOTE'},  # 7
+                {'name': 'switch_online_local', 'src': 'ONLINE_REMOTE', 'dst': 'ONLINE_LOCAL'},  # 8
+                {'name': 'switch_online_remote', 'src': 'ONLINE_LOCAL', 'dst': 'ONLINE_REMOTE'},  # 9
+                {'name': 'remote_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"], 'dst': 'HOST_OFFLINE'},  # 10
+                {'name': 'remote_online', 'src': 'HOST_OFFLINE', 'dst': 'ONLINE'},  # 11
+            ],
+            'callbacks': {
+                'onCONTROL': self._on_control_state_control,  # 1, forward online/offline depending on configuration
+                'onOFFLINE': self._on_control_state_offline,  # 2, forward to configured offline state
+                'onATTEMPT_ONLINE': self._on_control_state_attempt_online,  # 3, send S01E01
+                'onONLINE': self._on_control_state_online,  # 7, forward to configured online state
+                'oninitial_online_local': self._on_control_state_initial_online_local,  # 7, send collection event
+                'onswitch_online_local': self._on_control_state_initial_online_local,  # 8, send collection event
+                'oninitial_online_remote': self._on_control_state_initial_online_remote,  # 8, send collection event
+                'onswitch_online_remote': self._on_control_state_initial_online_remote,  # 9, send collection event
+            },
+            'autoforward': [
+                # {'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
+                # {'src': 'EQUIPMENT_INITIATED_CONNECT', 'dst': 'WAIT_CRA'},  # 5
+                # {'src': 'HOST_INITIATED_CONNECT', 'dst': 'WAIT_CR_FROM_HOST'},  # 10
+            ]
+        })
+
+        self.controlState.start()
+
         self.register_callback(1, 3, self.s01f03_handler)
 
         self.register_callback(1, 11, self.s01f11_handler)
+
+        self.register_callback(1, 15, self.s01f15_handler)
+        self.register_callback(1, 17, self.s01f17_handler)
 
         self.register_callback(2, 13, self.s02f13_handler)
         self.register_callback(2, 15, self.s02f15_handler)
@@ -149,17 +330,183 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 29, self.s02f29_handler)
 
         self.register_callback(2, 33, self.s02f33_handler)
+        self.register_callback(2, 35, self.s02f35_handler)
         self.register_callback(2, 37, self.s02f37_handler)
 
         self._time_format = 1
+
+        self._data_values = {
+        }
+
         self._status_variables = {
             SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
+            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", SecsVarBinary),
+            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", SecsVarArray),
+        }
+
+        self._collection_events = {
+            CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
+            CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
+            CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
         }
 
         self._equipment_constants = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
         }
+
+        self._registered_reports = {}
+        self._registered_collection_events = {}
+
+    # control state model
+
+    def _on_control_state_control(self, _):
+        if self.initialControlState == "ONLINE":
+            self.controlState.initial_online()
+        else:
+            self.controlState.initial_offline()
+
+    def _on_control_state_offline(self, _):
+        if self.initialControlState == "EQUIPMENT_OFFLINE":
+            self.controlState.initial_equipment_offline()
+        elif self.initialControlState == "ATTEMPT_ONLINE":
+            self.controlState.initial_attempt_online()
+        elif self.initialControlState == "HOST_OFFLINE":
+            self.controlState.initial_host_offline()
+
+    def _on_control_state_attempt_online(self, _):
+        if not self.communicationState.isstate("COMMUNICATING"):
+            self.controlState.attempt_online_fail_host_offline()
+            return
+
+        response = self.are_you_there()
+
+        if response is None:
+            self.controlState.attempt_online_fail_host_offline()
+            return
+
+        if response.header.stream != 1 or response.header.function != 2:
+            self.controlState.attempt_online_fail_host_offline()
+            return
+
+        self.controlState.attempt_online_success()
+
+    def _on_control_state_online(self, _):
+        if self.onlineControlState == "REMOTE":
+            self.controlState.initial_online_remote()
+        else:
+            self.controlState.initial_online_local()
+
+    def _on_control_state_initial_online_local(self, _):
+        self.trigger_collection_events([CEID_CONTROL_STATE_LOCAL])
+
+    def _on_control_state_initial_online_remote(self, _):
+        self.trigger_collection_events([CEID_CONTROL_STATE_REMOTE])
+
+    def control_switch_online(self):
+        """Operator switches to online control state
+        """
+        self.controlState.switch_online()
+
+    def control_switch_offline(self):
+        """Operator switches to offline control state
+        """
+        self.controlState.switch_offline()
+        self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
+
+    def control_switch_online_local(self):
+        """Operator switches to the local online control state
+        """
+        self.controlState.switch_online_local()
+        self.onlineControlState = "LOCAL"
+
+    def control_switch_online_remote(self):
+        """Operator switches to the local online control state
+        """
+        self.controlState.switch_online_remote()
+        self.onlineControlState = "REMOTE"
+
+    def s01f15_handler(self, handler, packet):
+        """Callback handler for Stream 1, Function 15, Request offline
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        # message = self.secs_decode(packet)
+
+        OFLACK = 0
+
+        if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            self.controlState.remote_offline()
+            self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
+
+        handler.send_response(self.stream_function(1, 16)(OFLACK), packet.header.system)
+
+    def s01f17_handler(self, handler, packet):
+        """Callback handler for Stream 1, Function 17, Request online
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        # message = self.secs_decode(packet)
+
+        ONLACK = 1
+
+        if self.controlState.isstate("HOST_OFFLINE"):
+            self.controlState.remote_online()
+            ONLACK = 0
+        elif self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            ONLACK = 2
+
+        handler.send_response(self.stream_function(1, 18)(ONLACK), packet.header.system)
+
+    # data values
+
+    @property
+    def data_values(self):
+        """The list of the data values
+
+        :returns: Data value list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.DataValue`
+        """
+        return self._data_values
+
+    def on_dv_value_request(self, dvid, dv):
+        """Get the data value depending on its configuation.
+
+        Override in inherited class to provide custom data value request handling.
+
+        :param dvid: Id of the data value encoded in the corresponding type
+        :type dvid: :class:`secsgem.secs.variables.SecsVar`
+        :param dv: The data value requested
+        :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
+        :returns: The value encoded in the corresponding type
+        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        """
+        return dv.value_type(value=dv.value)
+
+    def _get_dv_value(self, dv):
+        """Get the data value depending on its configuation
+
+        :param dv: The data value requested
+        :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
+        :returns: The value encoded in the corresponding type
+        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        """
+        if dv.use_callback:
+            return self.on_dv_value_request(dv.id_type(value=dv.dvid), dv)
+        else:
+            return dv.value_type(value=dv.value)
+
+    # status variables
 
     @property
     def status_variables(self):
@@ -169,15 +516,6 @@ class GemEquipmentHandler(GemHandler):
         :rtype: list of :class:`secsgem.gem.equipmenthandler.StatusVariables`
         """
         return self._status_variables
-
-    @property
-    def equipment_constants(self):
-        """The list of the equipments contstants
-
-        :returns: Equipment constant list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
-        """
-        return self._equipment_constants
 
     def on_sv_value_request(self, svid, sv):
         """Get the status variable value depending on its configuation.
@@ -193,48 +531,6 @@ class GemEquipmentHandler(GemHandler):
         """
         return sv.value_type(value=sv.value)
 
-    def on_ec_value_request(self, ecid, ec):
-        """Get the equipment constant value depending on its configuation.
-
-        Override in inherited class to provide custom equipment constant request handling.
-
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.SecsVar`
-        :param ec: The equipment constant requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
-        """
-        return ec.value_type(value=ec.value)
-
-    def on_ec_value_update(self, ecid, ec, value):
-        """Set the equipment constant value depending on its configuation.
-
-        Override in inherited class to provide custom equipment constant update handling.
-
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.SecsVar`
-        :param ec: The equipment constant to be updated
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.SecsVar`
-        """
-        ec.value = value
-
-    def _get_clock(self):
-        """Returns the clock depending on configured time format
-
-        :returns: time code
-        :rtype: string
-        """
-        now = datetime.now(tzlocal())
-        if self._time_format == 0:
-            return now.strftime("%y%m%d%H%M%S")
-        elif self._time_format == 2:
-            return now.isoformat()
-        else:
-            return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
-
     def _get_sv_value(self, sv):
         """Get the status variable value depending on its configuation
 
@@ -245,47 +541,16 @@ class GemEquipmentHandler(GemHandler):
         """
         if sv.svid == SVID_CLOCK:
             return sv.value_type(value=self._get_clock())
+        if sv.svid == SVID_CONTROL_STATE:
+            return sv.value_type(value=self._get_control_state_id())
+        if sv.svid == SVID_EVENTS_ENABLED:
+            events = self._get_events_enabled()
+            return sv.value_type(SecsVarDynamic([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]), value=events)
 
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(value=sv.svid), sv)
         else:
             return sv.value_type(value=sv.value)
-
-    def _get_ec_value(self, ec):
-        """Get the equipment constant value depending on its configuation
-
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
-        """
-        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            return ec.value_type(value=self.establishCommunicationTimeout)
-        if ec.ecid == ECID_TIME_FORMAT:
-            return ec.value_type(value=self._time_format)
-
-        if ec.use_callback:
-            return self.on_ec_value_request(ec.id_type(value=ec.ecid), ec)
-        else:
-            return ec.value_type(value=ec.value)
-
-    def _set_ec_value(self, ec, value):
-        """Get the equipment constant value depending on its configuation
-
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.SecsVar`
-        """
-        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            self.establishCommunicationTimeout = value
-        if ec.ecid == ECID_TIME_FORMAT:
-            self._time_format = value
-
-        if ec.use_callback:
-            self.on_ec_value_update(ec.id_type(value=ec.ecid), ec, value)
-        else:
-            ec.value = value
 
     def s01f03_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 3, Equipment status request
@@ -342,6 +607,294 @@ class GemEquipmentHandler(GemHandler):
                     responses.append({"SVID": sv.svid, "SVNAME": sv.name, "UNITS": sv.unit})
 
         handler.send_response(self.stream_function(1, 12)(responses), packet.header.system)
+
+    # collection events
+
+    @property
+    def collection_events(self):
+        """The list of the collection events
+
+        :returns: Collection event list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEvent`
+        """
+        return self._collection_events
+
+    @property
+    def registered_reports(self):
+        """The list of the subscribed reports
+
+        :returns: Collection event report list
+        :rtype: dictionary of subscribed reports
+        """
+        return self._registered_reports
+
+    @property
+    def registered_collection_events(self):
+        """The list of the subscribed collection events
+
+        :returns: Collection event list
+        :rtype: dictionary of :class:`secsgem.gem.equipmenthandler.CollectionEventLink`
+
+        """
+        return self._registered_collection_events
+
+    def trigger_collection_events(self, ceids):
+        """Triggers the supplied collection events
+
+        :param ceids: List of collection events
+        :type ceids: list of various
+        """
+        if not isinstance(ceids, list):
+            ceids = [ceids]
+
+        for ceid in ceids:
+            if ceid in self._registered_collection_events:
+                if self._registered_collection_events[ceid].enabled:
+                    reports = []
+
+                    for rptid in self._registered_collection_events[ceid].reports:
+                        report = self._registered_reports[rptid]
+                        variables = []
+                        for var in report.vars:
+                            if var in self._status_variables:
+                                v = self._get_sv_value(self._status_variables[var])
+                                variables.append(v)
+                            elif var in self._data_values:
+                                v = self._get_dv_value(self._data_values[var])
+                                variables.append(v)
+                            else:
+                                raise ValueError("asdfg/ remove me")
+
+                        reports.append({"RPTID": rptid, "V": variables})
+
+                    self.send_and_waitfor_response(self.stream_function(6, 11)({"DATAID": 1, "CEID": ceid, "RPT": reports}))
+
+    def s02f33_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 33, Define Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        # 0  = Accept
+        # 1  = Denied. Insufficient space.
+        # 2  = Denied. Invalid format.
+        # 3  = Denied. At least one RPTID already defined.
+        # 4  = Denied. At least VID does not exist.
+        # >4 = Other errors
+        DRACK = 0
+
+        # pre check message for errors
+        for report in message.DATA:
+            if report.RPTID in self._registered_reports:
+                DRACK = 3
+            else:
+                for vid in report.VID:
+                    if (vid not in self._data_values) and (vid not in self._status_variables):
+                        DRACK = 4
+
+        # pre check okay
+        if DRACK == 0:
+            # no data -> remove all reports and links
+            if not message.DATA:
+                self._registered_collection_events.clear()
+                self._registered_reports.clear()
+            else:
+                for report in message.DATA:
+                    # no vids -> remove this reports and links
+                    if not report.VID:
+                        # remove report from linked collection events
+                        for collection_event in self._registered_collection_events:
+                            if report.RPTID in self._registered_collection_events[collection_event].reports:
+                                self._registered_collection_events[collection_event].reports.remove(report.RPTID)
+                                # remove collection event link if no collection events present
+                                if not self._registered_collection_events[collection_event].reports:
+                                    del self._registered_collection_events[collection_event]
+                        # remove report
+                        if report.RPTID in self._registered_reports:
+                            del self._registered_reports[report.RPTID]
+                    else:
+                        # add report
+                        self._registered_reports[report.RPTID] = CollectionEventReport(report.RPTID, report.VID)
+
+        handler.send_response(self.stream_function(2, 34)(DRACK), packet.header.system)
+
+    def s02f35_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 35, Link event report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        # 0  = Accepted
+        # 1  = Denied. Insufficient space
+        # 2  = Denied. Invalid format
+        # 3  = Denied. At least one CEID link already defined
+        # 4  = Denied. At least one CEID does not exist
+        # 5  = Denied. At least one RPTID does not exist
+        # >5 = Other errors
+        LRACK = 0
+
+        # pre check message for errors
+        for event in message.DATA:
+            if event.CEID not in self._collection_events:
+                LRACK = 4
+            for rptid in event.RPTID:
+                if event.CEID in self._registered_collection_events:
+                    ce = self._registered_collection_events[event.CEID]
+                    if rptid in ce.reports:
+                        LRACK = 3
+                if rptid not in self._registered_reports:
+                    LRACK = 5
+
+        # pre check okay
+        if LRACK == 0:
+            for event in message.DATA:
+                # no report ids, remove all links for collection event
+                if not event.RPTID:
+                    if event.CEID in self._registered_collection_events:
+                        del self._registered_collection_events[event.CEID]
+                else:
+                    if event.CEID in self._registered_collection_events:
+                        ce = self._registered_collection_events[event.CEID]
+                        for rptid in event.RPTID:
+                            ce.reports.append(rptid)
+                    else:
+                        self._registered_collection_events[event.CEID] = CollectionEventLink(self._collection_events[event.CEID], event.RPTID)
+
+        handler.send_response(self.stream_function(2, 36)(LRACK), packet.header.system)
+
+    def s02f37_handler(self, handler, packet):
+        """Callback handler for Stream 2, Function 37, En-/Disable Event Report
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        # 0  = Accepted
+        # 1  = Denied. At least one CEID does not exist
+        ERACK = 0
+
+        if not self._set_ce_state(message.CEED, message.CEID):
+            ERACK = 1
+
+        handler.send_response(self.stream_function(2, 38)(ERACK), packet.header.system)
+
+    def _set_ce_state(self, ceed, ceids):
+        """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list)
+
+        :param ceed: Enable (True) or disable (False) event reports
+        :type ceed: bool
+        :param ceids: List of collection events
+        :type ceids: list of integer
+        :returns: True if all ceids were ok, False if illegal ceid was supplied
+        :rtype: bool
+        """
+        print "ceed", ceed
+        print "ceids", ceids
+
+        result = True
+        if not ceids:
+            print "no ceid"
+        else:
+            for ceid in ceids:
+                print "ceid", ceid
+                if ceid in self._registered_collection_events:
+                    self._registered_collection_events[ceid].enabled = True
+                else:
+                    result = False
+
+        return result
+
+    # equipment constants
+
+    @property
+    def equipment_constants(self):
+        """The list of the equipments contstants
+
+        :returns: Equipment constant list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        """
+        return self._equipment_constants
+
+    def on_ec_value_request(self, ecid, ec):
+        """Get the equipment constant value depending on its configuation.
+
+        Override in inherited class to provide custom equipment constant request handling.
+
+        :param ecid: Id of the equipment constant encoded in the corresponding type
+        :type ecid: :class:`secsgem.secs.variables.SecsVar`
+        :param ec: The equipment constant requested
+        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :returns: The value encoded in the corresponding type
+        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        """
+        return ec.value_type(value=ec.value)
+
+    def on_ec_value_update(self, ecid, ec, value):
+        """Set the equipment constant value depending on its configuation.
+
+        Override in inherited class to provide custom equipment constant update handling.
+
+        :param ecid: Id of the equipment constant encoded in the corresponding type
+        :type ecid: :class:`secsgem.secs.variables.SecsVar`
+        :param ec: The equipment constant to be updated
+        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :param value: The value encoded in the corresponding type
+        :type value: :class:`secsgem.secs.variables.SecsVar`
+        """
+        ec.value = value
+
+    def _get_ec_value(self, ec):
+        """Get the equipment constant value depending on its configuation
+
+        :param ec: The equipment requested
+        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :returns: The value encoded in the corresponding type
+        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        """
+        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
+            return ec.value_type(value=self.establishCommunicationTimeout)
+        if ec.ecid == ECID_TIME_FORMAT:
+            return ec.value_type(value=self._time_format)
+
+        if ec.use_callback:
+            return self.on_ec_value_request(ec.id_type(value=ec.ecid), ec)
+        else:
+            return ec.value_type(value=ec.value)
+
+    def _set_ec_value(self, ec, value):
+        """Get the equipment constant value depending on its configuation
+
+        :param ec: The equipment requested
+        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :param value: The value encoded in the corresponding type
+        :type value: :class:`secsgem.secs.variables.SecsVar`
+        """
+        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
+            self.establishCommunicationTimeout = value
+        if ec.ecid == ECID_TIME_FORMAT:
+            self._time_format = value
+
+        if ec.use_callback:
+            self.on_ec_value_update(ec.id_type(value=ec.ecid), ec, value)
+        else:
+            ec.value = value
 
     def s02f13_handler(self, handler, packet):
         """Callback handler for Stream 2, Function 13, Equipment constant request
@@ -421,34 +974,51 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 30)(responses), packet.header.system)
 
-    def s02f33_handler(self, handler, packet):
-        """Callback handler for Stream 2, Function 33, Define Report
+    # helpers
 
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+    def _get_clock(self):
+        """Returns the clock depending on configured time format
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :returns: time code
+        :rtype: string
         """
-        message = self.secs_decode(packet)
+        now = datetime.now(tzlocal())
+        if self._time_format == 0:
+            return now.strftime("%y%m%d%H%M%S")
+        elif self._time_format == 2:
+            return now.isoformat()
+        else:
+            return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
-        print message
+    def _get_control_state_id(self):
+        """the id of the control state for the current control state
 
-        handler.send_response(self.stream_function(2, 34)(0), packet.header.system)
-
-    def s02f37_handler(self, handler, packet):
-        """Callback handler for Stream 2, Function 37, En-/Disable Event Report
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
-
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :returns: control state
+        :rtype: integer
         """
-        message = self.secs_decode(packet)
+        if self.controlState.isstate("EQUIPMENT_OFFLINE"):
+            return 1
+        if self.controlState.isstate("ATTEMPT_ONLINE"):
+            return 2
+        if self.controlState.isstate("HOST_OFFLINE"):
+            return 3
+        if self.controlState.isstate("ONLINE_LOCAL"):
+            return 4
+        if self.controlState.isstate("ONLINE_REMOTE"):
+            return 5
 
-        print message
+        return 0
 
-        handler.send_response(self.stream_function(2, 38)(0), packet.header.system)
+    def _get_events_enabled(self):
+        """list of the enabled collection events
+
+        :returns: collection event
+        :rtype: list of various
+        """
+        enabled_ceid = []
+
+        for ceid in self._registered_collection_events:
+            if self._registered_collection_events[ceid].enabled:
+                enabled_ceid.append(ceid)
+
+        return enabled_ceid
