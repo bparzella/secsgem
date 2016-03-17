@@ -1022,3 +1022,12 @@ class GemEquipmentHandler(GemHandler):
                 enabled_ceid.append(ceid)
 
         return enabled_ceid
+
+    def on_connection_closed(self, connection):
+        """Connection was closed"""
+        # call parent handlers
+        GemHandler.on_connection_closed(self, connection)
+
+        # update control state
+        self.controlState.switch_offline()
+        self.controlState.switch_online()
