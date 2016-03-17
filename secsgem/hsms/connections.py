@@ -189,8 +189,10 @@ class HsmsConnection(object):
                     errorcode = e[0]
                     if not is_errorcode_ewouldblock(errorcode):
                         # raise if not EWOULDBLOCK
-                        raise e
+                        return False
                     # it is EWOULDBLOCK, so retry sending
+
+        return True
 
     def _process_receive_buffer(self):
         """Parse the receive buffer and dispatch callbacks.

@@ -350,7 +350,7 @@ class HsmsHandler(EventProducer):
         else:
             self.logger.info("> %s\n%s", out_packet, packet)
 
-        self.connection.send_packet(out_packet)
+        return self.connection.send_packet(out_packet)
 
     def send_and_waitfor_response(self, packet):
         """Send the packet and wait for the response
@@ -371,7 +371,10 @@ class HsmsHandler(EventProducer):
         else:
             self.logger.info("> %s\n%s", out_packet, packet)
 
-        self.connection.send_packet(out_packet)
+        if not self.connection.send_packet(out_packet):
+            self.logger.error("Sending packet failed")
+            self._remove_queue(system_id)
+            return None
 
         try:
             response = response_queue.get(True, self.connection.T3)
@@ -397,7 +400,7 @@ class HsmsHandler(EventProducer):
         else:
             self.logger.info("> %s\n%s", out_packet, function)
 
-        self.connection.send_packet(out_packet)
+        return self.connection.send_packet(out_packet)
 
     def send_select_req(self):
         """Send a Select Request to the remote host
@@ -411,7 +414,10 @@ class HsmsHandler(EventProducer):
 
         packet = HsmsPacket(HsmsSelectReqHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+
+        if not self.connection.send_packet(packet):
+            self._remove_queue(system_id)
+            return None
 
         try:
             response = response_queue.get(True, self.connection.T6)
@@ -430,7 +436,7 @@ class HsmsHandler(EventProducer):
         """
         packet = HsmsPacket(HsmsSelectRspHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+        return self.connection.send_packet(packet)
 
     def send_linktest_req(self):
         """Send a Linktest Request to the remote host
@@ -444,7 +450,10 @@ class HsmsHandler(EventProducer):
 
         packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+
+        if not self.connection.send_packet(packet):
+            self._remove_queue(system_id)
+            return None
 
         try:
             response = response_queue.get(True, self.connection.T6)
@@ -463,7 +472,7 @@ class HsmsHandler(EventProducer):
         """
         packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+        return self.connection.send_packet(packet)
 
     def send_deselect_req(self):
         """Send a Deselect Request to the remote host
@@ -477,7 +486,10 @@ class HsmsHandler(EventProducer):
 
         packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+
+        if not self.connection.send_packet(packet):
+            self._remove_queue(system_id)
+            return None
 
         try:
             response = response_queue.get(True, self.connection.T6)
@@ -496,7 +508,7 @@ class HsmsHandler(EventProducer):
         """
         packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+        return self.connection.send_packet(packet)
 
     def send_reject_rsp(self, system_id, s_type, reason):
         """Send a Reject Response to the remote host
@@ -510,7 +522,7 @@ class HsmsHandler(EventProducer):
         """
         packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+        return self.connection.send_packet(packet)
 
     def send_separate_req(self):
         """Send a Separate Request to the remote host"""
@@ -518,6 +530,8 @@ class HsmsHandler(EventProducer):
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
         self.logger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType])
-        self.connection.send_packet(packet)
+
+        if not self.connection.send_packet(packet):
+            return None
 
         return system_id

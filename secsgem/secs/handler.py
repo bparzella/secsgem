@@ -408,6 +408,9 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :return: matching stream and function object
         :rtype: secsSxFx object
         """
+        if packet is None:
+            return None
+
         if packet.header.stream not in self.secsStreamsFunctions:
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
