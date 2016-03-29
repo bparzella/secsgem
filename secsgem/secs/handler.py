@@ -257,7 +257,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
 
         return self.request_svs([sv])[0]
 
-    def list_ecs(self):
+    def list_ecs(self, ecs=[]):
         """Get list of available Equipment Constants.
 
         :returns: available Equipment Constants
@@ -268,7 +268,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         if not self.connection:
             return None
 
-        packet = self.send_and_waitfor_response(self.stream_function(2, 29)([]))
+        packet = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
         return self.secs_decode(packet)
 
