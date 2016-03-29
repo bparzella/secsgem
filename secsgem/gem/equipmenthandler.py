@@ -941,7 +941,9 @@ class GemEquipmentHandler(GemHandler):
         for ec in message:
             if ec.ECID not in self._equipment_constants:
                 eac = 1
-            else:
+
+        if eac == 0:
+            for ec in message:
                 self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV)
 
         handler.send_response(self.stream_function(2, 16)(eac), packet.header.system)
