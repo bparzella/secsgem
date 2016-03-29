@@ -290,7 +290,10 @@ class GemHandler(SecsHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        handler.send_response(self.stream_function(1, 2)(), packet.header.system)
+        if self.isHost:
+            handler.send_response(self.stream_function(1, 2)(), packet.header.system)
+        else:
+            handler.send_response(self.stream_function(1, 2)([self.MDLN, self.SOFTREV]), packet.header.system)
 
     def s01f13_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
