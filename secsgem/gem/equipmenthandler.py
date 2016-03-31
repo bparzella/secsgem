@@ -805,17 +805,14 @@ class GemEquipmentHandler(GemHandler):
         :returns: True if all ceids were ok, False if illegal ceid was supplied
         :rtype: bool
         """
-        print "ceed", ceed
-        print "ceids", ceids
-
         result = True
         if not ceids:
-            print "no ceid"
+            for ceid in self._registered_collection_events:
+                self._registered_collection_events[ceid].enabled = ceed
         else:
             for ceid in ceids:
-                print "ceid", ceid
                 if ceid in self._registered_collection_events:
-                    self._registered_collection_events[ceid].enabled = True
+                    self._registered_collection_events[ceid].enabled = ceed
                 else:
                     result = False
 

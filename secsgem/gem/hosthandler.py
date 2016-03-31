@@ -162,8 +162,6 @@ class GemHostHandler(GemHandler):
             for i, s in enumerate(report_dvs):
                 values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
 
-            print values
-
             data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
             self.fire_event("collection_event_received", data)
 
