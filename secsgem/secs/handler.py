@@ -213,7 +213,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
-    def list_svs(self):
+    def list_svs(self, svs=[]):
         """Get list of available Service Variables.
 
         :returns: available Service Variables
@@ -224,7 +224,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         if not self.connection:
             return None
 
-        packet = self.send_and_waitfor_response(self.stream_function(1, 11)([]))
+        packet = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
 
         return self.secs_decode(packet)
 
