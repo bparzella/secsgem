@@ -1589,6 +1589,114 @@ class SecsS06F12(SecsStreamFunction):
     _isMultiBlock = False
 
 
+class SecsS06F15(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 15 - event report request
+
+    **Structure**::
+
+        {
+            CEID: U4[1]
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F15(1337)
+        S6F15 W
+            <U4 1337 >
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 15
+
+    _formatDescriptor = SecsVarU4(1)
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS06F16(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 16 - event report data
+
+    **Structure**::
+
+        {
+            DATAID: U4[1]
+            CEID: U4[1]
+            RPT: [
+                {
+                    RPTID: U4[1]
+                    V: [
+                        DATA: various
+                        ...
+                    ]
+                }
+                ...
+            ]
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(value=100)]}]})
+        S6F16 W
+          <L [3]
+            <U4 1 >
+            <U4 1337 >
+            <L [1]
+              <L [2]
+                <U4 1000 >
+                <L [2]
+                  <A "VAR">
+                  <U4 100 >
+                >
+              >
+            >
+          >
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 16
+
+    _formatDescriptor = SecsVarList(OrderedDict((
+        ("DATAID", SecsVarU4(1)),
+        ("CEID", SecsVarU4(1)),
+        ("RPT", SecsVarArray(
+            SecsVarList(OrderedDict((
+                ("RPTID", SecsVarDynamic([SecsVarString,
+                                          SecsVarU1,
+                                          SecsVarU2,
+                                          SecsVarU4,
+                                          SecsVarU8,
+                                          SecsVarI1,
+                                          SecsVarI2,
+                                          SecsVarI4,
+                                          SecsVarI8])),
+                ("V", SecsVarArray(
+                    SecsVarDynamic([])
+                )),
+            )), 2)
+        )),
+    )), 3)
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
+
 class SecsS07F00(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 00 - abort transaction stream 7
 
@@ -3874,6 +3982,8 @@ secsStreamsFunctions = {
         0: SecsS06F00,
         11: SecsS06F11,
         12: SecsS06F12,
+        15: SecsS06F15,
+        16: SecsS06F16,
     },
     7: {
         1: SecsS07F01,

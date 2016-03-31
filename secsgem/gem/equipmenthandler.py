@@ -333,6 +333,8 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 35, self.s02f35_handler)
         self.register_callback(2, 37, self.s02f37_handler)
 
+        self.register_callback(6, 15, self.s06f15_handler)
+
         self._time_format = 1
 
         self._data_values = {
@@ -650,22 +652,7 @@ class GemEquipmentHandler(GemHandler):
         for ceid in ceids:
             if ceid in self._registered_collection_events:
                 if self._registered_collection_events[ceid].enabled:
-                    reports = []
-
-                    for rptid in self._registered_collection_events[ceid].reports:
-                        report = self._registered_reports[rptid]
-                        variables = []
-                        for var in report.vars:
-                            if var in self._status_variables:
-                                v = self._get_sv_value(self._status_variables[var])
-                                variables.append(v)
-                            elif var in self._data_values:
-                                v = self._get_dv_value(self._data_values[var])
-                                variables.append(v)
-                            else:
-                                raise ValueError("asdfg/ remove me")
-
-                        reports.append({"RPTID": rptid, "V": variables})
+                    reports = self._build_collection_event(ceid)
 
                     self.send_and_waitfor_response(self.stream_function(6, 11)({"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
@@ -795,6 +782,28 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 38)(ERACK), packet.header.system)
 
+    def s06f15_handler(self, handler, packet):
+        """Callback handler for Stream 6, Function 15, event report request
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        ceid = message.get()
+
+        reports = []
+
+        if ceid in self._registered_collection_events:
+            if self._registered_collection_events[ceid].enabled:
+                reports = self._build_collection_event(ceid)
+
+        handler.send_response(self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports}), packet.header.system)
+
     def _set_ce_state(self, ceed, ceids):
         """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list)
 
@@ -817,6 +826,33 @@ class GemEquipmentHandler(GemHandler):
                     result = False
 
         return result
+
+    def _build_collection_event(self, ceid):
+        """Build reports for a collection event
+
+        :param ceid: collection event to build
+        :type ceid: integer
+        :returns: collection event data
+        :rtype: array
+        """
+        reports = []
+
+        for rptid in self._registered_collection_events[ceid].reports:
+            report = self._registered_reports[rptid]
+            variables = []
+            for var in report.vars:
+                if var in self._status_variables:
+                    v = self._get_sv_value(self._status_variables[var])
+                    variables.append(v)
+                elif var in self._data_values:
+                    v = self._get_dv_value(self._data_values[var])
+                    variables.append(v)
+                else:
+                    raise ValueError("asdfg/ remove me")
+
+            reports.append({"RPTID": rptid, "V": variables})
+
+        return reports
 
     # equipment constants
 
