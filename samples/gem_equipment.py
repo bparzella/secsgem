@@ -19,6 +19,9 @@ import code
 
 import secsgem
 
+from communication_log_file_handler import CommunicationLogFileHandler
+
+
 class SampleEquipment(secsgem.GemEquipmentHandler):
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
         secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
@@ -65,13 +68,16 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
             self.ec2 = value
 
 
+commLogFileHandler = CommunicationLogFileHandler("log", "e")
+commLogFileHandler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+logging.getLogger("hsms_communication").addHandler(commLogFileHandler)
+logging.getLogger("hsms_communication").propagate = False
+
 logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
 
-h = SampleEquipment("127.0.0.1", 5000, True, 0, "test")
+h = SampleEquipment("127.0.0.1", 5000, True, 0, "sampleequipment")
 h.enable()
 
-print "equipment is available as variable 'h'"
-
-code.interact(local=locals())
+code.interact("equipment object is available as variable 'h'", local=locals())
 
 h.disable()

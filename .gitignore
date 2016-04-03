@@ -56,3 +56,5 @@ target/
 # IDE
 .idea
 
+# samples logging
+samples/log/*.log
