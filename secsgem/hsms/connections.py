@@ -134,7 +134,10 @@ class HsmsConnection(object):
 
         # send event
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
-            self.delegate.on_connection_established(self)
+            try:
+                self.delegate.on_connection_established(self)
+            except Exception, e:
+                self.logger.error('ignoring exception "{0}" for on_connection_established handler'.format(e), exc_info=True)
 
     def _on_hsms_connection_close(self, data):
         pass
@@ -219,7 +222,10 @@ class HsmsConnection(object):
 
         # redirect packet to hsms handler
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
-            self.delegate.on_connection_packet_received(self, response)
+            try:
+                self.delegate.on_connection_packet_received(self, response)
+            except Exception, e:
+                self.logger.error('ignoring exception "{0}" for on_connection_packet_received handler'.format(e), exc_info=True)
 
         # return True if more data is available
         if len(self.receiveBuffer) > 0:
@@ -272,14 +278,20 @@ class HsmsConnection(object):
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
-            self.delegate.on_connection_before_closed(self)
+            try:
+                self.delegate.on_connection_before_closed(self)
+            except Exception, e:
+                self.logger.error('ignoring exception "{0}" for on_connection_before_closed handler'.format(e), exc_info=True)
 
         # close the socket
         self.sock.close()
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
-            self.delegate.on_connection_closed(self)
+            try:
+                self.delegate.on_connection_closed(self)
+            except Exception, e:
+                self.logger.error('ignoring exception "{0}" for on_connection_closed handler'.format(e), exc_info=True)
 
         # reset all flags
         self.connected = False
@@ -322,6 +334,7 @@ class HsmsPassiveConnection(HsmsConnection):
         # reconnect thread required for passive connection
         self.serverThread = None
         self.stopServerThread = False
+        self.serverSock = None
 
     def _on_hsms_connection_close(self, data):
         """Signal from super that the connection was closed
@@ -358,9 +371,12 @@ class HsmsPassiveConnection(HsmsConnection):
             if self.serverThread and self.serverThread.isAlive():
                 self.stopServerThread = True
 
-            # wait for connection thread to stop
-            while self.stopServerThread:
-                time.sleep(0.2)
+                if self.serverSock:
+                    self.serverSock.close()
+
+                # wait for connection thread to stop
+                while self.stopServerThread:
+                    time.sleep(0.2)
 
             # disconnect super class
             self.disconnect()
@@ -374,16 +390,21 @@ class HsmsPassiveConnection(HsmsConnection):
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         if not is_windows():
-            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        sock.bind(('', self.remotePort))
-        sock.listen(1)
+        self.serverSock.bind(('', self.remotePort))
+        self.serverSock.listen(1)
 
-        while True:
-            accept_result = sock.accept()
+        while not self.stopServerThread:
+            try:
+                select.select([self.serverSock], [], [])
+            except:
+                continue
+
+            accept_result = self.serverSock.accept()
             if accept_result is None:
                 continue
 
@@ -398,9 +419,11 @@ class HsmsPassiveConnection(HsmsConnection):
             # start the receiver thread
             self._start_receiver()
 
-            sock.close()
+            self.serverSock.close()
 
             return
+
+        self.stopServerThread = False
 
 
 class HsmsMultiPassiveConnection(HsmsConnection):
