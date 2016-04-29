@@ -38,7 +38,7 @@ class SecsVar(object):
         :param value: new value
         :type value: various
         """
-        raise NotImplementedError("Function set not implemented on SecsVar")
+        raise NotImplementedError("Function set not implemented on " + self.__class__.__name__)
 
     def encode_item_header(self, length):
         """Encode item header depending on the number of length bytes required.
