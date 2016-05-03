@@ -121,9 +121,9 @@ class SecsVarDynamic(SecsVar):
         super(SecsVarDynamic, self).__init__()
 
         if not types:
-            self.value = SecsVarString(length)
+            self.value = SecsVarString(length=length)
         else:
-            self.value = types[0](length)
+            self.value = types[0](length=length)
 
         self.types = types
         self.length = length
@@ -184,7 +184,7 @@ class SecsVarDynamic(SecsVar):
             if matched_type is None:
                 raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'.format(value, value.__class__.__name__, self.types))
 
-            self.value = matched_type(self.length)
+            self.value = matched_type(length=self.length)
             self.value.set(value)
 
     def get(self):
@@ -219,33 +219,33 @@ class SecsVarDynamic(SecsVar):
         (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         if format_code == SecsVarArray._formatCode and self.__type_supported(SecsVarArray):
-            self.value = SecsVarArray(SecsVarDynamic([], self.length))
+            self.value = SecsVarArray(SecsVarDynamic([], length=self.length))
         elif format_code == SecsVarBinary._formatCode and self.__type_supported(SecsVarBinary):
-            self.value = SecsVarBinary(self.length)
+            self.value = SecsVarBinary(length=self.length)
         elif format_code == SecsVarBoolean._formatCode and self.__type_supported(SecsVarBoolean):
-            self.value = SecsVarBoolean(self.length)
+            self.value = SecsVarBoolean(length=self.length)
         elif format_code == SecsVarString._formatCode and self.__type_supported(SecsVarString):
-            self.value = SecsVarString(self.length)
+            self.value = SecsVarString(length=self.length)
         elif format_code == SecsVarI8._formatCode and self.__type_supported(SecsVarI8):
-            self.value = SecsVarI8(self.length)
+            self.value = SecsVarI8(length=self.length)
         elif format_code == SecsVarI1._formatCode and self.__type_supported(SecsVarI1):
-            self.value = SecsVarI1(self.length)
+            self.value = SecsVarI1(length=self.length)
         elif format_code == SecsVarI2._formatCode and self.__type_supported(SecsVarI2):
-            self.value = SecsVarI2(self.length)
+            self.value = SecsVarI2(length=self.length)
         elif format_code == SecsVarI4._formatCode and self.__type_supported(SecsVarI4):
-            self.value = SecsVarI4(self.length)
+            self.value = SecsVarI4(length=self.length)
         elif format_code == SecsVarF8._formatCode and self.__type_supported(SecsVarF8):
-            self.value = SecsVarF8(self.length)
+            self.value = SecsVarF8(length=self.length)
         elif format_code == SecsVarF4._formatCode and self.__type_supported(SecsVarF4):
-            self.value = SecsVarF4(self.length)
+            self.value = SecsVarF4(length=self.length)
         elif format_code == SecsVarU8._formatCode and self.__type_supported(SecsVarU8):
-            self.value = SecsVarU8(self.length)
+            self.value = SecsVarU8(length=self.length)
         elif format_code == SecsVarU1._formatCode and self.__type_supported(SecsVarU1):
-            self.value = SecsVarU1(self.length)
+            self.value = SecsVarU1(length=self.length)
         elif format_code == SecsVarU2._formatCode and self.__type_supported(SecsVarU2):
-            self.value = SecsVarU2(self.length)
+            self.value = SecsVarU2(length=self.length)
         elif format_code == SecsVarU4._formatCode and self.__type_supported(SecsVarU4):
-            self.value = SecsVarU4(self.length)
+            self.value = SecsVarU4(length=self.length)
         else:
             raise ValueError("Unsupported format {} for this instance of SecsVarDynamic, allowed {}".format(format_code, self.types))
 
@@ -400,7 +400,7 @@ class SecsVarDynamic(SecsVar):
         :returns: copy
         :rtype: :class:`secsgem.secs.variables.SecsVarDynamic`
         """
-        return SecsVarDynamic(self.types, self.length, self.value.get())
+        return SecsVarDynamic(self.types, length=self.length, value=self.value.get())
 
 
 class SecsVarList(SecsVar):
@@ -534,7 +534,7 @@ class SecsVarList(SecsVar):
         for item in self.data:
             new_data[item] = self.data[item].clone()
 
-        return SecsVarList(new_data, self.fieldCount)
+        return SecsVarList(new_data, field_count=self.fieldCount)
 
 
 class SecsVarArray(SecsVar):
@@ -673,7 +673,7 @@ class SecsVarArray(SecsVar):
         for item in self.data:
             new_data.append(item.get())
 
-        return SecsVarArray(item_decriptor, self.__dict__["fieldCount"], new_data)
+        return SecsVarArray(item_decriptor, field_count=self.__dict__["fieldCount"], value=new_data)
 
 
 class SecsVarBinary(SecsVar):
@@ -795,7 +795,7 @@ class SecsVarBinary(SecsVar):
         :returns: copy
         :rtype: :class:`secsgem.secs.variables.SecsVarBinary`
         """
-        return SecsVarBinary(self.length, self.value)
+        return SecsVarBinary(length=self.length, value=self.value)
 
 
 class SecsVarBoolean(SecsVar):
@@ -917,7 +917,7 @@ class SecsVarBoolean(SecsVar):
         :returns: copy
         :rtype: :class:`secsgem.secs.variables.SecsVarBoolean`
         """
-        return SecsVarBoolean(self.length, self.value)
+        return SecsVarBoolean(length=self.length, value=self.value)
 
 
 class SecsVarString(SecsVar):
@@ -1033,7 +1033,7 @@ class SecsVarString(SecsVar):
         :returns: copy
         :rtype: :class:`secsgem.secs.variables.SecsVarString`
         """
-        return SecsVarString(self.length, self.value)
+        return SecsVarString(length=self.length, value=self.value)
 
 class SecsVarNumber(SecsVar):
     """Secs base type for numeric data
@@ -1164,7 +1164,7 @@ class SecsVarNumber(SecsVar):
         :returns: copy
         :rtype: :class:`secsgem.secs.variables.SecsVarNumber`
         """
-        return self.__class__(self.length, self.value)
+        return self.__class__(length=self.length, value=self.value)
 
 
 class SecsVarI8(SecsVarNumber):
