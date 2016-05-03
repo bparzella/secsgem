@@ -69,9 +69,9 @@ class SecsStreamFunction(object):
         self.__dict__["function"] = self._function
 
         if self._formatDescriptor is None:
-            self.__dict__["format"] = None
+            self.__dict__["data"] = None
         else:
-            self.__dict__["format"] = self._formatDescriptor.clone()
+            self.__dict__["data"] = self._formatDescriptor.clone()
 
         self.__dict__["toHost"] = self._toHost
         self.__dict__["toEquipment"] = self._toEquipment
@@ -81,36 +81,36 @@ class SecsStreamFunction(object):
 
         self.__dict__["isMultiBlock"] = self._isMultiBlock
 
-        if value is not None and self.format is not None:
-            self.format.set(value)
+        if value is not None and self.data is not None:
+            self.data.set(value)
 
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
-        if self.format is None:
+        if self.data is None:
             return "{} {}".format(function, "W" if self._isReplyRequired else "")
-        data = "{}".format(self.format.__repr__())
+        data = "{}".format(self.data.__repr__())
         return "{} {} \n{}".format(function, "W" if self._isReplyRequired else "", indent_block(data))
 
     def __getattr__(self, name):
-        if not isinstance(self.format, SecsVarList):
+        if not isinstance(self.data, SecsVarList):
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
-        return self.format.__getattr__(name)
+        return self.data.__getattr__(name)
 
     def __setattr__(self, name, value):
-        if not isinstance(self.format, SecsVarList):
+        if not isinstance(self.data, SecsVarList):
             raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
 
-        self.format.__setattr__(name, value)
+        self.data.__setattr__(name, value)
 
     def __getitem__(self, key):
-        return self.format[key]
+        return self.data[key]
 
     def __setitem__(self, key, item):
         self.format[key] = item
 
     def __len__(self):
-        return len(self.format)
+        return len(self.data)
 
     def append(self, data):
         """Append data to list, if stream/function parameter is a list
@@ -118,8 +118,8 @@ class SecsStreamFunction(object):
         :param data: list item to add
         :type data: various
         """
-        if hasattr(self.format, 'append') and callable(self.format.append):
-            self.format.append(data)
+        if hasattr(self.data, 'append') and callable(self.data.append):
+            self.data.append(data)
         else:
             raise AttributeError("class {} has no attribute 'append'".format(self.__class__.__name__))
 
@@ -129,10 +129,10 @@ class SecsStreamFunction(object):
         :returns: encoded data
         :rtype: string
         """
-        if self.format is None:
+        if self.data is None:
             return ""
 
-        return self.format.encode()
+        return self.data.encode()
 
     def decode(self, data):
         """Updates stream/function parameter data from the passed data
@@ -140,8 +140,8 @@ class SecsStreamFunction(object):
         :param data: encoded data
         :type data: string
         """
-        if self.format is not None:
-            self.format.decode(data)
+        if self.data is not None:
+            self.data.decode(data)
 
     def set(self, value):
         """Updates the value of the stream/function parameter
@@ -149,7 +149,7 @@ class SecsStreamFunction(object):
         :param value: new value for the parameter
         :type value: various
         """
-        self.format.set(value)
+        self.data.set(value)
 
     def get(self):
         """Gets the current value of the stream/function parameter
@@ -157,4 +157,4 @@ class SecsStreamFunction(object):
         :returns: current parameter value
         :rtype: various
         """
-        return self.format.get()
+        return self.data.get()
