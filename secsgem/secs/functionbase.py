@@ -87,9 +87,9 @@ class SecsStreamFunction(object):
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
-            return "{} {}".format(function, "W" if self._isReplyRequired else "")
+            return "{} {} .".format(function, "W" if self._isReplyRequired else "")
         data = "{}".format(self.data.__repr__())
-        return "{} {} \n{}".format(function, "W" if self._isReplyRequired else "", indent_block(data))
+        return "{} {} \n{} .".format(function, "W" if self._isReplyRequired else "", indent_block(data))
 
     def __getattr__(self, name):
         if not isinstance(self.data, SecsVarList):
