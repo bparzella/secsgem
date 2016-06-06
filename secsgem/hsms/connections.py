@@ -400,8 +400,12 @@ class HsmsPassiveConnection(HsmsConnection):
 
         while not self.stopServerThread:
             try:
-                select.select([self.serverSock], [], [])
+                select_result = select.select([self.serverSock], [], [], self.selectTimeout)
             except:
+                continue
+
+            if not select_result[0]:
+                # select timed out
                 continue
 
             accept_result = self.serverSock.accept()
