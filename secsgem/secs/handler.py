@@ -19,11 +19,10 @@ import logging
 import threading
 import copy
 
-from secsgem.common import StreamFunctionCallbackHandler
-
-from secsgem.hsms.handler import HsmsHandler
-
+from ..common import StreamFunctionCallbackHandler
+from ..hsms.handler import HsmsHandler
 import functions
+
 
 class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.

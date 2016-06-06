@@ -15,7 +15,7 @@
 #####################################################################
 """Handler for GEM host."""
 
-from secsgem.gem.handler import GemHandler
+from ..gem.handler import GemHandler
 
 
 class GemHostHandler(GemHandler):

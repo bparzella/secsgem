@@ -17,7 +17,7 @@
 
 import logging
 
-from secsgem.common import EventProducer
+from ..common import EventProducer
 
 from handler import HsmsHandler
 from connections import HsmsMultiPassiveServer

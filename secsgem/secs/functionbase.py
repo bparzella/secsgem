@@ -16,7 +16,7 @@
 """Base class for for SECS stream and functions"""
 
 from variables import SecsVarList
-from secsgem.common import indent_block
+from ..common import indent_block
 
 
 class SecsStreamFunction(object):
