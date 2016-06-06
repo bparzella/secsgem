@@ -18,10 +18,10 @@
 import logging
 import threading
 
-from secsgem.common.fysom import Fysom
-from secsgem.secs.handler import SecsHandler
+from ..common.fysom import Fysom
+from ..secs.handler import SecsHandler
 
-from secsgem.secs.functions import SecsS09F05
+from ..secs.functions import SecsS09F05
 
 class GemHandler(SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.

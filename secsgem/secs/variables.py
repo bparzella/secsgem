@@ -19,7 +19,7 @@ import struct
 
 from collections import OrderedDict
 
-from secsgem.common import indent_block
+from ..common import indent_block
 
 DEBUG_DECODE = False
 DEBUG_DECODE_DEPTH = 0

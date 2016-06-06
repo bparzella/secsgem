@@ -23,7 +23,7 @@ import time
 import threading
 import errno
 
-from secsgem.common import is_windows
+from ..common import is_windows
 
 from packets import HsmsPacket
 

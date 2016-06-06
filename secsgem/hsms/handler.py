@@ -20,8 +20,8 @@ import Queue
 import random
 import threading
 
-from secsgem.common import EventProducer
-from secsgem.common.fysom import Fysom
+from ..common import EventProducer
+from ..common.fysom import Fysom
 
 from connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
 from packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
