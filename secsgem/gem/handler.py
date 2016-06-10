@@ -305,4 +305,7 @@ class GemHandler(SecsHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested()}), packet.header.system)
+        if self.isHost:
+            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": []}), packet.header.system)
+        else:
+            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": [self.MDLN, self.SOFTREV]}), packet.header.system)
