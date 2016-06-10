@@ -35,7 +35,7 @@ logging.getLogger("hsms_communication").propagate = False
 
 logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
 
-h = SampleHost("127.0.0.1", 5000, False, 0, "samplehost")
+h = SampleHost("127.0.0.1", 5000, True, 0, "samplehost")
 h.enable()
 
 code.interact("host object is available as variable 'h'", local=locals())

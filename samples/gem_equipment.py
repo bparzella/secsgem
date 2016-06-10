@@ -75,7 +75,7 @@ logging.getLogger("hsms_communication").propagate = False
 
 logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
 
-h = SampleEquipment("127.0.0.1", 5000, True, 0, "sampleequipment")
+h = SampleEquipment("127.0.0.1", 5000, False, 0, "sampleequipment")
 h.enable()
 
 code.interact("equipment object is available as variable 'h'", local=locals())
