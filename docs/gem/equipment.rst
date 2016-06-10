@@ -116,3 +116,33 @@ Alternatively the values can be acquired and updated using callbacks by setting 
             elif ec.ecid == "EC2":
                 self.ec2 = value
 
+Adding collection events
+------------------------
+
+A collection event can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.CollectionEvent` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.collection_events` dictionary.
+Data values can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.DataValue` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.data_values` dictionary.
+The data values for a collection event can be passed while creating the :class:`secsgem.gem.equipmenthandler.CollectionEvent` instance::
+
+    class SampleEquipment(secsgem.GemEquipmentHandler):
+        def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
+            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+
+            self.dv1 = 31337
+
+            self.data_values.update({
+                30: secsgem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.SecsVarU4, true),
+            })
+
+            self.collection_events.update({
+                50: secsgem.CollectionEvent(50, "test collection event", [30]),
+            })
+
+        def on_dv_value_request(self, dvid, dv):
+            if dv.dvid == 30:
+                return dv.value_type(value=self.dv1)
+
+            return []
+
+        def trigger_sample_collection_event():
+            self.trigger_collection_events([50])
+
