@@ -176,3 +176,17 @@ class TestSecsVarDynamic(unittest.TestCase):
 
         # two bytes
         self.assertRaises(ValueError, secsvar.decode, "somerandomdata")
+
+class TestSecsVarString(unittest.TestCase):
+    def testConstructorWrongLengthString(self):
+        secsvar = SecsVarString(length=5)
+
+        self.assertRaises(ValueError, secsvar.set, "testString")
+
+    def testConstructorNoneNotAllowed(self):
+        self.assertRaises(ValueError, SecsVarString, value=None)
+
+    def testSetNoneNotAllowed(self):
+        secsvar = SecsVarString(length=5)
+
+        self.assertRaises(ValueError, secsvar.set, None)

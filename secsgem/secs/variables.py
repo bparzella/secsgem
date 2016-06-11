@@ -930,13 +930,12 @@ class SecsVarString(SecsVar):
     """
     _formatCode = 020
 
-    def __init__(self, length=-1, value=None):
+    def __init__(self, length=-1, value=""):
         super(SecsVarString, self).__init__()
 
-        self.value = None
+        self.value = ""
         self.length = length
-        if value is not None:
-            self.set(value)
+        self.set(value)
 
     def __repr__(self):
         if len(self.value) == 0:
@@ -974,6 +973,9 @@ class SecsVarString(SecsVar):
         :param value: new value
         :type value: string
         """
+        if value is None:
+            raise ValueError("{} can't be None".format(self.__class__.__name__))
+
         if not isinstance(value, str):
             value = str(value)
 
