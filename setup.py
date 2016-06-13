@@ -11,13 +11,13 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='secsgem',
 
-    version='0.0.3',
+    version='0.0.4',
 
     description='Python SECS/GEM implementation',
     long_description=long_description,
 
     url='https://github.com/bparzella/secsgem',
-    download_url='https://github.com/bparzella/secsgem/tarball/v0.0.3',
+    download_url='https://github.com/bparzella/secsgem/tarball/0.0.4',
 
     author='Benjamin Parzella',
     author_email='bparzella@gmail.com',
@@ -40,4 +40,8 @@ setup(
     keywords='development hsms secs gem',
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+
+    install_requires=[
+        "python-dateutil",
+    ],
 )
