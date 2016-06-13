@@ -40,4 +40,8 @@ setup(
     keywords='development hsms secs gem',
 
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
+
+    install_requires=[
+        "python-dateutil",
+    ],
 )
