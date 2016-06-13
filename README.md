@@ -3,8 +3,11 @@ Simple Python SECS/GEM implementation
 
 This module is still work in progress. I'd love to get your input, your use case, whether you are experienced or not in SECS.
 
+[![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem)
+[ ![Image](https://readthedocs.org/projects/secsgem/badge/) ](http://secsgem.readthedocs.org/en/latest/)
+
 ##Installation
-To install the latest official release (v0.0.3, 2015-08-23, https://pypi.python.org/pypi/secsgem):
+To install the latest official release (0.0.4, 2016-06-13, https://pypi.python.org/pypi/secsgem):
 
 ```bash
 $ pip install secsgem
@@ -16,20 +19,36 @@ To install the current development code (might be instable):
 $ pip install git+git://github.com/bparzella/secsgem
 ```
 
-##Documentation
-[ ![Image](https://readthedocs.org/projects/secsgem/badge/) ](http://secsgem.readthedocs.org/en/latest/)
-
 ##Sample
 
 ```python
-from secsgem import *
+import logging
+import code
 
-client = hsmsClient("10.211.55.32", 5000)
-connection = client.connect()
+import secsgem
 
-time.sleep(3)
+from communication_log_file_handler import CommunicationLogFileHandler
 
-connection.disconnect()
+class SampleHost(secsgem.GemHostHandler):
+    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
+        secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+
+        self.MDLN = "gemhost"
+        self.SOFTREV = "1.0.0"
+
+commLogFileHandler = CommunicationLogFileHandler("log", "h")
+commLogFileHandler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
+logging.getLogger("hsms_communication").addHandler(commLogFileHandler)
+logging.getLogger("hsms_communication").propagate = False
+
+logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
+
+h = SampleHost("127.0.0.1", 5000, True, 0, "samplehost")
+h.enable()
+
+code.interact("host object is available as variable 'h'", local=locals())
+
+h.disable()
 ```
 
 ##Contribute
