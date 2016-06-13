@@ -3,8 +3,9 @@ Simple Python SECS/GEM implementation
 
 This module is still work in progress. I'd love to get your input, your use case, whether you are experienced or not in SECS.
 
-[![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem)
-[ ![Image](https://readthedocs.org/projects/secsgem/badge/) ](http://secsgem.readthedocs.org/en/latest/)
+[![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem) 
+[![Image](https://readthedocs.org/projects/secsgem/badge/)](http://secsgem.readthedocs.org/en/latest/) 
+[![Coverage Status](https://coveralls.io/repos/github/bparzella/secsgem/badge.svg?branch=master)](https://coveralls.io/github/bparzella/secsgem?branch=master)
 
 ##Installation
 To install the latest official release (0.0.4, 2016-06-13, https://pypi.python.org/pypi/secsgem):
