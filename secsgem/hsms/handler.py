@@ -90,7 +90,7 @@ class HsmsHandler(EventProducer):
         # hsms connection state fsm
         self.connectionState = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
                                                        "on_exit_CONNECTED": self._on_state_disconnect,
-                                                       "on_enter_SELECTED": self._on_state_select})
+                                                       "on_enter_CONNECTED_SELECTED": self._on_state_select})
 
         # setup connection
         if self.active:
