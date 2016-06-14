@@ -21,13 +21,13 @@ import random
 import threading
 
 from ..common import EventProducer
-from ..common.fysom import Fysom
 
 from connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
 from packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
     HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
     HsmsSeparateReqHeader
 
+from connectionstatemachine import ConnectionStateMachine
 
 class HsmsHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
@@ -88,24 +88,9 @@ class HsmsHandler(EventProducer):
         self._systemQueues = {}
 
         # hsms connection state fsm
-        self.connectionState = Fysom({
-            'initial': 'NOT_CONNECTED',
-            'events': [
-                {'name': 'connect', 'src': 'NOT_CONNECTED', 'dst': 'CONNECTED'},
-                {'name': 'disconnect', 'src': ['CONNECTED', 'NOT_SELECTED', 'SELECTED'], 'dst': 'NOT_CONNECTED'},
-                {'name': 'select', 'src': ['CONNECTED', 'NOT_SELECTED'], 'dst': 'SELECTED'},
-                {'name': 'deselect', 'src': 'SELECTED', 'dst': 'NOT_SELECTED'},
-                {'name': 'timeoutT7', 'src': ['CONNECTED', 'NOT_SELECTED'], 'dst': 'NOT_CONNECTED'},
-            ],
-            'callbacks': {
-                'onNOT_SELECTED': self._on_state_connect,
-                'onNOT_CONNECTED': self._on_state_disconnect,
-                'onSELECTED': self._on_state_select,
-            },
-            'autoforward': [
-                {'src': 'CONNECTED', 'dst': 'NOT_SELECTED'}
-            ]
-        })
+        self.connectionState = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
+                                                       "on_exit_CONNECTED": self._on_state_disconnect,
+                                                       "on_enter_SELECTED": self._on_state_select})
 
         # setup connection
         if self.active:
@@ -132,7 +117,7 @@ class HsmsHandler(EventProducer):
 
         return self.systemCounter
 
-    def _on_state_connect(self, _):
+    def _on_state_connect(self):
         """Connection state model got event connect
 
         :param data: event attributes
@@ -148,7 +133,7 @@ class HsmsHandler(EventProducer):
             if response is None:
                 self.logger.warning("select request failed")
 
-    def _on_state_disconnect(self, _):
+    def _on_state_disconnect(self):
         """Connection state model got event disconnect
 
         :param data: event attributes
@@ -160,7 +145,7 @@ class HsmsHandler(EventProducer):
 
         self.linktestTimer = None
 
-    def _on_state_select(self, _):
+    def _on_state_select(self):
         """Connection state model got event select
 
         :param data: event attributes
@@ -283,7 +268,7 @@ class HsmsHandler(EventProducer):
             else:
                 self.communicationLogger.info("< %s", packet, extra=self._get_log_extra())
 
-            if not self.connectionState.isstate("SELECTED"):
+            if not self.connectionState.is_CONNECTED_SELECTED():
                 self.logger.warning("received message when not selected")
 
                 out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4))
