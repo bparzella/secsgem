@@ -1017,7 +1017,7 @@ class SecsVarString(SecsVar):
         (text_pos, format_code, length) = self.decode_item_header(data, start)
 
         # string
-        result = None
+        result = ""
 
         if length > 0:
             result = data[text_pos:text_pos + length]

@@ -190,3 +190,27 @@ class TestSecsVarString(unittest.TestCase):
         secsvar = SecsVarString(length=5)
 
         self.assertRaises(ValueError, secsvar.set, None)
+
+    def testEncodeString(self):
+        secsvar = SecsVarString(value="testString")
+
+        self.assertEqual(secsvar.encode(), "A\ntestString")
+
+    def testDecodeString(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode("A\ntestString")
+
+        self.assertEqual(secsvar.get(), "testString")
+
+    def testEncodeEmptyString(self):
+        secsvar = SecsVarString(value="")
+
+        self.assertEqual(secsvar.encode(), "A\0")
+
+    def testDecodeEmptyString(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode("A\0")
+
+        self.assertEqual(secsvar.get(), "")
