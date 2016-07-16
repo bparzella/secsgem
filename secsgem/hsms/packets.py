@@ -370,7 +370,7 @@ class HsmsPacket:
             '00:00:00:0a:ff:ff:00:00:00:05:00:00:00:02'
 
         """
-        length = 10 + len(self.data)
+        length = 10 + len(self.data.encode())
 
         return struct.pack(">L", length) + self.header.encode() + self.data.encode()
 
