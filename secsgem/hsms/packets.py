@@ -372,7 +372,7 @@ class HsmsPacket:
         """
         length = 10 + len(self.data)
 
-        return struct.pack(">L", length) + self.header.encode() + self.data
+        return struct.pack(">L", length) + self.header.encode() + self.data.encode()
 
     @staticmethod
     def decode(text):
