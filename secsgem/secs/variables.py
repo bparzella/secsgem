@@ -1254,7 +1254,7 @@ class SecsVarF8(SecsVarNumber):
     _structCode = "d"
 
 
-class SecsVarF4(SecsVar):
+class SecsVarF4(SecsVarNumber):
     """Secs type for 4 byte float data
 
     :param length: number of items this value
