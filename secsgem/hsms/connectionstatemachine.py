@@ -21,7 +21,7 @@ class ConnectionStateMachine(object):
     states = ["NOT_CONNECTED", {'name': 'CONNECTED', 'children': ['NOT_SELECTED', 'SELECTED']}]
 
     def __init__(self, callbacks={}):
-        self.machine = Machine(model=self, states=ConnectionStateMachine.states, initial='NOT_CONNECTED', auto_transitions=False, async=True)  # transition 1
+        self.machine = Machine(model=self, states=ConnectionStateMachine.states, initial='NOT_CONNECTED', auto_transitions=False, queued=True)  # transition 1
 
         self.callbacks = callbacks
 
