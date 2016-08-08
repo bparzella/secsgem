@@ -1697,6 +1697,178 @@ class SecsS06F16(SecsStreamFunction):
     _isMultiBlock = True
 
 
+class SecsS06F19(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 19 - individual report request
+
+    **Structure**::
+
+        {
+            RPTID: various
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F19(secsgem.SecsVarU4(value=1337))
+        S6F19 W
+          <U4 1337 > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 19
+
+    _formatDescriptor = SecsVarDynamic([SecsVarString,
+                                        SecsVarU1,
+                                        SecsVarU2,
+                                        SecsVarU4,
+                                        SecsVarU8,
+                                        SecsVarI1,
+                                        SecsVarI2,
+                                        SecsVarI4,
+                                        SecsVarI8])
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS06F20(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 20 - individual report data
+
+    **Structure**::
+
+        {
+            V: various
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F20(["ASD", 1337])
+        S6F20
+        <L [2]
+            <A "ASD">
+            <I2 1337 >
+        > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 20
+
+    _formatDescriptor = SecsVarArray(SecsVarDynamic([]))
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
+
+class SecsS06F21(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 21 - annotated individual report request
+
+    **Structure**::
+
+        {
+            RPTID: various
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F21(secsgem.SecsVarU4(value=1337))
+        S6F21 W
+          <U4 1337 > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 21
+
+    _formatDescriptor = SecsVarDynamic([SecsVarString,
+                                        SecsVarU1,
+                                        SecsVarU2,
+                                        SecsVarU4,
+                                        SecsVarU8,
+                                        SecsVarI1,
+                                        SecsVarI2,
+                                        SecsVarI4,
+                                        SecsVarI8])
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS06F22(SecsStreamFunction):
+    """Secs stream and function class for stream 06, function 22 - annotated individual report data
+
+    **Structure**::
+
+        {
+            V: various
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F22([{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}])
+        S6F22
+        <L [2]
+            <L [2]
+            <A "VID1">
+            <A "ASD">
+            >
+            <L [2]
+            <I1 2 >
+            <I2 1337 >
+            >
+        > .
+        
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 6
+    _function = 22
+
+    _formatDescriptor = SecsVarArray(
+                            SecsVarList(OrderedDict((
+                                ("VID", SecsVarDynamic([SecsVarString,
+                                                        SecsVarU1,
+                                                        SecsVarU2,
+                                                        SecsVarU4,
+                                                        SecsVarU8,
+                                                        SecsVarI1,
+                                                        SecsVarI2,
+                                                        SecsVarI4,
+                                                        SecsVarI8])),
+                                ("V", SecsVarDynamic([])),
+                            )), 2)
+                        )
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
+
 class SecsS07F00(SecsStreamFunction):
     """Secs stream and function class for stream 07, function 00 - abort transaction stream 7
 
@@ -3984,6 +4156,10 @@ secsStreamsFunctions = {
         12: SecsS06F12,
         15: SecsS06F15,
         16: SecsS06F16,
+        19: SecsS06F19,
+        20: SecsS06F20,
+        21: SecsS06F21,
+        22: SecsS06F22,
     },
     7: {
         1: SecsS07F01,
