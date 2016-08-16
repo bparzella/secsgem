@@ -780,6 +780,67 @@ class SecsS02F16(SecsStreamFunction):
     _isMultiBlock = False
 
 
+class SecsS02F17(SecsStreamFunction):
+    """Secs stream and function class for stream 02, function 17 - date and time - request
+
+    **Structure**::
+
+        Header only
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS02F17()
+        S2F17 W .
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 2
+    _function = 17
+
+    _formatDescriptor = None
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS02F18(SecsStreamFunction):
+    """Secs stream and function class for stream 02, function 18 - date and time - data
+
+    **Structure**::
+
+        TIME: A
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS02F18("160816205942")
+        S2F18
+          <A "160816205942"> .
+
+    :param value: parameters for this function (see example)
+    :type value: ASCII string
+    """
+    _stream = 2
+    _function = 18
+
+    _formatDescriptor = SecsVarString()
+
+    _toHost = True
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+    
+    
 class SecsS02F29(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 29 - equipment constant namelist - request
 
@@ -4348,6 +4409,8 @@ secsStreamsFunctions = {
         14: SecsS02F14,
         15: SecsS02F15,
         16: SecsS02F16,
+        17: SecsS02F17,
+        18: SecsS02F18,
         29: SecsS02F29,
         30: SecsS02F30,
         33: SecsS02F33,
