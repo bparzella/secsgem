@@ -18,8 +18,7 @@
 from collections import OrderedDict
 
 from functionbase import SecsStreamFunction
-from variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI1, SecsVarI2, SecsVarI4,\
-    SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
+from dataitems import *
 
 
 class SecsS00F00(SecsStreamFunction):
@@ -149,23 +148,27 @@ class SecsS01F02(SecsStreamFunction):
 class SecsS01F03(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 03 - selected equipment status - request
 
+    **Data Items**
+
+    - :class:`SVID <secsgem.secs.dataitems.SVID>`
+
     **Structure**::
 
         [
-            SVID: U4[1]
+            SVID: A/I*/U*[1]
             ...
         ]
 
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F03([1, 6, 12])
+        >>> secsgem.SecsS01F03([1, "6", 12])
         S1F3 W
           <L [3]
-            <U4 1 >
-            <U4 6 >
-            <U4 12 >
-          >
+            <I1 1 >
+            <A "6">
+            <I1 12 >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -173,15 +176,7 @@ class SecsS01F03(SecsStreamFunction):
     _stream = 1
     _function = 3
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
-                                                     SecsVarU1,
-                                                     SecsVarU2,
-                                                     SecsVarU4,
-                                                     SecsVarU8,
-                                                     SecsVarI1,
-                                                     SecsVarI2,
-                                                     SecsVarI4,
-                                                     SecsVarI8]))
+    _formatDescriptor = SecsVarArray(SVID())
 
     _toHost = False
     _toEquipment = True
@@ -195,10 +190,14 @@ class SecsS01F03(SecsStreamFunction):
 class SecsS01F04(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 04 - selected equipment status - data
 
+    **Data Items**
+
+    - :class:`SV <secsgem.secs.dataitems.SV>`
+
     **Structure**::
 
         [
-            SV: various
+            SV: any
             ...
         ]
 
@@ -211,7 +210,7 @@ class SecsS01F04(SecsStreamFunction):
             <U1 1 >
             <A "text">
             <U4 1337 >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -219,7 +218,7 @@ class SecsS01F04(SecsStreamFunction):
     _stream = 1
     _function = 4
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([]))
+    _formatDescriptor = SecsVarArray(SV())
 
     _toHost = True
     _toEquipment = False
@@ -233,10 +232,14 @@ class SecsS01F04(SecsStreamFunction):
 class SecsS01F11(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 11 - status variable namelist - request
 
+    **Data Items**
+
+    - :class:`SVID <secsgem.secs.dataitems.SVID>`
+
     **Structure**::
 
         [
-            SVID: U4[1]
+            SVID: A/I*/U*[1]
             ...
         ]
 
@@ -246,9 +249,9 @@ class SecsS01F11(SecsStreamFunction):
         >>> secsgem.SecsS01F11([1, 1337])
         S1F11 W
           <L [2]
-            <U4 1 >
-            <U4 1337 >
-          >
+            <I1 1 >
+            <I2 1337 >
+          > .
 
     An empty list will return all available status variables.
 
@@ -258,15 +261,7 @@ class SecsS01F11(SecsStreamFunction):
     _stream = 1
     _function = 11
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
-                                                     SecsVarU1,
-                                                     SecsVarU2,
-                                                     SecsVarU4,
-                                                     SecsVarU8,
-                                                     SecsVarI1,
-                                                     SecsVarI2,
-                                                     SecsVarI4,
-                                                     SecsVarI8]))
+    _formatDescriptor = SecsVarArray(SVID())
 
     _toHost = False
     _toEquipment = True
@@ -280,11 +275,17 @@ class SecsS01F11(SecsStreamFunction):
 class SecsS01F12(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 12 - status variable namelist - reply
 
+    **Data Items**
+
+    - :class:`SVID <secsgem.secs.dataitems.SVID>`
+    - :class:`SVNAME <secsgem.secs.dataitems.SVNAME>`
+    - :class:`UNITS <secsgem.secs.dataitems.UNITS>`
+
     **Structure**::
 
         [
             {
-                SVID: U4[1]
+                SVID: A/I*/U*[1]
                 SVNAME: A[n]
                 UNITS: A[n]
             }
@@ -298,16 +299,16 @@ class SecsS01F12(SecsStreamFunction):
         S1F12
           <L [2]
             <L [3]
-              <U4 1 >
+              <I1 1 >
               <A "SV1">
               <A "mm">
             >
             <L [3]
-              <U4 1337 >
+              <I2 1337 >
               <A "SV2">
               <A>
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -316,17 +317,9 @@ class SecsS01F12(SecsStreamFunction):
     _function = 12
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("SVID", SecsVarDynamic([SecsVarString,
-                                 SecsVarU1,
-                                 SecsVarU2,
-                                 SecsVarU4,
-                                 SecsVarU8,
-                                 SecsVarI1,
-                                 SecsVarI2,
-                                 SecsVarI4,
-                                 SecsVarI8])),
-        ("SVNAME", SecsVarString()),
-        ("UNITS", SecsVarString()),
+        ("SVID", SVID()),
+        ("SVNAME", SVNAME()),
+        ("UNITS", UNITS()),
     )), 3))
 
     _toHost = True
@@ -393,6 +386,10 @@ class SecsS01F14(SecsStreamFunction):
         See structure definition below for details.
         Be sure to fill the array accordingly.
 
+    **Data Items**
+
+    - :class:`COMMACK <secsgem.secs.dataitems.COMMACK>`
+
     **Structure E->H**::
 
         {
@@ -413,15 +410,15 @@ class SecsS01F14(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F14({"COMMACK": 1, "DATA": ["secsgem", "0.0.3"]})
+        >>> secsgem.SecsS01F14({"COMMACK": secsgem.COMMACK.ACCEPTED, "DATA": ["secsgem", "0.0.3"]})
         S1F14
           <L [2]
-            <B 0x1>
+            <B 0x0>
             <L [2]
               <A "secsgem">
               <A "0.0.3">
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: dict
@@ -430,7 +427,7 @@ class SecsS01F14(SecsStreamFunction):
     _function = 14
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("COMMACK", SecsVarBinary(1)),
+        ("COMMACK", COMMACK()),
         ("DATA", SecsVarArray(SecsVarString(20)))
     )), 2)
 
@@ -472,6 +469,10 @@ class SecsS01F15(SecsStreamFunction):
 class SecsS01F16(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 16 - offline acknowledge
 
+    **Data Items**
+
+    - :class:`OFLACK <secsgem.secs.dataitems.OFLACK>`
+
     **Structure**::
 
         OFLACK: B[1]
@@ -479,9 +480,9 @@ class SecsS01F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F16(1)
+        >>> secsgem.SecsS01F16(secsgem.OFLACK.ACK)
         S1F16
-          <B 0x1>
+          <B 0x0> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -489,7 +490,7 @@ class SecsS01F16(SecsStreamFunction):
     _stream = 1
     _function = 16
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = OFLACK()
 
     _toHost = True
     _toEquipment = False
@@ -529,6 +530,10 @@ class SecsS01F17(SecsStreamFunction):
 class SecsS01F18(SecsStreamFunction):
     """Secs stream and function class for stream 01, function 18 - online acknowledge
 
+    **Data Items**
+
+    - :class:`ONLACK <secsgem.secs.dataitems.ONLACK>`
+
     **Structure**::
 
         ONLACK: B[1]
@@ -536,9 +541,9 @@ class SecsS01F18(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F18(1)
+        >>> secsgem.SecsS01F18(secsgem.ONLACK.ALREADYON)
         S1F18
-          <B 0x1>
+          <B 0x2> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -546,7 +551,7 @@ class SecsS01F18(SecsStreamFunction):
     _stream = 1
     _function = 18
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = ONLACK()
 
     _toHost = True
     _toEquipment = False
@@ -891,6 +896,10 @@ class SecsS02F29(SecsStreamFunction):
 class SecsS02F30(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 30 - equipment constant namelist
 
+    **Data Items**
+
+    - :class:`UNITS <secsgem.secs.dataitems.UNITS>`
+
     **Structure**::
 
         [
@@ -985,7 +994,7 @@ class SecsS02F30(SecsStreamFunction):
                                   SecsVarI2,
                                   SecsVarI4,
                                   SecsVarI8])),
-        ("UNITS", SecsVarString()),
+        ("UNITS", UNITS()),
     )), 6))
 
     _toHost = True
