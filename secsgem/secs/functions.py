@@ -155,14 +155,14 @@ class SecsS01F03(SecsStreamFunction):
     **Structure**::
 
         [
-            SVID: A/I*/U*[1]
+            SVID: A/I*/U*
             ...
         ]
 
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F03([1, "6", 12])
+        >>> secsgem.SecsS01F03([1, "1337", 12])
         S1F3 W
           <L [3]
             <I1 1 >
@@ -239,7 +239,7 @@ class SecsS01F11(SecsStreamFunction):
     **Structure**::
 
         [
-            SVID: A/I*/U*[1]
+            SVID: A/I*/U*
             ...
         ]
 
@@ -285,7 +285,7 @@ class SecsS01F12(SecsStreamFunction):
 
         [
             {
-                SVID: A/I*/U*[1]
+                SVID: A/I*/U*
                 SVNAME: A[n]
                 UNITS: A[n]
             }
@@ -591,10 +591,14 @@ class SecsS02F00(SecsStreamFunction):
 class SecsS02F13(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 13 - equipment constant - request
 
+    **Data Items**
+
+    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+
     **Structure**::
 
         [
-            ECID: U4[1]
+            ECID: A/I*/U*
             ...
         ]
 
@@ -604,9 +608,9 @@ class SecsS02F13(SecsStreamFunction):
         >>> secsgem.SecsS02F13([1, 1337])
         S2F13 W
           <L [2]
-            <U4 1 >
-            <U4 1337 >
-          >
+            <I1 1 >
+            <I2 1337 >
+          > .
 
     An empty list will return all available equipment constants.
 
@@ -616,15 +620,7 @@ class SecsS02F13(SecsStreamFunction):
     _stream = 2
     _function = 13
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
-                                                     SecsVarU1,
-                                                     SecsVarU2,
-                                                     SecsVarU4,
-                                                     SecsVarU8,
-                                                     SecsVarI1,
-                                                     SecsVarI2,
-                                                     SecsVarI4,
-                                                     SecsVarI8]))
+    _formatDescriptor = SecsVarArray(ECID())
 
     _toHost = False
     _toEquipment = True
@@ -638,10 +634,14 @@ class SecsS02F13(SecsStreamFunction):
 class SecsS02F14(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 14 - equipment constant - data
 
+    **Data Items**
+
+    - :class:`ECV <secsgem.secs.dataitems.ECV>`
+
     **Structure**::
 
         [
-            ECV: various
+            ECV: any
             ...
         ]
 
@@ -653,7 +653,7 @@ class SecsS02F14(SecsStreamFunction):
           <L [2]
             <U1 1 >
             <A "text">
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -661,20 +661,7 @@ class SecsS02F14(SecsStreamFunction):
     _stream = 2
     _function = 14
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
-                                                     SecsVarBinary,
-                                                     SecsVarBoolean,
-                                                     SecsVarU1,
-                                                     SecsVarU2,
-                                                     SecsVarU4,
-                                                     SecsVarU8,
-                                                     SecsVarF4,
-                                                     SecsVarF8,
-                                                     SecsVarI1,
-                                                     SecsVarI2,
-                                                     SecsVarI4,
-                                                     SecsVarI8,
-                                                     SecsVarArray]))
+    _formatDescriptor = SecsVarArray(ECV())
 
     _toHost = True
     _toEquipment = False
@@ -688,12 +675,17 @@ class SecsS02F14(SecsStreamFunction):
 class SecsS02F15(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 15 - new equipment constant - send
 
+    **Data Items**
+
+    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+    - :class:`ECV <secsgem.secs.dataitems.ECV>`
+
     **Structure**::
 
         [
             {
-                ECID: U4[1]
-                ECV: various
+                ECID: A/I*/U*
+                ECV: any
             }
             ...
         ]
@@ -701,18 +693,18 @@ class SecsS02F15(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.SecsVarU4(value=10)}, {"ECID": 1337, "ECV": "text"}])
+        >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.SecsVarU4(value=10)}, {"ECID": "1337", "ECV": "text"}])
         S2F15 W
           <L [2]
             <L [2]
-              <U4 1 >
+              <I1 1 >
               <U4 10 >
             >
             <L [2]
-              <U4 1337 >
+              <A "1337">
               <A "text">
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -721,28 +713,8 @@ class SecsS02F15(SecsStreamFunction):
     _function = 15
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("ECID", SecsVarDynamic([SecsVarString,
-                                 SecsVarU1,
-                                 SecsVarU2,
-                                 SecsVarU4,
-                                 SecsVarU8,
-                                 SecsVarI1,
-                                 SecsVarI2,
-                                 SecsVarI4,
-                                 SecsVarI8])),
-        ("ECV", SecsVarDynamic([SecsVarString,
-                                SecsVarBinary,
-                                SecsVarBoolean,
-                                SecsVarU1,
-                                SecsVarU2,
-                                SecsVarU4,
-                                SecsVarU8,
-                                SecsVarF4,
-                                SecsVarF8,
-                                SecsVarI1,
-                                SecsVarI2,
-                                SecsVarI4,
-                                SecsVarI8])),
+        ("ECID", ECID()),
+        ("ECV", ECV()),
     )), 2))
 
     _toHost = False
@@ -757,6 +729,10 @@ class SecsS02F15(SecsStreamFunction):
 class SecsS02F16(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 16 - new equipment constant - acknowledge
 
+    **Data Items**
+
+    - :class:`EAC <secsgem.secs.dataitems.EAC>`
+
     **Structure**::
 
         EAC: B[1]
@@ -764,9 +740,9 @@ class SecsS02F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F16(1)
+        >>> secsgem.SecsS02F16(secsgem.EAC.BUSY)
         S2F16
-          <B 0x1>
+          <B 0x2> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -774,7 +750,7 @@ class SecsS02F16(SecsStreamFunction):
     _stream = 2
     _function = 16
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = EAC()
 
     _toHost = True
     _toEquipment = False
@@ -818,9 +794,13 @@ class SecsS02F17(SecsStreamFunction):
 class SecsS02F18(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 18 - date and time - data
 
+    **Data Items**
+
+    - :class:`TIME <secsgem.secs.dataitems.TIME>`
+
     **Structure**::
 
-        TIME: A
+        TIME: A[32]
 
     **Example**::
 
@@ -835,7 +815,7 @@ class SecsS02F18(SecsStreamFunction):
     _stream = 2
     _function = 18
 
-    _formatDescriptor = SecsVarString()
+    _formatDescriptor = TIME()
 
     _toHost = True
     _toEquipment = True
@@ -849,10 +829,14 @@ class SecsS02F18(SecsStreamFunction):
 class SecsS02F29(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 29 - equipment constant namelist - request
 
+    **Data Items**
+
+    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+
     **Structure**::
 
         [
-            ECID: U4[1]
+            ECID: A/I*/U*
             ...
         ]
 
@@ -862,9 +846,9 @@ class SecsS02F29(SecsStreamFunction):
         >>> secsgem.SecsS02F29([1, 1337])
         S2F29 W
           <L [2]
-            <U4 1 >
-            <U4 1337 >
-          >
+            <I1 1 >
+            <I2 1337 >
+          > .
 
     An empty list will return all available equipment constants.
 
@@ -874,15 +858,7 @@ class SecsS02F29(SecsStreamFunction):
     _stream = 2
     _function = 29
 
-    _formatDescriptor = SecsVarArray(SecsVarDynamic([SecsVarString,
-                                                     SecsVarU1,
-                                                     SecsVarU2,
-                                                     SecsVarU4,
-                                                     SecsVarU8,
-                                                     SecsVarI1,
-                                                     SecsVarI2,
-                                                     SecsVarI4,
-                                                     SecsVarI8]))
+    _formatDescriptor = SecsVarArray(ECID())
 
     _toHost = False
     _toEquipment = True
@@ -898,18 +874,23 @@ class SecsS02F30(SecsStreamFunction):
 
     **Data Items**
 
+    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+    - :class:`ECNAME <secsgem.secs.dataitems.ECNAME>`
+    - :class:`ECMIN <secsgem.secs.dataitems.ECMIN>`
+    - :class:`ECMAX <secsgem.secs.dataitems.ECMAX>`
+    - :class:`ECDEF <secsgem.secs.dataitems.ECDEF>`
     - :class:`UNITS <secsgem.secs.dataitems.UNITS>`
 
     **Structure**::
 
         [
             {
-                ECID: U4[1]
-                ECNAME: A[n]
-                ECMIN: various
-                ECMAX: various
-                ECDEF: various
-                UNITS: A[n]
+                ECID: A/I*/U*
+                ECNAME: A
+                ECMIN: any
+                ECMAX: any
+                ECDEF: any
+                UNITS: A
             }
             ...
         ]
@@ -921,7 +902,7 @@ class SecsS02F30(SecsStreamFunction):
         S2F30
           <L [2]
             <L [6]
-              <U4 1 >
+              <I1 1 >
               <A "EC1">
               <U1 0 >
               <U1 100 >
@@ -929,14 +910,14 @@ class SecsS02F30(SecsStreamFunction):
               <A "mm">
             >
             <L [6]
-              <U4 1337 >
+              <I2 1337 >
               <A "EC2">
               <A>
               <A>
               <A>
               <A>
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -945,55 +926,11 @@ class SecsS02F30(SecsStreamFunction):
     _function = 30
 
     _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-        ("ECID", SecsVarDynamic([SecsVarString,
-                                 SecsVarU1,
-                                 SecsVarU2,
-                                 SecsVarU4,
-                                 SecsVarU8,
-                                 SecsVarI1,
-                                 SecsVarI2,
-                                 SecsVarI4,
-                                 SecsVarI8])),
-        ("ECNAME", SecsVarString()),
-        ("ECMIN", SecsVarDynamic([SecsVarString,
-                                  SecsVarBinary,
-                                  SecsVarBoolean,
-                                  SecsVarU1,
-                                  SecsVarU2,
-                                  SecsVarU4,
-                                  SecsVarU8,
-                                  SecsVarF4,
-                                  SecsVarF8,
-                                  SecsVarI1,
-                                  SecsVarI2,
-                                  SecsVarI4,
-                                  SecsVarI8])),
-        ("ECMAX", SecsVarDynamic([SecsVarString,
-                                  SecsVarBinary,
-                                  SecsVarBoolean,
-                                  SecsVarU1,
-                                  SecsVarU2,
-                                  SecsVarU4,
-                                  SecsVarU8,
-                                  SecsVarF4,
-                                  SecsVarF8,
-                                  SecsVarI1,
-                                  SecsVarI2,
-                                  SecsVarI4,
-                                  SecsVarI8])),
-        ("ECDEF", SecsVarDynamic([SecsVarString,
-                                  SecsVarBinary,
-                                  SecsVarBoolean,
-                                  SecsVarU1,
-                                  SecsVarU2,
-                                  SecsVarU4,
-                                  SecsVarU8,
-                                  SecsVarF4,
-                                  SecsVarF8,
-                                  SecsVarI1,
-                                  SecsVarI2,
-                                  SecsVarI4,
-                                  SecsVarI8])),
+        ("ECID", ECID()),
+        ("ECNAME", ECNAME()),
+        ("ECMIN", ECMIN()),
+        ("ECMAX", ECMAX()),
+        ("ECDEF", ECDEF()),
         ("UNITS", UNITS()),
     )), 6))
 
@@ -1009,15 +946,21 @@ class SecsS02F30(SecsStreamFunction):
 class SecsS02F33(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 33 - define report
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+    - :class:`VID <secsgem.secs.dataitems.VID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
+            DATAID: A/I*/U*
             DATA: [
                 {
-                    RPTID: U4[1]
+                    RPTID: A/I*/U*
                     RPT: [
-                        VID: various[n]
+                        VID: A/I*/U*
                         ...
                     ]
                 }
@@ -1031,24 +974,24 @@ class SecsS02F33(SecsStreamFunction):
         >>> secsgem.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, {"RPTID": 1001, "VID": [1, 2355]}]})
         S2F33 W
           <L [2]
-            <U4 1 >
+            <I1 1 >
             <L [2]
               <L [2]
-                <U4 1000 >
+                <I2 1000 >
                 <L [2]
-                  <U1 12 >
-                  <U1 1337 >
+                  <I1 12 >
+                  <I2 1337 >
                 >
               >
               <L [2]
-                <U4 1001 >
+                <I2 1001 >
                 <L [2]
-                  <U1 1 >
-                  <U1 2355 >
+                  <I1 1 >
+                  <I2 2355 >
                 >
               >
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1057,31 +1000,11 @@ class SecsS02F33(SecsStreamFunction):
     _function = 33
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
         ("DATA", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("RPTID", SecsVarDynamic([SecsVarString,
-                                          SecsVarU1,
-                                          SecsVarU2,
-                                          SecsVarU4,
-                                          SecsVarU8,
-                                          SecsVarI1,
-                                          SecsVarI2,
-                                          SecsVarI4,
-                                          SecsVarI8])),
-                ("VID", SecsVarArray(
-                    SecsVarDynamic([
-                        SecsVarU1,
-                        SecsVarU2,
-                        SecsVarU4,
-                        SecsVarU8,
-                        SecsVarI1,
-                        SecsVarI2,
-                        SecsVarI4,
-                        SecsVarI8,
-                        SecsVarString,
-                    ])
-                )),
+                ("RPTID", RPTID()),
+                ("VID", SecsVarArray(VID())),
             )), 2)
         )),
     )), 2)
@@ -1098,6 +1021,10 @@ class SecsS02F33(SecsStreamFunction):
 class SecsS02F34(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 34 - define report - acknowledge
 
+    **Data Items**
+
+    - :class:`DRACK <secsgem.secs.dataitems.DRACK>`
+
     **Structure**::
 
         DRACK: B[1]
@@ -1105,9 +1032,9 @@ class SecsS02F34(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F34(0)
+        >>> secsgem.SecsS02F34(secsgem.DRACK.INVALIDFORMAT)
         S2F34
-          <B 0x0>
+          <B 0x2> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1115,7 +1042,7 @@ class SecsS02F34(SecsStreamFunction):
     _stream = 2
     _function = 34
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = DRACK()
 
     _toHost = True
     _toEquipment = False
@@ -1129,15 +1056,21 @@ class SecsS02F34(SecsStreamFunction):
 class SecsS02F35(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 35 - link event report
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
+            DATAID: A/I*/U*
             DATA: [
                 {
-                    CEID: U4[1]
+                    CEID: A/I*/U*
                     RPTID: [
-                        ID: U4[1]
+                        ID: A/I*/U*
                         ...
                     ]
                 }
@@ -1151,17 +1084,17 @@ class SecsS02F35(SecsStreamFunction):
         >>> secsgem.SecsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
         S2F35 W
           <L [2]
-            <U4 1 >
+            <I1 1 >
             <L [1]
               <L [2]
-                <U4 1337 >
+                <I2 1337 >
                 <L [2]
-                  <U4 1000 >
-                  <U4 1001 >
+                  <I2 1000 >
+                  <I2 1001 >
                 >
               >
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1170,20 +1103,12 @@ class SecsS02F35(SecsStreamFunction):
     _function = 35
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
         ("DATA", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("CEID", SecsVarU4(1)),
+                ("CEID", CEID()),
                 ("RPTID", SecsVarArray(
-                    SecsVarDynamic([SecsVarString,
-                                    SecsVarU1,
-                                    SecsVarU2,
-                                    SecsVarU4,
-                                    SecsVarU8,
-                                    SecsVarI1,
-                                    SecsVarI2,
-                                    SecsVarI4,
-                                    SecsVarI8])
+                    RPTID()
                 )),
             )), 2)
         )),
@@ -1201,6 +1126,10 @@ class SecsS02F35(SecsStreamFunction):
 class SecsS02F36(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 36 - link event report - acknowledge
 
+    **Data Items**
+
+    - :class:`LRACK <secsgem.secs.dataitems.LRACK>`
+
     **Structure**::
 
         LRACK: B[1]
@@ -1208,9 +1137,9 @@ class SecsS02F36(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F36(0)
+        >>> secsgem.SecsS02F36(secsgem.LRACK.CEIDUNKNOWN)
         S2F36
-          <B 0x0>
+          <B 0x4> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1218,7 +1147,7 @@ class SecsS02F36(SecsStreamFunction):
     _stream = 2
     _function = 36
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = LRACK()
 
     _toHost = False
     _toEquipment = True
@@ -1232,12 +1161,17 @@ class SecsS02F36(SecsStreamFunction):
 class SecsS02F37(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 37 - en-/disable event report
 
+    **Data Items**
+
+    - :class:`CEED <secsgem.secs.dataitems.CEED>`
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+
     **Structure**::
 
         {
             CEED: BOOL[1]
             CEID: [
-                ID: U4[1]
+                ID: A/I*/U*
                 ...
             ]
         }
@@ -1250,9 +1184,9 @@ class SecsS02F37(SecsStreamFunction):
           <L [2]
             <BOOLEAN True >
             <L [1]
-              <U4 1337 >
+              <I2 1337 >
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1261,10 +1195,8 @@ class SecsS02F37(SecsStreamFunction):
     _function = 37
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("CEED", SecsVarBoolean(1)),
-        ("CEID", SecsVarArray(
-            SecsVarU4(1)
-        )),
+        ("CEED", CEED()),
+        ("CEID", SecsVarArray(CEID())),
     )), 2)
 
     _toHost = False
@@ -1279,6 +1211,10 @@ class SecsS02F37(SecsStreamFunction):
 class SecsS02F38(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 38 - en-/disable event report - acknowledge
 
+    **Data Items**
+
+    - :class:`ERACK <secsgem.secs.dataitems.ERACK>`
+
     **Structure**::
 
         ERACK: B[1]
@@ -1286,9 +1222,9 @@ class SecsS02F38(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F38(0)
+        >>> secsgem.SecsS02F38(secsgem.ERACK.CEIDUNKNOWN)
         S2F38
-          <B 0x0>
+          <B 0x1> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1296,7 +1232,7 @@ class SecsS02F38(SecsStreamFunction):
     _stream = 2
     _function = 38
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = ERACK()
 
     _toHost = True
     _toEquipment = False
@@ -1310,14 +1246,20 @@ class SecsS02F38(SecsStreamFunction):
 class SecsS02F41(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 41 - host command - send
 
+    **Data Items**
+
+    - :class:`RCMD <secsgem.secs.dataitems.RCMD>`
+    - :class:`CPNAME <secsgem.secs.dataitems.CPNAME>`
+    - :class:`CPVAL <secsgem.secs.dataitems.CPVAL>`
+
     **Structure**::
 
         {
-            RCMD: A[n]
+            RCMD: A/U1/I1
             PARAMS: [
                 {
-                    CPNAME: A[n]
-                    CPVAL: A[n]
+                    CPNAME: A/I*/U*
+                    CPVAL: B/BOOL/A/I*/U*
                 }
                 ...
             ]
@@ -1340,7 +1282,7 @@ class SecsS02F41(SecsStreamFunction):
                 <A "VAL2">
               >
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1349,11 +1291,11 @@ class SecsS02F41(SecsStreamFunction):
     _function = 41
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("RCMD", SecsVarString()),
+        ("RCMD", RCMD()),
         ("PARAMS", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("CPNAME", SecsVarString()),
-                ("CPVAL", SecsVarString()),
+                ("CPNAME", CPNAME()),
+                ("CPVAL", CPVAL()),
             )), 2)
         )),
     )), 2)
@@ -1370,13 +1312,19 @@ class SecsS02F41(SecsStreamFunction):
 class SecsS02F42(SecsStreamFunction):
     """Secs stream and function class for stream 02, function 42 - host command - acknowledge
 
+    **Data Items**
+
+    - :class:`HCACK <secsgem.secs.dataitems.HCACK>`
+    - :class:`CPNAME <secsgem.secs.dataitems.CPNAME>`
+    - :class:`CPACK <secsgem.secs.dataitems.CPACK>`
+
     **Structure**::
 
         {
             HCACK: B[1]
             PARAMS: [
                 {
-                    CPNAME: A[n]
+                    CPNAME: A/I*/U*
                     CPACK: B[1]
                 }
                 ...
@@ -1386,7 +1334,7 @@ class SecsS02F42(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F42({"HCACK": 1, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": 2}, {"CPNAME": "PARAM2", "CPACK": 3}]})
+        >>> secsgem.SecsS02F42({"HCACK": secsgem.HCACK.INVALIDCOMMAND, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": secsgem.CPACK.CPVALILLEGALVALUE}, {"CPNAME": "PARAM2", "CPACK": secsgem.CPACK.CPVALILLEGALFORMAT}]})
         S2F42
           <L [2]
             <B 0x1>
@@ -1400,7 +1348,7 @@ class SecsS02F42(SecsStreamFunction):
                 <B 0x3>
               >
             >
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1409,11 +1357,11 @@ class SecsS02F42(SecsStreamFunction):
     _function = 42
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("HCACK", SecsVarBinary(1)),
+        ("HCACK", HCACK()),
         ("PARAMS", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("CPNAME", SecsVarString()),
-                ("CPACK", SecsVarBinary(1)),
+                ("CPNAME", CPNAME()),
+                ("CPACK", CPACK()),
             )), 2)
         )),
     )), 2)
@@ -1556,10 +1504,14 @@ class SecsS06F00(SecsStreamFunction):
 class SecsS06F05(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 05 - multi block data inquiry
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
+            DATAID: A/I*/U*
             DATALENGTH: U4[1]
         }
 
@@ -1580,7 +1532,7 @@ class SecsS06F05(SecsStreamFunction):
     _function = 5
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
         ("DATALENGTH", SecsVarDynamic([SecsVarU1,
                                        SecsVarU2,
                                        SecsVarU4,
@@ -1634,10 +1586,14 @@ class SecsS06F06(SecsStreamFunction):
 class SecsS06F07(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 07 - data transfer request
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
+            DATAID: A/I*/U*
         }
 
     **Example**::
@@ -1667,11 +1623,16 @@ class SecsS06F07(SecsStreamFunction):
 class SecsS06F08(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 08 - data transfer data
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
-            CEID: U4[1]
+            DATAID: A/I*/U*
+            CEID: A/I*/U*
             DS: [
                 {
                     DSID: U4[1]
@@ -1719,8 +1680,8 @@ class SecsS06F08(SecsStreamFunction):
     _function = 8
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
-        ("CEID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
+        ("CEID", CEID()),
         ("DS", SecsVarArray(
             SecsVarList(OrderedDict((
                 ("DSID", SecsVarDynamic([SecsVarString,
@@ -1770,14 +1731,20 @@ class SecsS06F08(SecsStreamFunction):
 class SecsS06F11(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 11 - event report
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
-            CEID: U4[1]
+            DATAID: A/I*/U*
+            CEID: A/I*/U*
             RPT: [
                 {
-                    RPTID: U4[1]
+                    RPTID: A/I*/U*
                     V: [
                         DATA: various
                         ...
@@ -1813,19 +1780,11 @@ class SecsS06F11(SecsStreamFunction):
     _function = 11
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
-        ("CEID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
+        ("CEID", CEID()),
         ("RPT", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("RPTID", SecsVarDynamic([SecsVarString,
-                                          SecsVarU1,
-                                          SecsVarU2,
-                                          SecsVarU4,
-                                          SecsVarU8,
-                                          SecsVarI1,
-                                          SecsVarI2,
-                                          SecsVarI4,
-                                          SecsVarI8])),
+                ("RPTID", RPTID()),
                 ("V", SecsVarArray(
                     SecsVarDynamic([])
                 )),
@@ -1876,10 +1835,14 @@ class SecsS06F12(SecsStreamFunction):
 class SecsS06F15(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 15 - event report request
 
+    **Data Items**
+
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+
     **Structure**::
 
         {
-            CEID: U4[1]
+            CEID: A/I*/U*
         }
 
     **Example**::
@@ -1895,7 +1858,7 @@ class SecsS06F15(SecsStreamFunction):
     _stream = 6
     _function = 15
 
-    _formatDescriptor = SecsVarU4(1)
+    _formatDescriptor = CEID()
 
     _toHost = False
     _toEquipment = True
@@ -1909,14 +1872,20 @@ class SecsS06F15(SecsStreamFunction):
 class SecsS06F16(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 16 - event report data
 
+    **Data Items**
+
+    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+
     **Structure**::
 
         {
-            DATAID: U4[1]
-            CEID: U4[1]
+            DATAID: A/I*/U*
+            CEID: A/I*/U*
             RPT: [
                 {
-                    RPTID: U4[1]
+                    RPTID: A/I*/U*
                     V: [
                         DATA: various
                         ...
@@ -1952,19 +1921,11 @@ class SecsS06F16(SecsStreamFunction):
     _function = 16
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("DATAID", SecsVarU4(1)),
-        ("CEID", SecsVarU4(1)),
+        ("DATAID", DATAID()),
+        ("CEID", CEID()),
         ("RPT", SecsVarArray(
             SecsVarList(OrderedDict((
-                ("RPTID", SecsVarDynamic([SecsVarString,
-                                          SecsVarU1,
-                                          SecsVarU2,
-                                          SecsVarU4,
-                                          SecsVarU8,
-                                          SecsVarI1,
-                                          SecsVarI2,
-                                          SecsVarI4,
-                                          SecsVarI8])),
+                ("RPTID", RPTID()),
                 ("V", SecsVarArray(
                     SecsVarDynamic([])
                 )),
@@ -1984,10 +1945,14 @@ class SecsS06F16(SecsStreamFunction):
 class SecsS06F19(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 19 - individual report request
 
+    **Data Items**
+
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+
     **Structure**::
 
         {
-            RPTID: various
+            RPTID: A/I*/U*
         }
 
     **Example**::
@@ -2003,15 +1968,7 @@ class SecsS06F19(SecsStreamFunction):
     _stream = 6
     _function = 19
 
-    _formatDescriptor = SecsVarDynamic([SecsVarString,
-                                        SecsVarU1,
-                                        SecsVarU2,
-                                        SecsVarU4,
-                                        SecsVarU8,
-                                        SecsVarI1,
-                                        SecsVarI2,
-                                        SecsVarI4,
-                                        SecsVarI8])
+    _formatDescriptor = RPTID()
 
     _toHost = False
     _toEquipment = True
@@ -2061,10 +2018,14 @@ class SecsS06F20(SecsStreamFunction):
 class SecsS06F21(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 21 - annotated individual report request
 
+    **Data Items**
+
+    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+
     **Structure**::
 
         {
-            RPTID: various
+            RPTID: A/I*/U*
         }
 
     **Example**::
@@ -2080,15 +2041,7 @@ class SecsS06F21(SecsStreamFunction):
     _stream = 6
     _function = 21
 
-    _formatDescriptor = SecsVarDynamic([SecsVarString,
-                                        SecsVarU1,
-                                        SecsVarU2,
-                                        SecsVarU4,
-                                        SecsVarU8,
-                                        SecsVarI1,
-                                        SecsVarI2,
-                                        SecsVarI4,
-                                        SecsVarI8])
+    _formatDescriptor = RPTID()
 
     _toHost = False
     _toEquipment = True
@@ -2102,11 +2055,18 @@ class SecsS06F21(SecsStreamFunction):
 class SecsS06F22(SecsStreamFunction):
     """Secs stream and function class for stream 06, function 22 - annotated individual report data
 
+    **Data Items**
+
+    - :class:`VID <secsgem.secs.dataitems.VID>`
+
     **Structure**::
 
-        {
-            V: various
-        }
+        [
+            {
+                VID: A/I*/U*
+                V: various
+            }
+        ]
 
     **Example**::
 
@@ -2132,15 +2092,7 @@ class SecsS06F22(SecsStreamFunction):
 
     _formatDescriptor = SecsVarArray(
                             SecsVarList(OrderedDict((
-                                ("VID", SecsVarDynamic([SecsVarString,
-                                                        SecsVarU1,
-                                                        SecsVarU2,
-                                                        SecsVarU4,
-                                                        SecsVarU8,
-                                                        SecsVarI1,
-                                                        SecsVarI2,
-                                                        SecsVarI4,
-                                                        SecsVarI8])),
+                                ("VID", VID()),
                                 ("V", SecsVarDynamic([])),
                             )), 2)
                         )
