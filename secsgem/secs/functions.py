@@ -1404,24 +1404,30 @@ class SecsS05F00(SecsStreamFunction):
 class SecsS05F01(SecsStreamFunction):
     """Secs stream and function class for stream 05, function 01 - alarm report - send
 
+    **Data Items**
+
+    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
+    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+
     **Structure**::
 
         {
             ALCD: B[1]
-            ALID: U4[1]
+            ALID: U*/I*
             ALTX: A[120]
         }
 
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F01({"ALCD": 1, "ALID": 100, "ALTX": "text"})
+        >>> secsgem.SecsS05F01({"ALCD": secsgem.ALCD.PERSONALSAFETY | secsgem.ALCD.ALARMSET, "ALID": 100, "ALTX": "text"})
         S5F1
           <L [3]
-            <B 0x1>
-            <U4 100 >
+            <B 0x81>
+            <I1 100 >
             <A "text">
-          >
+          > .
 
     :param value: parameters for this function (see example)
     :type value: list
@@ -1430,9 +1436,9 @@ class SecsS05F01(SecsStreamFunction):
     _function = 1
 
     _formatDescriptor = SecsVarList(OrderedDict((
-        ("ALCD", SecsVarBinary(1)),
-        ("ALID", SecsVarU4(1)),
-        ("ALTX", SecsVarString(120)),
+        ("ALCD", ALCD()),
+        ("ALID", ALID()),
+        ("ALTX", ALTX()),
     )), 3)
 
     _toHost = True
@@ -1447,6 +1453,10 @@ class SecsS05F01(SecsStreamFunction):
 class SecsS05F02(SecsStreamFunction):
     """Secs stream and function class for stream 05, function 02 - alarm report - acknowledge
 
+    **Data Items**
+
+    - :class:`ACKC5 <secsgem.secs.dataitems.ACKC5>`
+
     **Structure**::
 
         ACKC5: B[1]
@@ -1454,9 +1464,9 @@ class SecsS05F02(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F02(0)
+        >>> secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)
         S5F2
-          <B 0x0>
+          <B 0x0> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -1464,7 +1474,7 @@ class SecsS05F02(SecsStreamFunction):
     _stream = 5
     _function = 2
 
-    _formatDescriptor = SecsVarBinary(1)
+    _formatDescriptor = ACKC5()
 
     _toHost = False
     _toEquipment = True

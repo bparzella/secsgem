@@ -18,6 +18,132 @@
 from variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, SecsVarI1, SecsVarI2, SecsVarI4,\
     SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
+class ACKC5(SecsVarBinary):
+    """Acknowledge code
+
+       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Length: 1
+
+    **Values**
+        +-------+-------------------+--------------------------------------------------+
+        | Value | Description       | Constant                                         |
+        +=======+===================+==================================================+
+        | 0     | Accepted          | :const:`secsgem.secs.dataitems.COMMACK.ACCEPTED` |
+        +-------+-------------------+--------------------------------------------------+
+        | 1-63  | Error             | :const:`secsgem.secs.dataitems.COMMACK.ERROR`    |
+        +-------+-------------------+--------------------------------------------------+
+
+    **Used In Function**
+        - :class:`SecsS05F02 <secsgem.secs.functions.SecsS05F02>`
+        - :class:`SecsS05F04 <secsgem.secs.functions.SecsS05F04>`
+
+    """
+    ACCEPTED = 0
+    ERROR = 1
+
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__(1)
+
+
+class ALCD(SecsVarBinary):
+    """Alarm code byte
+
+       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Length: 1
+
+    **Values**
+        +-------+---------------------------+--------------------------------------------------------------+
+        | Value | Description               | Constant                                                     |
+        +=======+===========================+==============================================================+
+        | 0     | Not used                  |                                                              |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 1     | Personal safety           | :const:`secsgem.secs.dataitems.ALCD.PERSONALSAFETY`          |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 2     | Equipment safety          | :const:`secsgem.secs.dataitems.ALCD.EQUIPMENTSAFETY`         |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 3     | Parameter control warning | :const:`secsgem.secs.dataitems.ALCD.PARAMETERCONTROLWARNING` |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 4     | Parameter control error   | :const:`secsgem.secs.dataitems.ALCD.PARAMETERCONTROLERROR`   |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 5     | Irrecoverable error       | :const:`secsgem.secs.dataitems.ALCD.IRRECOVERABLEERROR`      |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 6     | Equipment status warning  | :const:`secsgem.secs.dataitems.ALCD.EQUIPMENTSTATUSWARNING`  |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 7     | Attention flags           | :const:`secsgem.secs.dataitems.ALCD.ATTENTIONFLAGS`          |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 8     | Data integrity            | :const:`secsgem.secs.dataitems.ALCD.DATAINTEGRITY`           |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 2-63  | Other catogories          |                                                              |
+        +-------+---------------------------+--------------------------------------------------------------+
+        | 128   | Alarm set flag            | :const:`secsgem.secs.dataitems.ALCD.ALARMSET`                |
+        +-------+---------------------------+--------------------------------------------------------------+
+
+    **Used In Function**
+        - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
+        - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
+
+    """
+    PERSONALSAFETY = 1
+    EQUIPMENTSAFETY = 2
+    PARAMETERCONTROLWARNING = 3
+    PARAMETERCONTROLERROR = 4
+    IRRECOVERABLEERROR = 5
+    EQUIPMENTSTATUSWARNING = 6
+    ATTENTIONFLAGS = 7
+    DATAINTEGRITY = 8
+    ALARMSET = 128
+
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__(1)
+
+
+class ALID(SecsVarDynamic):
+    """Alarm ID
+
+    :Types:
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
+        - :class:`SecsS05F03 <secsgem.secs.functions.SecsS05F03>`
+        - :class:`SecsS05F05 <secsgem.secs.functions.SecsS05F05>`
+        - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
+
+
+class ALTX(SecsVarString):
+    """Alarm ID
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
+        - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__(120)
+
+
 class CEED(SecsVarBoolean):
     """Collection event or trace enable/disable code
 
