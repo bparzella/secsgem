@@ -25,17 +25,49 @@ class ACKC5(SecsVarBinary):
        :Length: 1
 
     **Values**
-        +-------+-------------------+--------------------------------------------------+
-        | Value | Description       | Constant                                         |
-        +=======+===================+==================================================+
-        | 0     | Accepted          | :const:`secsgem.secs.dataitems.COMMACK.ACCEPTED` |
-        +-------+-------------------+--------------------------------------------------+
-        | 1-63  | Error             | :const:`secsgem.secs.dataitems.COMMACK.ERROR`    |
-        +-------+-------------------+--------------------------------------------------+
+        +-------+-------------------+------------------------------------------------+
+        | Value | Description       | Constant                                       |
+        +=======+===================+================================================+
+        | 0     | Accepted          | :const:`secsgem.secs.dataitems.ACKC5.ACCEPTED` |
+        +-------+-------------------+------------------------------------------------+
+        | 1-63  | Error             | :const:`secsgem.secs.dataitems.ACKC5.ERROR`    |
+        +-------+-------------------+------------------------------------------------+
 
     **Used In Function**
         - :class:`SecsS05F02 <secsgem.secs.functions.SecsS05F02>`
         - :class:`SecsS05F04 <secsgem.secs.functions.SecsS05F04>`
+
+    """
+    ACCEPTED = 0
+    ERROR = 1
+
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__(1)
+
+
+class ACKC6(SecsVarBinary):
+    """Acknowledge code
+
+       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Length: 1
+
+    **Values**
+        +-------+-------------------+------------------------------------------------+
+        | Value | Description       | Constant                                       |
+        +=======+===================+================================================+
+        | 0     | Accepted          | :const:`secsgem.secs.dataitems.ACKC6.ACCEPTED` |
+        +-------+-------------------+------------------------------------------------+
+        | 1-63  | Error             | :const:`secsgem.secs.dataitems.ACKC6.ERROR`    |
+        +-------+-------------------+------------------------------------------------+
+
+    **Used In Function**
+        - :class:`SecsS06F02 <secsgem.secs.functions.SecsS06F02>`
+        - :class:`SecsS06F04 <secsgem.secs.functions.SecsS06F04>`
+        - :class:`SecsS06F10 <secsgem.secs.functions.SecsS06F10>`
+        - :class:`SecsS06F12 <secsgem.secs.functions.SecsS06F12>`
+        - :class:`SecsS06F14 <secsgem.secs.functions.SecsS06F14>`
 
     """
     ACCEPTED = 0
@@ -401,6 +433,41 @@ class DATAID(SecsVarDynamic):
         super(self.__class__, self).__init__([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
 
 
+class DATALENGTH(SecsVarDynamic):
+    """Length of data to be sent
+
+    :Types:
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS02F39 <secsgem.secs.functions.SecsS02F39>`
+        - :class:`SecsS03F15 <secsgem.secs.functions.SecsS03F15>`
+        - :class:`SecsS03F29 <secsgem.secs.functions.SecsS03F29>`
+        - :class:`SecsS03F31 <secsgem.secs.functions.SecsS03F31>`
+        - :class:`SecsS04F25 <secsgem.secs.functions.SecsS04F25>`
+        - :class:`SecsS06F05 <secsgem.secs.functions.SecsS06F05>`
+        - :class:`SecsS13F11 <secsgem.secs.functions.SecsS13F11>`
+        - :class:`SecsS14F23 <secsgem.secs.functions.SecsS14F23>`
+        - :class:`SecsS16F01 <secsgem.secs.functions.SecsS16F01>`
+        - :class:`SecsS16F11 <secsgem.secs.functions.SecsS16F11>`
+        - :class:`SecsS18F05 <secsgem.secs.functions.SecsS18F05>`
+        - :class:`SecsS18F07 <secsgem.secs.functions.SecsS18F07>`
+        - :class:`SecsS19F19 <secsgem.secs.functions.SecsS19F19>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
+
+
 class DRACK(SecsVarBinary):
     """Define report acknowledge code
 
@@ -437,6 +504,88 @@ class DRACK(SecsVarBinary):
         self.name = self.__class__.__name__
 
         super(self.__class__, self).__init__(1)
+
+
+class DSID(SecsVarDynamic):
+    """Data set ID
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
+        - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`
+        - :class:`SecsS06F09 <secsgem.secs.functions.SecsS06F09>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
+
+
+class DVNAME(SecsVarDynamic):
+    """Data value name
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
+        - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
+
+
+class DVVAL(SecsVarDynamic):
+    """Data value
+
+    :Types:
+       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
+       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
+       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
+        - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`
+        - :class:`SecsS06F09 <secsgem.secs.functions.SecsS06F09>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([])
 
 
 class EAC(SecsVarBinary):
@@ -478,7 +627,6 @@ class ECDEF(SecsVarDynamic):
     """Equipment constant default value
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -499,7 +647,7 @@ class ECDEF(SecsVarDynamic):
     def __init__(self):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([])
+        super(self.__class__, self).__init__([SecsVarBinary, SecsVarBoolean, SecsVarString, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4])
 
 
 class ECID(SecsVarDynamic):
@@ -532,7 +680,6 @@ class ECMAX(SecsVarDynamic):
     """Equipment constant maximum value
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -553,14 +700,13 @@ class ECMAX(SecsVarDynamic):
     def __init__(self):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([])
+        super(self.__class__, self).__init__([SecsVarBinary, SecsVarBoolean, SecsVarString, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4])
 
 
 class ECMIN(SecsVarDynamic):
     """Equipment constant minimum value
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -581,7 +727,7 @@ class ECMIN(SecsVarDynamic):
     def __init__(self):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([])
+        super(self.__class__, self).__init__([SecsVarBinary, SecsVarBoolean, SecsVarString, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4])
 
 
 class ECNAME(SecsVarString):
@@ -603,7 +749,6 @@ class ECV(SecsVarDynamic):
     """Equipment constant value
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -625,7 +770,7 @@ class ECV(SecsVarDynamic):
     def __init__(self):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([])
+        super(self.__class__, self).__init__([SecsVarBinary, SecsVarBoolean, SecsVarString, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4])
 
 
 class ERACK(SecsVarBinary):
@@ -651,6 +796,38 @@ class ERACK(SecsVarBinary):
     """
     ACCEPTED = 0
     CEIDUNKNOWN = 1
+
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__(1)
+
+
+class GRANT6(SecsVarBinary):
+    """Permission to send
+
+       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Length: 1
+
+    **Values**
+        +-------+----------------+------------------------------------------------------+
+        | Value | Description    | Constant                                             |
+        +=======+================+======================================================+
+        | 0     | Granted        | :const:`secsgem.secs.dataitems.GRANT6.GRANTED`       |
+        +-------+----------------+------------------------------------------------------+
+        | 1     | Busy           | :const:`secsgem.secs.dataitems.GRANT6.BUSY`          |
+        +-------+----------------+------------------------------------------------------+
+        | 2     | Not interested | :const:`secsgem.secs.dataitems.GRANT6.NOTINTERESTED` |
+        +-------+----------------+------------------------------------------------------+
+        | 3-63  | Other error    |                                                      |
+        +-------+----------------+------------------------------------------------------+
+
+    **Used In Function**
+        - :class:`SecsS06F06 <secsgem.secs.functions.SecsS06F06>`
+    """
+    GRANTED = 0
+    BUSY = 1
+    NOTINTERESTED = 2
 
     def __init__(self):
         self.name = self.__class__.__name__
@@ -965,6 +1142,39 @@ class UNITS(SecsVarString):
         self.name = self.__class__.__name__
 
         super(self.__class__, self).__init__()
+
+class V(SecsVarDynamic):
+    """Variable data
+
+    :Types:
+       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
+       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
+       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    **Used In Function**
+        - :class:`SecsS06F11 <secsgem.secs.functions.SecsS06F11>`
+        - :class:`SecsS06F13 <secsgem.secs.functions.SecsS06F13>`
+        - :class:`SecsS06F16 <secsgem.secs.functions.SecsS06F16>`
+        - :class:`SecsS06F20 <secsgem.secs.functions.SecsS06F20>`
+        - :class:`SecsS06F22 <secsgem.secs.functions.SecsS06F22>`
+
+    """
+    def __init__(self):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([])
+
 
 class VID(SecsVarDynamic):
     """Variable ID
