@@ -63,7 +63,7 @@ class HsmsHeader:
             >>> import secsgem
             >>>
             >>> header = secsgem.hsms.packets.HsmsLinktestReqHeader(2)
-            >>> secsgem.common.format_hex(header.encode(0))
+            >>> secsgem.common.format_hex(header.encode())
             'ff:ff:00:00:00:05:00:00:00:02'
 
         """
