@@ -55,6 +55,7 @@ target/
 
 # IDE
 .idea
+.vscode
 
 # samples logging
 samples/log/*.log

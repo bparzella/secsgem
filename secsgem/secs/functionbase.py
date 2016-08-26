@@ -15,14 +15,16 @@
 #####################################################################
 """Base class for for SECS stream and functions"""
 
-from variables import SecsVarList
+from variables import SecsVar
 from ..common import indent_block
 
 
 class SecsStreamFunction(object):
     """Secs stream and function base class
 
-    This class is inherited to create a stream/function class. To create a function specific content the class variables :attr:`_stream`, :attr:`_function` and :attr:`_formatDescriptor` must be overridden.
+    This class is inherited to create a stream/function class.
+    To create a function specific content the class variables :attr:`_stream`, :attr:`_function`
+    and :attr:`_dataFormat` must be overridden.
 
     **Example**::
 
@@ -38,14 +40,16 @@ class SecsStreamFunction(object):
 
             _isMultiBlock = True
 
-            _formatDescriptor = SecsVarArray(SecsVarList(OrderedDict((
-                                ("ECID", SecsVarU4(1)),
-                                ("ECNAME", SecsVarString()),
-                                ("ECMIN", SecsVarDynamic([SecsVarString])),
-                                ("ECMAX", SecsVarDynamic([SecsVarString])),
-                                ("ECDEF", SecsVarDynamic([SecsVarString])),
-                                ("UNITS", SecsVarString()),
-                                )), 6))
+            _dataFormat = [
+                [
+                    ECID,
+                    ECNAME,
+                    ECMIN,
+                    ECMAX,
+                    ECDEF,
+                    UNITS
+                ]
+            ]
 
     :param value: set the value of stream/function parameters
     :type value: various
@@ -54,7 +58,7 @@ class SecsStreamFunction(object):
     _stream = 0
     _function = 0
 
-    _formatDescriptor = None
+    _dataFormat = None
 
     _toHost = True
     _toEquipment = True
@@ -65,21 +69,20 @@ class SecsStreamFunction(object):
     _isMultiBlock = False
 
     def __init__(self, value=None):
-        self.__dict__["stream"] = self._stream
-        self.__dict__["function"] = self._function
+        self.data = SecsVar.generate(self._dataFormat)
 
-        if self._formatDescriptor is None:
-            self.__dict__["data"] = None
-        else:
-            self.__dict__["data"] = self._formatDescriptor.clone()
+        # copy public members from private ones
+        self.stream = self._stream
+        self.function = self._function
 
-        self.__dict__["toHost"] = self._toHost
-        self.__dict__["toEquipment"] = self._toEquipment
+        self.data_format = self._dataFormat
+        self.to_host = self._toHost
+        self.to_equipment = self._toEquipment
 
-        self.__dict__["hasReply"] = self._hasReply
-        self.__dict__["isReplyRequired"] = self._isReplyRequired
+        self.has_reply = self._hasReply
+        self.is_reply_required = self._isReplyRequired
 
-        self.__dict__["isMultiBlock"] = self._isMultiBlock
+        self.is_multi_block = self._isMultiBlock
 
         if value is not None and self.data is not None:
             self.data.set(value)
@@ -87,27 +90,19 @@ class SecsStreamFunction(object):
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
-            return "{} {} .".format(function, "W" if self._isReplyRequired else "")
+            return "{}{} .".format(function, " W" if self._isReplyRequired else "")
         data = "{}".format(self.data.__repr__())
-        return "{} {} \n{} .".format(function, "W" if self._isReplyRequired else "", indent_block(data))
 
-    def __getattr__(self, name):
-        if not isinstance(self.data, SecsVarList):
-            raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
-
-        return self.data.__getattr__(name)
-
-    def __setattr__(self, name, value):
-        if not isinstance(self.data, SecsVarList):
-            raise AttributeError("class {} has no attribute '{}'".format(self.__class__.__name__, name))
-
-        self.data.__setattr__(name, value)
+        return "{}{}\n{} .".format(
+            function,
+            " W" if self._isReplyRequired else "",
+            indent_block(data))
 
     def __getitem__(self, key):
         return self.data[key]
 
     def __setitem__(self, key, item):
-        self.format[key] = item
+        self.data[key] = item
 
     def __len__(self):
         return len(self.data)
@@ -121,7 +116,8 @@ class SecsStreamFunction(object):
         if hasattr(self.data, 'append') and callable(self.data.append):
             self.data.append(data)
         else:
-            raise AttributeError("class {} has no attribute 'append'".format(self.__class__.__name__))
+            raise AttributeError(
+                "class {} has no attribute 'append'".format(self.__class__.__name__))
 
     def encode(self):
         """Generates the encoded hsms data of the stream/function parameter

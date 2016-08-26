@@ -63,7 +63,7 @@ class HsmsHeader:
             >>> import secsgem
             >>>
             >>> header = secsgem.hsms.packets.HsmsLinktestReqHeader(2)
-            >>> secsgem.common.format_hex(header.encode(0))
+            >>> secsgem.common.format_hex(header.encode())
             'ff:ff:00:00:00:05:00:00:00:02'
 
         """
@@ -370,9 +370,11 @@ class HsmsPacket:
             '00:00:00:0a:ff:ff:00:00:00:05:00:00:00:02'
 
         """
-        length = 10 + len(self.data.encode())
+        headerdata = self.header.encode()
 
-        return struct.pack(">L", length) + self.header.encode() + self.data.encode()
+        length = len(headerdata) + len(self.data)
+
+        return struct.pack(">L", length) + headerdata + self.data
 
     @staticmethod
     def decode(text):

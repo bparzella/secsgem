@@ -14,9 +14,17 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 import unittest
+import nose
 
 from secsgem.secs.variables import *
 
+def printable_value(value):
+    if isinstance(value, str):
+        return value.encode('string_escape')
+    elif isinstance(value, unicode):
+        return value
+    else:
+        return str(value).encode('string_escape')
 
 class TestSecsVar(unittest.TestCase):
     def testEncodeItemHeader(self):
@@ -177,14 +185,432 @@ class TestSecsVarDynamic(unittest.TestCase):
         # two bytes
         self.assertRaises(ValueError, secsvar.decode, "somerandomdata")
 
-class TestSecsVarString(unittest.TestCase):
+    def testListOfSameType(self):
+        secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
+
+        secsvar.set([1, 2, 3, 4, 65536])
+
+        self.assertEqual(secsvar.get(), [1, 2, 3, 4, 65536])
+
+    def testListItemsOverMax(self):
+        secsvar = SecsVarDynamic([SecsVarU1])
+
+        self.assertRaises(ValueError, secsvar.set, [1, 2, 3, 4, 65536])
+
+    def testListItemsOverMaxDiffType(self):
+        secsvar = SecsVarDynamic([SecsVarU1])
+
+        self.assertRaises(ValueError, secsvar.set, [1, 2, 3, 4, "65536"])
+
+    def testListItemsDiffType(self):
+        secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
+
+        secsvar.set([1, 2, 3, 4, "65536"])
+
+        self.assertEqual(secsvar.get(), [1, 2, 3, 4, 65536])
+
+class GoodBadLists(object):
+    _type = None
+    goodValues = []
+    badValues = []
+
+    def goodAssignmentCheck(self, value):
+        if "LENGTH" in value:
+            secsvar = self._type(length=value["LENGTH"])
+        else:
+            secsvar = self._type()
+
+        print self._type.__name__, "testing assignment of good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+
+        secsvar.set(value["VALUE"])
+        nose.tools.eq_(secsvar.get(), value["RESULT"])
+
+    def testGoodAssignment(self):
+        for valueList in self.goodValues:
+            for value in valueList:
+                yield self.goodAssignmentCheck, value
+
+
+    @nose.tools.raises(TypeError, ValueError)
+    def badAssignmentCheck(self, value):
+        if "LENGTH" in value:
+            secsvar = self._type(length=value["LENGTH"])
+        else:
+            secsvar = self._type()
+
+        print self._type.__name__, "testing assignment of bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        secsvar.set(value["VALUE"])
+        print self._type.__name__, "unexpected bad assignment", secsvar.get()
+
+    def testBadAssignment(self):
+        for valueList in self.badValues:
+            for value in valueList:
+                yield self.badAssignmentCheck, value
+                
+
+    def goodSupportedCheck(self, value):
+        if "LENGTH" in value:
+            secsvar = self._type(length=value["LENGTH"])
+        else:
+            secsvar = self._type()
+
+        print self._type.__name__, "testing isSupported for good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        nose.tools.eq_(secsvar.supports_value(value["VALUE"]), True)
+
+    def testGoodSupported(self):
+        for valueList in self.goodValues:
+            for value in valueList:
+                yield self.goodSupportedCheck, value
+
+    def badSupportedCheck(self, value):
+        if "LENGTH" in value:
+            secsvar = self._type(length=value["LENGTH"])
+        else:
+            secsvar = self._type()
+
+        print self._type.__name__, "testing isSupported for bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        nose.tools.eq_(secsvar.supports_value(value["VALUE"]), False)
+
+    def testBadSupported(self):
+        for valueList in self.badValues:
+            for value in valueList:
+                yield self.badSupportedCheck, value
+
+class TestSecsVarBinary(GoodBadLists):
+    _type = SecsVarBinary
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = {}
+    _badFloatValues = [
+        {"VALUE": 1.0}, 
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 255, "RESULT": 255},
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 265},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 255L, "RESULT": 255},
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 265L},
+    ]
+
+    #complex
+    _goodComplexValues = {}
+    _badComplexValues = [
+        {"VALUE": 1J},
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "TEST1", "RESULT": "TEST1"},
+        {"VALUE": "1234QWERasdf.-+ \n\r\t\1 \127 \xB1", "RESULT": "1234QWERasdf.-+ \n\r\t\1 \127 \xB1"},
+        {"VALUE": "TEST1", "RESULT": "TEST1", "LENGTH": 5},
+    ]
+    _badStringValues = [
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"TEST1", "RESULT": "TEST1"}, 
+        {"VALUE": u"1234QWERasdf.-+ \n\r\t\1 \127", "RESULT": "1234QWERasdf.-+ \n\r\t\1 \127"},
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 5}, 
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [False, True, False, False], "RESULT": "\x00\x01\x00\x00"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [1, -1, 256, 5]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5}
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (1, -1, 256, 5)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarBoolean(GoodBadLists):
+    _type = SecsVarBoolean
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": True}, 
+        {"VALUE": False, "RESULT": False},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = {}
+    _badFloatValues = [
+        {"VALUE": 1.0}, 
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT": False}, 
+        {"VALUE": 1, "RESULT": True}, 
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 2},
+        {"VALUE": 265},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT": False}, 
+        {"VALUE": 1L, "RESULT": True}, 
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 2L},
+        {"VALUE": 265L},
+    ]
+
+    #complex
+    _goodComplexValues = {}
+    _badComplexValues = [
+        {"VALUE": 1J},
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "YES", "RESULT": True},
+        {"VALUE": "tRuE", "RESULT": True},
+        {"VALUE": "No", "RESULT": False},
+        {"VALUE": "False", "RESULT": False},
+    ]
+    _badStringValues = [
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"YES", "RESULT": True},
+        {"VALUE": u"tRuE", "RESULT": True},
+        {"VALUE": u"No", "RESULT": False},
+        {"VALUE": u"False", "RESULT": False},
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [True, False, True], "RESULT": [True, False, True]},
+        {"VALUE": [True, False, True], "RESULT": [True, False, True], "LENGTH": 3},
+        {"VALUE": [1, 0, 1], "RESULT": [True, False, True]},
+        {"VALUE": ["True", "False", "True"], "RESULT": [True, False, True]},
+        {"VALUE": ["YES", "no", "yes"], "RESULT": [True, False, True]},
+    ]
+    _badListValues = [
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [1, -1, 256, 5]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [True, False, True], "LENGTH": 2},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5}
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (True, False, True), "RESULT": [True, False, True]},
+    ]
+    _badTupleValues = [
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 6},
+        {"VALUE": (1, -1, 256, 5)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+        {"VALUE": (True, False, True), "LENGTH": 2},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x00\x01"), "RESULT": [False, True, False, True]},
+        {"VALUE": bytearray("\x00\x01\x00\x01"), "RESULT": [False, True, False, True], "LENGTH": 4},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x00\x01"), "LENGTH": 3},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF")},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 6},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarString(GoodBadLists):
+    _type = SecsVarString
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": "True"}, 
+        {"VALUE": False, "RESULT": "False"},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+        {"VALUE": 1.0, "RESULT": "1.0"},        
+        {"VALUE": 100000000.123, "RESULT": "100000000.123"}, 
+        {"VALUE": -1.0, "RESULT": "-1.0"},
+    ]
+    _badFloatValues = [
+        {"VALUE": 100000000.123, "LENGTH": 1}, 
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -1, "RESULT": "-1"},
+        {"VALUE": 0, "RESULT": "0"}, 
+        {"VALUE": 1, "RESULT": "1"}, 
+        {"VALUE": 2, "RESULT": "2"},
+        {"VALUE": 265, "RESULT": "265"},
+    ]
+    _badIntValues = [
+        {"VALUE": 265, "LENGTH": 1},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -1L, "RESULT": "-1"},
+        {"VALUE": 0L, "RESULT": "0"}, 
+        {"VALUE": 1L, "RESULT": "1"}, 
+        {"VALUE": 2L, "RESULT": "2"},
+        {"VALUE": 265L, "RESULT": "265"},
+    ]
+    _badLongValues = [
+        {"VALUE": 265L, "LENGTH": 1},
+    ]
+
+    #complex
+    _goodComplexValues = [
+        {"VALUE": 1J, "RESULT": "1j"},       
+    ]
+    _badComplexValues = [
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "YES", "RESULT": "YES"},
+        {"VALUE": "tRuE", "RESULT": "tRuE"},
+        {"VALUE": "No", "RESULT": "No"},
+        {"VALUE": "False", "RESULT": "False"},
+    ]
+    _badStringValues = [
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"YES", "RESULT": "YES"},
+        {"VALUE": u"tRuE", "RESULT": "tRuE"},
+        {"VALUE": u"No", "RESULT": "No"},
+        {"VALUE": u"False", "RESULT": "False"},
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [False, True, False, False], "RESULT": "\x00\x01\x00\x00"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [1, -1, 256, 5]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (1, -1, 256, 5)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": "\x00\x01\x05\x20\x10\xFF"},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": "\x00\x01\x05\x20\x10\xFF", "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarString2(unittest.TestCase):
     def testConstructorWrongLengthString(self):
         secsvar = SecsVarString(length=5)
 
         self.assertRaises(ValueError, secsvar.set, "testString")
 
-    def testConstructorNoneNotAllowed(self):
-        self.assertRaises(ValueError, SecsVarString, value=None)
+    def testConstructorConvertsNoneToEmptyString(self):
+        secsvar = SecsVarString(value=None)
+
+        self.assertEqual(secsvar.get(), "")
 
     def testSetNoneNotAllowed(self):
         secsvar = SecsVarString(length=5)
@@ -214,3 +640,1247 @@ class TestSecsVarString(unittest.TestCase):
         secsvar.decode("A\0")
 
         self.assertEqual(secsvar.get(), "")
+
+class TestSecsVarI8(GoodBadLists):
+    _type = SecsVarI8
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -9223372036854775808, "RESULT":-9223372036854775808},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 9223372036854775807, "RESULT": 9223372036854775807}
+    ]
+    _badIntValues = [
+        {"VALUE": -9223372036854775809},
+        {"VALUE": 9223372036854775808},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -9223372036854775808L, "RESULT":-9223372036854775808},
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 9223372036854775807L, "RESULT": 9223372036854775807}
+    ]
+    _badLongValues = [
+        {"VALUE": -9223372036854775809L},
+        {"VALUE": 9223372036854775808L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "-9223372036854775808", "RESULT":-9223372036854775808},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+        {"VALUE": "9223372036854775807", "RESULT": 9223372036854775807}
+    ]
+    _badStringValues = [
+        {"VALUE": "-9223372036854775809"},
+        {"VALUE": "9223372036854775808"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-9223372036854775808", "RESULT":-9223372036854775808},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"9223372036854775807", "RESULT": 9223372036854775807}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-9223372036854775809"},
+        {"VALUE": u"9223372036854775808"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [-9223372036854775808, 1, 2, 9223372036854775807], "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807]},
+        {"VALUE": ["-9223372036854775808", 1, "2", "9223372036854775807"], "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807]},
+        {"VALUE": ["-9223372036854775808", 1, "2", "9223372036854775807"], "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-9223372036854775809, 1, 2, 9223372036854775807]},
+        {"VALUE": [-9223372036854775808, 1, 2, 9223372036854775808]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (-9223372036854775808, 1, 2, 9223372036854775807), "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807]},
+        {"VALUE": ("-9223372036854775808", 1, "2", "9223372036854775807"), "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807]},
+        {"VALUE": ("-9223372036854775808", 1, "2", "9223372036854775807"), "RESULT": [-9223372036854775808, 1, 2, 9223372036854775807], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-9223372036854775809, 1, 2, 9223372036854775807)},
+        {"VALUE": (-9223372036854775808, 1, 2, 9223372036854775808)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarI1(GoodBadLists):
+    _type = SecsVarI1
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -128, "RESULT":-128},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 127, "RESULT": 127}
+    ]
+    _badIntValues = [
+        {"VALUE": -129},
+        {"VALUE": 128},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -128L, "RESULT":-128},
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 127L, "RESULT": 127}
+    ]
+    _badLongValues = [
+        {"VALUE": -129L},
+        {"VALUE": 128L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "-128", "RESULT":-128},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "127", "RESULT": 127}
+    ]
+    _badStringValues = [
+        {"VALUE": "-129"},
+        {"VALUE": "128"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-128", "RESULT":-128},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"127", "RESULT": 127}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-129"},
+        {"VALUE": u"128"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [-128, 1, 2, 127], "RESULT": [-128, 1, 2, 127]},
+        {"VALUE": ["-128", 1, "2", "127"], "RESULT": [-128, 1, 2, 127]},
+        {"VALUE": ["-128", 1, "2", "127"], "RESULT": [-128, 1, 2, 127], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-129, 1, 2, 127]},
+        {"VALUE": [-128, 1, 2, 128]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (-128, 1, 2, 127), "RESULT": [-128, 1, 2, 127]},
+        {"VALUE": ("-128", 1, "2", "127"), "RESULT": [-128, 1, 2, 127]},
+        {"VALUE": ("-128", 1, "2", "127"), "RESULT": [-128, 1, 2, 127], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-129, 1, 2, 127)},
+        {"VALUE": (-128, 1, 2, 128)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\x7F"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\x7F"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"),},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\x7F"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarI2(GoodBadLists):
+    _type = SecsVarI2
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -32768, "RESULT":-32768},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 32767, "RESULT": 32767}
+    ]
+    _badIntValues = [
+        {"VALUE": -32769},
+        {"VALUE": 32768},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -32768L, "RESULT":-32768},
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 32767L, "RESULT": 32767}
+    ]
+    _badLongValues = [
+        {"VALUE": -32769L},
+        {"VALUE": 32768L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "-32768", "RESULT":-32768},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "32767", "RESULT": 32767}
+    ]
+    _badStringValues = [
+        {"VALUE": "-32769"},
+        {"VALUE": "32768"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-32768", "RESULT":-32768},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"32767", "RESULT": 32767}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-32769"},
+        {"VALUE": u"32768"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [-32768, 1, 2, 32767], "RESULT": [-32768, 1, 2, 32767]},
+        {"VALUE": ["-32768", 1, "2", "32767"], "RESULT": [-32768, 1, 2, 32767]},
+        {"VALUE": ["-32768", 1, "2", "32767"], "RESULT": [-32768, 1, 2, 32767], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-32769, 1, 2, 32767]},
+        {"VALUE": [-32768, 1, 2, 32768]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (-32768, 1, 2, 32767), "RESULT": [-32768, 1, 2, 32767]},
+        {"VALUE": ("-32768", 1, "2", "32767"), "RESULT": [-32768, 1, 2, 32767]},
+        {"VALUE": ("-32768", 1, "2", "32767"), "RESULT": [-32768, 1, 2, 32767], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-32769, 1, 2, 32767)},
+        {"VALUE": (-32768, 1, 2, 32768)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarI4(GoodBadLists):
+    _type = SecsVarI4
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -2147483648, "RESULT":-2147483648},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 2147483647, "RESULT": 2147483647}
+    ]
+    _badIntValues = [
+        {"VALUE": -2147483649},
+        {"VALUE": 2147483648},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -2147483648L, "RESULT":-2147483648},
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 2147483647L, "RESULT": 2147483647}
+    ]
+    _badLongValues = [
+        {"VALUE": -2147483649L},
+        {"VALUE": 2147483648L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "-2147483648", "RESULT":-2147483648},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+        {"VALUE": "2147483647", "RESULT": 2147483647}
+    ]
+    _badStringValues = [
+        {"VALUE": "-2147483649"},
+        {"VALUE": "2147483648"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-2147483648", "RESULT":-2147483648},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"2147483647", "RESULT": 2147483647}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-2147483649"},
+        {"VALUE": u"2147483648"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [-2147483648, 1, 2, 2147483647], "RESULT": [-2147483648, 1, 2, 2147483647]},
+        {"VALUE": ["-2147483648", 1, "2", "2147483647"], "RESULT": [-2147483648, 1, 2, 2147483647]},
+        {"VALUE": ["-2147483648", 1, "2", "2147483647"], "RESULT": [-2147483648, 1, 2, 2147483647], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-2147483649, 1, 2, 2147483647]},
+        {"VALUE": [-2147483648, 1, 2, 2147483648]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (-2147483648, 1, 2, 2147483647), "RESULT": [-2147483648, 1, 2, 2147483647]},
+        {"VALUE": ("-2147483648", 1, "2", "2147483647"), "RESULT": [-2147483648, 1, 2, 2147483647]},
+        {"VALUE": ("-2147483648", 1, "2", "2147483647"), "RESULT": [-2147483648, 1, 2, 2147483647], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-2147483649, 1, 2, 2147483647)},
+        {"VALUE": (-2147483648, 1, 2, 2147483648)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarF8(GoodBadLists):
+    _type = SecsVarF8
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+        {"VALUE": -1.79769e+308 + 1, "RESULT":-1.79769e+308 + 1},
+        {"VALUE": 1.0, "RESULT": 1.0},        
+        {"VALUE": 100000000.123, "RESULT": 100000000.123}, 
+        {"VALUE": -1.0, "RESULT": -1.0},
+        {"VALUE": 1.79769e+308 - 1, "RESULT": 1.79769e+308 - 1}
+    ]
+    _badFloatValues = [
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+    ]
+    _badIntValues = [
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+    ]
+    _badLongValues = [
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+    ]
+    _badStringValues = [
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-1.79769e+308", "RESULT":-1.79769e+308},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"1.79769e+308", "RESULT": 1.79769e+308}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarF4(GoodBadLists):
+    _type = SecsVarF4
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+        {"VALUE": -3.40282e+38 + 1, "RESULT":-3.40282e+38 + 1},
+        {"VALUE": 1.0, "RESULT": 1.0},        
+        {"VALUE": 100000000.123, "RESULT": 100000000.123}, 
+        {"VALUE": -1.0, "RESULT": -1.0},
+        {"VALUE": 3.40282e+38 - 1, "RESULT": 3.40282e+38 - 1}
+    ]
+    _badFloatValues = [
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0}, 
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+    ]
+    _badIntValues = [
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": -1L, "RESULT": -1},
+        {"VALUE": 0L, "RESULT": 0}, 
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+    ]
+    _badLongValues = [
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+    ]
+    _badStringValues = [
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"-3.40282e+38", "RESULT":-3.40282e+38},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"3.40282e+38", "RESULT": 3.40282e+38}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [-10, -100], "RESULT": [-10, -100]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (-10, -100), "RESULT": [-10, -100]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarU8(GoodBadLists):
+    _type = SecsVarU8
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 18446744073709551615, "RESULT": 18446744073709551615}
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 18446744073709551616},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT":0},
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 18446744073709551615L, "RESULT": 18446744073709551615}
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 18446744073709551616L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "0", "RESULT":0},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+        {"VALUE": "18446744073709551615", "RESULT": 18446744073709551615}
+    ]
+    _badStringValues = [
+        {"VALUE": "-1"},
+        {"VALUE": "18446744073709551616"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"0", "RESULT":0},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"18446744073709551615", "RESULT": 18446744073709551615}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-1"},
+        {"VALUE": u"18446744073709551616"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [0, 1, 2, 18446744073709551615], "RESULT": [0, 1, 2, 18446744073709551615]},
+        {"VALUE": ["0", 1, "2", "18446744073709551615"], "RESULT": [0, 1, 2, 18446744073709551615]},
+        {"VALUE": ["0", 1, "2", "18446744073709551615"], "RESULT": [0, 1, 2, 18446744073709551615], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-1, 1, 2, 18446744073709551615]},
+        {"VALUE": [0, 1, 2, 18446744073709551616]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0, 1, 2, 18446744073709551615), "RESULT": [0, 1, 2, 18446744073709551615]},
+        {"VALUE": ("0", 1, "2", "18446744073709551615"), "RESULT": [0, 1, 2, 18446744073709551615]},
+        {"VALUE": ("0", 1, "2", "18446744073709551615"), "RESULT": [0, 1, 2, 18446744073709551615], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-1, 1, 2, 18446744073709551615)},
+        {"VALUE": (0, 1, 2, 18446744073709551616)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarU1(GoodBadLists):
+    _type = SecsVarU1
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 255, "RESULT": 255}
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 256},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT":0},
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 255L, "RESULT": 255}
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 256L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "0", "RESULT":0},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "255", "RESULT": 255}
+    ]
+    _badStringValues = [
+        {"VALUE": "-1"},
+        {"VALUE": "256"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"0", "RESULT":0},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"255", "RESULT": 255}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-1"},
+        {"VALUE": u"256"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [0, 1, 2, 255], "RESULT": [0, 1, 2, 255]},
+        {"VALUE": ["0", 1, "2", "255"], "RESULT": [0, 1, 2, 255]},
+        {"VALUE": ["0", 1, "2", "255"], "RESULT": [0, 1, 2, 255], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-1, 1, 2, 255]},
+        {"VALUE": [0, 1, 2, 256]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0, 1, 2, 255), "RESULT": [0, 1, 2, 255]},
+        {"VALUE": ("0", 1, "2", "255"), "RESULT": [0, 1, 2, 255]},
+        {"VALUE": ("0", 1, "2", "255"), "RESULT": [0, 1, 2, 255], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-1, 1, 2, 255)},
+        {"VALUE": (0, 1, 2, 256)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarU2(GoodBadLists):
+    _type = SecsVarU2
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 65535, "RESULT": 65535}
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 65536},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT":0},
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 65535L, "RESULT": 65535}
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 65536L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "0", "RESULT":0},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+        {"VALUE": "65535", "RESULT": 65535}
+    ]
+    _badStringValues = [
+        {"VALUE": "-1"},
+        {"VALUE": "65536"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"0", "RESULT":0},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"65535", "RESULT": 65535}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-1"},
+        {"VALUE": u"65536"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [0, 1, 2, 65535], "RESULT": [0, 1, 2, 65535]},
+        {"VALUE": ["0", 1, "2", "65535"], "RESULT": [0, 1, 2, 65535]},
+        {"VALUE": ["0", 1, "2", "65535"], "RESULT": [0, 1, 2, 65535], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-1, 1, 2, 65535]},
+        {"VALUE": [0, 1, 2, 65536]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0, 1, 2, 65535), "RESULT": [0, 1, 2, 65535]},
+        {"VALUE": ("0", 1, "2", "65535"), "RESULT": [0, 1, 2, 65535]},
+        {"VALUE": ("0", 1, "2", "65535"), "RESULT": [0, 1, 2, 65535], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-1, 1, 2, 65535)},
+        {"VALUE": (0, 1, 2, 65536)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+class TestSecsVarU4(GoodBadLists):
+    _type = SecsVarU4
+
+    #bool
+    _goodBoolValues = [
+        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": False, "RESULT": 0},
+    ]
+    _badBoolValues = []
+
+    #float
+    _goodFloatValues = [
+    ]
+    _badFloatValues = [
+        {"VALUE": 1.0},        
+        {"VALUE": 100000000.123}, 
+        {"VALUE": -1.0},
+    ]
+
+    #int
+    _goodIntValues = [
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 4294967295, "RESULT": 4294967295}
+    ]
+    _badIntValues = [
+        {"VALUE": -1},
+        {"VALUE": 4294967296},
+    ]
+
+    #long
+    _goodLongValues = [
+        {"VALUE": 0L, "RESULT":0},
+        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 2L, "RESULT": 2},
+        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": 4294967295L, "RESULT": 4294967295}
+    ]
+    _badLongValues = [
+        {"VALUE": -1L},
+        {"VALUE": 4294967296L},
+    ]
+
+    #complex
+    _goodComplexValues = [
+    ]
+    _badComplexValues = [
+        {"VALUE": 1J},       
+    ]
+
+    #str
+    _goodStringValues = [
+        {"VALUE": "0", "RESULT":0},
+        {"VALUE": "1", "RESULT": 1},
+        {"VALUE": "65535", "RESULT": 65535},
+        {"VALUE": "4294967295", "RESULT": 4294967295}
+    ]
+    _badStringValues = [
+        {"VALUE": "-1"},
+        {"VALUE": "4294967296"},
+        {"VALUE": "TEST1"},
+        {"VALUE": "TEST1", "LENGTH": 4},
+    ]
+
+    #unicode
+    _goodUnicodeValues = [
+        {"VALUE": u"0", "RESULT":0},
+        {"VALUE": u"1", "RESULT": 1},
+        {"VALUE": u"65535", "RESULT": 65535},
+        {"VALUE": u"4294967295", "RESULT": 4294967295}
+    ]
+    _badUnicodeValues = [
+        {"VALUE": u"-1"},
+        {"VALUE": u"4294967296"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
+        {"VALUE": u"TEST1"}, 
+        {"VALUE": u"TEST1", "LENGTH": 4}, 
+    ]
+
+    #list
+    _goodListValues = [
+        {"VALUE": [0, 1, 2, 4294967295], "RESULT": [0, 1, 2, 4294967295]},
+        {"VALUE": ["0", 1, "2", "4294967295"], "RESULT": [0, 1, 2, 4294967295]},
+        {"VALUE": ["0", 1, "2", "4294967295"], "RESULT": [0, 1, 2, 4294967295], "LENGTH": 4},
+        {"VALUE": [False, True, False, False], "RESULT": [0, 1, 0, 0]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badListValues = [
+        {"VALUE": [-1, 1, 2, 4294967295]},
+        {"VALUE": [0, 1, 2, 4294967296]},
+        {"VALUE": ["Test", "ASDF"]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+    ]
+
+    #tuple
+    _goodTupleValues = [
+        {"VALUE": (0, 1, 2, 4294967295), "RESULT": [0, 1, 2, 4294967295]},
+        {"VALUE": ("0", 1, "2", "4294967295"), "RESULT": [0, 1, 2, 4294967295]},
+        {"VALUE": ("0", 1, "2", "4294967295"), "RESULT": [0, 1, 2, 4294967295], "LENGTH": 4},
+        {"VALUE": (False, True, False, False), "RESULT": [0, 1, 0, 0]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFFFFFFFF], "LENGTH": 6},
+    ]
+    _badTupleValues = [
+        {"VALUE": (-1, 1, 2, 4294967295)},
+        {"VALUE": (0, 1, 2, 4294967296)},
+        {"VALUE": ("Test", "ASDF")},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+    ]
+
+    #bytearray
+    _goodByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "RESULT": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH" : 6},
+    ]
+    _badByteArrayValues = [
+        {"VALUE": bytearray("\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+    ]
+
+    goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
+    badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+

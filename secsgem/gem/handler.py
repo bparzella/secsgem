@@ -125,9 +125,9 @@ class GemHandler(SecsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": []}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": [self.MDLN, self.SOFTREV]}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -306,6 +306,6 @@ class GemHandler(SecsHandler):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if self.isHost:
-            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": []}), packet.header.system)
+            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
         else:
-            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "DATA": [self.MDLN, self.SOFTREV]}), packet.header.system)
+            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), packet.header.system)
