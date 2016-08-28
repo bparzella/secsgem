@@ -214,6 +214,54 @@ class testS10E04(unittest.TestCase, testSecsFunctionSingleVariable):
     encoded1 = "!\x01\xd9"
 
 
+class testFunctionBase(unittest.TestCase):
+    def testGetitemOnArray(self):
+        item = SecsS01F03(["test1", "test2"])
+
+        self.assertEqual(item[0], "test1")
+
+    def testSetitemOnArray(self):
+        item = SecsS01F03(["test1", "test2"])
+
+        item[0] = "test3"
+
+        self.assertEqual(item[0], "test3")
+
+    def testLenOnArray(self):
+        item = SecsS01F03(["test1", "test2"])
+
+        self.assertEqual(len(item), 2)
+
+    def testAppendOnArray(self):
+        item = SecsS01F03(["test1", "test2"])
+
+        item.append("test3")
+
+        self.assertEqual(item[2], "test3")
+
+    def testGetitemOnNonArray(self):
+        item = SecsS01F16(10)
+
+        self.assertEqual(item[0], 10)
+
+    def testSetitemOnNonArray(self):
+        item = SecsS01F16(10)
+
+        with self.assertRaises(TypeError):
+            item[0] = 11
+
+    def testLenOnNonArray(self):
+        item = SecsS01F16(10)
+
+        len(item)
+
+    def testAppendOnNonArray(self):
+        item = SecsS01F16(10)
+
+        with self.assertRaises(AttributeError):
+            item.append(20)
+
+
 def check_stream_number(stream, cls):
     assert stream == cls._stream
 
