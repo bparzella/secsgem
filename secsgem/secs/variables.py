@@ -899,7 +899,7 @@ class SecsVarBoolean(SecsVar):
 
         result = []
 
-        for i in range(length):
+        for _ in range(length):
             result_text = data[text_pos]
             result.append(bool(struct.unpack(">b", result_text)[0]))
 
@@ -1253,7 +1253,7 @@ class SecsVarNumber(SecsVar):
 
         result = []
 
-        for i in range(length / self._bytes):
+        for _ in range(length / self._bytes):
             result_text = data[text_pos:text_pos + self._bytes]
 
             if len(result_text) != self._bytes:
