@@ -1,7 +1,7 @@
 #####################################################################
 # testSecsVariables.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,6 +17,7 @@ import unittest
 import nose
 
 from secsgem.secs.variables import *
+from secsgem.secs.dataitems import MDLN, OBJACK, SOFTREV
 
 def printable_value(value):
     if isinstance(value, str):
@@ -48,14 +49,16 @@ class TestSecsVar(unittest.TestCase):
         secsvar = SecsVarU4(1337)
 
         # negative value
-        self.assertRaises(ValueError, secsvar.encode_item_header, -1)
+        with self.assertRaises(ValueError):
+            secsvar.encode_item_header(-1)
 
     def testEncodeItemHeaderTooLong(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
         # more than three length bytes worth a value
-        self.assertRaises(ValueError, secsvar.encode_item_header, 0x1000000)
+        with self.assertRaises(ValueError):
+            secsvar.encode_item_header(0x1000000)
 
     def testDecodeItemHeader(self):
         # dummy object, just to have format code set
@@ -77,20 +80,23 @@ class TestSecsVar(unittest.TestCase):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
-        self.assertRaises(ValueError, secsvar.decode_item_header, "")
+        with self.assertRaises(ValueError):
+            secsvar.decode_item_header("")
 
     def testDecodeItemHeaderIllegalPosition(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
-        self.assertRaises(IndexError, secsvar.decode_item_header, "\xB1\x00", 10)
+        with self.assertRaises(IndexError):
+            secsvar.decode_item_header("\xB1\x00", 10)
 
     def testDecodeItemHeaderIllegalData(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
         # two bytes
-        self.assertRaises(ValueError, secsvar.decode_item_header, "somerandomdata")
+        with self.assertRaises(ValueError):
+            secsvar.decode_item_header("somerandomdata")
 
 
 class TestSecsVarDynamic(unittest.TestCase):
@@ -104,14 +110,18 @@ class TestSecsVarDynamic(unittest.TestCase):
     def testConstructorWrongType(self):
         secsvar = SecsVarDynamic([SecsVarU4])
 
-        self.assertRaises(ValueError, secsvar.set, "testString")
-        self.assertRaises(ValueError, secsvar.set, SecsVarString(value="testString"))
-        self.assertRaises(ValueError, SecsVarDynamic, [SecsVarU4], value="testString")
+        with self.assertRaises(ValueError):
+            secsvar.set("testString")
+        with self.assertRaises(ValueError):
+            secsvar.set(SecsVarString(value="testString"))
+        with self.assertRaises(ValueError):
+            SecsVarDynamic([SecsVarU4], value="testString")
 
     def testConstructorWrongLengthString(self):
         secsvar = SecsVarDynamic([SecsVarString], length=5)
 
-        self.assertRaises(ValueError, secsvar.set, "testString")
+        with self.assertRaises(ValueError):
+            secsvar.set("testString")
 
     def testConstructorLen(self):
         secsvar = SecsVarDynamic([SecsVarString])
@@ -161,29 +171,34 @@ class TestSecsVarDynamic(unittest.TestCase):
     def testDecodeValueTooLong(self):
         secsvar = SecsVarDynamic([SecsVarString], 5)
 
-        self.assertRaises(ValueError, secsvar.decode, "A\ntestString")
+        with self.assertRaises(ValueError):
+            secsvar.decode("A\ntestString")
 
     def testDecodeEmptyValue(self):
         secsvar = SecsVarDynamic([SecsVarString], 5)
 
-        self.assertRaises(ValueError, secsvar.decode, "")
+        with self.assertRaises(ValueError):
+            secsvar.decode("")
 
     def testDecodeWrongType(self):
         secsvar = SecsVarDynamic([SecsVarString], 5)
 
-        self.assertRaises(ValueError, secsvar.decode, "\xB1\x04\x00\x00\x059")
+        with self.assertRaises(ValueError):
+            secsvar.decode("\xB1\x04\x00\x00\x059")
 
     def testDecodeItemHeaderIllegalPosition(self):
         secsvar = SecsVarDynamic([SecsVarU4], value=1337)
 
-        self.assertRaises(IndexError, secsvar.decode, "\xB1\x00", 10)
+        with self.assertRaises(IndexError):
+            secsvar.decode("\xB1\x00", 10)
 
     def testDecodeItemHeaderIllegalData(self):
         # dummy object, just to have format code set
         secsvar = SecsVarDynamic([SecsVarU4], value=1337)
 
         # two bytes
-        self.assertRaises(ValueError, secsvar.decode, "somerandomdata")
+        with self.assertRaises(ValueError):
+            secsvar.decode("somerandomdata")
 
     def testListOfSameType(self):
         secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
@@ -195,12 +210,14 @@ class TestSecsVarDynamic(unittest.TestCase):
     def testListItemsOverMax(self):
         secsvar = SecsVarDynamic([SecsVarU1])
 
-        self.assertRaises(ValueError, secsvar.set, [1, 2, 3, 4, 65536])
+        with self.assertRaises(ValueError):
+            secsvar.set([1, 2, 3, 4, 65536])
 
     def testListItemsOverMaxDiffType(self):
         secsvar = SecsVarDynamic([SecsVarU1])
 
-        self.assertRaises(ValueError, secsvar.set, [1, 2, 3, 4, "65536"])
+        with self.assertRaises(ValueError):
+            secsvar.set([1, 2, 3, 4, "65536"])
 
     def testListItemsDiffType(self):
         secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
@@ -208,6 +225,559 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar.set([1, 2, 3, 4, "65536"])
 
         self.assertEqual(secsvar.get(), [1, 2, 3, 4, 65536])
+
+    def testGetNoneValue(self):
+        secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
+
+        self.assertEqual(secsvar.get(), None)
+
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarDynamic([SecsVarU1], value=1)
+        secsvar1 = SecsVarDynamic([SecsVarU1], value=1)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarDynamic([SecsVarU1], value=1)
+        secsvar1 = SecsVarU1(value=1)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarDynamic([SecsVarU1], value=1)
+        secsvar1 = 1
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityList(self):
+        secsvar = SecsVarDynamic([SecsVarU1], value=1)
+        secsvar1 = [1]
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarList(unittest.TestCase):
+    def testConstructor(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        self.assertEqual(secsvar.MDLN.get(), "MDLN")
+        self.assertEqual(secsvar["MDLN"].get(), "MDLN")
+        self.assertEqual(secsvar[0].get(), "MDLN")
+        self.assertEqual(secsvar.SOFTREV.get(), "SOFTREV")
+        self.assertEqual(secsvar["SOFTREV"].get(), "SOFTREV")
+        self.assertEqual(secsvar[1].get(), "SOFTREV")
+
+    def testConstructorWithoutDefaults(self):
+        secsvar = SecsVarList([MDLN, SOFTREV])
+
+        secsvar.MDLN.set("MDLN")
+        secsvar.SOFTREV.set("SOFTREV")
+
+        self.assertEqual(secsvar.MDLN.get(), "MDLN")
+        self.assertEqual(secsvar["MDLN"].get(), "MDLN")
+        self.assertEqual(secsvar[0].get(), "MDLN")
+        self.assertEqual(secsvar.SOFTREV.get(), "SOFTREV")
+        self.assertEqual(secsvar["SOFTREV"].get(), "SOFTREV")
+        self.assertEqual(secsvar[1].get(), "SOFTREV")
+
+    def testConstructorIllegalValue(self):
+        with self.assertRaises(ValueError):
+            secsvar = SecsVarList([OBJACK, SOFTREV], value=["MDLN", "SOFTREV"])
+
+    def testAttributeSetterMatchingSecsVar(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar.MDLN = SecsVarString(value="NLDM")
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testAttributeSetterIllegalSecsVar(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(TypeError):
+            secsvar.OBJACK = SecsVarString(value="NLDM")
+
+    def testAttributeSetterMatchingValue(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar.MDLN = "NLDM"
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testAttributeSetterIllegalValue(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(ValueError):
+            secsvar.OBJACK = "NLDM"
+
+    def testAttributeGetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(AttributeError):
+            secsvar.ASDF
+
+    def testAttributeSetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(AttributeError):
+            secsvar.ASDF = SecsVarString(value="NLDM")
+
+    def testItemSetterMatchingSecsVar(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar["MDLN"] = SecsVarString(value="NLDM")
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+        self.assertEqual(secsvar.MDLN, SecsVarString(value="NLDM"))
+        self.assertEqual(secsvar["MDLN"], SecsVarString(value="NLDM"))
+        self.assertEqual(secsvar[0], SecsVarString(value="NLDM"))
+
+    def testItemSetterIllegalSecsVar(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(TypeError):
+            secsvar["OBJACK"] = SecsVarString(value="NLDM")
+
+    def testItemSetterMatchingValue(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar["MDLN"] = "NLDM"
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testItemSetterIllegalValue(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(ValueError):
+            secsvar["OBJACK"] = "NLDM"
+
+    def testItemGetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(KeyError):
+            secsvar["ASDF"]
+
+    def testItemSetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(KeyError):
+            secsvar["ASDF"] = SecsVarString(value="NLDM")
+
+    def testIndexSetterMatchingSecsVar(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar[0] = SecsVarString(value="NLDM")
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testIndexSetterIllegalSecsVar(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(TypeError):
+            secsvar[0] = SecsVarString(value="NLDM")
+
+    def testIndexSetterMatchingValue(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        secsvar[0] = "NLDM"
+
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testIndexSetterIllegalValue(self):
+        secsvar = SecsVarList([OBJACK, SOFTREV], value=[0, "SOFTREV"])
+
+        with self.assertRaises(ValueError):
+            secsvar[0] = "NLDM"
+
+    def testIndexGetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(IndexError):
+            secsvar[3]
+
+    def testIndexSetterUnknown(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(IndexError):
+            secsvar[3] = SecsVarString(value="NLDM")
+
+    def testIteration(self):
+        secsvar = SecsVarList([MDLN, SOFTREV], value=["MDLN1", "SOFTREV1"])
+
+        for key in secsvar:
+            self.assertIn(key, ["MDLN", "SOFTREV"])
+            self.assertIn(secsvar[key].get(), ["MDLN1", "SOFTREV1"])
+
+
+class TestSecsVarArray(unittest.TestCase):
+    def testConstructor(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN1", "MDLN2"])
+
+        self.assertEqual(secsvar[0], "MDLN1")
+        self.assertEqual(secsvar[1], "MDLN2")
+
+    def testConstructorIllegalValue(self):
+        with self.assertRaises(ValueError):
+            secsvar = SecsVarArray(OBJACK, value=["MDLN1", "MDLN2"])
+
+    def testItemSetterMatchingSecsVar(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN", "SOFTREV"])
+
+        secsvar[0] = SecsVarString(value="NLDM")
+
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testItemSetterIllegalSecsVar(self):
+        secsvar = SecsVarArray(OBJACK, value=[0, 1])
+
+        with self.assertRaises(TypeError):
+            secsvar[0] = SecsVarString(value="NLDM")
+
+    def testItemSetterMatchingValue(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN", "SOFTREV"])
+
+        secsvar[0] = "NLDM"
+
+        self.assertEqual(secsvar[0].get(), "NLDM")
+
+    def testItemSetterIllegalValue(self):
+        secsvar = SecsVarArray(OBJACK, value=[0, 1])
+
+        with self.assertRaises(ValueError):
+            secsvar[0] = "NLDM"
+
+    def testItemGetterUnknown(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(IndexError):
+            secsvar[3]
+
+    def testItemSetterUnknown(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN", "SOFTREV"])
+
+        with self.assertRaises(IndexError):
+            secsvar[3] = SecsVarString(value="NLDM")
+
+    def testIteration(self):
+        secsvar = SecsVarArray(MDLN, value=["MDLN1", "MDLN2"])
+
+        for value in secsvar:
+            self.assertIn(value, ["MDLN1", "MDLN2"])
+
+
+class TestSecsVarBinary(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarBinary(value=13)
+        secsvar1 = SecsVarDynamic([SecsVarBinary], value=13)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarBinary(value=13)
+        secsvar1 = SecsVarBinary(value=13)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarBinary(value=13)
+        secsvar1 = "\x0d"
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarBoolean(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarBoolean(value=True)
+        secsvar1 = SecsVarDynamic([SecsVarBoolean], value=True)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarBoolean(value=True)
+        secsvar1 = SecsVarBoolean(value=True)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarBoolean(value=True)
+        secsvar1 = True
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarString(unittest.TestCase):
+    def testConstructorWrongLengthString(self):
+        secsvar = SecsVarString(length=5)
+
+        with self.assertRaises(ValueError):
+            secsvar.set("testString")
+
+    def testConstructorConvertsNoneToEmptyString(self):
+        secsvar = SecsVarString(value=None)
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testSetNoneNotAllowed(self):
+        secsvar = SecsVarString(length=5)
+
+        with self.assertRaises(ValueError):
+            secsvar.set(None)
+
+    def testEncodeString(self):
+        secsvar = SecsVarString(value="testString")
+
+        self.assertEqual(secsvar.encode(), "A\ntestString")
+
+    def testDecodeString(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode("A\ntestString")
+
+        self.assertEqual(secsvar.get(), "testString")
+
+    def testEncodeEmptyString(self):
+        secsvar = SecsVarString(value="")
+
+        self.assertEqual(secsvar.encode(), "A\0")
+
+    def testDecodeEmptyString(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode("A\0")
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarString(value="TEST123")
+        secsvar1 = SecsVarDynamic([SecsVarString], value="TEST123")
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarString(value="TEST123")
+        secsvar1 = SecsVarString(value="TEST123")
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarString(value="TEST123")
+        secsvar1 = "TEST123"
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarI8(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarI8(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarI8], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarI8(value=17)
+        secsvar1 = SecsVarI8(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarI8(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarI1(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarI1(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarI1], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarI1(value=17)
+        secsvar1 = SecsVarI1(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarI1(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarI2(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarI2(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarI2], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarI2(value=17)
+        secsvar1 = SecsVarI2(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarI2(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarI4(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarI4(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarI4], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarI4(value=17)
+        secsvar1 = SecsVarI4(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarI4(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarF8(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarF8(value=12.3)
+        secsvar1 = SecsVarDynamic([SecsVarF8], value=12.3)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarF8(value=12.3)
+        secsvar1 = SecsVarF8(value=12.3)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarF8(value=12.3)
+        secsvar1 = 12.3
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarF4(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarF4(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarF4], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarF4(value=17)
+        secsvar1 = SecsVarF4(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarF4(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarU8(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarU8(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarU8], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarU8(value=17)
+        secsvar1 = SecsVarU8(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarU8(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarU1(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarU1(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarU1], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarU1(value=17)
+        secsvar1 = SecsVarU1(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarU1(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarU2(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarU2(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarU2], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarU2(value=17)
+        secsvar1 = SecsVarU2(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarU2(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
+
+class TestSecsVarU4(unittest.TestCase):
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarU4(value=17)
+        secsvar1 = SecsVarDynamic([SecsVarU4], value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarU4(value=17)
+        secsvar1 = SecsVarU4(value=17)
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarU4(value=17)
+        secsvar1 = 17
+
+        self.assertEqual(secsvar, secsvar1)
+
 
 class GoodBadLists(object):
     _type = None
@@ -230,7 +800,6 @@ class GoodBadLists(object):
             for value in valueList:
                 yield self.goodAssignmentCheck, value
 
-
     @nose.tools.raises(TypeError, ValueError)
     def badAssignmentCheck(self, value):
         if "LENGTH" in value:
@@ -246,7 +815,6 @@ class GoodBadLists(object):
         for valueList in self.badValues:
             for value in valueList:
                 yield self.badAssignmentCheck, value
-                
 
     def goodSupportedCheck(self, value):
         if "LENGTH" in value:
@@ -276,12 +844,12 @@ class GoodBadLists(object):
             for value in valueList:
                 yield self.badSupportedCheck, value
 
-class TestSecsVarBinary(GoodBadLists):
+class TestSecsVarBinaryValues(GoodBadLists):
     _type = SecsVarBinary
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -289,15 +857,15 @@ class TestSecsVarBinary(GoodBadLists):
     #float
     _goodFloatValues = {}
     _badFloatValues = [
-        {"VALUE": 1.0}, 
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 255, "RESULT": 255},
     ]
     _badIntValues = [
@@ -307,8 +875,8 @@ class TestSecsVarBinary(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 255L, "RESULT": 255},
     ]
     _badLongValues = [
@@ -334,13 +902,13 @@ class TestSecsVarBinary(GoodBadLists):
 
     #unicode
     _goodUnicodeValues = [
-        {"VALUE": u"TEST1", "RESULT": "TEST1"}, 
+        {"VALUE": u"TEST1", "RESULT": "TEST1"},
         {"VALUE": u"1234QWERasdf.-+ \n\r\t\1 \127", "RESULT": "1234QWERasdf.-+ \n\r\t\1 \127"},
-        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 5}, 
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 5},
     ]
     _badUnicodeValues = [
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -378,12 +946,12 @@ class TestSecsVarBinary(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarBoolean(GoodBadLists):
+class TestSecsVarBooleanValues(GoodBadLists):
     _type = SecsVarBoolean
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": True}, 
+        {"VALUE": True, "RESULT": True},
         {"VALUE": False, "RESULT": False},
     ]
     _badBoolValues = []
@@ -391,15 +959,15 @@ class TestSecsVarBoolean(GoodBadLists):
     #float
     _goodFloatValues = {}
     _badFloatValues = [
-        {"VALUE": 1.0}, 
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
-        {"VALUE": 0, "RESULT": False}, 
-        {"VALUE": 1, "RESULT": True}, 
+        {"VALUE": 0, "RESULT": False},
+        {"VALUE": 1, "RESULT": True},
     ]
     _badIntValues = [
         {"VALUE": -1},
@@ -409,8 +977,8 @@ class TestSecsVarBoolean(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT": False}, 
-        {"VALUE": 1L, "RESULT": True}, 
+        {"VALUE": 0L, "RESULT": False},
+        {"VALUE": 1L, "RESULT": True},
     ]
     _badLongValues = [
         {"VALUE": -1L},
@@ -444,9 +1012,9 @@ class TestSecsVarBoolean(GoodBadLists):
         {"VALUE": u"False", "RESULT": False},
     ]
     _badUnicodeValues = [
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4}, 
+        {"VALUE": u"TEST1"},
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1", "RESULT": "TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -492,31 +1060,31 @@ class TestSecsVarBoolean(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarString(GoodBadLists):
+class TestSecsVarStringValues(GoodBadLists):
     _type = SecsVarString
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": "True"}, 
+        {"VALUE": True, "RESULT": "True"},
         {"VALUE": False, "RESULT": "False"},
     ]
     _badBoolValues = []
 
     #float
     _goodFloatValues = [
-        {"VALUE": 1.0, "RESULT": "1.0"},        
-        {"VALUE": 100000000.123, "RESULT": "100000000.123"}, 
+        {"VALUE": 1.0, "RESULT": "1.0"},
+        {"VALUE": 100000000.123, "RESULT": "100000000.123"},
         {"VALUE": -1.0, "RESULT": "-1.0"},
     ]
     _badFloatValues = [
-        {"VALUE": 100000000.123, "LENGTH": 1}, 
+        {"VALUE": 100000000.123, "LENGTH": 1},
     ]
 
     #int
     _goodIntValues = [
         {"VALUE": -1, "RESULT": "-1"},
-        {"VALUE": 0, "RESULT": "0"}, 
-        {"VALUE": 1, "RESULT": "1"}, 
+        {"VALUE": 0, "RESULT": "0"},
+        {"VALUE": 1, "RESULT": "1"},
         {"VALUE": 2, "RESULT": "2"},
         {"VALUE": 265, "RESULT": "265"},
     ]
@@ -527,8 +1095,8 @@ class TestSecsVarString(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": -1L, "RESULT": "-1"},
-        {"VALUE": 0L, "RESULT": "0"}, 
-        {"VALUE": 1L, "RESULT": "1"}, 
+        {"VALUE": 0L, "RESULT": "0"},
+        {"VALUE": 1L, "RESULT": "1"},
         {"VALUE": 2L, "RESULT": "2"},
         {"VALUE": 265L, "RESULT": "265"},
     ]
@@ -538,7 +1106,7 @@ class TestSecsVarString(GoodBadLists):
 
     #complex
     _goodComplexValues = [
-        {"VALUE": 1J, "RESULT": "1j"},       
+        {"VALUE": 1J, "RESULT": "1j"},
     ]
     _badComplexValues = [
     ]
@@ -562,8 +1130,8 @@ class TestSecsVarString(GoodBadLists):
         {"VALUE": u"False", "RESULT": "False"},
     ]
     _badUnicodeValues = [
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -601,52 +1169,12 @@ class TestSecsVarString(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarString2(unittest.TestCase):
-    def testConstructorWrongLengthString(self):
-        secsvar = SecsVarString(length=5)
-
-        self.assertRaises(ValueError, secsvar.set, "testString")
-
-    def testConstructorConvertsNoneToEmptyString(self):
-        secsvar = SecsVarString(value=None)
-
-        self.assertEqual(secsvar.get(), "")
-
-    def testSetNoneNotAllowed(self):
-        secsvar = SecsVarString(length=5)
-
-        self.assertRaises(ValueError, secsvar.set, None)
-
-    def testEncodeString(self):
-        secsvar = SecsVarString(value="testString")
-
-        self.assertEqual(secsvar.encode(), "A\ntestString")
-
-    def testDecodeString(self):
-        secsvar = SecsVarString()
-
-        secsvar.decode("A\ntestString")
-
-        self.assertEqual(secsvar.get(), "testString")
-
-    def testEncodeEmptyString(self):
-        secsvar = SecsVarString(value="")
-
-        self.assertEqual(secsvar.encode(), "A\0")
-
-    def testDecodeEmptyString(self):
-        secsvar = SecsVarString()
-
-        secsvar.decode("A\0")
-
-        self.assertEqual(secsvar.get(), "")
-
-class TestSecsVarI8(GoodBadLists):
+class TestSecsVarI8Values(GoodBadLists):
     _type = SecsVarI8
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -655,8 +1183,8 @@ class TestSecsVarI8(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
@@ -664,8 +1192,8 @@ class TestSecsVarI8(GoodBadLists):
     _goodIntValues = [
         {"VALUE": -9223372036854775808, "RESULT":-9223372036854775808},
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 9223372036854775807, "RESULT": 9223372036854775807}
@@ -679,8 +1207,8 @@ class TestSecsVarI8(GoodBadLists):
     _goodLongValues = [
         {"VALUE": -9223372036854775808L, "RESULT":-9223372036854775808},
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 9223372036854775807L, "RESULT": 9223372036854775807}
@@ -694,7 +1222,7 @@ class TestSecsVarI8(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -721,9 +1249,9 @@ class TestSecsVarI8(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-9223372036854775809"},
         {"VALUE": u"9223372036854775808"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -774,12 +1302,12 @@ class TestSecsVarI8(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarI1(GoodBadLists):
+class TestSecsVarI1Values(GoodBadLists):
     _type = SecsVarI1
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -788,8 +1316,8 @@ class TestSecsVarI1(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
@@ -797,8 +1325,8 @@ class TestSecsVarI1(GoodBadLists):
     _goodIntValues = [
         {"VALUE": -128, "RESULT":-128},
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 127, "RESULT": 127}
     ]
@@ -811,8 +1339,8 @@ class TestSecsVarI1(GoodBadLists):
     _goodLongValues = [
         {"VALUE": -128L, "RESULT":-128},
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 127L, "RESULT": 127}
     ]
@@ -825,7 +1353,7 @@ class TestSecsVarI1(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -850,9 +1378,9 @@ class TestSecsVarI1(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-129"},
         {"VALUE": u"128"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -902,12 +1430,12 @@ class TestSecsVarI1(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarI2(GoodBadLists):
+class TestSecsVarI2Values(GoodBadLists):
     _type = SecsVarI2
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -916,8 +1444,8 @@ class TestSecsVarI2(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
@@ -925,8 +1453,8 @@ class TestSecsVarI2(GoodBadLists):
     _goodIntValues = [
         {"VALUE": -32768, "RESULT":-32768},
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 32767, "RESULT": 32767}
@@ -940,8 +1468,8 @@ class TestSecsVarI2(GoodBadLists):
     _goodLongValues = [
         {"VALUE": -32768L, "RESULT":-32768},
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 32767L, "RESULT": 32767}
@@ -955,7 +1483,7 @@ class TestSecsVarI2(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -980,9 +1508,9 @@ class TestSecsVarI2(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-32769"},
         {"VALUE": u"32768"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1031,12 +1559,12 @@ class TestSecsVarI2(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarI4(GoodBadLists):
+class TestSecsVarI4Values(GoodBadLists):
     _type = SecsVarI4
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1045,8 +1573,8 @@ class TestSecsVarI4(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
@@ -1054,8 +1582,8 @@ class TestSecsVarI4(GoodBadLists):
     _goodIntValues = [
         {"VALUE": -2147483648, "RESULT":-2147483648},
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 2147483647, "RESULT": 2147483647}
@@ -1069,8 +1597,8 @@ class TestSecsVarI4(GoodBadLists):
     _goodLongValues = [
         {"VALUE": -2147483648L, "RESULT":-2147483648},
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 2147483647L, "RESULT": 2147483647}
@@ -1084,7 +1612,7 @@ class TestSecsVarI4(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1111,9 +1639,9 @@ class TestSecsVarI4(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-2147483649"},
         {"VALUE": u"2147483648"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1162,12 +1690,12 @@ class TestSecsVarI4(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarF8(GoodBadLists):
+class TestSecsVarF8Values(GoodBadLists):
     _type = SecsVarF8
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1175,8 +1703,8 @@ class TestSecsVarF8(GoodBadLists):
     #float
     _goodFloatValues = [
         {"VALUE": -1.79769e+308 + 1, "RESULT":-1.79769e+308 + 1},
-        {"VALUE": 1.0, "RESULT": 1.0},        
-        {"VALUE": 100000000.123, "RESULT": 100000000.123}, 
+        {"VALUE": 1.0, "RESULT": 1.0},
+        {"VALUE": 100000000.123, "RESULT": 100000000.123},
         {"VALUE": -1.0, "RESULT": -1.0},
         {"VALUE": 1.79769e+308 - 1, "RESULT": 1.79769e+308 - 1}
     ]
@@ -1186,8 +1714,8 @@ class TestSecsVarF8(GoodBadLists):
     #int
     _goodIntValues = [
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
     ]
@@ -1197,8 +1725,8 @@ class TestSecsVarF8(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
     ]
@@ -1209,7 +1737,7 @@ class TestSecsVarF8(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1230,9 +1758,9 @@ class TestSecsVarF8(GoodBadLists):
         {"VALUE": u"1.79769e+308", "RESULT": 1.79769e+308}
     ]
     _badUnicodeValues = [
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1273,12 +1801,12 @@ class TestSecsVarF8(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarF4(GoodBadLists):
+class TestSecsVarF4Values(GoodBadLists):
     _type = SecsVarF4
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1286,8 +1814,8 @@ class TestSecsVarF4(GoodBadLists):
     #float
     _goodFloatValues = [
         {"VALUE": -3.40282e+38 + 1, "RESULT":-3.40282e+38 + 1},
-        {"VALUE": 1.0, "RESULT": 1.0},        
-        {"VALUE": 100000000.123, "RESULT": 100000000.123}, 
+        {"VALUE": 1.0, "RESULT": 1.0},
+        {"VALUE": 100000000.123, "RESULT": 100000000.123},
         {"VALUE": -1.0, "RESULT": -1.0},
         {"VALUE": 3.40282e+38 - 1, "RESULT": 3.40282e+38 - 1}
     ]
@@ -1297,8 +1825,8 @@ class TestSecsVarF4(GoodBadLists):
     #int
     _goodIntValues = [
         {"VALUE": -1, "RESULT": -1},
-        {"VALUE": 0, "RESULT": 0}, 
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
     ]
@@ -1308,8 +1836,8 @@ class TestSecsVarF4(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0}, 
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 0L, "RESULT": 0},
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
     ]
@@ -1320,7 +1848,7 @@ class TestSecsVarF4(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1341,9 +1869,9 @@ class TestSecsVarF4(GoodBadLists):
         {"VALUE": u"3.40282e+38", "RESULT": 3.40282e+38}
     ]
     _badUnicodeValues = [
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1384,12 +1912,12 @@ class TestSecsVarF4(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarU8(GoodBadLists):
+class TestSecsVarU8Values(GoodBadLists):
     _type = SecsVarU8
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1398,15 +1926,15 @@ class TestSecsVarU8(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
         {"VALUE": 0, "RESULT":0},
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 18446744073709551615, "RESULT": 18446744073709551615}
@@ -1419,7 +1947,7 @@ class TestSecsVarU8(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 18446744073709551615L, "RESULT": 18446744073709551615}
@@ -1433,7 +1961,7 @@ class TestSecsVarU8(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1460,9 +1988,9 @@ class TestSecsVarU8(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-1"},
         {"VALUE": u"18446744073709551616"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1511,12 +2039,12 @@ class TestSecsVarU8(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarU1(GoodBadLists):
+class TestSecsVarU1Values(GoodBadLists):
     _type = SecsVarU1
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1525,15 +2053,15 @@ class TestSecsVarU1(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
         {"VALUE": 0, "RESULT":0},
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 255, "RESULT": 255}
     ]
@@ -1545,7 +2073,7 @@ class TestSecsVarU1(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 255L, "RESULT": 255}
     ]
@@ -1558,7 +2086,7 @@ class TestSecsVarU1(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1583,9 +2111,9 @@ class TestSecsVarU1(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-1"},
         {"VALUE": u"256"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1632,12 +2160,12 @@ class TestSecsVarU1(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarU2(GoodBadLists):
+class TestSecsVarU2Values(GoodBadLists):
     _type = SecsVarU2
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1646,15 +2174,15 @@ class TestSecsVarU2(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
         {"VALUE": 0, "RESULT":0},
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 65535, "RESULT": 65535}
@@ -1667,7 +2195,7 @@ class TestSecsVarU2(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 65535L, "RESULT": 65535}
@@ -1681,7 +2209,7 @@ class TestSecsVarU2(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1708,9 +2236,9 @@ class TestSecsVarU2(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-1"},
         {"VALUE": u"65536"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list
@@ -1757,12 +2285,12 @@ class TestSecsVarU2(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
-class TestSecsVarU4(GoodBadLists):
+class TestSecsVarU4Values(GoodBadLists):
     _type = SecsVarU4
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": 1}, 
+        {"VALUE": True, "RESULT": 1},
         {"VALUE": False, "RESULT": 0},
     ]
     _badBoolValues = []
@@ -1771,15 +2299,15 @@ class TestSecsVarU4(GoodBadLists):
     _goodFloatValues = [
     ]
     _badFloatValues = [
-        {"VALUE": 1.0},        
-        {"VALUE": 100000000.123}, 
+        {"VALUE": 1.0},
+        {"VALUE": 100000000.123},
         {"VALUE": -1.0},
     ]
 
     #int
     _goodIntValues = [
         {"VALUE": 0, "RESULT":0},
-        {"VALUE": 1, "RESULT": 1}, 
+        {"VALUE": 1, "RESULT": 1},
         {"VALUE": 2, "RESULT": 2},
         {"VALUE": 265, "RESULT": 265},
         {"VALUE": 4294967295, "RESULT": 4294967295}
@@ -1792,7 +2320,7 @@ class TestSecsVarU4(GoodBadLists):
     #long
     _goodLongValues = [
         {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1}, 
+        {"VALUE": 1L, "RESULT": 1},
         {"VALUE": 2L, "RESULT": 2},
         {"VALUE": 265L, "RESULT": 265},
         {"VALUE": 4294967295L, "RESULT": 4294967295}
@@ -1806,7 +2334,7 @@ class TestSecsVarU4(GoodBadLists):
     _goodComplexValues = [
     ]
     _badComplexValues = [
-        {"VALUE": 1J},       
+        {"VALUE": 1J},
     ]
 
     #str
@@ -1833,9 +2361,9 @@ class TestSecsVarU4(GoodBadLists):
     _badUnicodeValues = [
         {"VALUE": u"-1"},
         {"VALUE": u"4294967296"},
-        {"VALUE": u'ABRA\xc3O JOS\xc9'}, 
-        {"VALUE": u"TEST1"}, 
-        {"VALUE": u"TEST1", "LENGTH": 4}, 
+        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u"TEST1"},
+        {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
     #list

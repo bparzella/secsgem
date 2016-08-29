@@ -1,7 +1,7 @@
 #####################################################################
 # testSecsFunctions.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -218,14 +218,14 @@ class testFunctionBase(unittest.TestCase):
     def testGetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
-        self.assertEqual(item[0], "test1")
+        self.assertEqual(item[0].get(), "test1")
 
     def testSetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
         item[0] = "test3"
 
-        self.assertEqual(item[0], "test3")
+        self.assertEqual(item[0].get(), "test3")
 
     def testLenOnArray(self):
         item = SecsS01F03(["test1", "test2"])
@@ -237,7 +237,7 @@ class testFunctionBase(unittest.TestCase):
 
         item.append("test3")
 
-        self.assertEqual(item[2], "test3")
+        self.assertEqual(item[2].get(), "test3")
 
     def testGetitemOnNonArray(self):
         item = SecsS01F16(10)
