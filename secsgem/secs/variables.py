@@ -157,6 +157,16 @@ class SecsVarDynamic(SecsVar):
     def __setitem__(self, key, item):
         self.value.__setitem__(key, item)
 
+    def __eq__(self, other):
+        if isinstance(other, SecsVarDynamic):
+            return other.value.value == self.value.value
+        elif isinstance(other, SecsVar):
+            return other.value == self.value.value
+        elif isinstance(other, list):
+            return other == self.value.value
+        else:
+            return [other] == self.value.value
+
     def __type_supported(self, typ):
         if not self.types:
             return True
@@ -593,6 +603,14 @@ class SecsVarBinary(SecsVar):
     def __setitem__(self, key, item):
         self.value[key] = chr(item)
 
+    def __eq__(self, other):
+        if isinstance(other, SecsVarDynamic):
+            return other.value.value == self.value
+        elif isinstance(other, SecsVar):
+            return other.value == self.value
+        else:
+            return other == self.value
+
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
             return True
@@ -758,6 +776,16 @@ class SecsVarBoolean(SecsVar):
 
     def __setitem__(self, key, item):
         self.value[key] = item
+
+    def __eq__(self, other):
+        if isinstance(other, SecsVarDynamic):
+            return other.value.value == self.value
+        elif isinstance(other, SecsVar):
+            return other.value == self.value
+        elif isinstance(other, list):
+            return other == self.value
+        else:
+            return [other] == self.value
 
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
@@ -961,6 +989,14 @@ class SecsVarString(SecsVar):
     def __len__(self):
         return len(self.value)
 
+    def __eq__(self, other):
+        if isinstance(other, SecsVarDynamic):
+            return other.value.value == self.value
+        elif isinstance(other, SecsVar):
+            return other.value == self.value
+        else:
+            return other == self.value
+
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
             return True
@@ -1122,6 +1158,16 @@ class SecsVarNumber(SecsVar):
 
     def __setitem__(self, key, item):
         self.value[key] = item
+
+    def __eq__(self, other):
+        if isinstance(other, SecsVarDynamic):
+            return other.value.value == self.value
+        elif isinstance(other, SecsVar):
+            return other.value == self.value
+        elif isinstance(other, list):
+            return other == self.value
+        else:
+            return [other] == self.value
 
     def __check_single_item_support(self, value):
         if isinstance(value, float) and self._basetype == int:
