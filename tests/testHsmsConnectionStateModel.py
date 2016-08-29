@@ -1,7 +1,7 @@
 #####################################################################
 # testSecsConnectionStateModel.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -168,39 +168,48 @@ class TestConnectionStateMachine(unittest.TestCase):
 
     # tests for unsupported state transitions
     def testUnconnectedDisconnect(self):
-        self.assertRaises(MachineError, self.stateMachine.disconnect)
+        with self.assertRaises(MachineError):
+            self.stateMachine.disconnect()
 
     def testUnconnectedSelect(self):
-        self.assertRaises(MachineError, self.stateMachine.select)
+        with self.assertRaises(MachineError):
+            self.stateMachine.select()
 
     def testUnconnectedDeselect(self):
-        self.assertRaises(MachineError, self.stateMachine.deselect)
+        with self.assertRaises(MachineError):
+            self.stateMachine.deselect()
 
     def testUnconnectedTimeoutT7(self):
-        self.assertRaises(MachineError, self.stateMachine.timeoutT7)
+        with self.assertRaises(MachineError):
+            self.stateMachine.timeoutT7()
 
     def testConnectedNotSelectedConnect(self):
         self.stateMachine.connect()
-        self.assertRaises(MachineError, self.stateMachine.connect)
+        with self.assertRaises(MachineError):
+            self.stateMachine.connect()
 
     def testConnectedNotSelectedDeselect(self):
         self.stateMachine.connect()
-        self.assertRaises(MachineError, self.stateMachine.deselect)
+        with self.assertRaises(MachineError):
+            self.stateMachine.deselect()
 
     def testConnectedSelectedConnect(self):
         self.stateMachine.connect()
         self.stateMachine.select()
-        self.assertRaises(MachineError, self.stateMachine.connect)
+        with self.assertRaises(MachineError):
+            self.stateMachine.connect()
 
     def testConnectedSelectedSelect(self):
         self.stateMachine.connect()
         self.stateMachine.select()
-        self.assertRaises(MachineError, self.stateMachine.select)
+        with self.assertRaises(MachineError):
+            self.stateMachine.select()
 
     def testConnectedSelectedTimeoutT7(self):
         self.stateMachine.connect()
         self.stateMachine.select()
-        self.assertRaises(MachineError, self.stateMachine.timeoutT7)
+        with self.assertRaises(MachineError):
+            self.stateMachine.timeoutT7()
 
     # tests for callbacks
     def testOnEnterConnectedCallback(self):
