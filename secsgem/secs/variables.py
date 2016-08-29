@@ -22,10 +22,6 @@ from collections import OrderedDict
 
 from ..common import indent_block
 
-DEBUG_DECODE = False
-DEBUG_DECODE_DEPTH = 0
-
-
 class SecsVar(object):
     """Base class for SECS variables. Due to the python types, wrapper classes for variables are required. If constructor is called with SecsVar or subclass only the value is copied."""
     formatCode = -1
@@ -104,9 +100,6 @@ class SecsVar(object):
         :returns: start position for next item, format code, length item of data
         :rtype: (integer, integer, integer)
         """
-        if DEBUG_DECODE:
-            print "{}--Decoded item header for {} starting at {}".format((" " * DEBUG_DECODE_DEPTH), self.__class__.__name__, text_pos)
-
         if data == "":
             raise ValueError("Decoding for {} without any text".format(self.__class__.__name__))
 
@@ -127,9 +120,6 @@ class SecsVar(object):
 
         if 0 <= self.formatCode != format_code:
             raise ValueError("Decoding data for {} ({}) has invalid format {}".format(self.__class__.__name__, self.formatCode, format_code))
-
-        if DEBUG_DECODE:
-            print "{}Decoded item header with data @{} / format {} / length {}".format((" " * DEBUG_DECODE_DEPTH), text_pos, format_code, length)
 
         return text_pos, format_code, length
 
@@ -428,14 +418,10 @@ class SecsVarList(SecsVar):
         """
         (text_pos, _, length) = self.decode_item_header(data, start)
 
-        global DEBUG_DECODE_DEPTH
-
         # list
         for i in range(length):
-            DEBUG_DECODE_DEPTH += 2
             field_name = self.data.keys()[i]
             text_pos = self.data[field_name].decode(data, text_pos)
-            DEBUG_DECODE_DEPTH -= 2
 
         return text_pos
 
@@ -557,17 +543,13 @@ class SecsVarArray(SecsVar):
         """
         (text_pos, _, length) = self.decode_item_header(data, start)
 
-        global DEBUG_DECODE_DEPTH
-
         # list
         self.data = []
 
         for _ in range(length):
-            DEBUG_DECODE_DEPTH += 2
             new_object = SecsVar.generate(self.item_decriptor)
             text_pos = new_object.decode(data, text_pos)
             self.data.append(new_object)
-            DEBUG_DECODE_DEPTH -= 2
 
         return text_pos
 
@@ -729,9 +711,6 @@ class SecsVarBinary(SecsVar):
 
         if length > 0:
             result = data[text_pos:text_pos + length]
-
-            if DEBUG_DECODE:
-                print "{}Decoded {} bytes".format((" " * DEBUG_DECODE_DEPTH), len(result))
 
         self.set(result)
 
@@ -924,9 +903,6 @@ class SecsVarBoolean(SecsVar):
             result_text = data[text_pos]
             result.append(bool(struct.unpack(">b", result_text)[0]))
 
-            if DEBUG_DECODE:
-                print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
-
             text_pos += 1
 
         self.set(result)
@@ -1097,9 +1073,6 @@ class SecsVarString(SecsVar):
 
         if length > 0:
             result = data[text_pos:text_pos + length]
-
-            if DEBUG_DECODE:
-                print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result)
 
         self.set(result)
 
@@ -1291,9 +1264,6 @@ class SecsVarNumber(SecsVar):
                         start))
 
             result.append(struct.unpack(">{}".format(self._structCode), result_text)[0])
-
-            if DEBUG_DECODE:
-                print "{}Decoded {}".format((" " * DEBUG_DECODE_DEPTH), result[i])
 
             text_pos += self._bytes
 
