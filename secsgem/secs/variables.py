@@ -241,7 +241,7 @@ class SecsVarDynamic(SecsVar):
         (_, format_code, _) = self.decode_item_header(data, start)
 
         if format_code == SecsVarArray.formatCode and self.__type_supported(SecsVarArray):
-            self.value = SecsVarArray(SecsVarDynamic([], length=self.length))
+            self.value = SecsVarArray(ANYVALUE)
         elif format_code == SecsVarBinary.formatCode and self.__type_supported(SecsVarBinary):
             self.value = SecsVarBinary(length=self.length)
         elif format_code == SecsVarBoolean.formatCode and self.__type_supported(SecsVarBoolean):
@@ -289,6 +289,32 @@ class SecsVarDynamic(SecsVar):
                 return var_type
 
         return None
+
+
+class ANYVALUE(SecsVarDynamic):
+    """Dummy data item for generation of unknown types
+
+    :Types:
+       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
+       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
+       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
+       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
+       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
+       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
+       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
+       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+
+    """
+    def __init__(self, value=None):
+        self.name = self.__class__.__name__
+
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
 
 
 class SecsVarList(SecsVar):
