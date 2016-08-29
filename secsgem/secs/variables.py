@@ -304,6 +304,22 @@ class SecsVarList(SecsVar):
     formatCode = 0
     preferredTypes = [dict]
 
+    class SecsVarListIter(object):
+        def __init__(self, keys):
+            self._keys = keys
+            self._counter = 0
+
+        def __iter__(self):
+            return self
+
+        def next(self):
+            if self._counter < len(self._keys):
+                i = self._counter
+                self._counter += 1
+                return self._keys[i]
+            else:
+                raise StopIteration()
+
     def __init__(self, dataformat, length=-1, value=None):
         super(SecsVarList, self).__init__()
 
@@ -319,6 +335,8 @@ class SecsVarList(SecsVar):
         if value is not None:
             self.set(value)
 
+        self.objectIntitialized = True
+
     def __repr__(self):
         if len(self.data) == 0:
             return "<L>"
@@ -332,6 +350,26 @@ class SecsVarList(SecsVar):
 
     def __len__(self):
         return len(self.data)
+
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            return self.data[self.data.keys()[index]]
+        else:
+            return self.data[index]
+
+    def __iter__(self):
+        return SecsVarList.SecsVarListIter(self.data.keys())
+
+    def __setitem__(self, index, value):
+        if isinstance(index, int):
+            index = self.data.keys()[index]
+
+        if isinstance(value, type(self.data[index])) or isinstance(value, self.data[index].__class__.__bases__):
+            self.data[index] = value
+        elif isinstance(value, SecsVar):
+            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[index].__class__.__name__))
+        else:
+            self.data[index].set(value)
 
     def _generate(self, dataformat):
         if dataformat is None:
@@ -354,6 +392,25 @@ class SecsVarList(SecsVar):
                 raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
         return result_data
+
+    def __getattr__(self, item):
+        try:
+            return self.data.__getitem__(item)
+        except KeyError:
+            raise AttributeError(item)
+
+    def __setattr__(self, item, value):
+        if not self.__dict__.has_key('objectIntitialized'):
+            return dict.__setattr__(self, item, value)
+        elif self.data.has_key(item):
+            if isinstance(value, type(self.data[item])) or isinstance(value, self.data[item].__class__.__bases__):
+                self.data[item] = value
+            elif isinstance(value, SecsVar):
+                raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[item].__class__.__name__))
+            else:
+                self.data[item].set(value)
+        else:
+            self.__dict__.__setattr__(item, value)
 
     @staticmethod
     def get_name_from_format(dataformat):
@@ -382,8 +439,9 @@ class SecsVarList(SecsVar):
             for field_name in value:
                 self.data[field_name].set(value[field_name])
         elif isinstance(value, list):
-            if not len(value) == self.length:
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.length, len(self.data)))
+            if self.length >= 0:
+                if not len(value) == self.length:
+                    raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.length, len(self.data)))
             counter = 0
             for field_name in self.data:
                 self.data[field_name].set(value[counter])
@@ -449,6 +507,22 @@ class SecsVarArray(SecsVar):
     formatCode = 0
     preferredTypes = [list]
 
+    class SecsVarArrayIter(object):
+        def __init__(self, length):
+            self._length = length
+            self._counter = 0
+
+        def __iter__(self):
+            return self
+
+        def next(self):
+            if self._counter < self._length:
+                i = self._counter
+                self._counter += 1
+                return i
+            else:
+                raise StopIteration()
+
     def __init__(self, dataFormat, length=-1, value=None):
         super(SecsVarArray, self).__init__()
 
@@ -481,10 +555,15 @@ class SecsVarArray(SecsVar):
         if isinstance(self.data[key], SecsVarArray) or isinstance(self.data[key], SecsVarList):
             return self.data[key]
         else:
-            return self.data[key].get()
+            return self.data[key]
 
-    def __setitem__(self, key, item):
-        self.data[key].set(item)
+    def __setitem__(self, key, value):
+        if isinstance(value, type(self.data[key])) or isinstance(value, self.data[key].__class__.__bases__):
+            self.data[key] = value
+        elif isinstance(value, SecsVar):
+            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[key].__class__.__name__))
+        else:
+            self.data[key].set(value)
 
     def append(self, data):
         """Append data to the internal list
