@@ -576,10 +576,7 @@ class SecsVarArray(SecsVar):
         return len(self.data)
 
     def __getitem__(self, key):
-        if isinstance(self.data[key], SecsVarArray) or isinstance(self.data[key], SecsVarList):
-            return self.data[key]
-        else:
-            return self.data[key]
+        return self.data[key]
 
     def __iter__(self):
         return SecsVarArray.SecsVarArrayIter(self.data)
