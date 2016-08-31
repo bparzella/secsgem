@@ -56,12 +56,7 @@ class HsmsConnectionManager(EventProducer):
         return None
 
     def __getitem__(self, index):
-        for handlerID in self.handlers.keys():
-            handler = self.handlers[handlerID]
-            if handler.name == index:
-                return handler
-
-        return None
+        return self.has_connection_to(index)
 
     @staticmethod
     def get_connection_id(address):
