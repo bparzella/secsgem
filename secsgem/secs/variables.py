@@ -795,10 +795,7 @@ class SecsVarBinary(SecsVar):
             return None
 
         if len(self.value) == 1:
-            if self.value:
-                return ord(self.value[0])
-            else:
-                return []
+            return ord(self.value[0])
 
         return self.value
 
@@ -949,9 +946,6 @@ class SecsVarBoolean(SecsVar):
             else:
                 raise ValueError("Value {} out of bounds".format(value))
 
-            self.value = value
-            return
-
         raise ValueError("Can't convert value {}".format(value))
 
     def set(self, value):
@@ -995,10 +989,7 @@ class SecsVarBoolean(SecsVar):
             return None
 
         if len(self.value) == 1:
-            if self.value:
-                return self.value[0]
-            else:
-                return []
+            return self.value[0]
 
         return self.value
 
@@ -1146,8 +1137,6 @@ class SecsVarString(SecsVar):
                 return False
 
             return True
-        else:
-            return self.__check_single_item_support(value)
 
     def set(self, value):
         """Set the internal value to the provided value
@@ -1367,10 +1356,7 @@ class SecsVarNumber(SecsVar):
             return None
 
         if len(self.value) == 1:
-            if self.value:
-                return self.value[0]
-            else:
-                return []
+            return self.value[0]
 
         return self.value
 
