@@ -275,14 +275,19 @@ class SecsVarDynamic(SecsVar):
         return self.value.decode(data, start)
 
     def _match_type(self, value):
+        var_types = self.types
+        #if no types are set use internal order
+        if not self.types:
+            var_types = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+
         # first try to find the preferred type for the kind of value
-        for var_type in self.types:
+        for var_type in var_types:
             if isinstance(value, tuple(var_type.preferredTypes)):
                 if var_type(length=self.length).supports_value(value):
                     return var_type
 
         # when no preferred type was found, then try to match any available type
-        for var_type in self.types:
+        for var_type in var_types:
             if var_type(length=self.length).supports_value(value):
                 return var_type
 
