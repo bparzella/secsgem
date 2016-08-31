@@ -22,6 +22,7 @@ import time
 
 import threading
 
+from secsgem import HsmsPacket, HsmsStreamFunctionHeader
 
 class HsmsTestConnection(object):
     """Connection class for single connection from hsmsMultiPassiveServer
@@ -94,6 +95,8 @@ class HsmsTestConnection(object):
         self.logger.info("> %s", packet)
         self.packets.append(packet)
 
+        return True
+
     def disconnect(self):
         if self.connected:
             # notify listeners of disconnection
@@ -110,7 +113,7 @@ class HsmsTestConnection(object):
 class HsmsTestServer(object):
     """Server class for testing"""
 
-    def __init__(self):
+    def __init__(self, _=-1):
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         self.connection = None
@@ -128,12 +131,14 @@ class HsmsTestServer(object):
 
     def stop(self, terminate_connections=True):
         if terminate_connections:
-            self.connection.disconnect()
+            if self.connection:
+                self.connection.disconnect()
 
         self.logger.debug("server stopped")
 
     def simulate_connect(self):
-        threading.Thread(target=self.connection.simulate_connect).start()
+        threading.Thread(target=self.connection.simulate_connect, name="SimulateConnectStarter").start()
+    
         while not self.connection.connected:
             time.sleep(0.1)
 
@@ -170,3 +175,6 @@ class HsmsTestServer(object):
 
     def get_next_system_counter(self):
         return self.connection.get_next_system_counter()
+
+    def generate_stream_function_packet(self, system_id, packet, session_id=0):
+        return HsmsPacket(HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())
