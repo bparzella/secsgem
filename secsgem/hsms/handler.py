@@ -310,6 +310,9 @@ class HsmsHandler(EventProducer):
         """
         del self._systemQueues[system_id]
 
+    def __repr__(self):
+        return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
+
     def _serialize_data(self):
         """Returns data for serialization
 
