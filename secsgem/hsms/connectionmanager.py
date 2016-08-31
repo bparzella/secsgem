@@ -40,6 +40,8 @@ class HsmsConnectionManager(EventProducer):
 
         self.stopping = False
 
+        self._testServerObject = None 
+
     def has_connection_to(self, index):
         """Check if connection to certain peer exists.
 
@@ -72,6 +74,9 @@ class HsmsConnectionManager(EventProducer):
 
         .. warning:: Do not call this directly, for internal use only.
         """
+        if self._testServerObject:
+            return
+
         required_ports = []
 
         if additional_port > 0:
@@ -136,10 +141,16 @@ class HsmsConnectionManager(EventProducer):
 
         self._update_required_servers(port)
 
-        if active:
-            handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler)
-        else:
-            handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self.servers[port])
+        if self._testServerObject:
+            if active:
+                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self._testServerObject)
+            else:
+                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self._testServerObject)
+        else:  # pragma: no cover
+            if active:
+                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler)
+            else:
+                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self.servers[port])
 
         handler.enable()
 
