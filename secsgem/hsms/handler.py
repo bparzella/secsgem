@@ -117,6 +117,11 @@ class HsmsHandler(EventProducer):
 
         return self.systemCounter
 
+    def _start_linktest_timer(self):
+        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
+        self.linktestTimer.name = "secsgem_hsmsHandler_linktestTimer"
+        self.linktestTimer.start()
+
     def _on_state_connect(self):
         """Connection state model got event connect
 
@@ -124,8 +129,7 @@ class HsmsHandler(EventProducer):
         :type data: object
         """
         # start linktest timer
-        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
-        self.linktestTimer.start()
+        self._start_linktest_timer()
 
         # start select process if connection is active
         if self.active:
@@ -164,8 +168,7 @@ class HsmsHandler(EventProducer):
         self.send_linktest_req()
 
         # restart the timer
-        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
-        self.linktestTimer.start()
+        self._start_linktest_timer()
 
     def on_connection_established(self, _):
         """Connection was established"""
