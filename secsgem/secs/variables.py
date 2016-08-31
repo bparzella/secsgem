@@ -532,18 +532,18 @@ class SecsVarArray(SecsVar):
     preferredTypes = [list]
 
     class SecsVarArrayIter(object):
-        def __init__(self, length):
-            self._length = length
+        def __init__(self, values):
+            self._values = values
             self._counter = 0
 
         def __iter__(self):
             return self
 
         def next(self):
-            if self._counter < self._length:
+            if self._counter < len(self._values):
                 i = self._counter
                 self._counter += 1
-                return i
+                return self._values[i]
             else:
                 raise StopIteration()
 
@@ -580,6 +580,9 @@ class SecsVarArray(SecsVar):
             return self.data[key]
         else:
             return self.data[key]
+
+    def __iter__(self):
+        return SecsVarArray.SecsVarArrayIter(self.data)
 
     def __setitem__(self, key, value):
         if isinstance(value, type(self.data[key])) or isinstance(value, self.data[key].__class__.__bases__):
