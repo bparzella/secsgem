@@ -14,19 +14,19 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 import unittest
+import time
 
 from mock import Mock
 
 from transitions import MachineError
 
 import secsgem
-import secsgem.hsms.testconnection
 import secsgem.hsms.connectionstatemachine
 
-
+from testconnection import HsmsTestServer
 class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsms.testconnection.HsmsTestServer()
+        self.server = HsmsTestServer()
 
         self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, self.server)
 
@@ -45,8 +45,10 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
         self.assertEqual(self.client.connectionState.state, 'CONNECTED_NOT_SELECTED')
 
+
     def testUnselectedDisconnect(self):
         self.server.simulate_connect()
+
         self.server.simulate_disconnect()
 
         self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
@@ -72,7 +74,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
 class TestSecsConnectionStateModelActive(unittest.TestCase):
     def setUp(self):
-        self.server = secsgem.hsms.testconnection.HsmsTestServer()
+        self.server = HsmsTestServer()
 
         self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", None, self.server)
 
@@ -90,6 +92,23 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
         self.server.simulate_connect()
 
         self.assertEqual(self.client.connectionState.state, 'CONNECTED_NOT_SELECTED')
+
+        request_packet = self.server.expect_packet(s_type=1)
+        self.assertIsNotNone(request_packet)
+        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+
+        self.assertEqual(self.client.connectionState.state, 'CONNECTED_SELECTED')
+
+    def testSelectedDisconnect(self):
+        self.server.simulate_connect()
+
+        request_packet = self.server.expect_packet(s_type=1)
+        self.assertIsNotNone(request_packet)
+        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+
+        self.server.simulate_disconnect()
+
+        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
 
     def testUnselectedDisconnect(self):
         self.server.simulate_connect()

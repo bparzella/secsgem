@@ -1,5 +1,5 @@
 #####################################################################
-# testSecsDataItems.py
+# testHsmsPacket.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -14,18 +14,13 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import inspect
-import nose
+import secsgem
 
-import secsgem.secs.dataitems
+import unittest
 
-def find_subclasses(module):
-    return [cls for name, cls in inspect.getmembers(module) if inspect.isclass(cls) and not cls.__name__.startswith("SecsVar")]
+class TestHsmsPacket(unittest.TestCase):
+    def testConstructorWithoutHeader(self):
+        packet = secsgem.HsmsPacket()
 
-class TestDataItems(object):
-    def checkConstructorWithoutValue(self, cls):
-        cls()
-
-    def testDataItems(self):
-        for cls in find_subclasses(secsgem.secs.dataitems):
-            yield self.checkConstructorWithoutValue, cls
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.function, 0)
