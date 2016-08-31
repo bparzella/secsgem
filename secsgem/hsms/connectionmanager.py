@@ -69,7 +69,7 @@ class HsmsConnectionManager(EventProducer):
         """
         return "%s" % address
 
-    def _update_required_servers(self, additional_port=-1):
+    def _update_required_servers(self, additional_port=-1):  # pragma: no cover
         """Starts server if any active handler is found
 
         .. warning:: Do not call this directly, for internal use only.

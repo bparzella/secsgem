@@ -208,14 +208,14 @@ import types
 
 try:
   unicode = unicode
-except NameError:
+except NameError:  # pragma: no cover
   unicode = str
   basestring = (str, bytes)
 
-class FysomError(Exception):
+class FysomError(Exception):  # pragma: no cover
   pass
 
-class Fysom(object):
+class Fysom(object):  # pragma: no cover
 
   def __init__(self, cfg):
     self._apply(cfg)
@@ -346,5 +346,5 @@ class Fysom(object):
     if hasattr(self, fnname):
       return getattr(self, fnname)(e)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
   pass

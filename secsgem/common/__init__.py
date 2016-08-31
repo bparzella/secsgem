@@ -50,7 +50,7 @@ def is_windows():
     :returns: Is windows system
     :rtype: bool
     """
-    if sys.platform == "win32":
+    if sys.platform == "win32":  # pragma: no cover
         return True
 
     return False
