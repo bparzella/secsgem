@@ -127,6 +127,7 @@ class HsmsHandler(EventProducer):
 
     def _start_linktest_timer(self):
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
+        self.linktestTimer.daemon = True  # kill thread automatically on main program termination
         self.linktestTimer.name = "secsgem_hsmsHandler_linktestTimer"
         self.linktestTimer.start()
 
@@ -142,6 +143,7 @@ class HsmsHandler(EventProducer):
         # start select process if connection is active
         if self.active:
             self.selectReqThread = threading.Thread(target=self._sendSelectReqThread, name="secsgem_hsmsHandler_sendSelectReqThread")
+            self.selectReqThread.daemon = True  # kill thread automatically on main program termination
             self.selectReqThread.start() 
 
     def _on_state_disconnect(self):
