@@ -84,6 +84,9 @@ class HsmsHandler(EventProducer):
         self.linktestTimer = None
         self.linktestTimeout = 30
 
+        # select request thread for active connections, to avoid blocking state changes
+        self.selectReqThread = None
+
         # response queues
         self._systemQueues = {}
 
@@ -117,6 +120,11 @@ class HsmsHandler(EventProducer):
 
         return self.systemCounter
 
+    def _sendSelectReqThread(self):
+        response = self.send_select_req()
+        if response is None:
+            self.logger.warning("select request failed")
+
     def _start_linktest_timer(self):
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
         self.linktestTimer.name = "secsgem_hsmsHandler_linktestTimer"
@@ -133,9 +141,8 @@ class HsmsHandler(EventProducer):
 
         # start select process if connection is active
         if self.active:
-            response = self.send_select_req()
-            if response is None:
-                self.logger.warning("select request failed")
+            self.selectReqThread = threading.Thread(target=self._sendSelectReqThread, name="secsgem_hsmsHandler_sendSelectReqThread")
+            self.selectReqThread.start() 
 
     def _on_state_disconnect(self):
         """Connection state model got event disconnect
