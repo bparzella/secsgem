@@ -100,25 +100,6 @@ class HsmsConnectionManager(EventProducer):
                 self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
-    def _on_event(self, event_name, data):
-        """Callback function for disconnection event
-
-        :param event_name: Name of the event
-        :type event_name: string
-        :param data: Data supplied with event
-        :type data: dict
-
-        .. warning:: Do not call this directly, for internal use only.
-        """
-        connection = data['connection']
-
-        connection_id = self.get_connection_id(connection.remoteIP)
-
-        if connection_id in self.handlers.keys():
-            data['handler'] = self.handlers[connection_id]
-
-        self.fire_event(event_name, data)
-
     def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsHandler):
         """Add a new connection
 
