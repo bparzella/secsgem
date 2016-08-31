@@ -54,8 +54,6 @@ class SecsVar(object):
         else:
             raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
-        return None
-
     def set(self, value):
         """Set the internal value to the provided value
 
