@@ -100,6 +100,9 @@ class StreamFunctionCallbackHandler(object):
     def __init__(self):
         self.callbacks = {}
 
+    def _generate_callback_name(self, stream, function):
+        return "s" + str(stream) + "f" + str(function)
+
     def register_callback(self, stream, function, callback):
         """Register the function callback for stream and function. Multiple callbacks can be registered for one function.
 
@@ -110,7 +113,7 @@ class StreamFunctionCallbackHandler(object):
         :param callback: method to call when stream and functions is received
         :type callback: def callback(connection)
         """
-        name = "s" + str(stream) + "f" + str(function)
+        name = self._generate_callback_name(stream, function)
 
         if name not in self.callbacks:
             self.callbacks[name] = []
@@ -127,7 +130,7 @@ class StreamFunctionCallbackHandler(object):
         :param callback: method to remove from callback list
         :type callback: def callback(connection)
         """
-        name = "s" + str(stream) + "f" + str(function)
+        name = self._generate_callback_name(stream, function)
 
         if callback in self.callbacks[name]:
             self.callbacks[name].remove(callback)

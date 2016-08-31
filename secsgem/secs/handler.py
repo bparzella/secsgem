@@ -190,7 +190,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         # check if callbacks available for this stream and function
-        callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
+        callback_index = self._generate_callback_name(packet.header.stream, packet.header.function)
         if callback_index in self.callbacks:
             threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_secsHandler_callback_{}".format(callback_index)).start()
         else:

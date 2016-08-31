@@ -23,6 +23,7 @@ from ..secs.handler import SecsHandler
 
 from ..secs.functions import SecsS09F05
 
+
 class GemHandler(SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
 
@@ -136,7 +137,7 @@ class GemHandler(SecsHandler):
             pass
         elif self.communicationState.isstate('COMMUNICATING'):
             # check if callbacks available for this stream and function
-            callback_index = "s" + str(packet.header.stream) + "f" + str(packet.header.function)
+            callback_index = self._generate_callback_name(packet.header.stream, packet.header.function)
             if callback_index in self.callbacks:
                 threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_gemHandler_callback_{}".format(callback_index)).start()
             else:
