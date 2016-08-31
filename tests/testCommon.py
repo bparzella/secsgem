@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
+import sys
 import unittest
 
 from mock import Mock, patch
@@ -23,7 +24,10 @@ import secsgem
 
 class TestTopLevelFunctions(unittest.TestCase):
     def testIsWindows(self):
-        self.assertEqual(secsgem.common.is_windows(), False)  # tests run on a linux system
+        if sys.platform == "win32":
+            self.assertEqual(secsgem.common.is_windows(), True)
+        else:
+            self.assertEqual(secsgem.common.is_windows(), False)
 
     def testFunctionName(self):
         self.assertEqual(secsgem.common.function_name(secsgem.common.is_windows), "is_windows")
