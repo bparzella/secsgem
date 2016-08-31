@@ -346,17 +346,12 @@ class SecsVarList(SecsVar):
             else:
                 raise StopIteration()
 
-    def __init__(self, dataformat, length=-1, value=None):
+    def __init__(self, dataformat, value=None):
         super(SecsVarList, self).__init__()
 
         self.name = "DATA"
 
         self.data = self._generate(dataformat)
-        self.length = length
-        if self.length >= 0:
-            if not len(self.data) == length:
-                raise ValueError(
-                    "Definition has invalid field count (expected: {}, actual: {})".format(self.length, len(self.data)))
 
         if value is not None:
             self.set(value)
@@ -465,12 +460,12 @@ class SecsVarList(SecsVar):
             for field_name in value:
                 self.data[field_name].set(value[field_name])
         elif isinstance(value, list):
-            if self.length >= 0:
-                if not len(value) == self.length:
-                    raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.length, len(self.data)))
+            if len(value) > len(self.data):
+                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(len(self.data), len(value)))
+           
             counter = 0
-            for field_name in self.data:
-                self.data[field_name].set(value[counter])
+            for itemvalue in value:
+                self.data[self.data.keys()[counter]].set(itemvalue)
                 counter += 1
         else:
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
