@@ -1,7 +1,7 @@
 # secsgem
 Simple Python SECS/GEM implementation
 
-This module is still work in progress. I'd love to get your input, your use case, whether you are experienced or not in SECS.
+This module is still work in progress. I'd love to get your input, your use case, whether you are experienced in SECS or not.
 
 [![Image](https://readthedocs.org/projects/secsgem/badge/)](http://secsgem.readthedocs.org/en/latest/) 
 [![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem) 
