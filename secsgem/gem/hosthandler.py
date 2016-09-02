@@ -16,6 +16,7 @@
 """Handler for GEM host."""
 
 from ..gem.handler import GemHandler
+from collections import OrderedDict
 
 
 class GemHostHandler(GemHandler):
@@ -100,8 +101,12 @@ class GemHostHandler(GemHandler):
 
         s2f41 = self.stream_function(2, 41)()
         s2f41.RCMD = rcmd
-        for param in params:
-            s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
+        if isinstance(params, list):
+            for param in params:
+                s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
+        elif isinstance(params, OrderedDict):
+            for param in params:
+                s2f41.PARAMS.append({"CPNAME": param, "CPVAL": params[param]})
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(s2f41))
