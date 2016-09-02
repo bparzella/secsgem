@@ -687,6 +687,9 @@ class SecsVarBinary(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        if self.value == None:
+            return "<B>"
+            
         if len(self.value) == 0:
             return "<B>"
 
