@@ -114,7 +114,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, False, 0, "test")
+            >>> handler = SecsHandler("127.0.0.1", 5000, True, 0, "test")
             >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
 
         **Key**
@@ -140,7 +140,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, False, 0, "test")
+            >>> handler = SecsHandler("127.0.0.1", 5000, True, 0, "test")
             >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], 'ceids': [200, 343]}
 
         **Key**
