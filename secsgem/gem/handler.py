@@ -93,6 +93,9 @@ class GemHandler(SecsHandler):
         self.register_callback(1, 1, self.s01f01_handler)
         self.register_callback(1, 13, self.s01f13_handler)
 
+    def __repr__(self):
+        return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
+
     def _serialize_data(self):
         """Returns data for serialization
 
@@ -222,8 +225,9 @@ class GemHandler(SecsHandler):
         # call parent handlers
         SecsHandler.on_connection_closed(self, connection)
 
-        # update communication state
-        self.communicationState.communicationfail()
+        if self.communicationState.current == "COMMUNICATING":
+            # update communication state
+            self.communicationState.communicationfail()
 
     def on_commack_requested(self):
         """Get the acknowledgement code for the connection request
