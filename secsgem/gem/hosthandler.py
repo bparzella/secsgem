@@ -120,7 +120,7 @@ class GemHostHandler(GemHandler):
         self.logger.info("Delete process programs {0}".format(ppids))
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).ACKC7
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
 
     def get_process_program_list(self):
         """Get process program list
@@ -159,7 +159,7 @@ class GemHostHandler(GemHandler):
         message = self.secs_decode(packet)
 
         for report in message.RPT:
-            report_dvs = self.reportSubscriptions[report.RPTID]
+            report_dvs = self.reportSubscriptions[report.RPTID.get()]
             report_values = report.V.get()
 
             values = []
