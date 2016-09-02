@@ -87,6 +87,8 @@ class SecsStreamFunction(object):
         if value is not None and self.data is not None:
             self.data.set(value)
 
+        self.objectIntitialized = True
+
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
@@ -106,6 +108,15 @@ class SecsStreamFunction(object):
 
     def __len__(self):
         return len(self.data)
+
+    def __getattr__(self, item):
+        return self.data.__getattr__(item)
+
+    def __setattr__(self, item, value):
+        if not self.__dict__.has_key('objectIntitialized'):
+            return dict.__setattr__(self, item, value)
+        elif self.data.data.has_key(item):
+            return self.data.__setattr__(item, value)
 
     def append(self, data):
         """Append data to list, if stream/function parameter is a list
