@@ -261,6 +261,17 @@ class testFunctionBase(unittest.TestCase):
         with self.assertRaises(AttributeError):
             item.append(20)
 
+    def testGetAttrOnNonList(self):
+        item = SecsS01F16(10)
+
+        with self.assertRaises(AttributeError):
+            item.Item1
+
+    def testSetAttrOnNonList(self):
+        item = SecsS01F16(10)
+
+        with self.assertRaises(AttributeError):
+            item.Item1 = 11
 
 def check_stream_number(stream, cls):
     assert stream == cls._stream

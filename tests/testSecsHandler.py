@@ -21,6 +21,73 @@ import secsgem
 
 from testconnection import HsmsTestServer
 
+class TestSecsHandler(unittest.TestCase):
+    def testSecsDecode(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        packet = server.generate_stream_function_packet(0, secsgem.SecsS01F02(["MDLN", "SOFTREV"]))
+
+        function = client.secs_decode(packet)
+
+        self.assertEqual(function.stream, 1)
+        self.assertEqual(function.function, 2)
+        self.assertEqual(function[0], "MDLN")
+        self.assertEqual(function[1], "SOFTREV")
+
+    def testSecsDecodeNone(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        function = client.secs_decode(None)
+
+        self.assertIsNone(function)
+
+    def testSecsDecodeInvalidStream(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        packet = secsgem.HsmsPacket()
+        packet.header.stream = 99
+        function = client.secs_decode(packet)
+
+        self.assertIsNone(function)
+
+    def testSecsDecodeInvalidFunction(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        packet = secsgem.HsmsPacket()
+        packet.header.function = 99
+        function = client.secs_decode(packet)
+
+        self.assertIsNone(function)
+    
+    def testStreamFunction(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        function = client.stream_function(1, 1)
+
+        self.assertIs(function, secsgem.SecsS01F01)
+
+    def testStreamFunctionInvalidStream(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        function = client.stream_function(99, 1)
+
+        self.assertIs(function, None)
+
+    def testStreamFunctionInvalidFunction(self):
+        server = HsmsTestServer()
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+
+        function = client.stream_function(1, 99)
+
+        self.assertIs(function, None)
+
+
 class TestSecsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
@@ -78,7 +145,9 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.sessionID, 0xffff)
 
         #send s01e01
-        threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.SecsS01F01(),), name="TestSecsHandlerPassive_testStreamFunctionSending").start()
+        clientCommandThread = threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.SecsS01F01(),), name="TestSecsHandlerPassive_testStreamFunctionSending")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
 
         packet = self.server.expect_packet(function=1)
 
@@ -89,6 +158,9 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.function, 1)
 
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
 
     def testStreamFunctionReceivingUnselected(self):
         self.server.simulate_connect()

@@ -203,7 +203,9 @@ class TestHsmsHandlerActive(unittest.TestCase):
 
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
 
-        threading.Thread(target=self.client.send_deselect_req, name="TestHsmsHandlerActive_testDeselect").start()
+        clientCommandThread = threading.Thread(target=self.client.send_deselect_req, name="TestHsmsHandlerActive_testDeselect")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
 
         packet = self.server.expect_packet(s_type=0x03)
 
@@ -212,6 +214,9 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sessionID, 0xffff)
 
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectRspHeader(packet.header.system)))
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
 
     def testDeselectWhileDisconnecting(self):
         self.server.simulate_connect()

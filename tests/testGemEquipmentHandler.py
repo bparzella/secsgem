@@ -16,9 +16,13 @@
 
 import unittest
 
+import secsgem
 from secsgem.secs.variables import SecsVarString, SecsVarU4
 from secsgem.gem.equipmenthandler import DataValue, StatusVariable, CollectionEvent, \
     CollectionEventLink, CollectionEventReport, EquipmentConstant
+
+from testGemHandler import GemHandlerPassiveGroup
+from testconnection import HsmsTestServer
 
 class TestDataValue(unittest.TestCase):
     def testConstructorWithInt(self):
@@ -145,4 +149,19 @@ class TestEquipmentConstant(unittest.TestCase):
         self.assertEqual(ec.param1, "param1")
         self.assertEqual(ec.param2, 2)
 
+class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
+    __testClass = secsgem.GemEquipmentHandler
+    
+    def setUp(self):
+        self.assertIsNotNone(self.__testClass)
 
+        self.server = HsmsTestServer()
+
+        self.client = self.__testClass("127.0.0.1", 5000, False, 0, "test", None, self.server)
+
+        self.server.start()
+        self.client.enable()
+
+    def tearDown(self):
+        self.client.disable()
+        self.server.stop()

@@ -778,6 +778,9 @@ class TestSecsVarBinary(unittest.TestCase):
     def testEmptyRepr(self):
         print SecsVarBinary(value=[])
 
+    def testNoneRepr(self):
+        print SecsVarBinary(value=None)
+
     def testSettingNone(self):
         secsvar = SecsVarBinary()
 
