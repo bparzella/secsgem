@@ -1064,5 +1064,8 @@ class GemEquipmentHandler(GemHandler):
         GemHandler.on_connection_closed(self, connection)
 
         # update control state
-        self.controlState.switch_offline()
-        self.controlState.switch_online()
+        if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            self.controlState.switch_offline()
+
+        if self.controlState.current in ["EQUIPMENT_OFFLINE"]:
+            self.controlState.switch_online()
