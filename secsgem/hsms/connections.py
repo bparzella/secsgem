@@ -49,7 +49,7 @@ def is_errorcode_ewouldblock(errorcode):
     return False
 
 
-class HsmsConnection(object):
+class HsmsConnection(object):  # pragma: no cover
     """Connection class used for active and passive hsms connections.
 
     :param active: Is the connection active (*True*) or passive (*False*)
@@ -305,7 +305,7 @@ class HsmsConnection(object):
         self._on_hsms_connection_close({'connection': self})
 
 
-class HsmsPassiveConnection(HsmsConnection):
+class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     """Server class for single passive (incoming) connection
 
     Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
@@ -430,7 +430,7 @@ class HsmsPassiveConnection(HsmsConnection):
         self.stopServerThread = False
 
 
-class HsmsMultiPassiveConnection(HsmsConnection):
+class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
     """Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
     Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
@@ -493,7 +493,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
             self.disconnect()
 
 
-class HsmsMultiPassiveServer(object):
+class HsmsMultiPassiveServer(object):  # pragma: no cover
     """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
 
     :param port: TCP port to listen on
@@ -655,7 +655,7 @@ class HsmsMultiPassiveServer(object):
         self.threadRunning = False
 
 
-class HsmsActiveConnection(HsmsConnection):
+class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
     """Client class for single active (outgoing) connection
 
     :param address: IP address of target host
