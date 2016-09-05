@@ -202,17 +202,11 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         """Disable all Collection Events."""
         self.logger.info("Disable all collection events")
 
-        if not self.connection:
-            return None
-
         return self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": False, "CEID": []}))
 
     def disable_ceid_reports(self):
         """Disable all Collection Event Reports."""
         self.logger.info("Disable all collection event reports")
-
-        if not self.connection:
-            return None
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
@@ -223,9 +217,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :rtype: list
         """
         self.logger.info("Get list of service variables")
-
-        if not self.connection:
-            return None
 
         packet = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
 
@@ -240,9 +231,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :rtype: list
         """
         self.logger.info("Get value of service variables {0}".format(svs))
-
-        if not self.connection:
-            return None
 
         packet = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
 
@@ -268,9 +256,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         """
         self.logger.info("Get list of equipment constants")
 
-        if not self.connection:
-            return None
-
         packet = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
         return self.secs_decode(packet)
@@ -284,9 +269,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :rtype: list
         """
         self.logger.info("Get value of equipment constants {0}".format(ecs))
-
-        if not self.connection:
-            return None
 
         packet = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
 
@@ -311,9 +293,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :type ecs: list
         """
         self.logger.info("Set value of equipment constants {0}".format(ecs))
-
-        if not self.connection:
-            return None
 
         packet = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
 
@@ -340,9 +319,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :type text: string
         """
         self.logger.info("Send text to terminal {0}".format(terminal_id))
-
-        if not self.connection:
-            return None
 
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
@@ -377,9 +353,6 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
     def are_you_there(self):
         """Check if remote is still replying"""
         self.logger.info("Requesting 'are you there'")
-
-        if not self.connection:
-            return None
 
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
