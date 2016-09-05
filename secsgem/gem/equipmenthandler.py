@@ -277,6 +277,31 @@ class GemEquipmentHandler(GemHandler):
         self.onlineControlStates = ["LOCAL", "REMOTE"]
         self.onlineControlState = initial_online_control_state
 
+        self._time_format = 1
+
+        self._data_values = {
+        }
+
+        self._status_variables = {
+            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
+            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", SecsVarBinary),
+            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", SecsVarArray),
+        }
+
+        self._collection_events = {
+            CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
+            CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
+            CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
+        }
+
+        self._equipment_constants = {
+            ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
+            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
+        }
+
+        self._registered_reports = {}
+        self._registered_collection_events = {}
+
         self.controlState = Fysom({
             'initial': "INIT",
             'events': [
@@ -334,31 +359,6 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 37, self.s02f37_handler)
 
         self.register_callback(6, 15, self.s06f15_handler)
-
-        self._time_format = 1
-
-        self._data_values = {
-        }
-
-        self._status_variables = {
-            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
-            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", SecsVarBinary),
-            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", SecsVarArray),
-        }
-
-        self._collection_events = {
-            CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
-            CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
-            CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
-        }
-
-        self._equipment_constants = {
-            ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
-            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
-        }
-
-        self._registered_reports = {}
-        self._registered_collection_events = {}
 
     # control state model
 
