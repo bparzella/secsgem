@@ -99,7 +99,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         packet = self.server.expect_packet(function=37)
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F36(secsgem.LRACK.ACK))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F38(secsgem.ERACK.ACCEPTED))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
