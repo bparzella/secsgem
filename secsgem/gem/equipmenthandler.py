@@ -34,7 +34,7 @@ CEID_CONTROL_STATE_LOCAL = 2
 CEID_CONTROL_STATE_REMOTE = 3
 
 
-class DataValue:
+class DataValue(object):
     """Data value definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -71,7 +71,7 @@ class DataValue:
             setattr(self, key, value)
 
 
-class StatusVariable:
+class StatusVariable(object):
     """Status variable definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -111,7 +111,7 @@ class StatusVariable:
             setattr(self, key, value)
 
 
-class CollectionEvent:
+class CollectionEvent(object):
     """Collection event definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -144,7 +144,7 @@ class CollectionEvent:
             setattr(self, key, value)
 
 
-class CollectionEventLink:
+class CollectionEventLink(object):
     """Representation for registered/linked collection event
 
     :param ce: ID of the collection event
@@ -172,7 +172,7 @@ class CollectionEventLink:
         return self._reports
 
 
-class CollectionEventReport:
+class CollectionEventReport(object):
     """Report definition for registered collection events
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -196,7 +196,7 @@ class CollectionEventReport:
             setattr(self, key, value)
 
 
-class EquipmentConstant:
+class EquipmentConstant(object):
     """Equipment constant definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
