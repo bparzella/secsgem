@@ -204,7 +204,7 @@ class SecsS01F04(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F04([secsgem.SecsVarU1(value=1), "text", secsgem.SecsVarU4(value=1337)])
+        >>> secsgem.SecsS01F04([secsgem.SecsVarU1(1), "text", secsgem.SecsVarU4(1337)])
         S1F4
           <L [3]
             <U1 1 >
@@ -651,7 +651,7 @@ class SecsS02F14(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F14([secsgem.SecsVarU1(value=1), "text"])
+        >>> secsgem.SecsS02F14([secsgem.SecsVarU1(1), "text"])
         S2F14
           <L [2]
             <U1 1 >
@@ -696,7 +696,7 @@ class SecsS02F15(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.SecsVarU4(value=10)}, {"ECID": "1337", "ECV": "text"}])
+        >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.SecsVarU4(10)}, {"ECID": "1337", "ECV": "text"}])
         S2F15 W
           <L [2]
             <L [2]
@@ -903,7 +903,7 @@ class SecsS02F30(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(value=0), "ECMAX": secsgem.SecsVarU1(value=100), "ECDEF": secsgem.SecsVarU1(value=50), "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
+        >>> secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}, {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
         S2F30
           <L [2]
             <L [6]
@@ -1668,7 +1668,7 @@ class SecsS06F08(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F08({"DATAID": 1, "CEID": 1337, "DS": [{"DSID": 1000, "DV": [{"DVNAME": "VAR1", "DVVAL": "VAR"}, {"DVNAME": "VAR2", "DVVAL": secsgem.SecsVarU4(value=100)}]}]})
+        >>> secsgem.SecsS06F08({"DATAID": 1, "CEID": 1337, "DS": [{"DSID": 1000, "DV": [{"DVNAME": "VAR1", "DVVAL": "VAR"}, {"DVNAME": "VAR2", "DVVAL": secsgem.SecsVarU4(100)}]}]})
         S6F8
           <L [3]
             <U1 1 >
@@ -1753,7 +1753,7 @@ class SecsS06F11(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(value=100)]}]})
+        >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(100)]}]})
         S6F11 W
           <L [3]
             <U1 1 >
@@ -1898,7 +1898,7 @@ class SecsS06F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(value=100)]}]})
+        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(100)]}]})
         S6F16
           <L [3]
             <U1 1 >
@@ -1957,7 +1957,7 @@ class SecsS06F19(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F19(secsgem.SecsVarU4(value=1337))
+        >>> secsgem.SecsS06F19(secsgem.SecsVarU4(1337))
         S6F19 W
           <U4 1337 > .
 
@@ -2034,7 +2034,7 @@ class SecsS06F21(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F21(secsgem.SecsVarU4(value=1337))
+        >>> secsgem.SecsS06F21(secsgem.SecsVarU4(1337))
         S6F21 W
           <U4 1337 > .
 
@@ -2234,7 +2234,7 @@ class SecsS07F03(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS07F03({"PPID": "program", "PPBODY": secsgem.SecsVarBinary(value="data")})
+        >>> secsgem.SecsS07F03({"PPID": "program", "PPBODY": secsgem.SecsVarBinary("data")})
         S7F3 W
           <L [2]
             <A "program">
@@ -2349,7 +2349,7 @@ class SecsS07F06(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS07F06({"PPID": "program", "PPBODY": secsgem.SecsVarBinary(value="data")})
+        >>> secsgem.SecsS07F06({"PPID": "program", "PPBODY": secsgem.SecsVarBinary("data")})
         S7F6
           <L [2]
             <A "program">

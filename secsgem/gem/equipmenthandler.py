@@ -493,7 +493,7 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
-        return dv.value_type(value=dv.value)
+        return dv.value_type(dv.value)
 
     def _get_dv_value(self, dv):
         """Get the data value depending on its configuation
@@ -504,9 +504,9 @@ class GemEquipmentHandler(GemHandler):
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
         if dv.use_callback:
-            return self.on_dv_value_request(dv.id_type(value=dv.dvid), dv)
+            return self.on_dv_value_request(dv.id_type(dv.dvid), dv)
         else:
-            return dv.value_type(value=dv.value)
+            return dv.value_type(dv.value)
 
     # status variables
 
@@ -531,7 +531,7 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
-        return sv.value_type(value=sv.value)
+        return sv.value_type(sv.value)
 
     def _get_sv_value(self, sv):
         """Get the status variable value depending on its configuation
@@ -542,17 +542,17 @@ class GemEquipmentHandler(GemHandler):
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
         if sv.svid == SVID_CLOCK:
-            return sv.value_type(value=self._get_clock())
+            return sv.value_type(self._get_clock())
         if sv.svid == SVID_CONTROL_STATE:
-            return sv.value_type(value=self._get_control_state_id())
+            return sv.value_type(self._get_control_state_id())
         if sv.svid == SVID_EVENTS_ENABLED:
             events = self._get_events_enabled()
-            return sv.value_type(SecsVarDynamic([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]), value=events)
+            return sv.value_type(SecsVarDynamic([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]), events)
 
         if sv.use_callback:
-            return self.on_sv_value_request(sv.id_type(value=sv.svid), sv)
+            return self.on_sv_value_request(sv.id_type(sv.svid), sv)
         else:
-            return sv.value_type(value=sv.value)
+            return sv.value_type(sv.value)
 
     def s01f03_handler(self, handler, packet):
         """Callback handler for Stream 1, Function 3, Equipment status request
@@ -877,7 +877,7 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
-        return ec.value_type(value=ec.value)
+        return ec.value_type(ec.value)
 
     def on_ec_value_update(self, ecid, ec, value):
         """Set the equipment constant value depending on its configuation.
@@ -902,14 +902,14 @@ class GemEquipmentHandler(GemHandler):
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
         if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            return ec.value_type(value=self.establishCommunicationTimeout)
+            return ec.value_type(self.establishCommunicationTimeout)
         if ec.ecid == ECID_TIME_FORMAT:
-            return ec.value_type(value=self._time_format)
+            return ec.value_type(self._time_format)
 
         if ec.use_callback:
-            return self.on_ec_value_request(ec.id_type(value=ec.ecid), ec)
+            return self.on_ec_value_request(ec.id_type(ec.ecid), ec)
         else:
-            return ec.value_type(value=ec.value)
+            return ec.value_type(ec.value)
 
     def _set_ec_value(self, ec, value):
         """Get the equipment constant value depending on its configuation
@@ -925,7 +925,7 @@ class GemEquipmentHandler(GemHandler):
             self._time_format = value
 
         if ec.use_callback:
-            self.on_ec_value_update(ec.id_type(value=ec.ecid), ec, value)
+            self.on_ec_value_update(ec.id_type(ec.ecid), ec, value)
         else:
             ec.value = value
 

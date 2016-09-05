@@ -47,17 +47,17 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
 
     def on_sv_value_request(self, svid, sv):
         if sv.svid == 10:
-            return sv.value_type(value=self.sv1)
+            return sv.value_type(self.sv1)
         elif sv.svid == "SV2":
-            return sv.value_type(value=self.sv2)
+            return sv.value_type(self.sv2)
 
         return []
 
     def on_ec_value_request(self, ecid, ec):
         if ec.ecid == 20:
-            return ec.value_type(value=self.ec1)
+            return ec.value_type(self.ec1)
         elif ec.ecid == "EC2":
-            return ec.value_type(value=self.ec2)
+            return ec.value_type(self.ec2)
 
         return []
 

@@ -127,19 +127,19 @@ class SecsVarDynamic(SecsVar):
 
     :param types: list of supported types, default first. empty list means all types are support, SecsVarString default
     :type types: list of :class:`secsgem.secs.variables.SecsVar` classes
-    :param length: max number of items in type
-    :type length: integer
     :param value: initial value
     :type value: various
+    :param count: max number of items in type
+    :type count: integer
     """
 
-    def __init__(self, types, length=-1, value=None):
+    def __init__(self, types, value=None, count=-1):
         super(SecsVarDynamic, self).__init__()
 
         self.value = None
 
         self.types = types
-        self.length = length
+        self.count = count
         if value is not None:
             self.set(value)
 
@@ -184,7 +184,7 @@ class SecsVarDynamic(SecsVar):
             >>> import secsgem
             >>>
             >>> var = secsgem.SecsVarDynamic([secsgem.SecsVarString, secsgem.SecsVarU1])
-            >>> var.set(secsgem.SecsVarU1(value=10))
+            >>> var.set(secsgem.SecsVarU1(10))
             >>> var
             <U1 10 >
 
@@ -204,7 +204,7 @@ class SecsVarDynamic(SecsVar):
             if matched_type is None:
                 raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'.format(value, value.__class__.__name__, self.types))
 
-            self.value = matched_type(length=self.length)
+            self.value = matched_type(count=self.count)
             self.value.set(value)
 
     def get(self):
@@ -241,31 +241,31 @@ class SecsVarDynamic(SecsVar):
         if format_code == SecsVarArray.formatCode and self.__type_supported(SecsVarArray):
             self.value = SecsVarArray(ANYVALUE)
         elif format_code == SecsVarBinary.formatCode and self.__type_supported(SecsVarBinary):
-            self.value = SecsVarBinary(length=self.length)
+            self.value = SecsVarBinary(count=self.count)
         elif format_code == SecsVarBoolean.formatCode and self.__type_supported(SecsVarBoolean):
-            self.value = SecsVarBoolean(length=self.length)
+            self.value = SecsVarBoolean(count=self.count)
         elif format_code == SecsVarString.formatCode and self.__type_supported(SecsVarString):
-            self.value = SecsVarString(length=self.length)
+            self.value = SecsVarString(count=self.count)
         elif format_code == SecsVarI8.formatCode and self.__type_supported(SecsVarI8):
-            self.value = SecsVarI8(length=self.length)
+            self.value = SecsVarI8(count=self.count)
         elif format_code == SecsVarI1.formatCode and self.__type_supported(SecsVarI1):
-            self.value = SecsVarI1(length=self.length)
+            self.value = SecsVarI1(count=self.count)
         elif format_code == SecsVarI2.formatCode and self.__type_supported(SecsVarI2):
-            self.value = SecsVarI2(length=self.length)
+            self.value = SecsVarI2(count=self.count)
         elif format_code == SecsVarI4.formatCode and self.__type_supported(SecsVarI4):
-            self.value = SecsVarI4(length=self.length)
+            self.value = SecsVarI4(count=self.count)
         elif format_code == SecsVarF8.formatCode and self.__type_supported(SecsVarF8):
-            self.value = SecsVarF8(length=self.length)
+            self.value = SecsVarF8(count=self.count)
         elif format_code == SecsVarF4.formatCode and self.__type_supported(SecsVarF4):
-            self.value = SecsVarF4(length=self.length)
+            self.value = SecsVarF4(count=self.count)
         elif format_code == SecsVarU8.formatCode and self.__type_supported(SecsVarU8):
-            self.value = SecsVarU8(length=self.length)
+            self.value = SecsVarU8(count=self.count)
         elif format_code == SecsVarU1.formatCode and self.__type_supported(SecsVarU1):
-            self.value = SecsVarU1(length=self.length)
+            self.value = SecsVarU1(count=self.count)
         elif format_code == SecsVarU2.formatCode and self.__type_supported(SecsVarU2):
-            self.value = SecsVarU2(length=self.length)
+            self.value = SecsVarU2(count=self.count)
         elif format_code == SecsVarU4.formatCode and self.__type_supported(SecsVarU4):
-            self.value = SecsVarU4(length=self.length)
+            self.value = SecsVarU4(count=self.count)
         else:
             raise ValueError(
                 "Unsupported format {} for this instance of SecsVarDynamic, allowed {}".format(
@@ -283,12 +283,12 @@ class SecsVarDynamic(SecsVar):
         # first try to find the preferred type for the kind of value
         for var_type in var_types:
             if isinstance(value, tuple(var_type.preferredTypes)):
-                if var_type(length=self.length).supports_value(value):
+                if var_type(count=self.count).supports_value(value):
                     return var_type
 
         # when no preferred type was found, then try to match any available type
         for var_type in var_types:
-            if var_type(length=self.length).supports_value(value):
+            if var_type(count=self.count).supports_value(value):
                 return var_type
 
         return None
@@ -325,10 +325,10 @@ class SecsVarList(SecsVar):
 
     :param dataformat: internal data values
     :type dataformat: OrderedDict
-    :param length: number of fields in the list
-    :type length: integer
     :param value: initial value
     :type value: dict/list
+    :param count: number of fields in the list
+    :type count: integer
     """
     formatCode = 0
     preferredTypes = [dict]
@@ -523,10 +523,10 @@ class SecsVarArray(SecsVar):
 
     :param dataFormat: internal data definition/sample
     :type dataFormat: :class:`secsgem.secs.variables.SecsVar`
-    :param length: number of fields in the list
-    :type length: integer
     :param value: initial value
     :type value: list
+    :param count: number of fields in the list
+    :type count: integer
     """
     formatCode = 0
     preferredTypes = [list]
@@ -547,11 +547,11 @@ class SecsVarArray(SecsVar):
             else:
                 raise StopIteration()
 
-    def __init__(self, dataFormat, length=-1, value=None):
+    def __init__(self, dataFormat, value=None, count=-1):
         super(SecsVarArray, self).__init__()
 
         self.item_decriptor = dataFormat
-        self.length = length
+        self.count = count
         self.data = []
         if isinstance(dataFormat, list):
             self.name = SecsVarList.get_name_from_format(dataFormat)
@@ -608,9 +608,9 @@ class SecsVarArray(SecsVar):
         if not isinstance(value, list):
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
-        if self.length >= 0:
-            if not len(value) == self.length:
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.length, len(value)))
+        if self.count >= 0:
+            if not len(value) == self.count:
+                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.count, len(value)))
 
         self.data = []
 
@@ -670,19 +670,19 @@ class SecsVarArray(SecsVar):
 class SecsVarBinary(SecsVar):
     """Secs type for binary data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: string/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 010
     preferredTypes = [str, bytearray]
 
-    def __init__(self, length=-1, value=None):
+    def __init__(self, value=None, count=-1):
         super(SecsVarBinary, self).__init__()
 
         self.value = None
-        self.length = length
+        self.count = count
         if value is not None:
             self.set(value)
 
@@ -736,7 +736,7 @@ class SecsVarBinary(SecsVar):
         """
 
         if isinstance(value, list) or isinstance(value, tuple):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             for item in value:
                 if not self.__check_single_item_support(item):
@@ -744,16 +744,16 @@ class SecsVarBinary(SecsVar):
 
             return True
         elif isinstance(value, bytearray):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             return True
         elif isinstance(value, str):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             return True
 
         elif isinstance(value, unicode):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             try:
                 value.decode('ascii')
@@ -776,10 +776,10 @@ class SecsVarBinary(SecsVar):
         if not isinstance(value, str) and not isinstance(value, unicode) and not isinstance(value, list) and not isinstance(value, tuple) and not isinstance(value, bytearray):
             value = chr(value)
 
-        #if self.length >= 0 and (0 <= len(value) <= self.length):
-        #if 0 <= self.length != len(value):
-        if self.length > 0 and len(value) > self.length:
-            raise ValueError("Value longer than {} chars ({} chars)".format(self.length, len(value)))
+        #if self.count >= 0 and (0 <= len(value) <= self.count):
+        #if 0 <= self.count != len(value):
+        if self.count > 0 and len(value) > self.count:
+            raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
         if isinstance(value, list) or isinstance(value, tuple):
             self.value = ''.join(chr(e) for e in value)
@@ -841,10 +841,10 @@ class SecsVarBinary(SecsVar):
 class SecsVarBoolean(SecsVar):
     """Secs type for boolean data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/boolean
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 011
     preferredTypes = [bool]
@@ -852,11 +852,11 @@ class SecsVarBoolean(SecsVar):
     _trueStrings = ["TRUE", "YES"]
     _falseStrings = ["FALSE", "NO"]
 
-    def __init__(self, length=-1, value=None):
+    def __init__(self, value=None, count=-1):
         super(SecsVarBoolean, self).__init__()
 
         self.value = None
-        self.length = length
+        self.count = count
         if value is not None:
             self.set(value)
 
@@ -914,7 +914,7 @@ class SecsVarBoolean(SecsVar):
         :type value: any
         """
         if isinstance(value, list) or isinstance(value, tuple):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             for item in value:
                 if not self.__check_single_item_support(item):
@@ -922,7 +922,7 @@ class SecsVarBoolean(SecsVar):
 
             return True
         elif isinstance(value, bytearray):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             for char in value:
                 if not 0 <= char <= 1:
@@ -959,8 +959,8 @@ class SecsVarBoolean(SecsVar):
         """
 
         if isinstance(value, list) or isinstance(value, tuple):
-            if 0 <= self.length < len(value):
-                raise ValueError("Value longer than {} chars".format(self.length))
+            if 0 <= self.count < len(value):
+                raise ValueError("Value longer than {} chars".format(self.count))
 
             new_value = []
             for item in value:
@@ -968,8 +968,8 @@ class SecsVarBoolean(SecsVar):
 
             self.value = new_value
         elif isinstance(value, bytearray):
-            if 0 <= self.length < len(value):
-                raise ValueError("Value longer than {} chars".format(self.length))
+            if 0 <= self.count < len(value):
+                raise ValueError("Value longer than {} chars".format(self.count))
 
             new_value = []
             for char in value:
@@ -1038,22 +1038,22 @@ class SecsVarBoolean(SecsVar):
 class SecsVarString(SecsVar):
     """Secs type for string data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: string
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 020
     preferredTypes = [str]
 
-    def __init__(self, length=-1, value=""):
+    def __init__(self, value="", count=-1):
         super(SecsVarString, self).__init__()
 
         if value is None:
             value = ""
 
         self.value = ""
-        self.length = length
+        self.count = count
         self.set(value)
 
     def __repr__(self):
@@ -1112,7 +1112,7 @@ class SecsVarString(SecsVar):
         :type value: any
         """
         if isinstance(value, list) or isinstance(value, tuple):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             for item in value:
                 if not self.__check_single_item_support(item):
@@ -1120,19 +1120,19 @@ class SecsVarString(SecsVar):
 
             return True
         elif isinstance(value, bytearray):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             return True
         elif isinstance(value, str):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             return True
         elif isinstance(value, (int, long, float, complex)):
-            if self.length > 0 and len(str(value)) > self.length:
+            if self.count > 0 and len(str(value)) > self.count:
                 return False
             return True
         elif isinstance(value, unicode):
-            if self.length > 0 and len(value) > self.length:
+            if self.count > 0 and len(value) > self.count:
                 return False
             try:
                 value.decode('ascii')
@@ -1157,8 +1157,8 @@ class SecsVarString(SecsVar):
           not isinstance(value, bytearray):
             value = str(value)
 
-        if self.length > 0 and len(value) > self.length:
-            raise ValueError("Value longer than {} chars ({} chars)".format(self.length, len(value)))
+        if self.count > 0 and len(value) > self.count:
+            raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
         if isinstance(value, list) or isinstance(value, tuple):
             self.value = ''.join(chr(e) for e in value)
@@ -1213,10 +1213,10 @@ class SecsVarString(SecsVar):
 class SecsVarNumber(SecsVar):
     """Secs base type for numeric data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer/float
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 0
     _basetype = int
@@ -1226,11 +1226,11 @@ class SecsVarNumber(SecsVar):
     _bytes = 0
     _structCode = ""
 
-    def __init__(self, length=-1, value=None):
+    def __init__(self, value=None, count=-1):
         super(SecsVarNumber, self).__init__()
 
         self.value = None
-        self.length = length
+        self.count = count
         if value is not None:
             self.set(value)
 
@@ -1293,14 +1293,14 @@ class SecsVarNumber(SecsVar):
         :type value: any
         """
         if isinstance(value, list) or isinstance(value, tuple):
-            if 0 <= self.length < len(value):
+            if 0 <= self.count < len(value):
                 return False
             for item in value:
                 if not self.__check_single_item_support(item):
                     return False
             return True
         elif isinstance(value, bytearray):
-            if 0 <= self.length < len(value):
+            if 0 <= self.count < len(value):
                 return False
             for item in value:
                 if item < self._min or item > self._max:
@@ -1320,8 +1320,8 @@ class SecsVarNumber(SecsVar):
             raise ValueError("Invalid value {}".format(value))
 
         if isinstance(value, list) or isinstance(value, tuple):
-            if 0 <= self.length < len(value):
-                raise ValueError("Value longer than {} chars".format(self.length))
+            if 0 <= self.count < len(value):
+                raise ValueError("Value longer than {} chars".format(self.count))
 
             new_list = []
             for item in value:
@@ -1332,8 +1332,8 @@ class SecsVarNumber(SecsVar):
                 new_list.append(item)
             self.value = new_list
         elif isinstance(value, bytearray):
-            if 0 <= self.length < len(value):
-                raise ValueError("Value longer than {} chars".format(self.length))
+            if 0 <= self.count < len(value):
+                raise ValueError("Value longer than {} chars".format(self.count))
 
             new_list = []
             for item in value:
@@ -1413,10 +1413,10 @@ class SecsVarNumber(SecsVar):
 class SecsVarI8(SecsVarNumber):
     """Secs type for 8 byte signed data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 030
     _basetype = int
@@ -1431,10 +1431,10 @@ class SecsVarI8(SecsVarNumber):
 class SecsVarI1(SecsVarNumber):
     """Secs type for 1 byte signed data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 031
     _basetype = int
@@ -1449,10 +1449,10 @@ class SecsVarI1(SecsVarNumber):
 class SecsVarI2(SecsVarNumber):
     """Secs type for 2 byte signed data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 032
     _basetype = int
@@ -1467,10 +1467,10 @@ class SecsVarI2(SecsVarNumber):
 class SecsVarI4(SecsVarNumber):
     """Secs type for 4 byte signed data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 034
     _basetype = int
@@ -1485,10 +1485,10 @@ class SecsVarI4(SecsVarNumber):
 class SecsVarF8(SecsVarNumber):
     """Secs type for 8 byte float data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/float
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 040
     _basetype = float
@@ -1503,10 +1503,10 @@ class SecsVarF8(SecsVarNumber):
 class SecsVarF4(SecsVarNumber):
     """Secs type for 4 byte float data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/float
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 044
     _basetype = float
@@ -1521,10 +1521,10 @@ class SecsVarF4(SecsVarNumber):
 class SecsVarU8(SecsVarNumber):
     """Secs type for 8 byte unsigned data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 050
     _basetype = int
@@ -1539,10 +1539,10 @@ class SecsVarU8(SecsVarNumber):
 class SecsVarU1(SecsVarNumber):
     """Secs type for 1 byte unsigned data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 051
     _basetype = int
@@ -1557,10 +1557,10 @@ class SecsVarU1(SecsVarNumber):
 class SecsVarU2(SecsVarNumber):
     """Secs type for 2 byte unsigned data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 052
     _basetype = int
@@ -1575,10 +1575,10 @@ class SecsVarU2(SecsVarNumber):
 class SecsVarU4(SecsVarNumber):
     """Secs type for 4 byte unsigned data
 
-    :param length: number of items this value
-    :type length: integer
     :param value: initial value
     :type value: list/integer
+    :param count: number of items this value
+    :type count: integer
     """
     formatCode = 054
     _basetype = int

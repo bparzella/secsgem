@@ -45,7 +45,7 @@ class ACKC5(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ACKC6(SecsVarBinary):
@@ -77,7 +77,7 @@ class ACKC6(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ACKC7(SecsVarBinary):
@@ -132,7 +132,7 @@ class ACKC7(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ACKC10(SecsVarBinary):
@@ -168,7 +168,7 @@ class ACKC10(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ALCD(SecsVarBinary):
@@ -222,7 +222,7 @@ class ALCD(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ALID(SecsVarDynamic):
@@ -248,7 +248,7 @@ class ALID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
 
 
 class ALTX(SecsVarString):
@@ -265,7 +265,7 @@ class ALTX(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=120, value=value)
+        super(self.__class__, self).__init__(value, count=120)
 
 
 class ATTRDATA(SecsVarDynamic):
@@ -314,7 +314,7 @@ class ATTRDATA(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
 
 
 class ATTRID(SecsVarDynamic):
@@ -355,7 +355,7 @@ class ATTRID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
 
 
 class ATTRRELN(SecsVarU1):
@@ -402,7 +402,7 @@ class ATTRRELN(SecsVarU1):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class BCEQU(SecsVarDynamic):
@@ -420,7 +420,7 @@ class BCEQU(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
 
 
 class BINLT(SecsVarDynamic):
@@ -442,7 +442,7 @@ class BINLT(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
 
 
 class CEED(SecsVarBoolean):
@@ -469,7 +469,7 @@ class CEED(SecsVarBoolean):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class CEID(SecsVarDynamic):
@@ -508,7 +508,7 @@ class CEID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class COLCT(SecsVarDynamic):
@@ -528,7 +528,7 @@ class COLCT(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
 
 
 class COMMACK(SecsVarBinary):
@@ -557,7 +557,7 @@ class COMMACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class CPACK(SecsVarBinary):
@@ -589,7 +589,7 @@ class CPACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class CPNAME(SecsVarDynamic):
@@ -620,7 +620,7 @@ class CPNAME(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class CPVAL(SecsVarDynamic):
@@ -652,7 +652,7 @@ class CPVAL(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
 
 
 class DATAID(SecsVarDynamic):
@@ -719,7 +719,7 @@ class DATAID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class DATALENGTH(SecsVarDynamic):
@@ -754,7 +754,7 @@ class DATALENGTH(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
 
 
 class DATLC(SecsVarU1):
@@ -770,7 +770,7 @@ class DATLC(SecsVarU1):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class DRACK(SecsVarBinary):
@@ -808,7 +808,7 @@ class DRACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class DSID(SecsVarDynamic):
@@ -834,7 +834,7 @@ class DSID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class DUTMS(SecsVarString):
@@ -851,7 +851,7 @@ class DUTMS(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class DVNAME(SecsVarDynamic):
@@ -876,7 +876,7 @@ class DVNAME(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class DVVAL(SecsVarDynamic):
@@ -907,7 +907,7 @@ class DVVAL(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
 
 
 class EAC(SecsVarBinary):
@@ -942,7 +942,7 @@ class EAC(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ECDEF(SecsVarDynamic):
@@ -969,7 +969,7 @@ class ECDEF(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
 
 
 class ECID(SecsVarDynamic):
@@ -995,7 +995,7 @@ class ECID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class ECMAX(SecsVarDynamic):
@@ -1022,7 +1022,7 @@ class ECMAX(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
 
 
 class ECMIN(SecsVarDynamic):
@@ -1049,7 +1049,7 @@ class ECMIN(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
 
 
 class ECNAME(SecsVarString):
@@ -1064,7 +1064,7 @@ class ECNAME(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class ECV(SecsVarDynamic):
@@ -1092,7 +1092,7 @@ class ECV(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
 
 
 class EDID(SecsVarDynamic):
@@ -1117,7 +1117,7 @@ class EDID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
 
 
 class ERACK(SecsVarBinary):
@@ -1147,7 +1147,7 @@ class ERACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ERRCODE(SecsVarDynamic):
@@ -1221,7 +1221,7 @@ class ERRCODE(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], length=2, value=value)
+        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
 
 class ERRTEXT(SecsVarString):
@@ -1288,7 +1288,7 @@ class ERRTEXT(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=120, value=value)
+        super(self.__class__, self).__init__(value, count=120)
 
 
 class FFROT(SecsVarU2):
@@ -1307,7 +1307,7 @@ class FFROT(SecsVarU2):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class FNLOC(SecsVarU2):
@@ -1327,7 +1327,7 @@ class FNLOC(SecsVarU2):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class GRANT6(SecsVarBinary):
@@ -1359,7 +1359,7 @@ class GRANT6(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class GRNT1(SecsVarBinary):
@@ -1404,7 +1404,7 @@ class GRNT1(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class HCACK(SecsVarBinary):
@@ -1450,7 +1450,7 @@ class HCACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class IDTYP(SecsVarBinary):
@@ -1495,7 +1495,7 @@ class IDTYP(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class LENGTH(SecsVarDynamic):
@@ -1520,7 +1520,7 @@ class LENGTH(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
 
 
 class LRACK(SecsVarBinary):
@@ -1561,7 +1561,7 @@ class LRACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class MAPER(SecsVarBinary):
@@ -1593,7 +1593,7 @@ class MAPER(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class MAPFT(SecsVarBinary):
@@ -1627,7 +1627,7 @@ class MAPFT(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class MDACK(SecsVarBinary):
@@ -1665,7 +1665,7 @@ class MDACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class MDLN(SecsVarString):
@@ -1689,7 +1689,7 @@ class MDLN(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=20, value=value)
+        super(self.__class__, self).__init__(value, count=20)
 
 
 class MEXP(SecsVarString):
@@ -1704,7 +1704,7 @@ class MEXP(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=6, value=value)
+        super(self.__class__, self).__init__(value, count=6)
 
 
 class MHEAD(SecsVarBinary):
@@ -1725,7 +1725,7 @@ class MHEAD(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=10, value=value)
+        super(self.__class__, self).__init__(value, count=10)
 
 
 class MID(SecsVarDynamic):
@@ -1782,7 +1782,7 @@ class MID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], length=80, value=value)
+        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], value, count=80)
 
 
 class MLCL(SecsVarDynamic):
@@ -1802,7 +1802,7 @@ class MLCL(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], length=1, value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value, count=1)
 
 
 class NULBC(SecsVarDynamic):
@@ -1821,7 +1821,7 @@ class NULBC(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
 
 
 class OBJACK(SecsVarU1):
@@ -1861,7 +1861,7 @@ class OBJACK(SecsVarU1):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class OBJID(SecsVarDynamic):
@@ -1885,7 +1885,7 @@ class OBJID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
 
 
 class OBJSPEC(SecsVarString):
@@ -1920,7 +1920,7 @@ class OBJSPEC(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class OBJTYPE(SecsVarDynamic):
@@ -1948,7 +1948,7 @@ class OBJTYPE(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
 
 
 class OFLACK(SecsVarBinary):
@@ -1974,7 +1974,7 @@ class OFLACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ONLACK(SecsVarBinary):
@@ -2006,7 +2006,7 @@ class ONLACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class ORLOC(SecsVarBinary):
@@ -2048,7 +2048,7 @@ class ORLOC(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class PPBODY(SecsVarDynamic):
@@ -2077,7 +2077,7 @@ class PPBODY(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
 
 
 class PPGNT(SecsVarBinary):
@@ -2120,7 +2120,7 @@ class PPGNT(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class PPID(SecsVarDynamic):
@@ -2156,7 +2156,7 @@ class PPID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], length=120, value=value)
+        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], value, count=120)
 
 
 class PRAXI(SecsVarBinary):
@@ -2205,7 +2205,7 @@ class PRAXI(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class PRDCT(SecsVarDynamic):
@@ -2225,7 +2225,7 @@ class PRDCT(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
 
 
 class RCMD(SecsVarDynamic):
@@ -2244,7 +2244,7 @@ class RCMD(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarI1, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarI1, SecsVarString], value)
 
 
 class REFP(SecsVarDynamic):
@@ -2265,7 +2265,7 @@ class REFP(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], length=2, value=value)
+        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
 
 class ROWCT(SecsVarDynamic):
@@ -2285,7 +2285,7 @@ class ROWCT(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
 
 
 class RPSEL(SecsVarU1):
@@ -2302,7 +2302,7 @@ class RPSEL(SecsVarU1):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class RPTID(SecsVarDynamic):
@@ -2343,7 +2343,7 @@ class RPTID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class RSINF(SecsVarDynamic):
@@ -2363,7 +2363,7 @@ class RSINF(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], length=3, value=value)
+        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=3)
 
 
 class SDACK(SecsVarBinary):
@@ -2390,7 +2390,7 @@ class SDACK(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class SDBIN(SecsVarBinary):
@@ -2419,7 +2419,7 @@ class SDBIN(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class SHEAD(SecsVarBinary):
@@ -2436,7 +2436,7 @@ class SHEAD(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=10, value=value)
+        super(self.__class__, self).__init__(value, count=10)
 
 
 class SOFTREV(SecsVarString):
@@ -2460,7 +2460,7 @@ class SOFTREV(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=20, value=value)
+        super(self.__class__, self).__init__(value, count=20)
 
 
 class STRP(SecsVarDynamic):
@@ -2479,7 +2479,7 @@ class STRP(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], length=2, value=value)
+        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
 
 class SV(SecsVarDynamic):
@@ -2508,7 +2508,7 @@ class SV(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
 
 
 class SVID(SecsVarDynamic):
@@ -2534,7 +2534,7 @@ class SVID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class SVNAME(SecsVarString):
@@ -2549,7 +2549,7 @@ class SVNAME(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class TEXT(SecsVarDynamic):
@@ -2577,7 +2577,7 @@ class TEXT(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
 
 
 class TID(SecsVarBinary):
@@ -2597,7 +2597,7 @@ class TID(SecsVarBinary):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=1, value=value)
+        super(self.__class__, self).__init__(value, count=1)
 
 
 class TIME(SecsVarString):
@@ -2613,7 +2613,7 @@ class TIME(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(length=32, value=value)
+        super(self.__class__, self).__init__(value, count=32)
 
 
 class UNITS(SecsVarString):
@@ -2631,7 +2631,7 @@ class UNITS(SecsVarString):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value=value)
+        super(self.__class__, self).__init__(value)
 
 
 class V(SecsVarDynamic):
@@ -2664,7 +2664,7 @@ class V(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
 
 
 class VID(SecsVarDynamic):
@@ -2696,7 +2696,7 @@ class VID(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
 
 
 class XDIES(SecsVarDynamic):
@@ -2718,7 +2718,7 @@ class XDIES(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value)
 
 
 class XYPOS(SecsVarDynamic):
@@ -2737,7 +2737,7 @@ class XYPOS(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], length=2, value=value)
+        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
 
 class YDIES(SecsVarDynamic):
@@ -2759,5 +2759,5 @@ class YDIES(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value=value)
+        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value)
 
