@@ -180,8 +180,8 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
             if not handeled:
                 self.logger.warning("no callback wanted to handle handle %s\n%s", callback_index, response)
 
-        except Exception, e:
-            self.logger.error('exception {0}'.format(e), exc_info=True)
+        except Exception:
+            self.logger.exception('exception')
 
     def _on_hsms_packet_received(self, packet):
         """Packet received from hsms layer
@@ -230,7 +230,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :returns: values of requested Service Variables
         :rtype: list
         """
-        self.logger.info("Get value of service variables {0}".format(svs))
+        self.logger.info("Get value of service variables %s", svs)
 
         packet = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
 
@@ -244,7 +244,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :returns: value of requested Service Variable
         :rtype: various
         """
-        self.logger.info("Get value of service variable {0}".format(sv))
+        self.logger.info("Get value of service variable %s", sv)
 
         return self.request_svs([sv])[0]
 
@@ -268,7 +268,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :returns: values of requested Equipment Constants
         :rtype: list
         """
-        self.logger.info("Get value of equipment constants {0}".format(ecs))
+        self.logger.info("Get value of equipment constants %s", ecs)
 
         packet = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
 
@@ -282,7 +282,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :returns: value of requested Equipment Constant
         :rtype: various
         """
-        self.logger.info("Get value of equipment constant {0}".format(ec))
+        self.logger.info("Get value of equipment constant %s", ec)
 
         return self.request_ecs([ec])
 
@@ -292,7 +292,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :param ecs: list containing list of id / value pairs
         :type ecs: list
         """
-        self.logger.info("Set value of equipment constants {0}".format(ecs))
+        self.logger.info("Set value of equipment constants %s", ecs)
 
         packet = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
 
@@ -306,7 +306,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :param value: new content of Equipment Constant
         :type value: various
         """
-        self.logger.info("Set value of equipment constant {0} to {1}".format(ec, value))
+        self.logger.info("Set value of equipment constant %s to %s", ec, value)
 
         return self.set_ecs([[ec, value]])
 
@@ -318,7 +318,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :param text: text to send
         :type text: string
         """
-        self.logger.info("Send text to terminal {0}".format(terminal_id))
+        self.logger.info("Send text to terminal %s", terminal_id)
 
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
