@@ -18,6 +18,231 @@ import secsgem
 
 import unittest
 
+class TestHsmsSelectReqHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsSelectReqHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSelectReqHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 1)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsSelectRspHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsSelectRspHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSelectRspHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 2)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsDeselectReqHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsDeselectReqHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsDeselectReqHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 3)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsDeselectRspHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsDeselectRspHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsDeselectRspHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 4)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsLinktestReqHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsLinktestReqHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsLinktestReqHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 5)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsLinktestRspHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsLinktestRspHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsLinktestRspHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 6)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsRejectReqHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsRejectReqHeader(123, 1, 1)
+
+        self.assertEqual(header.encode(), "\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsRejectReqHeader(123, 1, 1))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 1)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 7)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsSeparateReqHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsSeparateReqHeader(123)
+
+        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSeparateReqHeader(123))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 0)
+        self.assertEqual(packet.header.stream, 0)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 9)
+        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 0xFFFF)
+
+
+class TestHsmsStreamFunctionHeader(unittest.TestCase):
+    def testEncode(self):
+        header = secsgem.hsms.packets.HsmsStreamFunctionHeader(123, 1, 1, True, 100)
+
+        self.assertEqual(header.encode(), "\x00d\x81\x01\x00\x00\x00\x00\x00{")
+
+    def testEncodePacket(self):
+        packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsStreamFunctionHeader(123, 1, 1, True, 100))
+
+        self.assertEqual(packet.encode(), "\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+
+    def testDecode(self):
+        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+
+        self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
+        self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
+        self.assertEqual(packet.header.function, 1)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.pType, 0)
+        self.assertEqual(packet.header.sType, 0)
+        self.assertEqual(packet.header.requireResponse, True)
+        self.assertEqual(packet.header.system, 123)
+        self.assertEqual(packet.header.sessionID, 100)
+
+
 class TestHsmsPacket(unittest.TestCase):
     def testConstructorWithoutHeader(self):
         packet = secsgem.HsmsPacket()

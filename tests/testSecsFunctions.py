@@ -35,14 +35,14 @@ class testSecsFunctionNoData(object):
 
         function = self.cls()
 
-        self.assertEqual("", function.encode())
+        self.assertEqual(b"", function.encode())
 
     def testDecoder(self):
         if self.cls is None:
             return
 
         function = self.cls()
-        function.decode("")
+        function.decode(b"")
 
 
 class testSecsFunctionSingleVariable(object):
