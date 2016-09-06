@@ -7,6 +7,8 @@ This module is still work in progress. I'd love to get your input, your use case
 [![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem) 
 [![Build status](https://ci.appveyor.com/api/projects/status/43y437avx1xkca2h?svg=true)](https://ci.appveyor.com/project/bparzella/secsgem)
 [![Coverage Status](https://coveralls.io/repos/github/bparzella/secsgem/badge.svg?branch=master)](https://coveralls.io/github/bparzella/secsgem?branch=master)
+[![Code Health](https://landscape.io/github/bparzella/secsgem/master/landscape.svg?style=flat)](https://landscape.io/github/bparzella/secsgem/master)
+
 
 ##Installation
 To install the latest official release (0.0.4, 2016-06-13, https://pypi.python.org/pypi/secsgem):
