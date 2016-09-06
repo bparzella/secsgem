@@ -13,6 +13,9 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+
+from __future__ import print_function
+
 import unittest
 import nose
 
@@ -593,10 +596,10 @@ class TestSecsVarList(unittest.TestCase):
         iter(iter(SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])))
 
     def testRepr(self):
-        print SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        print(SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"]))
 
     def testEmptyRepr(self):
-        print SecsVarList([])
+        print(SecsVarList([]))
 
     def testLen(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
@@ -773,13 +776,13 @@ class TestSecsVarBinary(unittest.TestCase):
         self.assertEqual(secsvar, secsvar1)
 
     def testRepr(self):
-        print SecsVarBinary(13)
+        print(SecsVarBinary(13))
 
     def testEmptyRepr(self):
-        print SecsVarBinary([])
+        print(SecsVarBinary([]))
 
     def testNoneRepr(self):
-        print SecsVarBinary(None)
+        print(SecsVarBinary(None))
 
     def testSettingNone(self):
         secsvar = SecsVarBinary()
@@ -818,10 +821,10 @@ class TestSecsVarBoolean(unittest.TestCase):
         self.assertEqual(secsvar, secsvar1)
 
     def testRepr(self):
-        print SecsVarBoolean(True)
+        print(SecsVarBoolean(True))
 
     def testEmptyRepr(self):
-        print SecsVarBoolean([])
+        print(SecsVarBoolean([]))
 
     def testGettingItem(self):
         secsvar = SecsVarBoolean([True, False, True])
@@ -902,7 +905,7 @@ class TestSecsVarString(unittest.TestCase):
         self.assertEqual(secsvar, secsvar1)
 
     def testRepr(self):
-        print SecsVarString("TEST123\1\2\3TEST123\1\2\3")
+        print(SecsVarString("TEST123\1\2\3TEST123\1\2\3"))
 
 class TestSecsVarI8(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -924,10 +927,10 @@ class TestSecsVarI8(unittest.TestCase):
         self.assertEqual(secsvar, secsvar1)
 
     def testRepr(self):
-        print SecsVarI8(8)
+        print(SecsVarI8(8))
 
     def testEmptyRepr(self):
-        print SecsVarI8([])
+        print(SecsVarI8([]))
 
     def testEqualityList(self):
         secsvar = SecsVarU8([1, 2, 3])
@@ -1143,7 +1146,7 @@ class GoodBadLists(object):
         else:
             secsvar = self._type()
 
-        print self._type.__name__, "testing assignment of good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        print(self._type.__name__, "testing assignment of good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
 
         secsvar.set(value["VALUE"])
         nose.tools.eq_(secsvar.get(), value["RESULT"])
@@ -1160,9 +1163,9 @@ class GoodBadLists(object):
         else:
             secsvar = self._type()
 
-        print self._type.__name__, "testing assignment of bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        print(self._type.__name__, "testing assignment of bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
         secsvar.set(value["VALUE"])
-        print self._type.__name__, "unexpected bad assignment", secsvar.get()
+        print(self._type.__name__, "unexpected bad assignment", secsvar.get())
 
     def testBadAssignment(self):
         for valueList in self.badValues:
@@ -1175,7 +1178,7 @@ class GoodBadLists(object):
         else:
             secsvar = self._type()
 
-        print self._type.__name__, "testing isSupported for good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        print(self._type.__name__, "testing isSupported for good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
         nose.tools.eq_(secsvar.supports_value(value["VALUE"]), True)
 
     def testGoodSupported(self):
@@ -1189,7 +1192,7 @@ class GoodBadLists(object):
         else:
             secsvar = self._type()
 
-        print self._type.__name__, "testing isSupported for bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"])
+        print(self._type.__name__, "testing isSupported for bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
         nose.tools.eq_(secsvar.supports_value(value["VALUE"]), False)
 
     def testBadSupported(self):
@@ -1228,13 +1231,13 @@ class TestSecsVarBinaryValues(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 255L, "RESULT": 255},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 255, "RESULT": 255},
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 265L},
+        {"VALUE": -1},
+        {"VALUE": 265},
     ]
 
     #complex
@@ -1330,13 +1333,13 @@ class TestSecsVarBooleanValues(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT": False},
-        {"VALUE": 1L, "RESULT": True},
+        {"VALUE": 0, "RESULT": False},
+        {"VALUE": 1, "RESULT": True},
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 2L},
-        {"VALUE": 265L},
+        {"VALUE": -1},
+        {"VALUE": 2},
+        {"VALUE": 265},
     ]
 
     #complex
@@ -1447,14 +1450,14 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -1L, "RESULT": "-1"},
-        {"VALUE": 0L, "RESULT": "0"},
-        {"VALUE": 1L, "RESULT": "1"},
-        {"VALUE": 2L, "RESULT": "2"},
-        {"VALUE": 265L, "RESULT": "265"},
+        {"VALUE": -1, "RESULT": "-1"},
+        {"VALUE": 0, "RESULT": "0"},
+        {"VALUE": 1, "RESULT": "1"},
+        {"VALUE": 2, "RESULT": "2"},
+        {"VALUE": 265, "RESULT": "265"},
     ]
     _badLongValues = [
-        {"VALUE": 265L, "LENGTH": 1},
+        {"VALUE": 265, "LENGTH": 1},
     ]
 
     #complex
@@ -1558,17 +1561,17 @@ class TestSecsVarI8Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -9223372036854775808L, "RESULT":-9223372036854775808},
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 9223372036854775807L, "RESULT": 9223372036854775807}
+        {"VALUE": -9223372036854775808, "RESULT":-9223372036854775808},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 9223372036854775807, "RESULT": 9223372036854775807}
     ]
     _badLongValues = [
-        {"VALUE": -9223372036854775809L},
-        {"VALUE": 9223372036854775808L},
+        {"VALUE": -9223372036854775809},
+        {"VALUE": 9223372036854775808},
     ]
 
     #complex
@@ -1690,16 +1693,16 @@ class TestSecsVarI1Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -128L, "RESULT":-128},
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 127L, "RESULT": 127}
+        {"VALUE": -128, "RESULT":-128},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 127, "RESULT": 127}
     ]
     _badLongValues = [
-        {"VALUE": -129L},
-        {"VALUE": 128L},
+        {"VALUE": -129},
+        {"VALUE": 128},
     ]
 
     #complex
@@ -1819,17 +1822,17 @@ class TestSecsVarI2Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -32768L, "RESULT":-32768},
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 32767L, "RESULT": 32767}
+        {"VALUE": -32768, "RESULT":-32768},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 32767, "RESULT": 32767}
     ]
     _badLongValues = [
-        {"VALUE": -32769L},
-        {"VALUE": 32768L},
+        {"VALUE": -32769},
+        {"VALUE": 32768},
     ]
 
     #complex
@@ -1948,17 +1951,17 @@ class TestSecsVarI4Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -2147483648L, "RESULT":-2147483648},
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 2147483647L, "RESULT": 2147483647}
+        {"VALUE": -2147483648, "RESULT":-2147483648},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 2147483647, "RESULT": 2147483647}
     ]
     _badLongValues = [
-        {"VALUE": -2147483649L},
-        {"VALUE": 2147483648L},
+        {"VALUE": -2147483649},
+        {"VALUE": 2147483648},
     ]
 
     #complex
@@ -2077,11 +2080,11 @@ class TestSecsVarF8Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
     ]
     _badLongValues = [
     ]
@@ -2188,11 +2191,11 @@ class TestSecsVarF4Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -1L, "RESULT": -1},
-        {"VALUE": 0L, "RESULT": 0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
+        {"VALUE": -1, "RESULT": -1},
+        {"VALUE": 0, "RESULT": 0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
     ]
     _badLongValues = [
     ]
@@ -2299,15 +2302,15 @@ class TestSecsVarU8Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 18446744073709551615L, "RESULT": 18446744073709551615}
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 18446744073709551615, "RESULT": 18446744073709551615}
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 18446744073709551616L},
+        {"VALUE": -1},
+        {"VALUE": 18446744073709551616},
     ]
 
     #complex
@@ -2425,14 +2428,14 @@ class TestSecsVarU1Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 255L, "RESULT": 255}
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 255, "RESULT": 255}
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 256L},
+        {"VALUE": -1},
+        {"VALUE": 256},
     ]
 
     #complex
@@ -2547,15 +2550,15 @@ class TestSecsVarU2Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 65535L, "RESULT": 65535}
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 65535, "RESULT": 65535}
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 65536L},
+        {"VALUE": -1},
+        {"VALUE": 65536},
     ]
 
     #complex
@@ -2672,15 +2675,15 @@ class TestSecsVarU4Values(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": 0L, "RESULT":0},
-        {"VALUE": 1L, "RESULT": 1},
-        {"VALUE": 2L, "RESULT": 2},
-        {"VALUE": 265L, "RESULT": 265},
-        {"VALUE": 4294967295L, "RESULT": 4294967295}
+        {"VALUE": 0, "RESULT":0},
+        {"VALUE": 1, "RESULT": 1},
+        {"VALUE": 2, "RESULT": 2},
+        {"VALUE": 265, "RESULT": 265},
+        {"VALUE": 4294967295, "RESULT": 4294967295}
     ]
     _badLongValues = [
-        {"VALUE": -1L},
-        {"VALUE": 4294967296L},
+        {"VALUE": -1},
+        {"VALUE": 4294967296},
     ]
 
     #complex

@@ -15,12 +15,14 @@
 #####################################################################
 """Contains class for handling multiple connections."""
 
+from __future__ import absolute_import
+
 import logging
 
 from ..common import EventProducer
 
-from handler import HsmsHandler
-from connections import HsmsMultiPassiveServer
+from .handler import HsmsHandler
+from .connections import HsmsMultiPassiveServer
 
 
 class HsmsConnectionManager(EventProducer):

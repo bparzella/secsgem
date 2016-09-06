@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
+from __future__ import print_function
+
 import unittest
 
 import secsgem
@@ -24,7 +26,7 @@ class GemHandlerPassiveGroup(object):
     def testConstructor(self):
         self.assertIsNotNone(self.client)
 
-        print self.client    # cover repr and _serialize_data
+        print(self.client)    # cover repr and _serialize_data
 
     def testEnableDisable(self):
         self.assertEqual(self.client.communicationState.current, "NOT_COMMUNICATING")

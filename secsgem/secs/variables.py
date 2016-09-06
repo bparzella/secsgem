@@ -424,9 +424,9 @@ class SecsVarList(SecsVar):
             raise AttributeError(item)
 
     def __setattr__(self, item, value):
-        if not self.__dict__.has_key('objectIntitialized'):
+        if 'objectIntitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
-        elif self.data.has_key(item):
+        elif item in self.data:
             if isinstance(value, type(self.data[item])) or isinstance(value, self.data[item].__class__.__bases__):
                 self.data[item] = value
             elif isinstance(value, SecsVar):
@@ -675,7 +675,7 @@ class SecsVarBinary(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 010
+    formatCode = 0o10
     preferredTypes = [str, bytearray]
 
     def __init__(self, value=None, count=-1):
@@ -846,7 +846,7 @@ class SecsVarBoolean(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 011
+    formatCode = 0o11
     preferredTypes = [bool]
 
     _trueStrings = ["TRUE", "YES"]
@@ -1043,7 +1043,7 @@ class SecsVarString(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 020
+    formatCode = 0o20
     preferredTypes = [str]
 
     def __init__(self, value="", count=-1):
@@ -1418,7 +1418,7 @@ class SecsVarI8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 030
+    formatCode = 0o30
     _basetype = int
     _min = -9223372036854775808
     _max = 9223372036854775807
@@ -1436,7 +1436,7 @@ class SecsVarI1(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 031
+    formatCode = 0o31
     _basetype = int
     _min = -128
     _max = 127
@@ -1454,7 +1454,7 @@ class SecsVarI2(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 032
+    formatCode = 0o32
     _basetype = int
     _min = -32768
     _max = 32767
@@ -1472,7 +1472,7 @@ class SecsVarI4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 034
+    formatCode = 0o34
     _basetype = int
     _min = -2147483648
     _max = 2147483647
@@ -1490,7 +1490,7 @@ class SecsVarF8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 040
+    formatCode = 0o40
     _basetype = float
     _min = -1.79769e+308
     _max = 1.79769e+308
@@ -1508,7 +1508,7 @@ class SecsVarF4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 044
+    formatCode = 0o44
     _basetype = float
     _min = -3.40282e+38
     _max = 3.40282e+38
@@ -1526,7 +1526,7 @@ class SecsVarU8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 050
+    formatCode = 0o50
     _basetype = int
     _min = 0
     _max = 18446744073709551615
@@ -1544,7 +1544,7 @@ class SecsVarU1(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 051
+    formatCode = 0o51
     _basetype = int
     _min = 0
     _max = 255
@@ -1562,7 +1562,7 @@ class SecsVarU2(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 052
+    formatCode = 0o52
     _basetype = int
     _min = 0
     _max = 65535
@@ -1580,7 +1580,7 @@ class SecsVarU4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 054
+    formatCode = 0o54
     _basetype = int
     _min = 0
     _max = 4294967295

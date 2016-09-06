@@ -15,6 +15,8 @@
 #####################################################################
 """Contains class to create model for hsms endpoints."""
 
+from __future__ import absolute_import
+
 import logging
 import Queue
 import random
@@ -22,12 +24,12 @@ import threading
 
 from ..common import EventProducer
 
-from connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
-from packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
+from .connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
+from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
     HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
     HsmsSeparateReqHeader
 
-from connectionstatemachine import ConnectionStateMachine
+from .connectionstatemachine import ConnectionStateMachine
 
 class HsmsHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.

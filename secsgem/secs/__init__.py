@@ -14,7 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from functionbase import *
-from functions import *
-from handler import *
-from variables import *
+from __future__ import absolute_import
+
+from .functionbase import *
+from .functions import *
+from .handler import *
+from .variables import *

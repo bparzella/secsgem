@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from handler import *
-from equipmenthandler import *
-from hosthandler import *
+from __future__ import absolute_import
+
+from .handler import *
+from .equipmenthandler import *
+from .hosthandler import *
