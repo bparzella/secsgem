@@ -33,16 +33,16 @@ class TestSecsVar(unittest.TestCase):
         secsvar = SecsVarU4(1337)
 
         # two bytes
-        self.assertEqual(secsvar.encode_item_header(0), "\xB1\x00")
-        self.assertEqual(secsvar.encode_item_header(0xFF), "\xB1\xFF")
+        self.assertEqual(secsvar.encode_item_header(0), b"\xB1\x00")
+        self.assertEqual(secsvar.encode_item_header(0xFF), b"\xB1\xFF")
 
         # three bytes
-        self.assertEqual(secsvar.encode_item_header(0x100), "\xB2\x01\x00")
-        self.assertEqual(secsvar.encode_item_header(0xFFFF), "\xB2\xFF\xFF")
+        self.assertEqual(secsvar.encode_item_header(0x100), b"\xB2\x01\x00")
+        self.assertEqual(secsvar.encode_item_header(0xFFFF), b"\xB2\xFF\xFF")
 
         # four bytes
-        self.assertEqual(secsvar.encode_item_header(0x10000), "\xB3\x01\x00\x00")
-        self.assertEqual(secsvar.encode_item_header(0xFFFFFF), "\xB3\xFF\xFF\xFF")
+        self.assertEqual(secsvar.encode_item_header(0x10000), b"\xB3\x01\x00\x00")
+        self.assertEqual(secsvar.encode_item_header(0xFFFFFF), b"\xB3\xFF\xFF\xFF")
 
     def testEncodeItemHeaderTooShort(self):
         # dummy object, just to have format code set
@@ -65,30 +65,30 @@ class TestSecsVar(unittest.TestCase):
         secsvar = SecsVarU4(1337)
 
         # two bytes
-        self.assertEqual(secsvar.decode_item_header("\xB1\x00")[2], 0)
-        self.assertEqual(secsvar.decode_item_header("\xB1\xFF")[2], 0xFF)
+        self.assertEqual(secsvar.decode_item_header(b"\xB1\x00")[2], 0)
+        self.assertEqual(secsvar.decode_item_header(b"\xB1\xFF")[2], 0xFF)
 
         # three bytes
-        self.assertEqual(secsvar.decode_item_header("\xB2\x01\x00")[2], 0x100)
-        self.assertEqual(secsvar.decode_item_header("\xB2\xFF\xFF")[2], 0xFFFF)
+        self.assertEqual(secsvar.decode_item_header(b"\xB2\x01\x00")[2], 0x100)
+        self.assertEqual(secsvar.decode_item_header(b"\xB2\xFF\xFF")[2], 0xFFFF)
 
         # four bytes
-        self.assertEqual(secsvar.decode_item_header("\xB3\x01\x00\x00")[2], 0x10000)
-        self.assertEqual(secsvar.decode_item_header("\xB3\xFF\xFF\xFF")[2], 0xFFFFFF)
+        self.assertEqual(secsvar.decode_item_header(b"\xB3\x01\x00\x00")[2], 0x10000)
+        self.assertEqual(secsvar.decode_item_header(b"\xB3\xFF\xFF\xFF")[2], 0xFFFFFF)
 
     def testDecodeItemHeaderEmpty(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
         with self.assertRaises(ValueError):
-            secsvar.decode_item_header("")
+            secsvar.decode_item_header(b"")
 
     def testDecodeItemHeaderIllegalPosition(self):
         # dummy object, just to have format code set
         secsvar = SecsVarU4(1337)
 
         with self.assertRaises(IndexError):
-            secsvar.decode_item_header("\xB1\x00", 10)
+            secsvar.decode_item_header(b"\xB1\x00", 10)
 
     def testDecodeItemHeaderIllegalData(self):
         # dummy object, just to have format code set
@@ -96,7 +96,7 @@ class TestSecsVar(unittest.TestCase):
 
         # two bytes
         with self.assertRaises(ValueError):
-            secsvar.decode_item_header("somerandomdata")
+            secsvar.decode_item_header(b"somerandomdata")
 
     def testGenerateWithNonSecsVarClass(self):
         with self.assertRaises(TypeError):
@@ -112,7 +112,7 @@ class TestSecsVar(unittest.TestCase):
         secsvar = SecsVar()
 
         with self.assertRaises(NotImplementedError):
-            secsvar.set("test")
+            secsvar.set(b"test")
 
 
 class TestSecsVarDynamic(unittest.TestCase):
@@ -647,17 +647,18 @@ class TestSecsVarList(unittest.TestCase):
     def testEncode(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
 
-        self.assertEqual(secsvar.encode(), "\x01\x02A\x05MDLN1A\x08SOFTREV1")
+        self.assertEqual(secsvar.encode(), b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
     def testDecode(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
 
-        encoded = secsvar.encode()
-
         secsvar.MDLN = ""
         secsvar.SOFTREV = ""
 
-        secsvar.decode(encoded)
+        self.assertEqual(secsvar.MDLN, "")
+        self.assertEqual(secsvar.SOFTREV, "")
+
+        secsvar.decode(b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
         self.assertEqual(secsvar.MDLN, "MDLN1")
         self.assertEqual(secsvar.SOFTREV, "SOFTREV1")
@@ -753,6 +754,27 @@ class TestSecsVarArray(unittest.TestCase):
         self.assertEqual(var[0], "MDLN1")
         self.assertEqual(var[1], "SOFTREV1")
 
+    def testEncode(self):
+        secsvar = SecsVarArray(MDLN, ["MDLN1", "SOFTREV1"])
+
+        self.assertEqual(secsvar.encode(), b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
+
+    def testDecode(self):
+        secsvar = SecsVarArray(MDLN, ["MDLN1", "SOFTREV1"])
+
+        secsvar[0] = ""
+        secsvar[1] = ""
+
+        self.assertEqual(secsvar[0], "")
+        self.assertEqual(secsvar[1], "")
+
+        secsvar.decode(b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
+
+        self.assertEqual(secsvar[0], "MDLN1")
+        self.assertEqual(secsvar[1], "SOFTREV1")
+        self.assertEqual(len(secsvar), 2)
+
+
 class TestSecsVarBinary(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarBinary(13)
@@ -789,7 +811,43 @@ class TestSecsVarBinary(unittest.TestCase):
     def testGettingUninitialized(self):
         secsvar = SecsVarBinary()
         
-        self.assertEqual(secsvar.get(), None)
+        self.assertEqual(secsvar.get(), "")
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarBinary("")
+
+        self.assertEqual(secsvar.encode(), b"!\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarBinary(13)
+
+        self.assertEqual(secsvar.encode(), b"!\x01\r")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarBinary("\x01\x0b\x19")
+
+        self.assertEqual(secsvar.encode(), b"!\x03\x01\x0b\x19")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarBinary()
+
+        secsvar.decode(b"!\x00")
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarBinary()
+
+        secsvar.decode(b"!\x01\r")
+
+        self.assertEqual(secsvar.get(), 13)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarBinary()
+
+        secsvar.decode(b"!\x03\x01\x0b\x19")
+
+        self.assertEqual(secsvar.get(), "\x01\x0b\x19")
 
 
 class TestSecsVarBoolean(unittest.TestCase):
@@ -838,7 +896,43 @@ class TestSecsVarBoolean(unittest.TestCase):
     def testGettingUninitialized(self):
         secsvar = SecsVarBoolean()
         
-        self.assertEqual(secsvar.get(), None)
+        self.assertEqual(secsvar.get(), [])
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarBoolean([])
+
+        self.assertEqual(secsvar.encode(), b"%\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarBoolean(True)
+
+        self.assertEqual(secsvar.encode(), b"%\x01\x01")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarBoolean([True, True, False])
+
+        self.assertEqual(secsvar.encode(), b"%\x03\x01\x01\x00")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarBoolean()
+
+        secsvar.decode(b"%\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarBoolean()
+
+        secsvar.decode(b"%\x01\x01")
+
+        self.assertEqual(secsvar.get(), True)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarBoolean()
+
+        secsvar.decode(b"%\x03\x01\x01\x00")
+
+        self.assertEqual(secsvar.get(), [True, True, False])
 
 
 class TestSecsVarString(unittest.TestCase):
@@ -904,6 +998,42 @@ class TestSecsVarString(unittest.TestCase):
     def testRepr(self):
         print SecsVarString("TEST123\1\2\3TEST123\1\2\3")
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarString("")
+
+        self.assertEqual(secsvar.encode(), b"A\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarString("a")
+
+        self.assertEqual(secsvar.encode(), b"A\x01a")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarString("asdfg")
+
+        self.assertEqual(secsvar.encode(), b"A\x05asdfg")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode(b"A\x00")
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode(b"A\x01a")
+
+        self.assertEqual(secsvar.get(), "a")
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode(b"A\x05asdfg")
+
+        self.assertEqual(secsvar.get(), "asdfg")
+
 class TestSecsVarI8(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarI8(17)
@@ -938,7 +1068,7 @@ class TestSecsVarI8(unittest.TestCase):
     def testGettingUninitialized(self):
         secsvar = SecsVarI8()
         
-        self.assertEqual(secsvar.get(), None)
+        self.assertEqual(secsvar.get(), [])
 
     def testEncode(self):
         secsvar = SecsVarI8(1337)
@@ -950,6 +1080,42 @@ class TestSecsVarI8(unittest.TestCase):
         
         with self.assertRaises(ValueError):
             secsvar.decode("a\x08\x00\x00\x00\x00\x00\x00")
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarI8([])
+
+        self.assertEqual(secsvar.encode(), b"a\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarI8(123)
+
+        self.assertEqual(secsvar.encode(), b"a\x08\x00\x00\x00\x00\x00\x00\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarI8([123, 234, -345])
+
+        self.assertEqual(secsvar.encode(), b"a\x18\x00\x00\x00\x00\x00\x00\x00{\x00\x00\x00\x00\x00\x00\x00\xea\xff\xff\xff\xff\xff\xff\xfe\xa7")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarI8()
+
+        secsvar.decode(b"a\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarI8()
+
+        secsvar.decode(b"a\x08\x00\x00\x00\x00\x00\x00\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarI8()
+
+        secsvar.decode(b"a\x18\x00\x00\x00\x00\x00\x00\x00{\x00\x00\x00\x00\x00\x00\x00\xea\xff\xff\xff\xff\xff\xff\xfe\xa7")
+
+        self.assertEqual(secsvar.get(), [123, 234, -345])
 
 
 class TestSecsVarI1(unittest.TestCase):
@@ -971,6 +1137,42 @@ class TestSecsVarI1(unittest.TestCase):
 
         self.assertEqual(secsvar, secsvar1)
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarI1([])
+
+        self.assertEqual(secsvar.encode(), b"e\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarI1(123)
+
+        self.assertEqual(secsvar.encode(), b"e\x01{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarI1([12, 23, -34])
+
+        self.assertEqual(secsvar.encode(), b"e\x03\x0c\x17\xde")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarI1()
+
+        secsvar.decode(b"e\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarI1()
+
+        secsvar.decode(b"e\x01{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarI1()
+
+        secsvar.decode(b"e\x03\x0c\x17\xde")
+
+        self.assertEqual(secsvar.get(), [12, 23, -34])
+
 
 class TestSecsVarI2(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -990,6 +1192,42 @@ class TestSecsVarI2(unittest.TestCase):
         secsvar1 = 17
 
         self.assertEqual(secsvar, secsvar1)
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarI2([])
+
+        self.assertEqual(secsvar.encode(), b"i\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarI2(123)
+
+        self.assertEqual(secsvar.encode(), b"i\x02\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarI2([123, 234, -345])
+
+        self.assertEqual(secsvar.encode(), b"i\x06\x00{\x00\xea\xfe\xa7")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarI2()
+
+        secsvar.decode(b"i\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarI2()
+
+        secsvar.decode(b"i\x02\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarI2()
+
+        secsvar.decode(b"i\x06\x00{\x00\xea\xfe\xa7")
+
+        self.assertEqual(secsvar.get(), [123, 234, -345])
 
 
 class TestSecsVarI4(unittest.TestCase):
@@ -1011,6 +1249,42 @@ class TestSecsVarI4(unittest.TestCase):
 
         self.assertEqual(secsvar, secsvar1)
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarI4([])
+
+        self.assertEqual(secsvar.encode(), b"q\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarI4(123)
+
+        self.assertEqual(secsvar.encode(), b"q\x04\x00\x00\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarI4([123, 234, -345])
+
+        self.assertEqual(secsvar.encode(), b"q\x0c\x00\x00\x00{\x00\x00\x00\xea\xff\xff\xfe\xa7")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarI4()
+
+        secsvar.decode(b"q\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarI4()
+
+        secsvar.decode(b"q\x04\x00\x00\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarI4()
+
+        secsvar.decode(b"q\x0c\x00\x00\x00{\x00\x00\x00\xea\xff\xff\xfe\xa7")
+
+        self.assertEqual(secsvar.get(), [123, 234, -345])
+
 
 class TestSecsVarF8(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -1030,6 +1304,42 @@ class TestSecsVarF8(unittest.TestCase):
         secsvar1 = 12.3
 
         self.assertEqual(secsvar, secsvar1)
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarF8([])
+
+        self.assertEqual(secsvar.encode(), b"\x81\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarF8(123)
+
+        self.assertEqual(secsvar.encode(), b"\x81\x08@^\xc0\x00\x00\x00\x00\x00")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarF8([123, 234, -345])
+
+        self.assertEqual(secsvar.encode(), b"\x81\x18@^\xc0\x00\x00\x00\x00\x00@m@\x00\x00\x00\x00\x00\xc0u\x90\x00\x00\x00\x00\x00")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarF8()
+
+        secsvar.decode(b"\x81\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarF8()
+
+        secsvar.decode(b"\x81\x08@^\xc0\x00\x00\x00\x00\x00")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarF8()
+
+        secsvar.decode(b"\x81\x18@^\xc0\x00\x00\x00\x00\x00@m@\x00\x00\x00\x00\x00\xc0u\x90\x00\x00\x00\x00\x00")
+
+        self.assertEqual(secsvar.get(), [123, 234, -345])
 
 
 class TestSecsVarF4(unittest.TestCase):
@@ -1051,6 +1361,42 @@ class TestSecsVarF4(unittest.TestCase):
 
         self.assertEqual(secsvar, secsvar1)
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarF4([])
+
+        self.assertEqual(secsvar.encode(), b"\x91\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarF4(123)
+
+        self.assertEqual(secsvar.encode(), b"\x91\x04B\xf6\x00\x00")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarF4([123, 234, -345])
+
+        self.assertEqual(secsvar.encode(), b"\x91\x0cB\xf6\x00\x00Cj\x00\x00\xc3\xac\x80\x00")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarF4()
+
+        secsvar.decode(b"\x91\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarF4()
+
+        secsvar.decode(b"\x91\x04B\xf6\x00\x00")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarF4()
+
+        secsvar.decode(b"\x91\x0cB\xf6\x00\x00Cj\x00\x00\xc3\xac\x80\x00")
+
+        self.assertEqual(secsvar.get(), [123, 234, -345])
+
 
 class TestSecsVarU8(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -1070,6 +1416,42 @@ class TestSecsVarU8(unittest.TestCase):
         secsvar1 = 17
 
         self.assertEqual(secsvar, secsvar1)
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarU8([])
+
+        self.assertEqual(secsvar.encode(), b"\xa1\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarU8(123)
+
+        self.assertEqual(secsvar.encode(), b"\xa1\x08\x00\x00\x00\x00\x00\x00\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarU8([123, 234, 345])
+
+        self.assertEqual(secsvar.encode(), b"\xa1\x18\x00\x00\x00\x00\x00\x00\x00{\x00\x00\x00\x00\x00\x00\x00\xea\x00\x00\x00\x00\x00\x00\x01Y")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarU8()
+
+        secsvar.decode(b"\xa1\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarU8()
+
+        secsvar.decode(b"\xa1\x08\x00\x00\x00\x00\x00\x00\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarU8()
+
+        secsvar.decode(b"\xa1\x18\x00\x00\x00\x00\x00\x00\x00{\x00\x00\x00\x00\x00\x00\x00\xea\x00\x00\x00\x00\x00\x00\x01Y")
+
+        self.assertEqual(secsvar.get(), [123, 234, 345])
 
 
 class TestSecsVarU1(unittest.TestCase):
@@ -1091,6 +1473,42 @@ class TestSecsVarU1(unittest.TestCase):
 
         self.assertEqual(secsvar, secsvar1)
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarU1([])
+
+        self.assertEqual(secsvar.encode(), b"\xa5\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarU1(123)
+
+        self.assertEqual(secsvar.encode(), b"\xa5\x01{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarU1([12, 23, 34])
+
+        self.assertEqual(secsvar.encode(), b"\xa5\x03\x0c\x17\"")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarU1()
+
+        secsvar.decode(b"\xa5\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarU1()
+
+        secsvar.decode(b"\xa5\x01{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarU1()
+
+        secsvar.decode(b"\xa5\x03\x0c\x17\"")
+
+        self.assertEqual(secsvar.get(), [12, 23, 34])
+
 
 class TestSecsVarU2(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -1111,6 +1529,42 @@ class TestSecsVarU2(unittest.TestCase):
 
         self.assertEqual(secsvar, secsvar1)
 
+    def testEncodeEmpty(self):
+        secsvar = SecsVarU2([])
+
+        self.assertEqual(secsvar.encode(), b"\xa9\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarU2(123)
+
+        self.assertEqual(secsvar.encode(), b"\xa9\x02\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarU2([123, 234, 345])
+
+        self.assertEqual(secsvar.encode(), b"\xa9\x06\x00{\x00\xea\x01Y")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarU2()
+
+        secsvar.decode(b"\xa9\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarU2()
+
+        secsvar.decode(b"\xa9\x02\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarU2()
+
+        secsvar.decode(b"\xa9\x06\x00{\x00\xea\x01Y")
+
+        self.assertEqual(secsvar.get(), [123, 234, 345])
+
 
 class TestSecsVarU4(unittest.TestCase):
     def testEqualitySecsVarDynamic(self):
@@ -1130,6 +1584,42 @@ class TestSecsVarU4(unittest.TestCase):
         secsvar1 = 17
 
         self.assertEqual(secsvar, secsvar1)
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarU4([])
+
+        self.assertEqual(secsvar.encode(), b"\xb1\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarU4(123)
+
+        self.assertEqual(secsvar.encode(), b"\xb1\x04\x00\x00\x00{")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarU4([123, 234, 345])
+
+        self.assertEqual(secsvar.encode(), b"\xb1\x0c\x00\x00\x00{\x00\x00\x00\xea\x00\x00\x01Y")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarU4()
+
+        secsvar.decode(b"\xb1\x00")
+
+        self.assertEqual(secsvar.get(), [])
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarU4()
+
+        secsvar.decode(b"\xb1\x04\x00\x00\x00{")
+
+        self.assertEqual(secsvar.get(), 123)
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarU4()
+
+        secsvar.decode(b"\xb1\x0c\x00\x00\x00{\x00\x00\x00\xea\x00\x00\x01Y")
+
+        self.assertEqual(secsvar.get(), [123, 234, 345])
 
 
 class GoodBadLists(object):

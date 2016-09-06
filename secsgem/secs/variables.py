@@ -681,7 +681,7 @@ class SecsVarBinary(SecsVar):
     def __init__(self, value=None, count=-1):
         super(SecsVarBinary, self).__init__()
 
-        self.value = None
+        self.value = ""
         self.count = count
         if value is not None:
             self.set(value)
@@ -855,7 +855,7 @@ class SecsVarBoolean(SecsVar):
     def __init__(self, value=None, count=-1):
         super(SecsVarBoolean, self).__init__()
 
-        self.value = None
+        self.value = []
         self.count = count
         if value is not None:
             self.set(value)
@@ -1049,12 +1049,11 @@ class SecsVarString(SecsVar):
     def __init__(self, value="", count=-1):
         super(SecsVarString, self).__init__()
 
-        if value is None:
-            value = ""
-
         self.value = ""
         self.count = count
-        self.set(value)
+
+        if value is not None:
+            self.set(value)
 
     def __repr__(self):
         if len(self.value) == 0:
@@ -1229,7 +1228,7 @@ class SecsVarNumber(SecsVar):
     def __init__(self, value=None, count=-1):
         super(SecsVarNumber, self).__init__()
 
-        self.value = None
+        self.value = []
         self.count = count
         if value is not None:
             self.set(value)
