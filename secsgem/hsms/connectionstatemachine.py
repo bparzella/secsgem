@@ -20,10 +20,13 @@ from transitions.extensions import HierarchicalMachine as Machine
 class ConnectionStateMachine(object):
     states = ["NOT_CONNECTED", {'name': 'CONNECTED', 'children': ['NOT_SELECTED', 'SELECTED']}]
 
-    def __init__(self, callbacks={}):
+    def __init__(self, callbacks=None):
         self.machine = Machine(model=self, states=ConnectionStateMachine.states, initial='NOT_CONNECTED', auto_transitions=False, queued=True)  # transition 1
 
-        self.callbacks = callbacks
+        if callbacks is None:
+            self.callbacks = {}
+        else:
+            self.callbacks = callbacks
 
         self.machine.add_transition('connect', 'NOT_CONNECTED', 'CONNECTED_NOT_SELECTED')  # transition 2
         self.machine.add_transition('disconnect', 'CONNECTED', 'NOT_CONNECTED')  # transition 3
