@@ -14,9 +14,11 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from hsms import *
-from secs import *
+from __future__ import absolute_import
 
-from gem import *
+from .hsms import *
+from .secs import *
 
-from common import *
+from .gem import *
+
+from .common import *

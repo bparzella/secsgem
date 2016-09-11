@@ -15,7 +15,9 @@
 #####################################################################
 """Base class for for SECS stream and functions"""
 
-from variables import SecsVar
+from __future__ import absolute_import
+
+from .variables import SecsVar
 from ..common import indent_block
 
 
@@ -113,9 +115,9 @@ class SecsStreamFunction(object):
         return self.data.__getattr__(item)
 
     def __setattr__(self, item, value):
-        if not self.__dict__.has_key('objectIntitialized'):
+        if 'objectIntitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
-        elif self.data.data.has_key(item):
+        elif item in self.data.data:
             return self.data.__setattr__(item, value)
 
     def append(self, data):
@@ -137,7 +139,7 @@ class SecsStreamFunction(object):
         :rtype: string
         """
         if self.data is None:
-            return ""
+            return b""
 
         return self.data.encode()
 

@@ -15,6 +15,8 @@
 #####################################################################
 """Contains objects and functions to create and handle hsms connection."""
 
+from __future__ import absolute_import
+
 import logging
 import socket
 import select
@@ -25,7 +27,7 @@ import errno
 
 from ..common import is_windows
 
-from packets import HsmsPacket
+from .packets import HsmsPacket
 
 # TODO: timeouts (T7, T8)
 
@@ -93,7 +95,7 @@ class HsmsConnection(object):  # pragma: no cover
         self.sock = None
 
         # buffer for received data
-        self.receiveBuffer = ""
+        self.receiveBuffer = b""
 
         # receiving thread flags
         self.threadRunning = False
@@ -136,7 +138,7 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
             try:
                 self.delegate.on_connection_established(self)
-            except Exception, e:
+            except Exception as e:
                 self.logger.error('ignoring exception "{0}" for on_connection_established handler'.format(e), exc_info=True)
 
     def _on_hsms_connection_close(self, data):
@@ -188,7 +190,7 @@ class HsmsConnection(object):  # pragma: no cover
 
                     # retry will be cleared if send succeeded
                     retry = False
-                except socket.error, e:
+                except socket.error as e:
                     errorcode = e[0]
                     if not is_errorcode_ewouldblock(errorcode):
                         # raise if not EWOULDBLOCK
@@ -224,7 +226,7 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
             try:
                 self.delegate.on_connection_packet_received(self, response)
-            except Exception, e:
+            except Exception as e:
                 self.logger.error('ignoring exception "{0}" for on_connection_packet_received handler'.format(e), exc_info=True)
 
         # return True if more data is available
@@ -264,7 +266,7 @@ class HsmsConnection(object):  # pragma: no cover
 
                         # add received data to input buffer
                         self.receiveBuffer += recv_data
-                    except socket.error, e:
+                    except socket.error as e:
                         errorcode = e[0]
                         if not is_errorcode_ewouldblock(errorcode):
                             raise e
@@ -273,14 +275,14 @@ class HsmsConnection(object):  # pragma: no cover
                     while self._process_receive_buffer():
                         pass
 
-        except Exception, e:
+        except Exception as e:
             self.logger.error('exception {0}'.format(e), exc_info=True)
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
             try:
                 self.delegate.on_connection_before_closed(self)
-            except Exception, e:
+            except Exception as e:
                 self.logger.error('ignoring exception "{0}" for on_connection_before_closed handler'.format(e), exc_info=True)
 
         # close the socket
@@ -290,7 +292,7 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
             try:
                 self.delegate.on_connection_closed(self)
-            except Exception, e:
+            except Exception as e:
                 self.logger.error('ignoring exception "{0}" for on_connection_closed handler'.format(e), exc_info=True)
 
         # reset all flags
@@ -299,7 +301,7 @@ class HsmsConnection(object):  # pragma: no cover
         self.stopThread = False
 
         # clear receive buffer
-        self.receiveBuffer = ""
+        self.receiveBuffer = b""
 
         # notify inherited classes of disconnection
         self._on_hsms_connection_close({'connection': self})
@@ -634,7 +636,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
                     try:
                         accept_result = self.listenSock.accept()
-                    except socket.error, e:
+                    except socket.error as e:
                         errorcode = e[0]
                         if not is_errorcode_ewouldblock(errorcode):
                             raise e
@@ -649,7 +651,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
                     threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
 
-        except Exception, e:
+        except Exception as e:
             self.logger.error('exception {0}'.format(e), exc_info=True)
 
         self.threadRunning = False

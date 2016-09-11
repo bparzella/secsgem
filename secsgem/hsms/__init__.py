@@ -14,7 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from connections import *
-from connectionmanager import *
-from packets import *
-from handler import *
+from __future__ import absolute_import
+
+from .connections import *
+from .connectionmanager import *
+from .packets import *
+from .handler import *

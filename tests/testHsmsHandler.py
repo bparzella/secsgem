@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
+from __future__ import print_function
+
 import threading
 import time
 import unittest
@@ -165,7 +167,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
     def testRepr(self):
         self.server.simulate_connect()
 
-        print self.client
+        print(self.client)
 
 
 class TestHsmsHandlerActive(unittest.TestCase):
@@ -273,7 +275,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
     def testRepr(self):
         self.server.simulate_connect()
 
-        print self.client
+        print(self.client)
 
     def testSelectTimeout(self):
         self.client.connection.T6 = 0.1

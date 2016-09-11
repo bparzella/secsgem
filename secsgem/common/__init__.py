@@ -31,7 +31,7 @@ def format_hex(text):
 
         >>> import secsgem
         >>>
-        >>> data = "asdfg"
+        >>> data = b"asdfg"
         >>> secsgem.common.format_hex(data)
         '61:73:64:66:67'
 
@@ -41,7 +41,10 @@ def format_hex(text):
     :returns: Formated text
     :rtype: string
     """
-    return ":".join("{0:02x}".format(ord(c)) for c in text)
+    if sys.version_info < (3,):
+        return ":".join("{0:02x}".format(ord(c)) for c in text)
+    else:
+        return ":".join("{0:02x}".format(c) for c in text)
 
 
 def is_windows():

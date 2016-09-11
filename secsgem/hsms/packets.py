@@ -33,7 +33,7 @@ class HsmsHeader:
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsHeader(3, 100)
-        secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 3, 'sessionID': 100, 'requireResponse': False, 'sType': 1})
+        HsmsHeader({sessionID:0x0064, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, requireResponse:False})
 
     """
     def __init__(self, system, session_id):
@@ -50,7 +50,7 @@ class HsmsHeader:
             (self.sessionID, self.stream, self.function, self.pType, self.sType, self.system, self.requireResponse)
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__)
+        return "%s(%s)" % (self.__class__.__name__, self.__str__())
 
     def encode(self):
         """Encode header to hsms packet
@@ -87,7 +87,7 @@ class HsmsSelectReqHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsSelectReqHeader(14)
-        secsgem.hsms.packets.HsmsSelectReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 14, 'sessionID': 65535, 'requireResponse': False, 'sType': 1})
+        HsmsSelectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x01, system:0x0000000e, requireResponse:False})
 
     """
 
@@ -113,7 +113,7 @@ class HsmsSelectRspHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsSelectRspHeader(24)
-        secsgem.hsms.packets.HsmsSelectRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 24, 'sessionID': 65535, 'requireResponse': False, 'sType': 2})
+        HsmsSelectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x02, system:0x00000018, requireResponse:False})
 
     """
 
@@ -139,7 +139,7 @@ class HsmsDeselectReqHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsDeselectReqHeader(1)
-        secsgem.hsms.packets.HsmsDeselectReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 1, 'sessionID': 65535, 'requireResponse': False, 'sType': 3})
+        HsmsDeselectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x03, system:0x00000001, requireResponse:False})
 
     """
 
@@ -165,7 +165,7 @@ class HsmsDeselectRspHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsDeselectRspHeader(1)
-        secsgem.hsms.packets.HsmsDeselectRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 1, 'sessionID': 65535, 'requireResponse': False, 'sType': 4})
+        HsmsDeselectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x04, system:0x00000001, requireResponse:False})
 
     """
 
@@ -191,7 +191,7 @@ class HsmsLinktestReqHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsLinktestReqHeader(2)
-        secsgem.hsms.packets.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5})
+        HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False})
 
     """
 
@@ -217,7 +217,7 @@ class HsmsLinktestRspHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsLinktestRspHeader(10)
-        secsgem.hsms.packets.HsmsLinktestRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 10, 'sessionID': 65535, 'requireResponse': False, 'sType': 6})
+        HsmsLinktestRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x06, system:0x0000000a, requireResponse:False})
 
     """
 
@@ -247,7 +247,7 @@ class HsmsRejectReqHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsRejectReqHeader(17, 3, 4)
-        secsgem.hsms.packets.HsmsRejectReqHeader({'function': 4, 'stream': 3, 'pType': 0, 'system': 17, 'sessionID': 65535, 'requireResponse': False, 'sType': 7})
+        HsmsRejectReqHeader({sessionID:0xffff, stream:03, function:04, pType:0x00, sType:0x07, system:0x00000011, requireResponse:False})
 
     """
 
@@ -273,7 +273,7 @@ class HsmsSeparateReqHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsSeparateReqHeader(17)
-        secsgem.hsms.packets.HsmsSeparateReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 17, 'sessionID': 65535, 'requireResponse': False, 'sType': 9})
+        HsmsSeparateReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x09, system:0x00000011, requireResponse:False})
 
     """
 
@@ -307,7 +307,7 @@ class HsmsStreamFunctionHeader(HsmsHeader):
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
-        secsgem.hsms.packets.HsmsStreamFunctionHeader({'function': 1, 'stream': 1, 'pType': 0, 'system': 22, 'sessionID': 100, 'requireResponse': True, 'sType': 0})
+        HsmsStreamFunctionHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x00000016, requireResponse:True})
 
     """
 
@@ -337,10 +337,10 @@ class HsmsPacket:
         >>> import secsgem
         >>>
         >>> secsgem.hsms.packets.HsmsPacket(secsgem.hsms.packets.HsmsLinktestReqHeader(2))
-        secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5}), 'data': ''})
+        HsmsPacket({'header': HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
 
     """
-    def __init__(self, header=None, data=""):
+    def __init__(self, header=None, data=b""):
         if header is None:
             self.header = HsmsHeader(0, 0)
         else:
@@ -349,11 +349,11 @@ class HsmsPacket:
         self.data = data
 
     def __str__(self):
-        data = "header: " + self.header.__str__()
+        data = "'header': " + self.header.__str__()
         return data
 
     def __repr__(self):
-        return "%s(%r)" % (self.__class__, self.__dict__)
+        return "%s({'header': %s, 'data': '%s'})" % (self.__class__.__name__, self.header.__repr__(), self.data.decode("utf-8"))
 
     def encode(self):
         """Encode packet data to hsms packet
@@ -387,13 +387,13 @@ class HsmsPacket:
 
             >>> import secsgem
             >>>
-            >>> packetData = "\\x00\\x00\\x00\\x0b\\xff\\xff\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x02"
+            >>> packetData = b"\\x00\\x00\\x00\\x0b\\xff\\xff\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x02"
             >>>
             >>> secsgem.format_hex(packetData)
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
             >>>
             >>> secsgem.hsms.packets.HsmsPacket.decode(packetData)
-            secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5}), 'data': ''})
+            HsmsPacket({'header': HsmsHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
 
 
         """

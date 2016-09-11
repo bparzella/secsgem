@@ -15,13 +15,15 @@
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
+from __future__ import absolute_import
+
 import logging
 import threading
 import copy
 
 from ..common import StreamFunctionCallbackHandler
 from ..hsms.handler import HsmsHandler
-import functions
+from . import functions
 
 
 class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):

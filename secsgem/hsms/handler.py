@@ -15,19 +15,21 @@
 #####################################################################
 """Contains class to create model for hsms endpoints."""
 
+from __future__ import absolute_import
+
 import logging
-import Queue
+import queue
 import random
 import threading
 
 from ..common import EventProducer
 
-from connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
-from packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
+from .connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
+from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
     HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
     HsmsSeparateReqHeader
 
-from connectionstatemachine import ConnectionStateMachine
+from .connectionstatemachine import ConnectionStateMachine
 
 class HsmsHandler(EventProducer):
     """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
@@ -306,9 +308,9 @@ class HsmsHandler(EventProducer):
         :param system_id: system id to watch
         :type system_id: int
         :returns: queue to receive responses with
-        :rtype: Queue.Queue
+        :rtype: queue.Queue
         """
-        self._systemQueues[system_id] = Queue.Queue()
+        self._systemQueues[system_id] = queue.Queue()
         return self._systemQueues[system_id]
 
     def _remove_queue(self, system_id):
@@ -379,7 +381,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T3)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -422,7 +424,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -458,7 +460,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -494,7 +496,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)

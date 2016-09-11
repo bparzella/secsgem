@@ -22,15 +22,15 @@ class TestHsmsSelectReqHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsSelectReqHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSelectReqHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x01\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -47,15 +47,15 @@ class TestHsmsSelectRspHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsSelectRspHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSelectRspHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x02\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -72,15 +72,15 @@ class TestHsmsDeselectReqHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsDeselectReqHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsDeselectReqHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x03\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -97,15 +97,15 @@ class TestHsmsDeselectRspHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsDeselectRspHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsDeselectRspHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x04\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -122,15 +122,15 @@ class TestHsmsLinktestReqHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsLinktestReqHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsLinktestReqHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x05\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -147,15 +147,15 @@ class TestHsmsLinktestRspHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsLinktestRspHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsLinktestRspHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\x06\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -172,15 +172,15 @@ class TestHsmsRejectReqHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsRejectReqHeader(123, 1, 1)
 
-        self.assertEqual(header.encode(), "\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsRejectReqHeader(123, 1, 1))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x01\x01\x00\x07\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -197,15 +197,15 @@ class TestHsmsSeparateReqHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsSeparateReqHeader(123)
 
-        self.assertEqual(header.encode(), "\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\xff\xff\x00\x00\x00\t\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsSeparateReqHeader(123))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\xff\xff\x00\x00\x00\t\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)
@@ -222,15 +222,15 @@ class TestHsmsStreamFunctionHeader(unittest.TestCase):
     def testEncode(self):
         header = secsgem.hsms.packets.HsmsStreamFunctionHeader(123, 1, 1, True, 100)
 
-        self.assertEqual(header.encode(), "\x00d\x81\x01\x00\x00\x00\x00\x00{")
+        self.assertEqual(header.encode(), b"\x00d\x81\x01\x00\x00\x00\x00\x00{")
 
     def testEncodePacket(self):
         packet = secsgem.HsmsPacket(secsgem.hsms.packets.HsmsStreamFunctionHeader(123, 1, 1, True, 100))
 
-        self.assertEqual(packet.encode(), "\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+        self.assertEqual(packet.encode(), b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
 
     def testDecode(self):
-        packet = secsgem.HsmsPacket.decode("\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+        packet = secsgem.HsmsPacket.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
 
         self.assertIsInstance(packet, secsgem.hsms.packets.HsmsPacket)
         self.assertIsInstance(packet.header, secsgem.hsms.packets.HsmsHeader)

@@ -15,7 +15,9 @@
 #####################################################################
 """Data items for functions"""
 
-from variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, \
+from __future__ import absolute_import
+
+from .variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
