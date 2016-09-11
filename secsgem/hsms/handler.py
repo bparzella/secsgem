@@ -18,7 +18,7 @@
 from __future__ import absolute_import
 
 import logging
-import Queue
+import queue
 import random
 import threading
 
@@ -308,9 +308,9 @@ class HsmsHandler(EventProducer):
         :param system_id: system id to watch
         :type system_id: int
         :returns: queue to receive responses with
-        :rtype: Queue.Queue
+        :rtype: queue.Queue
         """
-        self._systemQueues[system_id] = Queue.Queue()
+        self._systemQueues[system_id] = queue.Queue()
         return self._systemQueues[system_id]
 
     def _remove_queue(self, system_id):
@@ -381,7 +381,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T3)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -424,7 +424,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -460,7 +460,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
@@ -496,7 +496,7 @@ class HsmsHandler(EventProducer):
 
         try:
             response = response_queue.get(True, self.connection.T6)
-        except Queue.Empty:
+        except queue.Empty:
             response = None
 
         self._remove_queue(system_id)
