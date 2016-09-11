@@ -95,7 +95,7 @@ class HsmsConnection(object):  # pragma: no cover
         self.sock = None
 
         # buffer for received data
-        self.receiveBuffer = ""
+        self.receiveBuffer = b""
 
         # receiving thread flags
         self.threadRunning = False
@@ -301,7 +301,7 @@ class HsmsConnection(object):  # pragma: no cover
         self.stopThread = False
 
         # clear receive buffer
-        self.receiveBuffer = ""
+        self.receiveBuffer = b""
 
         # notify inherited classes of disconnection
         self._on_hsms_connection_close({'connection': self})

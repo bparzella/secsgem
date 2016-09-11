@@ -243,10 +243,10 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         function = self.client.secs_decode(packet)
 
-        self.assertEqual(function.RCMD.get(), "RCMD")
-        self.assertEqual(function.PARAMS[0].CPNAME.get(), "PARAM1")
-        self.assertEqual(function.PARAMS[0].CPVAL.get(), "PARAM1")
-        self.assertEqual(function.PARAMS[1].CPNAME.get(), "PARAM2")
+        self.assertEqual(function.RCMD.get(), b"RCMD")
+        self.assertEqual(function.PARAMS[0].CPNAME.get(), b"PARAM1")
+        self.assertEqual(function.PARAMS[0].CPVAL.get(), b"PARAM1")
+        self.assertEqual(function.PARAMS[1].CPNAME.get(), b"PARAM2")
         self.assertEqual(function.PARAMS[1].CPVAL.get(), 2)
 
         packetdata = {"HCACK": secsgem.HCACK.INVALID_COMMAND, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": secsgem.CPACK.CPVAL_ILLEGAL_VALUE}, {"CPNAME": "PARAM2", "CPACK": secsgem.CPACK.CPVAL_ILLEGAL_FORMAT}]}
@@ -279,8 +279,8 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         function = self.client.secs_decode(packet)
 
-        self.assertEqual(function[0].get(), "PP1")
-        self.assertEqual(function[1].get(), "PP2")
+        self.assertEqual(function[0].get(), b"PP1")
+        self.assertEqual(function[1].get(), b"PP2")
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS07F18(secsgem.ACKC7.ACCEPTED))
         self.server.simulate_packet(packet)

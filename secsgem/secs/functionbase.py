@@ -139,7 +139,7 @@ class SecsStreamFunction(object):
         :rtype: string
         """
         if self.data is None:
-            return ""
+            return b""
 
         return self.data.encode()
 

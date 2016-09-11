@@ -110,28 +110,28 @@ class testS02E16(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS02F16
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS02E34(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS02F34
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS02E36(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS02F36
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS02E38(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS02F38
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS05E00(unittest.TestCase, testSecsFunctionNoData):
@@ -142,7 +142,7 @@ class testS05E02(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS05F02
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS06E00(unittest.TestCase, testSecsFunctionNoData):
@@ -153,7 +153,7 @@ class testS06E12(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS06F12
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS07E00(unittest.TestCase, testSecsFunctionNoData):
@@ -164,28 +164,28 @@ class testS07E02(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS07F02
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS07E04(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS07F04
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS07E05(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS07F05
-    value1 = "testString"
-    value2 = "135"
-    encoded1 = "A\ntestString"
+    value1 = b"testString"
+    value2 = b"135"
+    encoded1 = b"A\ntestString"
 
 
 class testS07E18(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS07F18
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS07E19(unittest.TestCase, testSecsFunctionNoData):
@@ -204,28 +204,28 @@ class testS10E02(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS10F02
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testS10E04(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS10F04
     value1 = 217
     value2 = 135
-    encoded1 = "!\x01\xd9"
+    encoded1 = b"!\x01\xd9"
 
 
 class testFunctionBase(unittest.TestCase):
     def testGetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
-        self.assertEqual(item[0].get(), "test1")
+        self.assertEqual(item[0].get(), b"test1")
 
     def testSetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
         item[0] = "test3"
 
-        self.assertEqual(item[0].get(), "test3")
+        self.assertEqual(item[0].get(), b"test3")
 
     def testLenOnArray(self):
         item = SecsS01F03(["test1", "test2"])
@@ -237,18 +237,40 @@ class testFunctionBase(unittest.TestCase):
 
         item.append("test3")
 
-        self.assertEqual(item[2].get(), "test3")
+        self.assertEqual(item[2].get(), b"test3")
+
+    def testGetitemOnUninitializedNonArray(self):
+        item = SecsS01F16()
+
+        self.assertEqual(item[0], 0)
+
+        with self.assertRaises(IndexError):
+            self.assertEqual(item[1], 0)
+
+    def testSetitemOnUninitializedNonArray(self):
+        item = SecsS01F16()
+
+        item[0] = 11
+
+        with self.assertRaises(IndexError):
+            item[1] = 11
+
 
     def testGetitemOnNonArray(self):
         item = SecsS01F16(10)
 
         self.assertEqual(item[0], 10)
 
+        with self.assertRaises(IndexError):
+            self.assertEqual(item[1], 10)
+
     def testSetitemOnNonArray(self):
         item = SecsS01F16(10)
 
-        with self.assertRaises(TypeError):
-            item[0] = 11
+        item[0] = 11
+
+        with self.assertRaises(IndexError):
+            item[1] = 11
 
     def testLenOnNonArray(self):
         item = SecsS01F16(10)
