@@ -120,11 +120,11 @@ class SecsS01F02(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F02(['secsgem', '0.0.3']) # E->H
+        >>> secsgem.SecsS01F02(['secsgem', '0.0.5']) # E->H
         S1F2
           <L [2]
             <A "secsgem">
-            <A "0.0.3">
+            <A "0.0.5">
           > .
         >>> secsgem.SecsS01F02() #H->E
         S1F2
@@ -355,11 +355,11 @@ class SecsS01F13(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F13(['secsgem', '0.0.3']) # E->H
+        >>> secsgem.SecsS01F13(['secsgem', '0.0.5']) # E->H
         S1F13 W
           <L [2]
             <A "secsgem">
-            <A "0.0.3">
+            <A "0.0.5">
           > .
         >>> secsgem.SecsS01F13() #H->E
         S1F13 W
@@ -415,13 +415,13 @@ class SecsS01F14(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F14({"COMMACK": secsgem.COMMACK.ACCEPTED, "MDLN": ["secsgem", "0.0.3"]})
+        >>> secsgem.SecsS01F14({"COMMACK": secsgem.COMMACK.ACCEPTED, "MDLN": ["secsgem", "0.0.5"]})
         S1F14
           <L [2]
             <B 0x0>
             <L [2]
               <A "secsgem">
-              <A "0.0.3">
+              <A "0.0.5">
             >
           > .
 

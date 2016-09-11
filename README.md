@@ -11,7 +11,7 @@ This module is still work in progress. I'd love to get your input, your use case
 
 
 ##Installation
-To install the latest official release (0.0.4, 2016-06-13, https://pypi.python.org/pypi/secsgem):
+To install the latest official release (0.0.5, 2016-09-11, https://pypi.python.org/pypi/secsgem):
 
 ```bash
 $ pip install secsgem
