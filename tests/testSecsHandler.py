@@ -34,8 +34,8 @@ class TestSecsHandler(unittest.TestCase):
 
         self.assertEqual(function.stream, 1)
         self.assertEqual(function.function, 2)
-        self.assertEqual(function[0], "MDLN")
-        self.assertEqual(function[1], "SOFTREV")
+        self.assertEqual(function[0], b"MDLN")
+        self.assertEqual(function[1], b"SOFTREV")
 
     def testSecsDecodeNone(self):
         server = HsmsTestServer()
@@ -468,7 +468,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.performSelect()
 
-        clientCommandThread = threading.Thread(target=self.client.set_ecs, args=([[1, "1337"]], ), name="TestSecsHandlerPassive_testSetECs")
+        clientCommandThread = threading.Thread(target=self.client.set_ecs, args=([[1, b"1337"]], ), name="TestSecsHandlerPassive_testSetECs")
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
@@ -482,7 +482,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         function = self.client.secs_decode(packet)
 
-        self.assertEqual(function.get(), [[1, "1337"]])
+        self.assertEqual(function.get(), [[1, b"1337"]])
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F16(secsgem.EAC.ACK))
         self.server.simulate_packet(packet)
@@ -537,7 +537,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         function = self.client.secs_decode(packet)
 
         self.assertEqual(function.TID.get(), 0)
-        self.assertEqual(function.TEXT.get(), "Hello World")
+        self.assertEqual(function.TEXT.get(), b"Hello World")
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS10F04(secsgem.ACKC10.ACCEPTED))
         self.server.simulate_packet(packet)
