@@ -33,8 +33,9 @@ setup(
         'License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)',
 
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
     ],
 
     keywords='development hsms secs gem',
@@ -44,5 +45,7 @@ setup(
     install_requires=[
         "python-dateutil",
         "transitions",
+        "Mock",
+        "future",
     ],
 )
