@@ -299,12 +299,8 @@ class SecsVarDynamic(SecsVar):
 
         # when no preferred type was found, then try to match any available type
         for var_type in var_types:
-            if var_type is SecsVarArray:
-                if type(value) is list:
-                    return var_type
-            else:
-                if var_type(count=self.count).supports_value(value):
-                    return var_type
+            if var_type(count=self.count).supports_value(value):
+                return var_type
 
         return None
 
