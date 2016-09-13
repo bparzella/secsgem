@@ -41,10 +41,7 @@ def format_hex(text):
     :returns: Formated text
     :rtype: string
     """
-    if sys.version_info < (3,):
-        return ":".join("{0:02x}".format(ord(c)) for c in text)
-    else:
-        return ":".join("{0:02x}".format(c) for c in text)
+    return ":".join("{0:02x}".format(c) for c in bytearray(text))
 
 
 def is_windows():

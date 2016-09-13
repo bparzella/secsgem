@@ -106,10 +106,7 @@ class SecsVar(object):
             raise ValueError("Decoding for {} without any text".format(self.__class__.__name__))
 
         # parse format byte
-        if sys.version_info < (3,):
-            format_byte = ord(data[text_pos])
-        else:
-            format_byte = data[text_pos]
+        format_byte = bytearray(data)[text_pos]
 
         format_code = (format_byte & 0b11111100) >> 2
         length_bytes = (format_byte & 0b00000011)
@@ -120,10 +117,7 @@ class SecsVar(object):
         length = 0
         for _ in range(length_bytes):
             length <<= 8
-            if sys.version_info < (3,):
-                length += ord(data[text_pos])
-            else:
-                length += data[text_pos]
+            length += bytearray(data)[text_pos]
 
             text_pos += 1
 
@@ -1067,9 +1061,7 @@ class SecsVarBoolean(SecsVar):
         result = []
 
         for _ in range(length):
-            if data[text_pos] == 0 and sys.version_info > (3,):
-                result.append(False)
-            elif data[text_pos] == "\0" and sys.version_info < (3,):
+            if bytearray(data)[text_pos] == 0:
                 result.append(False)
             else:
                 result.append(True)
@@ -1105,15 +1097,12 @@ class SecsVarString(SecsVar):
         if len(self.value) == 0:
             return u"<A>"
 
-        printables = b"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ "
+        printables = u"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ "
         data = u""
         last_char_printable = False
 
         for char in self.value:
-            if sys.version_info > (3,):
-                output = str(bytes([char]).decode("utf-8"))
-            else:
-                output = char
+            output = char
 
             if char in printables:
                 if last_char_printable:
