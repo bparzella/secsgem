@@ -1021,9 +1021,6 @@ class SecsVarBoolean(SecsVar):
         :returns: internal value
         :rtype: list/boolean
         """
-        if self.value is None:
-            return None
-
         if len(self.value) == 1:
             return self.value[0]
 
@@ -1401,8 +1398,6 @@ class SecsVarNumber(SecsVar):
         :returns: internal value
         :rtype: list/integer/float
         """
-        if self.value is None:
-            return None
 
         if len(self.value) == 1:
             return self.value[0]
