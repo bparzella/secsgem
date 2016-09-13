@@ -742,7 +742,7 @@ class SecsVarBinary(SecsVar):
             return other == self.value
 
     def __hash__(self):
-        return hash(self.value)
+        return hash(bytes(self.value))
 
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
@@ -921,7 +921,7 @@ class SecsVarBoolean(SecsVar):
             return [other] == self.value
 
     def __hash__(self):
-        return hash(self.value)
+        return hash(str(self.value))
 
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
@@ -1308,7 +1308,7 @@ class SecsVarNumber(SecsVar):
             return [other] == self.value
 
     def __hash__(self):
-        return hash(self.value)
+        return hash(str(self.value))
 
     def __check_single_item_support(self, value):
         if isinstance(value, float) and self._basetype == int:
