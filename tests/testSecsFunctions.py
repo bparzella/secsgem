@@ -176,8 +176,8 @@ class testS07E04(unittest.TestCase, testSecsFunctionSingleVariable):
 
 class testS07E05(unittest.TestCase, testSecsFunctionSingleVariable):
     cls = SecsS07F05
-    value1 = b"testString"
-    value2 = b"135"
+    value1 = "testString"
+    value2 = "135"
     encoded1 = b"A\ntestString"
 
 
@@ -218,14 +218,14 @@ class testFunctionBase(unittest.TestCase):
     def testGetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
-        self.assertEqual(item[0].get(), b"test1")
+        self.assertEqual(item[0].get(), "test1")
 
     def testSetitemOnArray(self):
         item = SecsS01F03(["test1", "test2"])
 
         item[0] = "test3"
 
-        self.assertEqual(item[0].get(), b"test3")
+        self.assertEqual(item[0].get(), "test3")
 
     def testLenOnArray(self):
         item = SecsS01F03(["test1", "test2"])
@@ -237,7 +237,7 @@ class testFunctionBase(unittest.TestCase):
 
         item.append("test3")
 
-        self.assertEqual(item[2].get(), b"test3")
+        self.assertEqual(item[2].get(), "test3")
 
     def testGetitemOnUninitializedNonArray(self):
         item = SecsS01F16()

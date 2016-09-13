@@ -167,12 +167,16 @@ class TestSecsVarDynamic(unittest.TestCase):
     def testConstructorSetGetString(self):
         secsvar = SecsVarDynamic([SecsVarString])
 
-        secsvar.set(b"testString")
+        secsvar.set("testString")
 
-        self.assertEqual(b"testString", secsvar.get())
+        self.assertEqual("testString", secsvar.get())
+
+    def testHash(self):
+        secsvar = SecsVarDynamic([SecsVarString], value="test")
+        hash(secsvar)
 
     def testEncodeString(self):
-        secsvar = SecsVarDynamic([SecsVarString], b"testString")
+        secsvar = SecsVarDynamic([SecsVarString], "testString")
 
         self.assertEqual(secsvar.encode(), b"A\ntestString")
 
@@ -252,7 +256,7 @@ class TestSecsVarDynamic(unittest.TestCase):
         self.assertEqual(secsvar.get(), value)
 
     def testDecodeString(self):
-        value = b"testString"
+        value = "testString"
 
         secsvar = SecsVarDynamic([SecsVarString])
         encodevar = SecsVarString(value)
@@ -378,12 +382,12 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar = SecsVarDynamic([SecsVarU1])
 
         with self.assertRaises(ValueError):
-            secsvar.set([1, 2, 3, 4, b"65536"])
+            secsvar.set([1, 2, 3, 4, "65536"])
 
     def testListItemsDiffType(self):
         secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8])
 
-        secsvar.set([1, 2, 3, 4, b"65536"])
+        secsvar.set([1, 2, 3, 4, "65536"])
 
         self.assertEqual(secsvar.get(), [1, 2, 3, 4, 65536])
 
@@ -438,12 +442,12 @@ class TestSecsVarList(unittest.TestCase):
     def testConstructor(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
 
-        self.assertEqual(secsvar.MDLN.get(), b"MDLN")
-        self.assertEqual(secsvar["MDLN"].get(), b"MDLN")
-        self.assertEqual(secsvar[0].get(), b"MDLN")
-        self.assertEqual(secsvar.SOFTREV.get(), b"SOFTREV")
-        self.assertEqual(secsvar["SOFTREV"].get(), b"SOFTREV")
-        self.assertEqual(secsvar[1].get(), b"SOFTREV")
+        self.assertEqual(secsvar.MDLN.get(), "MDLN")
+        self.assertEqual(secsvar["MDLN"].get(), "MDLN")
+        self.assertEqual(secsvar[0].get(), "MDLN")
+        self.assertEqual(secsvar.SOFTREV.get(), "SOFTREV")
+        self.assertEqual(secsvar["SOFTREV"].get(), "SOFTREV")
+        self.assertEqual(secsvar[1].get(), "SOFTREV")
 
     def testConstructorWithoutDefaults(self):
         secsvar = SecsVarList([MDLN, SOFTREV])
@@ -451,25 +455,29 @@ class TestSecsVarList(unittest.TestCase):
         secsvar.MDLN.set("MDLN")
         secsvar.SOFTREV.set("SOFTREV")
 
-        self.assertEqual(secsvar.MDLN.get(), b"MDLN")
-        self.assertEqual(secsvar["MDLN"].get(), b"MDLN")
-        self.assertEqual(secsvar[0].get(), b"MDLN")
-        self.assertEqual(secsvar.SOFTREV.get(), b"SOFTREV")
-        self.assertEqual(secsvar["SOFTREV"].get(), b"SOFTREV")
-        self.assertEqual(secsvar[1].get(), b"SOFTREV")
+        self.assertEqual(secsvar.MDLN.get(), "MDLN")
+        self.assertEqual(secsvar["MDLN"].get(), "MDLN")
+        self.assertEqual(secsvar[0].get(), "MDLN")
+        self.assertEqual(secsvar.SOFTREV.get(), "SOFTREV")
+        self.assertEqual(secsvar["SOFTREV"].get(), "SOFTREV")
+        self.assertEqual(secsvar[1].get(), "SOFTREV")
 
     def testConstructorIllegalValue(self):
         with self.assertRaises(ValueError):
             secsvar = SecsVarList([OBJACK, SOFTREV], ["MDLN", "SOFTREV"])
+
+    def testHash(self):
+        secsvar = SecsVarList([MDLN, SOFTREV])
+        hash(secsvar)
 
     def testAttributeSetterMatchingSecsVar(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar.MDLN = SecsVarString("NLDM")
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testAttributeSetterIllegalSecsVar(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -482,9 +490,9 @@ class TestSecsVarList(unittest.TestCase):
 
         secsvar.MDLN = "NLDM"
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testAttributeSetterIllegalValue(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -509,13 +517,13 @@ class TestSecsVarList(unittest.TestCase):
 
         secsvar["MDLN"] = SecsVarString("NLDM")
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
-        self.assertEqual(secsvar.MDLN, SecsVarString(b"NLDM"))
-        self.assertEqual(secsvar["MDLN"], SecsVarString(b"NLDM"))
-        self.assertEqual(secsvar[0], SecsVarString(b"NLDM"))
+        self.assertEqual(secsvar.MDLN, SecsVarString("NLDM"))
+        self.assertEqual(secsvar["MDLN"], SecsVarString("NLDM"))
+        self.assertEqual(secsvar[0], SecsVarString("NLDM"))
 
     def testItemSetterIllegalSecsVar(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -528,9 +536,9 @@ class TestSecsVarList(unittest.TestCase):
 
         secsvar["MDLN"] = "NLDM"
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalValue(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -555,9 +563,9 @@ class TestSecsVarList(unittest.TestCase):
 
         secsvar[0] = SecsVarString("NLDM")
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testIndexSetterIllegalSecsVar(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -570,9 +578,9 @@ class TestSecsVarList(unittest.TestCase):
 
         secsvar[0] = "NLDM"
 
-        self.assertEqual(secsvar.MDLN.get(), b"NLDM")
-        self.assertEqual(secsvar["MDLN"].get(), b"NLDM")
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar.MDLN.get(), "NLDM")
+        self.assertEqual(secsvar["MDLN"].get(), "NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testIndexSetterIllegalValue(self):
         secsvar = SecsVarList([OBJACK, SOFTREV], [0, "SOFTREV"])
@@ -597,7 +605,7 @@ class TestSecsVarList(unittest.TestCase):
 
         for key in secsvar:
             self.assertIn(key, ["MDLN", "SOFTREV"])
-            self.assertIn(secsvar[key].get(), [b"MDLN1", b"SOFTREV1"])
+            self.assertIn(secsvar[key].get(), ["MDLN1", "SOFTREV1"])
 
     def testIteratorsIterator(self):
         # does not need to be tested, but raises coverage
@@ -652,8 +660,8 @@ class TestSecsVarList(unittest.TestCase):
 
         var = secsvar.get()
 
-        self.assertEqual(var[0], b"MDLN1")
-        self.assertEqual(var[1], b"SOFTREV1")
+        self.assertEqual(var[0], "MDLN1")
+        self.assertEqual(var[1], "SOFTREV1")
 
     def testEncode(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
@@ -666,32 +674,36 @@ class TestSecsVarList(unittest.TestCase):
         secsvar.MDLN = ""
         secsvar.SOFTREV = ""
 
-        self.assertEqual(secsvar.MDLN, b"")
-        self.assertEqual(secsvar.SOFTREV, b"")
+        self.assertEqual(secsvar.MDLN, "")
+        self.assertEqual(secsvar.SOFTREV, "")
 
         secsvar.decode(b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
-        self.assertEqual(secsvar.MDLN, b"MDLN1")
-        self.assertEqual(secsvar.SOFTREV, b"SOFTREV1")
+        self.assertEqual(secsvar.MDLN, "MDLN1")
+        self.assertEqual(secsvar.SOFTREV, "SOFTREV1")
         
 
 class TestSecsVarArray(unittest.TestCase):
     def testConstructor(self):
         secsvar = SecsVarArray(MDLN, ["MDLN1", "MDLN2"])
 
-        self.assertEqual(secsvar[0], b"MDLN1")
-        self.assertEqual(secsvar[1], b"MDLN2")
+        self.assertEqual(secsvar[0], "MDLN1")
+        self.assertEqual(secsvar[1], "MDLN2")
 
     def testConstructorIllegalValue(self):
         with self.assertRaises(ValueError):
             secsvar = SecsVarArray(OBJACK, ["MDLN1", "MDLN2"])
+
+    def testHash(self):
+        secsvar = SecsVarArray(MDLN)
+        hash(secsvar)
 
     def testItemSetterMatchingSecsVar(self):
         secsvar = SecsVarArray(MDLN, ["MDLN", "SOFTREV"])
 
         secsvar[0] = SecsVarString("NLDM")
 
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalSecsVar(self):
         secsvar = SecsVarArray(OBJACK, [0, 1])
@@ -704,7 +716,7 @@ class TestSecsVarArray(unittest.TestCase):
 
         secsvar[0] = "NLDM"
 
-        self.assertEqual(secsvar[0].get(), b"NLDM")
+        self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalValue(self):
         secsvar = SecsVarArray(OBJACK, [0, 1])
@@ -728,7 +740,7 @@ class TestSecsVarArray(unittest.TestCase):
         secsvar = SecsVarArray(MDLN, ["MDLN1", "MDLN2"])
 
         for value in secsvar:
-            self.assertIn(value, [b"MDLN1", b"MDLN2"])
+            self.assertIn(value, ["MDLN1", "MDLN2"])
 
     def testIteratorsIterator(self):
         # does not need to be tested, but raises coverage
@@ -762,8 +774,8 @@ class TestSecsVarArray(unittest.TestCase):
 
         var = secsvar.get()
 
-        self.assertEqual(var[0], b"MDLN1")
-        self.assertEqual(var[1], b"SOFTREV1")
+        self.assertEqual(var[0], "MDLN1")
+        self.assertEqual(var[1], "SOFTREV1")
 
     def testEncode(self):
         secsvar = SecsVarArray(MDLN, ["MDLN1", "SOFTREV1"])
@@ -776,17 +788,21 @@ class TestSecsVarArray(unittest.TestCase):
         secsvar[0] = ""
         secsvar[1] = ""
 
-        self.assertEqual(secsvar[0], b"")
-        self.assertEqual(secsvar[1], b"")
+        self.assertEqual(secsvar[0], "")
+        self.assertEqual(secsvar[1], "")
 
         secsvar.decode(b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
-        self.assertEqual(secsvar[0], b"MDLN1")
-        self.assertEqual(secsvar[1], b"SOFTREV1")
+        self.assertEqual(secsvar[0], "MDLN1")
+        self.assertEqual(secsvar[1], "SOFTREV1")
         self.assertEqual(len(secsvar), 2)
 
 
 class TestSecsVarBinary(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarBinary(1)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarBinary(13)
         secsvar1 = SecsVarDynamic([SecsVarBinary], 13)
@@ -862,6 +878,10 @@ class TestSecsVarBinary(unittest.TestCase):
 
 
 class TestSecsVarBoolean(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarBoolean(True)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarBoolean(True)
         secsvar1 = SecsVarDynamic([SecsVarBoolean], True)
@@ -956,13 +976,23 @@ class TestSecsVarString(unittest.TestCase):
     def testConstructorConvertsNoneToEmptyString(self):
         secsvar = SecsVarString(None)
 
-        self.assertEqual(secsvar.get(), b"")
+        self.assertEqual(secsvar.get(), "")
+
+    def testHash(self):
+        secsvar = SecsVarString("Test")
+        hash(secsvar)
 
     def testSetNoneNotAllowed(self):
         secsvar = SecsVarString(count=5)
 
         with self.assertRaises(ValueError):
             secsvar.set(None)
+
+    def testSetWithIllegalType(self):
+        secsvar = SecsVarString()
+
+        with self.assertRaises(TypeError):
+            secsvar.set(SecsVarBoolean(True))
 
     def testEncodeString(self):
         secsvar = SecsVarString("testString")
@@ -974,7 +1004,7 @@ class TestSecsVarString(unittest.TestCase):
 
         secsvar.decode(b"A\ntestString")
 
-        self.assertEqual(secsvar.get(), b"testString")
+        self.assertEqual(secsvar.get(), "testString")
 
     def testEncodeEmptyString(self):
         secsvar = SecsVarString("")
@@ -986,7 +1016,7 @@ class TestSecsVarString(unittest.TestCase):
 
         secsvar.decode(b"A\0")
 
-        self.assertEqual(secsvar.get(), b"")
+        self.assertEqual(secsvar.get(), "")
 
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarString("TEST123")
@@ -1002,7 +1032,7 @@ class TestSecsVarString(unittest.TestCase):
 
     def testEqualityVar(self):
         secsvar = SecsVarString("TEST123")
-        secsvar1 = b"TEST123"
+        secsvar1 = "TEST123"
 
         self.assertEqual(secsvar, secsvar1)
 
@@ -1029,23 +1059,27 @@ class TestSecsVarString(unittest.TestCase):
 
         secsvar.decode(b"A\x00")
 
-        self.assertEqual(secsvar.get(), b"")
+        self.assertEqual(secsvar.get(), "")
 
     def testDecodeSingle(self):
         secsvar = SecsVarString()
 
         secsvar.decode(b"A\x01a")
 
-        self.assertEqual(secsvar.get(), b"a")
+        self.assertEqual(secsvar.get(), "a")
 
     def testDecodeMulti(self):
         secsvar = SecsVarString()
 
         secsvar.decode(b"A\x05asdfg")
 
-        self.assertEqual(secsvar.get(), b"asdfg")
+        self.assertEqual(secsvar.get(), "asdfg")
 
 class TestSecsVarI8(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarI8(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarI8(17)
         secsvar1 = SecsVarDynamic([SecsVarI8], 17)
@@ -1130,6 +1164,10 @@ class TestSecsVarI8(unittest.TestCase):
 
 
 class TestSecsVarI1(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarI1(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarI1(17)
         secsvar1 = SecsVarDynamic([SecsVarI1], 17)
@@ -1186,6 +1224,10 @@ class TestSecsVarI1(unittest.TestCase):
 
 
 class TestSecsVarI2(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarI2(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarI2(17)
         secsvar1 = SecsVarDynamic([SecsVarI2], 17)
@@ -1242,6 +1284,10 @@ class TestSecsVarI2(unittest.TestCase):
 
 
 class TestSecsVarI4(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarI4(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarI4(17)
         secsvar1 = SecsVarDynamic([SecsVarI4], 17)
@@ -1298,6 +1344,10 @@ class TestSecsVarI4(unittest.TestCase):
 
 
 class TestSecsVarF8(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarF8(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarF8(12.3)
         secsvar1 = SecsVarDynamic([SecsVarF8], 12.3)
@@ -1354,6 +1404,10 @@ class TestSecsVarF8(unittest.TestCase):
 
 
 class TestSecsVarF4(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarF4(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarF4(17)
         secsvar1 = SecsVarDynamic([SecsVarF4], 17)
@@ -1410,6 +1464,10 @@ class TestSecsVarF4(unittest.TestCase):
 
 
 class TestSecsVarU8(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarU8(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarU8(17)
         secsvar1 = SecsVarDynamic([SecsVarU8], 17)
@@ -1466,6 +1524,10 @@ class TestSecsVarU8(unittest.TestCase):
 
 
 class TestSecsVarU1(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarU1(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarU1(17)
         secsvar1 = SecsVarDynamic([SecsVarU1], 17)
@@ -1522,6 +1584,10 @@ class TestSecsVarU1(unittest.TestCase):
 
 
 class TestSecsVarU2(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarU2(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarU2(17)
         secsvar1 = SecsVarDynamic([SecsVarU2], 17)
@@ -1578,6 +1644,10 @@ class TestSecsVarU2(unittest.TestCase):
 
 
 class TestSecsVarU4(unittest.TestCase):
+    def testHash(self):
+        secsvar = SecsVarU4(123)
+        hash(secsvar)
+
     def testEqualitySecsVarDynamic(self):
         secsvar = SecsVarU4(17)
         secsvar1 = SecsVarDynamic([SecsVarU4], 17)
@@ -1919,16 +1989,16 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #bool
     _goodBoolValues = [
-        {"VALUE": True, "RESULT": b"True"},
-        {"VALUE": False, "RESULT": b"False"},
+        {"VALUE": True, "RESULT": "True"},
+        {"VALUE": False, "RESULT": "False"},
     ]
     _badBoolValues = []
 
     #float
     _goodFloatValues = [
-        {"VALUE": 1.0, "RESULT": b"1.0"},
-        {"VALUE": 100000000.123, "RESULT": b"100000000.123"},
-        {"VALUE": -1.0, "RESULT": b"-1.0"},
+        {"VALUE": 1.0, "RESULT": "1.0"},
+        {"VALUE": 100000000.123, "RESULT": "100000000.123"},
+        {"VALUE": -1.0, "RESULT": "-1.0"},
     ]
     _badFloatValues = [
         {"VALUE": 100000000.123, "LENGTH": 1},
@@ -1936,11 +2006,11 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #int
     _goodIntValues = [
-        {"VALUE": -1, "RESULT": b"-1"},
-        {"VALUE": 0, "RESULT": b"0"},
-        {"VALUE": 1, "RESULT": b"1"},
-        {"VALUE": 2, "RESULT": b"2"},
-        {"VALUE": 265, "RESULT": b"265"},
+        {"VALUE": -1, "RESULT": "-1"},
+        {"VALUE": 0, "RESULT": "0"},
+        {"VALUE": 1, "RESULT": "1"},
+        {"VALUE": 2, "RESULT": "2"},
+        {"VALUE": 265, "RESULT": "265"},
     ]
     _badIntValues = [
         {"VALUE": 265, "LENGTH": 1},
@@ -1948,11 +2018,11 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #long
     _goodLongValues = [
-        {"VALUE": -1, "RESULT": b"-1"},
-        {"VALUE": 0, "RESULT": b"0"},
-        {"VALUE": 1, "RESULT": b"1"},
-        {"VALUE": 2, "RESULT": b"2"},
-        {"VALUE": 265, "RESULT": b"265"},
+        {"VALUE": -1, "RESULT": "-1"},
+        {"VALUE": 0, "RESULT": "0"},
+        {"VALUE": 1, "RESULT": "1"},
+        {"VALUE": 2, "RESULT": "2"},
+        {"VALUE": 265, "RESULT": "265"},
     ]
     _badLongValues = [
         {"VALUE": 265, "LENGTH": 1},
@@ -1960,17 +2030,17 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #complex
     _goodComplexValues = [
-        {"VALUE": 1J, "RESULT": b"1j"},
+        {"VALUE": 1J, "RESULT": "1j"},
     ]
     _badComplexValues = [
     ]
 
     #str
     _goodStringValues = [
-        {"VALUE": "YES", "RESULT": b"YES"},
-        {"VALUE": "tRuE", "RESULT": b"tRuE"},
-        {"VALUE": "No", "RESULT": b"No"},
-        {"VALUE": "False", "RESULT": b"False"},
+        {"VALUE": "YES", "RESULT": "YES"},
+        {"VALUE": "tRuE", "RESULT": "tRuE"},
+        {"VALUE": "No", "RESULT": "No"},
+        {"VALUE": "False", "RESULT": "False"},
     ]
     _badStringValues = [
         {"VALUE": "TEST1", "LENGTH": 4},
@@ -1978,10 +2048,10 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #unicode
     _goodUnicodeValues = [
-        {"VALUE": u"YES", "RESULT": b"YES"},
-        {"VALUE": u"tRuE", "RESULT": b"tRuE"},
-        {"VALUE": u"No", "RESULT": b"No"},
-        {"VALUE": u"False", "RESULT": b"False"},
+        {"VALUE": u"YES", "RESULT": "YES"},
+        {"VALUE": u"tRuE", "RESULT": "tRuE"},
+        {"VALUE": u"No", "RESULT": "No"},
+        {"VALUE": u"False", "RESULT": "False"},
     ]
     _badUnicodeValues = [
         {"VALUE": u'ABRA\xc3O JOS\xc9'},
@@ -1990,34 +2060,37 @@ class TestSecsVarStringValues(GoodBadLists):
 
     #list
     _goodListValues = [
-        {"VALUE": [False, True, False, False], "RESULT": b"\x00\x01\x00\x00"},
-        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": b"\x00\x01\x05\x20\x10\xFF"},
-        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": b"\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+        {"VALUE": [False, True, False, False], "RESULT": "\x00\x01\x00\x00"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": "\x00\x01\x05\x20\x10\x7F"},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH": 6},
     ]
     _badListValues = [
         {"VALUE": [1, -1, 256, 5]},
         {"VALUE": ["Test", "ASDF"]},
-        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "LENGTH": 5},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH": 5},
     ]
 
     #tuple
     _goodTupleValues = [
-        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": b"\x00\x01\x05\x20\x10\xFF"},
-        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": b"\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": "\x00\x01\x05\x20\x10\x7F"},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH": 6},
     ]
     _badTupleValues = [
         {"VALUE": (1, -1, 256, 5)},
         {"VALUE": ("Test", "ASDF")},
-        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "LENGTH": 5},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF)},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "LENGTH": 5},
     ]
 
     #bytearray
     _goodByteArrayValues = [
-        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF"), "RESULT": b"\x00\x01\x05\x20\x10\xFF"},
-        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF"), "RESULT": b"\x00\x01\x05\x20\x10\xFF", "LENGTH" : 6},
+        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "RESULT": "\x00\x01\x05\x20\x10\x7F"},
+        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH" : 6},
     ]
     _badByteArrayValues = [
-        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF"), "LENGTH" : 5},
+        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF")},
+        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "LENGTH" : 5},
     ]
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
