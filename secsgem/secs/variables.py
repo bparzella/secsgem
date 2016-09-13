@@ -784,7 +784,7 @@ class SecsVarBinary(SecsVar):
                 return False
             try:
                 value.encode('ascii')
-            except Exception:
+            except UnicodeEncodeError:
                 return False
 
             return True
@@ -1175,7 +1175,7 @@ class SecsVarString(SecsVar):
                 return False
             try:
                 value.encode('ascii')
-            except Exception:
+            except UnicodeEncodeError:
                 return False
 
             return True
