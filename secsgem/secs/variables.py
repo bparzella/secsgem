@@ -1080,7 +1080,7 @@ class SecsVarString(SecsVar):
     def __init__(self, value="", count=-1):
         super(SecsVarString, self).__init__()
 
-        self.value = b""
+        self.value = u""
         self.count = count
 
         if value is not None:
@@ -1134,7 +1134,7 @@ class SecsVarString(SecsVar):
             return True
 
         if isinstance(value, (int, long)):
-            if 0 <= value <= 255:
+            if 0 <= value <= 127:
                 return True
             return False
 
@@ -1157,6 +1157,9 @@ class SecsVarString(SecsVar):
         elif isinstance(value, bytearray):
             if self.count > 0 and len(value) > self.count:
                 return False
+            for item in value:
+                if not self.__check_single_item_support(item):
+                    return False
             return True
         elif isinstance(value, bytes):
             if self.count > 0 and len(value) > self.count:
@@ -1186,22 +1189,22 @@ class SecsVarString(SecsVar):
             raise ValueError("{} can't be None".format(self.__class__.__name__))
 
         if isinstance(value, bytes):
-            value = bytearray(value)
-        elif isinstance(value, unicode):
-            value = bytearray(value.encode('ascii'))
-        elif isinstance(value, list) or isinstance(value, tuple):
-            value = bytearray(value)
+            value = value.decode('ascii')
         elif isinstance(value, bytearray):
-            pass
+            value = bytes(value).decode('ascii')
+        elif isinstance(value, list) or isinstance(value, tuple):
+            value = unicode(bytes(bytearray(value)).decode('ascii'))
         elif isinstance(value, int) or isinstance(value, long) or isinstance(value, float) or isinstance(value, complex):
-            value = bytearray(str(value).encode('ascii'))
+            value = str(value)
+        elif isinstance(value, unicode):
+            value.encode("ascii")  # try if it can be encoded as ascii (values 0-127)
         else:
             raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
         if 0 < self.count < len(value) :
             raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
-        self.value = bytes(value)
+        self.value = unicode(value)
 
     def get(self):
         """Return the internal value
@@ -1219,7 +1222,7 @@ class SecsVarString(SecsVar):
         """
         result = self.encode_item_header(len(self.value))
 
-        result += self.value
+        result += self.value.encode('ascii')
 
         return result
 
@@ -1236,10 +1239,10 @@ class SecsVarString(SecsVar):
         (text_pos, _, length) = self.decode_item_header(data, start)
 
         # string
-        result = ""
+        result = u""
 
         if length > 0:
-            result = data[text_pos:text_pos + length]
+            result = data[text_pos:text_pos + length].decode("ascii")
 
         self.set(result)
 
