@@ -16,11 +16,13 @@
 """SECS variable types"""
 
 from past.builtins import long, unicode
+from builtins import chr
 from future.utils import implements_iterator
 
 import sys
 import struct
 import inspect
+import unicodedata
 
 from collections import OrderedDict
 
@@ -1066,19 +1068,21 @@ class SecsVarBoolean(SecsVar):
         return text_pos
 
 
-class SecsVarString(SecsVar):
-    """Secs type for string data
+class SecsVarText(SecsVar):
+    """Secs type base for any text data
 
     :param value: initial value
     :type value: string
     :param count: number of items this value
     :type count: integer
     """
-    formatCode = 0o20
-    preferredTypes = [bytes, unicode]
+    formatCode = -1
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
+    coding = ""
+    _sml = u""
 
     def __init__(self, value="", count=-1):
-        super(SecsVarString, self).__init__()
+        super(SecsVarText, self).__init__()
 
         self.value = u""
         self.count = count
@@ -1088,16 +1092,15 @@ class SecsVarString(SecsVar):
 
     def __repr__(self):
         if len(self.value) == 0:
-            return u"<A>"
+            return u"<{}>".format(self._sml)
 
-        printables = u"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ "
         data = u""
         last_char_printable = False
 
         for char in self.value:
             output = char
 
-            if char in printables:
+            if char not in self.controlChars:
                 if last_char_printable:
                     data += output
                 else:
@@ -1113,7 +1116,7 @@ class SecsVarString(SecsVar):
         if last_char_printable:
             data += '"'
 
-        return u"<A{}>".format(data)
+        return u"<{}{}>".format(self._sml, data)
 
     def __len__(self):
         return len(self.value)
@@ -1173,7 +1176,7 @@ class SecsVarString(SecsVar):
             if self.count > 0 and len(value) > self.count:
                 return False
             try:
-                value.encode('ascii')
+                value.encode(self.coding)
             except UnicodeEncodeError:
                 return False
 
@@ -1189,15 +1192,15 @@ class SecsVarString(SecsVar):
             raise ValueError("{} can't be None".format(self.__class__.__name__))
 
         if isinstance(value, bytes):
-            value = value.decode('ascii')
+            value = value.decode(self.coding)
         elif isinstance(value, bytearray):
-            value = bytes(value).decode('ascii')
+            value = bytes(value).decode(self.coding)
         elif isinstance(value, list) or isinstance(value, tuple):
-            value = unicode(bytes(bytearray(value)).decode('ascii'))
+            value = unicode(bytes(bytearray(value)).decode(self.coding))
         elif isinstance(value, int) or isinstance(value, long) or isinstance(value, float) or isinstance(value, complex):
             value = str(value)
         elif isinstance(value, unicode):
-            value.encode("ascii")  # try if it can be encoded as ascii (values 0-127)
+            value.encode(self.coding)  # try if it can be encoded as ascii (values 0-127)
         else:
             raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
@@ -1222,7 +1225,7 @@ class SecsVarString(SecsVar):
         """
         result = self.encode_item_header(len(self.value))
 
-        result += self.value.encode('ascii')
+        result += self.value.encode(self.coding)
 
         return result
 
@@ -1242,11 +1245,41 @@ class SecsVarString(SecsVar):
         result = u""
 
         if length > 0:
-            result = data[text_pos:text_pos + length].decode("ascii")
+            result = data[text_pos:text_pos + length].decode(self.coding)
 
         self.set(result)
 
         return text_pos + length
+
+
+class SecsVarString(SecsVarText):
+    """Secs type for string data
+
+    :param value: initial value
+    :type value: string
+    :param count: number of items this value
+    :type count: integer
+    """
+    formatCode = 0o20
+    preferredTypes = [bytes, unicode]
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
+    coding = "ascii"
+    _sml = u"A"
+
+
+class SecsVarJIS8(SecsVarText):
+    """Secs type for string data
+
+    :param value: initial value
+    :type value: string
+    :param count: number of items this value
+    :type count: integer
+    """
+    formatCode = 0o21
+    preferredTypes = [bytes, unicode]
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
+    coding = "jis-8"
+    _sml = u"J"
 
 
 class SecsVarNumber(SecsVar):

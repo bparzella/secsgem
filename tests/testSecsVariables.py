@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #####################################################################
 # testSecsVariables.py
 #
@@ -1074,6 +1075,116 @@ class TestSecsVarString(unittest.TestCase):
         secsvar.decode(b"A\x05asdfg")
 
         self.assertEqual(secsvar.get(), "asdfg")
+
+class TestSecsVarJIS8(unittest.TestCase):
+    def testConstructorWrongLengthString(self):
+        secsvar = SecsVarJIS8(count=5)
+
+        with self.assertRaises(ValueError):
+            secsvar.set(u"testString")
+
+    def testConstructorConvertsNoneToEmptyString(self):
+        secsvar = SecsVarJIS8(None)
+
+        self.assertEqual(secsvar.get(), u"")
+
+    def testHash(self):
+        secsvar = SecsVarJIS8("Test")
+        hash(secsvar)
+
+    def testSetNoneNotAllowed(self):
+        secsvar = SecsVarJIS8(count=5)
+
+        with self.assertRaises(ValueError):
+            secsvar.set(None)
+
+    def testSetWithIllegalType(self):
+        secsvar = SecsVarJIS8()
+
+        with self.assertRaises(TypeError):
+            secsvar.set(SecsVarBoolean(True))
+
+    def testEncodeString(self):
+        secsvar = SecsVarJIS8(u"testString¥")
+
+        self.assertEqual(secsvar.encode(), b"E\x0btestString\\")
+
+    def testDecodeString(self):
+        secsvar = SecsVarJIS8()
+
+        secsvar.decode(b"E\ntestString")
+
+        self.assertEqual(secsvar.get(), "testString")
+
+    def testEncodeEmptyString(self):
+        secsvar = SecsVarJIS8("")
+
+        self.assertEqual(secsvar.encode(), b"E\0")
+
+    def testDecodeEmptyString(self):
+        secsvar = SecsVarJIS8()
+
+        secsvar.decode(b"E\0")
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testEqualitySecsVarDynamic(self):
+        secsvar = SecsVarJIS8("TEST123")
+        secsvar1 = SecsVarDynamic([SecsVarJIS8], "TEST123")
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualitySecsVar(self):
+        secsvar = SecsVarJIS8("TEST123")
+        secsvar1 = SecsVarJIS8("TEST123")
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testEqualityVar(self):
+        secsvar = SecsVarJIS8("TEST123")
+        secsvar1 = "TEST123"
+
+        self.assertEqual(secsvar, secsvar1)
+
+    def testRepr(self):
+        print(SecsVarJIS8("TEST123\1\2\3TEST123\1\2\3"))
+
+    def testEncodeEmpty(self):
+        secsvar = SecsVarJIS8("")
+
+        self.assertEqual(secsvar.encode(), b"E\x00")
+
+    def testEncodeSingle(self):
+        secsvar = SecsVarJIS8("a")
+
+        self.assertEqual(secsvar.encode(), b"E\x01a")
+
+    def testEncodeMulti(self):
+        secsvar = SecsVarJIS8("asdfg")
+
+        self.assertEqual(secsvar.encode(), b"E\x05asdfg")
+
+    def testDecodeEmpty(self):
+        secsvar = SecsVarJIS8()
+
+        secsvar.decode(b"E\x00")
+
+        self.assertEqual(secsvar.get(), "")
+
+    def testDecodeSingle(self):
+        secsvar = SecsVarJIS8()
+
+        secsvar.decode(b"E\x01a")
+
+        self.assertEqual(secsvar.get(), "a")
+
+    def testDecodeMulti(self):
+        secsvar = SecsVarJIS8()
+
+        secsvar.decode(b"E\x05asdfg")
+
+        self.assertEqual(secsvar.get(), "asdfg")
+
 
 class TestSecsVarI8(unittest.TestCase):
     def testHash(self):

@@ -23,6 +23,8 @@ import string
 import types
 import threading
 
+from .codec_jis_x_0201 import codecs 
+
 
 def format_hex(text):
     """Returns byte arrays (string) formated as hex numbers.
