@@ -398,3 +398,235 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(function.get(), 2)
 
         self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+
+    def testStatusVariableNameListAll(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F11()))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,12)
+
+        function = self.client.secs_decode(packet)
+
+        SV2 = next((x for x in function if x[0].get() == "SV2"), None)
+
+        self.assertIsNotNone(SV2)
+        self.assertEqual(SV2[1].get(), u"sample2, text SVID, SecsVarString")
+        self.assertEqual(SV2[2].get(), "chars")
+
+        SV10 = next((x for x in function if x[0].get() == 10), None)
+
+        self.assertIsNotNone(SV10)
+        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, SecsVarU4")
+        self.assertEqual(SV10[2].get(), "meters")
+
+    def testStatusVariableNameListLimited(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F11(["SV2", 10])))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,12)
+
+        function = self.client.secs_decode(packet)
+
+        SV2 = function[0]
+
+        self.assertIsNotNone(SV2)
+        self.assertEqual(SV2[0].get(), u"SV2")
+        self.assertEqual(SV2[1].get(), u"sample2, text SVID, SecsVarString")
+        self.assertEqual(SV2[2].get(), "chars")
+
+        SV10 = function[1]
+
+        self.assertIsNotNone(SV10)
+        self.assertEqual(SV10[0].get(), 10)
+        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, SecsVarU4")
+        self.assertEqual(SV10[2].get(), "meters")
+
+    def testStatusVariableNameListInvalid(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F11(["asdfg"])))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,12)
+
+        function = self.client.secs_decode(packet)
+
+        SV = function[0]
+
+        self.assertIsNotNone(SV)
+        self.assertEqual(SV[0].get(), u"asdfg")
+        self.assertEqual(SV[1].get(), u"")
+        self.assertEqual(SV[2].get(), "")
+
+    def testStatusVariableAll(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F03()))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,4)
+
+        function = self.client.secs_decode(packet)
+
+        SV10 = next((x for x in function if x.get() == 123), None)
+        self.assertIsNotNone(SV10)
+
+        SV2 = next((x for x in function if x.get() == u"sample sv"), None)
+        self.assertIsNotNone(SV2)
+
+    def testStatusVariableLimited(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F03(["SV2", 10])))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,4)
+
+        function = self.client.secs_decode(packet)
+
+        SV2 = function[0]
+
+        self.assertIsNotNone(SV2)
+        self.assertEqual(SV2.get(), u"sample sv")
+
+        SV10 = function[1]
+
+        self.assertIsNotNone(SV10)
+        self.assertEqual(SV10.get(), 123)
+
+    def testStatusVariableWithCallback(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, True),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, True),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F03(["SV2", 10])))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,4)
+
+        function = self.client.secs_decode(packet)
+
+        SV2 = function[0]
+
+        self.assertIsNotNone(SV2)
+        self.assertEqual(SV2.get(), u"sample sv")
+
+        SV10 = function[1]
+
+        self.assertIsNotNone(SV10)
+        self.assertEqual(SV10.get(), 123)
+
+    def testStatusVariableInvalid(self):
+        self.client.status_variables.update({
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+        })
+
+        self.client.status_variables[10].value = 123
+        self.client.status_variables["SV2"].value = "sample sv"
+        
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F03(["asdfg"])))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function,4)
+
+        function = self.client.secs_decode(packet)
+
+        SV = function[0]
+
+        self.assertIsNotNone(SV)
+        self.assertEqual(SV.get(), None)

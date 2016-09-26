@@ -21,7 +21,7 @@ import unittest
 import nose
 
 from secsgem.secs.variables import *
-from secsgem.secs.dataitems import MDLN, OBJACK, SOFTREV
+from secsgem.secs.dataitems import MDLN, OBJACK, SOFTREV, SVID
 
 def printable_value(value):
     if sys.version_info < (3, ):
@@ -437,6 +437,19 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar = SecsVarDynamic([], 1)
 
         self.assertEqual(secsvar[0], 1)
+
+    def testSetDerivedItem(self):
+        secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString])
+
+        secsvar.set(SVID(10))
+
+        self.assertEqual(secsvar, 10)
+
+    def testSetDerivedUnsupportedItem(self):
+        secsvar = SecsVarDynamic([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8])
+
+        with self.assertRaises(ValueError):
+            secsvar.set(SVID("asdfg"))
 
 
 class TestSecsVarList(unittest.TestCase):

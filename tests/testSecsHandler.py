@@ -191,6 +191,27 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 9)
         self.assertEqual(packet.header.function, 5)
 
+    def testStreamFunctionReceivingExceptingCallback(self):
+        self.server.simulate_connect()
+
+        f = Mock(side_effect=Exception("testException"))
+
+        self.client.register_callback(1, 1, f)
+
+        self.performSelect()
+
+        #send s01e01
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0)
+        self.assertEqual(packet.header.stream, 1)
+        self.assertEqual(packet.header.function, 0)
+
     def testDisableCeids(self):
         self.server.simulate_connect()
 
