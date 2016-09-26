@@ -170,7 +170,10 @@ class SecsVarDynamic(SecsVar):
         elif isinstance(other, list):
             return other == self.value.value
         else:
-            return [other] == self.value.value
+            if isinstance(other, (bytes, unicode)) and isinstance(self.value.value, (bytes, unicode)):
+                return (unicode(other) == unicode(self.value.value)) 
+            else: 
+                return [other] == self.value.value
 
     def __hash__(self):
         if isinstance(self.value.value, list):
@@ -207,10 +210,16 @@ class SecsVarDynamic(SecsVar):
         :type value: various
         """
         if isinstance(value, SecsVar):
-            if not isinstance(value, tuple(self.types)) and self.types:
-                raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.__class__.__name__, self.types))
+            if isinstance(value, SecsVarDynamic):
+                if not isinstance(value.value, tuple(self.types)) and self.types:
+                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.value.__class__.__name__, self.types))
 
-            self.value = value
+                self.value = value.value
+            else:
+                if not isinstance(value, tuple(self.types)) and self.types:
+                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.__class__.__name__, self.types))
+
+                self.value = value
         else:
             matched_type = self._match_type(value)
 
