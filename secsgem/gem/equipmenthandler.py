@@ -18,6 +18,7 @@
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary, SecsVarDynamic
+from ..secs.dataitems import SV
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -547,7 +548,7 @@ class GemEquipmentHandler(GemHandler):
             return sv.value_type(self._get_control_state_id())
         if sv.svid == SVID_EVENTS_ENABLED:
             events = self._get_events_enabled()
-            return sv.value_type(SecsVarDynamic([SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]), events)
+            return sv.value_type(SV, events)
 
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(sv.svid), sv)
@@ -575,7 +576,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for svid in message:
                 if svid not in self._status_variables:
-                    responses.append(SecsVarArray([]))
+                    responses.append(SecsVarArray(SV, []))
                 else:
                     sv = self._status_variables[svid]
                     responses.append(self._get_sv_value(sv))
