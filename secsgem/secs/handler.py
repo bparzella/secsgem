@@ -174,16 +174,16 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
 
     def _run_callbacks(self, callback_index, response):
         handeled = False
-        try:
-            for callback in self.callbacks[callback_index]:
+        for callback in self.callbacks[callback_index]:
+            try:
                 if not callback(self, response) is False:
                     handeled = True
+            except Exception:
+                self.logger.exception('Callback aborted because of exception, abort sent')
+                self.send_response(self.stream_function(response.header.stream, 0)(), response.header.system)
 
-            if not handeled:
-                self.logger.warning("no callback wanted to handle handle %s\n%s", callback_index, response)
-
-        except Exception:
-            self.logger.exception('exception')
+        if not handeled:
+            self.logger.warning("no callback wanted to handle handle %s\n%s", callback_index, response)
 
     def _on_hsms_packet_received(self, packet):
         """Packet received from hsms layer
