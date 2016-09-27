@@ -1094,7 +1094,7 @@ class ECV(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
 
 
 class EDID(SecsVarDynamic):
