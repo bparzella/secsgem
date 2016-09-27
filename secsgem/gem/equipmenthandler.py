@@ -848,8 +848,6 @@ class GemEquipmentHandler(GemHandler):
                 elif var in self._data_values:
                     v = self._get_dv_value(self._data_values[var])
                     variables.append(v)
-                else:
-                    raise ValueError("asdfg/ remove me")
 
             reports.append({"RPTID": rptid, "V": variables})
 
