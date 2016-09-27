@@ -137,10 +137,7 @@ class HsmsTestServer(object):
         self.logger.debug("server stopped")
 
     def simulate_connect(self):
-        threading.Thread(target=self.connection.simulate_connect, name="SimulateConnectStarter").start()
-    
-        while not self.connection.connected:
-            time.sleep(0.1)
+        self.connection.simulate_connect()
 
     def simulate_disconnect(self):
         self.connection.simulate_disconnect()
