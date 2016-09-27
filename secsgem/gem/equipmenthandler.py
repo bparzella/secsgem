@@ -18,7 +18,7 @@
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary, SecsVarDynamic
-from ..secs.dataitems import SV
+from ..secs.dataitems import SV, ECV
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -679,7 +679,7 @@ class GemEquipmentHandler(GemHandler):
 
         # pre check message for errors
         for report in message.DATA:
-            if report.RPTID in self._registered_reports:
+            if report.RPTID in self._registered_reports and len(report.VID) > 0:
                 DRACK = 3
             else:
                 for vid in report.VID:
@@ -697,7 +697,7 @@ class GemEquipmentHandler(GemHandler):
                     # no vids -> remove this reports and links
                     if not report.VID:
                         # remove report from linked collection events
-                        for collection_event in self._registered_collection_events:
+                        for collection_event in list(self._registered_collection_events):
                             if report.RPTID in self._registered_collection_events[collection_event].reports:
                                 self._registered_collection_events[collection_event].reports.remove(report.RPTID)
                                 # remove collection event link if no collection events present
@@ -758,7 +758,7 @@ class GemEquipmentHandler(GemHandler):
                         for rptid in event.RPTID:
                             ce.reports.append(rptid)
                     else:
-                        self._registered_collection_events[event.CEID] = CollectionEventLink(self._collection_events[event.CEID], event.RPTID)
+                        self._registered_collection_events[event.CEID] = CollectionEventLink(self._collection_events[event.CEID], event.RPTID.get())
 
         handler.send_response(self.stream_function(2, 36)(LRACK), packet.header.system)
 
@@ -949,7 +949,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
-                    responses.append(SecsVarArray([]))
+                    responses.append(SecsVarArray(ECV, []))
                 else:
                     ec = self._equipment_constants[ecid]
                     responses.append(self._get_ec_value(ec))

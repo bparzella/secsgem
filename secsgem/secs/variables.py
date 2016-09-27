@@ -235,7 +235,7 @@ class SecsVarDynamic(SecsVar):
         :returns: internal value
         :rtype: various
         """
-        if self.value:
+        if self.value is not None:
             return self.value.get()
         else:
             return None
