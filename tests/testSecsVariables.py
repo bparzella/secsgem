@@ -979,6 +979,11 @@ class TestSecsVarBoolean(unittest.TestCase):
 
         self.assertEqual(secsvar.get(), [True, True, False])
 
+    def testLen(self):
+        secsvar = SecsVarBoolean([True, False, True])
+
+        self.assertEqual(len(secsvar), 3)
+
 
 class TestSecsVarString(unittest.TestCase):
     def testConstructorWrongLengthString(self):
@@ -1285,6 +1290,11 @@ class TestSecsVarI8(unittest.TestCase):
         secsvar.decode(b"a\x18\x00\x00\x00\x00\x00\x00\x00{\x00\x00\x00\x00\x00\x00\x00\xea\xff\xff\xff\xff\xff\xff\xfe\xa7")
 
         self.assertEqual(secsvar.get(), [123, 234, -345])
+
+    def testLen(self):
+        secsvar = SecsVarI8([1, 2, 3])
+
+        self.assertEqual(len(secsvar), 3)
 
 
 class TestSecsVarI1(unittest.TestCase):
