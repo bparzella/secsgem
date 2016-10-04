@@ -586,7 +586,6 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         equ_datetime = datetime.datetime.strptime(equ_time.get()+"000", "%Y%m%d%H%M%S%f")
 
-        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 2
@@ -601,7 +600,6 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         equ_datetime = parse(equ_time.get())
 
-        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
     def testStatusVariablePredefinedEventsEnabled(self):
