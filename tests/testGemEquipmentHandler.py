@@ -14,8 +14,12 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
+import datetime
 import threading
 import unittest
+
+from dateutil.tz import tzlocal
+from dateutil.parser import parse
 
 import secsgem
 from secsgem.secs.variables import SecsVarString, SecsVarU4
@@ -162,18 +166,21 @@ class TestGemEquipmentHandler(unittest.TestCase):
         client = secsgem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", None, server, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.assertEqual(client.controlState.current, "EQUIPMENT_OFFLINE")
+        self.assertEqual(client._get_control_state_id(), 1)
 
     def testControlInitialStateHostOffline(self):
         server = HsmsTestServer()
         client = secsgem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", None, server, initial_control_state="HOST_OFFLINE")
 
         self.assertEqual(client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(client._get_control_state_id(), 3)
 
     def testControlInitialStateOnline(self):
         server = HsmsTestServer()
         client = secsgem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", None, server, initial_control_state="ONLINE")
 
         self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(client._get_control_state_id(), 5)
 
     def testControlInitialStateOnlineLocal(self):
         server = HsmsTestServer()
@@ -211,6 +218,12 @@ class TestGemEquipmentHandler(unittest.TestCase):
         
         self.assertEqual(client.controlState.current, "EQUIPMENT_OFFLINE")
 
+    def testSVControlStateOnlineLocal(self):
+        server = HsmsTestServer()
+        client = secsgem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", None, server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+
+        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client._get_control_state_id(), 4)
 
 class TestGemEquipmentHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.GemEquipmentHandler
@@ -418,7 +431,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.function,12)
+        self.assertEqual(packet.header.function, 12)
 
         return self.client.secs_decode(packet)
 
@@ -483,7 +496,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.function,4)
+        self.assertEqual(packet.header.function, 4)
 
         return self.client.secs_decode(packet)
 
@@ -542,17 +555,68 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertIsNotNone(SV)
         self.assertEqual(SV.get(), [])
 
-    """
     def testStatusVariablePredefinedClock(self):
         self.establishCommunication()
 
+        delta = datetime.timedelta(seconds=5)
+
+        # timeformat 0
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(0)}])
+
         function = self.sendSVRequest([secsgem.SVID_CLOCK])
 
-        SV2 = function[0]
+        equ_time = function[0]
+        now = datetime.datetime.now()
 
-        self.assertIsNotNone(SV2)
-        self.assertEqual(SV2.get(), u"sample sv")
-    """
+        self.assertIsNotNone(equ_time)
+
+        equ_datetime = datetime.datetime.strptime(equ_time.get(), "%y%m%d%H%M%S")
+
+        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
+        self.assertTrue(now - delta < equ_datetime < now + delta)
+
+        # timeformat 1
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(1)}])
+
+        function = self.sendSVRequest([secsgem.SVID_CLOCK])
+
+        equ_time = function[0]
+        now = datetime.datetime.now()
+
+        self.assertIsNotNone(equ_time)
+
+        equ_datetime = datetime.datetime.strptime(equ_time.get()+"000", "%Y%m%d%H%M%S%f")
+
+        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
+        self.assertTrue(now - delta < equ_datetime < now + delta)
+
+        # timeformat 2
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(2)}])
+
+        function = self.sendSVRequest([secsgem.SVID_CLOCK])
+
+        equ_time = function[0]
+        now = datetime.datetime.now(tzlocal())
+
+        self.assertIsNotNone(equ_time)
+
+        equ_datetime = parse(equ_time.get())
+
+        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
+        self.assertTrue(now - delta < equ_datetime < now + delta)
+
+    def testStatusVariablePredefinedEventsEnabled(self):
+        self.setupTestDataValues()
+        self.setupTestCollectionEvents()
+        self.establishCommunication()
+
+        function = self.sendCEDefineReport()
+        function = self.sendCELinkReport()
+        function = self.sendCEEnableReport()
+
+        function = self.sendSVRequest([secsgem.SVID_EVENTS_ENABLED])
+
+        self.assertEqual(function[0].get(), [50])
 
     def setupTestDataValues(self, use_callbacks=False):
         self.client.data_values.update({
@@ -581,7 +645,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,34)
+        self.assertEqual(packet.header.function, 34)
 
         return self.client.secs_decode(packet)
 
@@ -600,7 +664,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,36)
+        self.assertEqual(packet.header.function, 36)
 
         return self.client.secs_decode(packet)
 
@@ -614,7 +678,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,38)
+        self.assertEqual(packet.header.function, 38)
 
         return self.client.secs_decode(packet)
 
@@ -1028,10 +1092,43 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(function.RPT[0].V[0].get(), 31337)
         self.assertEqual(function.RPT[0].V[1].get(), 123)
 
+    def testCollectionEventTrigger(self):
+        self.setupTestDataValues()
+        self.setupTestCollectionEvents()
+        self.establishCommunication()
+
+        function = self.sendCEDefineReport()
+        function = self.sendCELinkReport()
+        function = self.sendCEEnableReport()
+
+        clientCommandThread = threading.Thread(target=self.client.trigger_collection_events, args=(50,), name="TestGemEquipmentHandlerPassiveControlState_testCollectionEventTrigger")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(stream=6)
+
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 6)
+        self.assertEqual(packet.header.function, 11)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function.get())
+        self.assertEqual(function.CEID.get(), 50)
+        self.assertEqual(function.RPT[0].RPTID.get(), 1000)
+        self.assertEqual(function.RPT[0].V[0].get(), 31337)
+
     def setupTestEquipmentConstants(self, use_callback = False):
         self.client.equipment_constants.update({
-            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4, use_callback),
-            "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.SecsVarString, use_callback),
+            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarI4", 0, 500, 50, "degrees", secsgem.SecsVarI4, use_callback),
+            "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", None, None, "", "chars", secsgem.SecsVarString, use_callback),
         })
 
         self.client.equipment_constants[20].value = 321
@@ -1047,7 +1144,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,30)
+        self.assertEqual(packet.header.function, 30)
 
         return self.client.secs_decode(packet)
 
@@ -1061,7 +1158,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,14)
+        self.assertEqual(packet.header.function, 14)
 
         return self.client.secs_decode(packet)
 
@@ -1075,7 +1172,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 2)
-        self.assertEqual(packet.header.function,16)
+        self.assertEqual(packet.header.function, 16)
 
         return self.client.secs_decode(packet)
                 
@@ -1097,7 +1194,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         EC20 = next((x for x in function if x[0].get() == 20), None)
 
         self.assertIsNotNone(EC20)
-        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarU4")
+        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarI4")
         self.assertEqual(EC20[2].get(), 0)
         self.assertEqual(EC20[3].get(), 500)
         self.assertEqual(EC20[4].get(), 50)
@@ -1123,7 +1220,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertIsNotNone(EC20)
         self.assertEqual(EC20[0].get(), 20)
-        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarU4")
+        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarI4")
         self.assertEqual(EC20[2].get(), 0)
         self.assertEqual(EC20[3].get(), 500)
         self.assertEqual(EC20[4].get(), 50)
@@ -1199,18 +1296,38 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestEquipmentConstants()
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarU4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
 
         self.assertEqual(function.get(), 0)
 
         self.assertEqual(self.client.equipment_constants[20].value, 123)
         self.assertEqual(self.client.equipment_constants["EC2"].value, "ce elpmas")
 
+    def testEquipmentConstantSetTooLow(self):
+        self.setupTestEquipmentConstants()
+        self.establishCommunication()
+
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(-1)}])
+
+        self.assertEqual(function.get(), 3)
+
+        self.assertEqual(self.client.equipment_constants[20].value, 321)
+
+    def testEquipmentConstantSetTooHigh(self):
+        self.setupTestEquipmentConstants()
+        self.establishCommunication()
+
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(501)}])
+
+        self.assertEqual(function.get(), 3)
+
+        self.assertEqual(self.client.equipment_constants[20].value, 321)
+
     def testEquipmentConstantSetCallback(self):
         self.setupTestEquipmentConstants(True)
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarU4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
 
         self.assertEqual(function.get(), 0)
 
@@ -1236,7 +1353,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 10)
 
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "ECV": secsgem.SecsVarU4(20)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "ECV": secsgem.SecsVarI4(20)}])
 
         self.assertEqual(function.get(), 0)
 
@@ -1253,7 +1370,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 1)
 
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(0)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarI4(0)}])
 
         self.assertEqual(function.get(), 0)
 

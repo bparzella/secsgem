@@ -503,7 +503,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         function = self.client.secs_decode(packet)
 
-        self.assertEqual(function.get(), [[1, "1337"]])
+        self.assertEqual(function.get(), [{'ECID': 1, 'ECV': u'1337'}])
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F16(secsgem.EAC.ACK))
         self.server.simulate_packet(packet)
@@ -530,7 +530,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         function = self.client.secs_decode(packet)
 
-        self.assertEqual(function.get(), [[1, 1337]])
+        self.assertEqual(function.get(), [{'ECV': 1337, 'ECID': 1}])
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F16(secsgem.EAC.ACK))
         self.server.simulate_packet(packet)

@@ -674,8 +674,8 @@ class TestSecsVarList(unittest.TestCase):
 
         var = secsvar.get()
 
-        self.assertEqual(var[0], "MDLN1")
-        self.assertEqual(var[1], "SOFTREV1")
+        self.assertEqual(var["MDLN"], "MDLN1")
+        self.assertEqual(var["SOFTREV"], "SOFTREV1")
 
     def testEncode(self):
         secsvar = SecsVarList([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
