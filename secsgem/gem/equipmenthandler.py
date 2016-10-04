@@ -735,14 +735,14 @@ class GemEquipmentHandler(GemHandler):
 
         # pre check message for errors
         for event in message.DATA:
-            if event.CEID not in self._collection_events:
+            if event.CEID.get() not in self._collection_events:
                 LRACK = 4
             for rptid in event.RPTID:
-                if event.CEID in self._registered_collection_events:
-                    ce = self._registered_collection_events[event.CEID]
-                    if rptid in ce.reports:
+                if event.CEID.get() in self._registered_collection_events:
+                    ce = self._registered_collection_events[event.CEID.get()]
+                    if rptid.get() in ce.reports:
                         LRACK = 3
-                if rptid not in self._registered_reports:
+                if rptid.get() not in self._registered_reports:
                     LRACK = 5
 
         # pre check okay
@@ -750,15 +750,15 @@ class GemEquipmentHandler(GemHandler):
             for event in message.DATA:
                 # no report ids, remove all links for collection event
                 if not event.RPTID:
-                    if event.CEID in self._registered_collection_events:
-                        del self._registered_collection_events[event.CEID]
+                    if event.CEID.get() in self._registered_collection_events:
+                        del self._registered_collection_events[event.CEID.get()]
                 else:
-                    if event.CEID in self._registered_collection_events:
-                        ce = self._registered_collection_events[event.CEID]
-                        for rptid in event.RPTID:
+                    if event.CEID.get() in self._registered_collection_events:
+                        ce = self._registered_collection_events[event.CEID.get()]
+                        for rptid in event.RPTID.get():
                             ce.reports.append(rptid)
                     else:
-                        self._registered_collection_events[event.CEID] = CollectionEventLink(self._collection_events[event.CEID], event.RPTID.get())
+                        self._registered_collection_events[event.CEID.get()] = CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
 
         handler.send_response(self.stream_function(2, 36)(LRACK), packet.header.system)
 
@@ -778,7 +778,7 @@ class GemEquipmentHandler(GemHandler):
         # 1  = Denied. At least one CEID does not exist
         ERACK = 0
 
-        if not self._set_ce_state(message.CEED, message.CEID):
+        if not self._set_ce_state(message.CEED.get(), message.CEID.get()):
             ERACK = 1
 
         handler.send_response(self.stream_function(2, 38)(ERACK), packet.header.system)
@@ -973,6 +973,16 @@ class GemEquipmentHandler(GemHandler):
         for ec in message:
             if ec.ECID not in self._equipment_constants:
                 eac = 1
+            else:
+                constant = self.equipment_constants[ec.ECID.get()]
+                
+                if constant.min_value is not None:
+                    if ec.ECV.get() < constant.min_value:
+                        eac = 3 
+
+                if constant.max_value is not None:
+                    if ec.ECV.get() > constant.max_value:
+                        eac = 3 
 
         if eac == 0:
             for ec in message:
@@ -997,14 +1007,14 @@ class GemEquipmentHandler(GemHandler):
         if len(message) == 0:
             for ecid in self._equipment_constants:
                 ec = self._equipment_constants[ecid]
-                responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value, "ECMAX": ec.max_value, "ECDEF": ec.default_value, "UNITS": ec.unit})
+                responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
                     ec = self._equipment_constants[ecid]
-                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value, "ECMAX": ec.max_value, "ECDEF": ec.default_value, "UNITS": ec.unit})
+                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
 
         handler.send_response(self.stream_function(2, 30)(responses), packet.header.system)
 
@@ -1040,8 +1050,6 @@ class GemEquipmentHandler(GemHandler):
             return 4
         if self.controlState.isstate("ONLINE_REMOTE"):
             return 5
-
-        return 0
 
     def _get_events_enabled(self):
         """list of the enabled collection events

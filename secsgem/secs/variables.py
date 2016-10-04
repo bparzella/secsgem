@@ -502,9 +502,9 @@ class SecsVarList(SecsVar):
         :returns: internal value
         :rtype: list
         """
-        data = []
+        data = {}
         for field_name in self.data:
-            data.append(self.data[field_name].get())
+            data[field_name] = self.data[field_name].get() 
 
         return data
 
