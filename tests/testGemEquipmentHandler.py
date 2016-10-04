@@ -572,7 +572,6 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         equ_datetime = datetime.datetime.strptime(equ_time.get(), "%y%m%d%H%M%S")
 
-        print "{} < {} < {}".format(now - delta, equ_datetime, now + delta)
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 1
