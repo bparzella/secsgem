@@ -353,6 +353,7 @@ class SecsVarList(SecsVar):
     :type count: integer
     """
     formatCode = 0
+    textCode = 'L'
     preferredTypes = [dict]
 
     @implements_iterator
@@ -386,14 +387,14 @@ class SecsVarList(SecsVar):
 
     def __repr__(self):
         if len(self.data) == 0:
-            return "<L>"
+            return "<{}>".format(self.textCode)
 
         data = ""
 
         for field_name in self.data:
             data += "{}\n".format(indent_block(self.data[field_name].__repr__()))
 
-        return "<L [{}]\n{}\n>".format(len(self.data), data)
+        return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
         return len(self.data)
@@ -552,6 +553,7 @@ class SecsVarArray(SecsVar):
     :type count: integer
     """
     formatCode = 0
+    textCode = 'L'
     preferredTypes = [list]
 
     @implements_iterator
@@ -587,14 +589,14 @@ class SecsVarArray(SecsVar):
 
     def __repr__(self):
         if len(self.data) == 0:
-            return "<L>"
+            return "<{}>".format(self.textCode)
 
         data = ""
 
         for value in self.data:
             data += "{}\n".format(indent_block(value.__repr__()))
 
-        return "<L [{}]\n{}\n>".format(len(self.data), data)
+        return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
         return len(self.data)
@@ -700,6 +702,7 @@ class SecsVarBinary(SecsVar):
     :type count: integer
     """
     formatCode = 0o10
+    textCode = "B"
     preferredTypes = [bytes, bytearray]
 
     def __init__(self, value=None, count=-1):
@@ -712,11 +715,11 @@ class SecsVarBinary(SecsVar):
 
     def __repr__(self):
         if len(self.value) == 0:
-            return "<B>"
+            return "<{}>".format(self.textCode)
 
         data = " ".join("0x{:x}".format(c) for c in self.value)
 
-        return "<B {}>".format(data.strip())
+        return "<{} {}>".format(self.textCode, data.strip())
 
     def __len__(self):
         return len(self.value)
@@ -884,6 +887,7 @@ class SecsVarBoolean(SecsVar):
     :type count: integer
     """
     formatCode = 0o11
+    textCode = "BOOLEAN"
     preferredTypes = [bool]
 
     _trueStrings = ["TRUE", "YES"]
@@ -899,14 +903,14 @@ class SecsVarBoolean(SecsVar):
 
     def __repr__(self):
         if len(self.value) == 0:
-            return "<BOOLEAN>"
+            return "<{}>".format(self.textCode)
 
         data = ""
 
         for boolean in self.value:
             data += "{} ".format(boolean)
 
-        return "<BOOLEAN {}>".format(data)
+        return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
         return len(self.value)
@@ -1086,9 +1090,9 @@ class SecsVarText(SecsVar):
     :type count: integer
     """
     formatCode = -1
+    textCode = u""
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
     coding = ""
-    _sml = u""
 
     def __init__(self, value="", count=-1):
         super(SecsVarText, self).__init__()
@@ -1101,7 +1105,7 @@ class SecsVarText(SecsVar):
 
     def __repr__(self):
         if len(self.value) == 0:
-            return u"<{}>".format(self._sml)
+            return u"<{}>".format(self.textCode)
 
         data = u""
         last_char_printable = False
@@ -1125,7 +1129,7 @@ class SecsVarText(SecsVar):
         if last_char_printable:
             data += '"'
 
-        return u"<{}{}>".format(self._sml, data)
+        return u"<{}{}>".format(self.textCode, data)
 
     def __len__(self):
         return len(self.value)
@@ -1270,10 +1274,10 @@ class SecsVarString(SecsVarText):
     :type count: integer
     """
     formatCode = 0o20
+    textCode = u"A"
     preferredTypes = [bytes, unicode]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
     coding = "ascii"
-    _sml = u"A"
 
 
 class SecsVarJIS8(SecsVarText):
@@ -1285,10 +1289,10 @@ class SecsVarJIS8(SecsVarText):
     :type count: integer
     """
     formatCode = 0o21
+    textCode = u"J"
     preferredTypes = [bytes, unicode]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
     coding = "jis-8"
-    _sml = u"J"
 
 
 class SecsVarNumber(SecsVar):
@@ -1300,10 +1304,10 @@ class SecsVarNumber(SecsVar):
     :type count: integer
     """
     formatCode = 0
+    textCode = ""
     _basetype = int
     _min = 0
     _max = 0
-    _sml = ""
     _bytes = 0
     _structCode = ""
 
@@ -1317,14 +1321,14 @@ class SecsVarNumber(SecsVar):
 
     def __repr__(self):
         if len(self.value) == 0:
-            return "<{}>".format(self._sml)
+            return "<{}>".format(self.textCode)
 
         data = ""
 
         for item in self.value:
             data += "{} ".format(item)
 
-        return "<{} {}>".format(self._sml, data)
+        return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
         return len(self.value)
@@ -1501,10 +1505,10 @@ class SecsVarI8(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o30
+    textCode = "I8"
     _basetype = int
     _min = -9223372036854775808
     _max = 9223372036854775807
-    _sml = "I8"
     _bytes = 8
     _structCode = "q"
     preferredTypes = [long, int]
@@ -1519,10 +1523,10 @@ class SecsVarI1(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o31
+    textCode = "I1"
     _basetype = int
     _min = -128
     _max = 127
-    _sml = "I1"
     _bytes = 1
     _structCode = "b"
     preferredTypes = [int, long]
@@ -1537,10 +1541,10 @@ class SecsVarI2(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o32
+    textCode = "I2"
     _basetype = int
     _min = -32768
     _max = 32767
-    _sml = "I2"
     _bytes = 2
     _structCode = "h"
     preferredTypes = [int, long]
@@ -1555,10 +1559,10 @@ class SecsVarI4(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o34
+    textCode = "I4"
     _basetype = int
     _min = -2147483648
     _max = 2147483647
-    _sml = "I4"
     _bytes = 4
     _structCode = "l"
     preferredTypes = [int, long]
@@ -1573,10 +1577,10 @@ class SecsVarF8(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o40
+    textCode = "F8"
     _basetype = float
     _min = -1.79769e+308
     _max = 1.79769e+308
-    _sml = "F8"
     _bytes = 8
     _structCode = "d"
     preferredTypes = [float]
@@ -1591,10 +1595,10 @@ class SecsVarF4(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o44
+    textCode = "F4"
     _basetype = float
     _min = -3.40282e+38
     _max = 3.40282e+38
-    _sml = "F4"
     _bytes = 4
     _structCode = "f"
     preferredTypes = [float]
@@ -1609,10 +1613,10 @@ class SecsVarU8(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o50
+    textCode = "U8"
     _basetype = int
     _min = 0
     _max = 18446744073709551615
-    _sml = "U8"
     _bytes = 8
     _structCode = "Q"
     preferredTypes = [long, int]
@@ -1627,10 +1631,10 @@ class SecsVarU1(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o51
+    textCode = "U1"
     _basetype = int
     _min = 0
     _max = 255
-    _sml = "U1"
     _bytes = 1
     _structCode = "B"
     preferredTypes = [int, long]
@@ -1645,10 +1649,10 @@ class SecsVarU2(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o52
+    textCode = "U2"
     _basetype = int
     _min = 0
     _max = 65535
-    _sml = "U2"
     _bytes = 2
     _structCode = "H"
     preferredTypes = [int, long]
@@ -1663,10 +1667,10 @@ class SecsVarU4(SecsVarNumber):
     :type count: integer
     """
     formatCode = 0o54
+    textCode = "U4"
     _basetype = int
     _min = 0
     _max = 4294967295
-    _sml = "U4"
     _bytes = 4
     _structCode = "L"
     preferredTypes = [int, long]
