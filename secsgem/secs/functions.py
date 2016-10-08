@@ -25,6 +25,12 @@ from .dataitems import *
 class SecsS00F00(SecsStreamFunction):
     """Hsms communication
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS00F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -51,6 +57,12 @@ class SecsS00F00(SecsStreamFunction):
 class SecsS01F00(SecsStreamFunction):
     """abort transaction stream 1
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -76,6 +88,12 @@ class SecsS01F00(SecsStreamFunction):
 
 class SecsS01F01(SecsStreamFunction):
     """are you online - request
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F01
+        Header only
 
     **Example**::
 
@@ -156,8 +174,10 @@ class SecsS01F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F03
         [
-            SVID: A/I*/U*
+            SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
 
@@ -198,8 +218,10 @@ class SecsS01F04(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F04
         [
-            SV: any
+            SV: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             ...
         ]
 
@@ -240,8 +262,10 @@ class SecsS01F11(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F11
         [
-            SVID: A/I*/U*
+            SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
 
@@ -285,11 +309,13 @@ class SecsS01F12(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F12
         [
             {
-                SVID: A/I*/U*
-                SVNAME: A[n]
-                UNITS: A[n]
+                SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
+                SVNAME: A
+                UNITS: A
             }
             ...
         ]
@@ -448,6 +474,12 @@ class SecsS01F14(SecsStreamFunction):
 class SecsS01F15(SecsStreamFunction):
     """request offline
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F15
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -480,6 +512,8 @@ class SecsS01F16(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F16
         OFLACK: B[1]
 
     **Example**::
@@ -508,6 +542,12 @@ class SecsS01F16(SecsStreamFunction):
 
 class SecsS01F17(SecsStreamFunction):
     """request offline
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F17
+        Header only
 
     **Example**::
 
@@ -541,6 +581,8 @@ class SecsS01F18(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS01F18
         ONLACK: B[1]
 
     **Example**::
@@ -569,6 +611,12 @@ class SecsS01F18(SecsStreamFunction):
 
 class SecsS02F00(SecsStreamFunction):
     """abort transaction stream 2
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS02F00
+        Header only
 
     **Example**::
 
@@ -602,8 +650,10 @@ class SecsS02F13(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F13
         [
-            ECID: A/I*/U*
+            ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
 
@@ -645,8 +695,10 @@ class SecsS02F14(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F14
         [
-            ECV: B/BOOL/A/I*/F*/U*
+            ECV: L/BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
             ...
         ]
 
@@ -687,14 +739,16 @@ class SecsS02F15(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F15
         [
             {
-                ECID: A/I*/U*
-                ECV: B/BOOL/A/I*/F*/U*
+                ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
+                ECV: L/BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
             }
             ...
         ]
-
+        
     **Example**::
 
         >>> import secsgem
@@ -742,6 +796,8 @@ class SecsS02F16(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F16
         EAC: B[1]
 
     **Example**::
@@ -773,6 +829,8 @@ class SecsS02F17(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F17
         Header only
 
     **Example**::
@@ -807,6 +865,8 @@ class SecsS02F18(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F18
         TIME: A[32]
 
     **Example**::
@@ -842,8 +902,10 @@ class SecsS02F29(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F29
         [
-            ECID: A/I*/U*
+            ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
 
@@ -890,13 +952,15 @@ class SecsS02F30(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F30
         [
             {
-                ECID: A/I*/U*
+                ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
                 ECNAME: A
-                ECMIN: B/BOOL/A/I*/F*/U*
-                ECMAX: B/BOOL/A/I*/F*/U*
-                ECDEF: B/BOOL/A/I*/F*/U*
+                ECMIN: BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
+                ECMAX: BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
+                ECDEF: BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
                 UNITS: A
             }
             ...
@@ -963,13 +1027,15 @@ class SecsS02F33(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F33
         {
-            DATAID: A/I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATA: [
                 {
-                    RPTID: A/I*/U*
-                    RPT: [
-                        VID: A/I*/U*
+                    RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
+                    VID: [
+                        DATA: U1/U2/U4/U8/I1/I2/I4/I8/A
                         ...
                     ]
                 }
@@ -1036,6 +1102,8 @@ class SecsS02F34(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F34
         DRACK: B[1]
 
     **Example**::
@@ -1073,13 +1141,15 @@ class SecsS02F35(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F35
         {
-            DATAID: A/I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATA: [
                 {
-                    CEID: A/I*/U*
+                    CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
                     RPTID: [
-                        ID: A/I*/U*
+                        DATA: U1/U2/U4/U8/I1/I2/I4/I8/A
                         ...
                     ]
                 }
@@ -1139,6 +1209,8 @@ class SecsS02F36(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F36
         LRACK: B[1]
 
     **Example**::
@@ -1175,10 +1247,12 @@ class SecsS02F37(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F37
         {
-            CEED: BOOL[1]
+            CEED: BOOLEAN[1]
             CEID: [
-                ID: A/I*/U*
+                DATA: U1/U2/U4/U8/I1/I2/I4/I8/A
                 ...
             ]
         }
@@ -1224,6 +1298,8 @@ class SecsS02F38(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F38
         ERACK: B[1]
 
     **Example**::
@@ -1261,12 +1337,14 @@ class SecsS02F41(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F41
         {
-            RCMD: A/U1/I1
+            RCMD: U1/I1/A
             PARAMS: [
                 {
-                    CPNAME: A/I*/U*
-                    CPVAL: B/BOOL/A/I*/U*
+                    CPNAME: U1/U2/U4/U8/I1/I2/I4/I8/A
+                    CPVAL: BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/A/B
                 }
                 ...
             ]
@@ -1328,11 +1406,13 @@ class SecsS02F42(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS02F42
         {
             HCACK: B[1]
             PARAMS: [
                 {
-                    CPNAME: A/I*/U*
+                    CPNAME: U1/U2/U4/U8/I1/I2/I4/I8/A
                     CPACK: B[1]
                 }
                 ...
@@ -1387,6 +1467,12 @@ class SecsS02F42(SecsStreamFunction):
 class SecsS05F00(SecsStreamFunction):
     """abort transaction stream 5
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -1421,9 +1507,11 @@ class SecsS05F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS05F01
         {
             ALCD: B[1]
-            ALID: U*/I*
+            ALID: U1/U2/U4/U8/I1/I2/I4/I8
             ALTX: A[120]
         }
 
@@ -1468,6 +1556,8 @@ class SecsS05F02(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS05F02
         ACKC5: B[1]
 
     **Example**::
@@ -1494,8 +1584,787 @@ class SecsS05F02(SecsStreamFunction):
     _isMultiBlock = False
 
 
+class SecsS05F03(SecsStreamFunction):
+    """en-/disable alarm - send
+
+    **Data Items**
+
+    - :class:`ALED <secsgem.secs.dataitems.ALED>`
+    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F03
+        {
+            ALED: B[1]
+            ALID: U1/U2/U4/U8/I1/I2/I4/I8
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F03({"ALED": secsgem.ALED.ENABLE, "ALID": 100})
+        S5F3
+          <L [2]
+            <B 0x80>
+            <U1 100 >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 3
+
+    _dataFormat = [
+        ALED,
+        ALID
+    ]
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F04(SecsStreamFunction):
+    """en-/disable alarm - acknowledge
+
+    **Data Items**
+
+    - :class:`ACKC5 <secsgem.secs.dataitems.ACKC5>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F04
+        ACKC5: B[1]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F04(secsgem.ACKC5.ACCEPTED)
+        S5F4
+          <B 0x0> .
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+    _stream = 5
+    _function = 4
+
+    _dataFormat = ACKC5
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F05(SecsStreamFunction):
+    """list alarms - request
+
+    **Data Items**
+
+    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F05
+        [
+            ALID: U1/U2/U4/U8/I1/I2/I4/I8
+            ...
+        ]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F05([100, 200])
+        S5F5 W
+          <L [2]
+            <U1 100 >
+            <U1 200 >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 5
+
+    _dataFormat = [ALID]
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS05F06(SecsStreamFunction):
+    """list alarms - data
+
+    **Data Items**
+
+    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
+    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F06
+        [
+            {
+                ALCD: B[1]
+                ALID: U1/U2/U4/U8/I1/I2/I4/I8
+                ALTX: A[120]
+            }
+            ...
+        ]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F06([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        S5F6
+          <L [1]
+            <L [3]
+              <B 0x81>
+              <U1 100 >
+              <A "text">
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 6
+
+    _dataFormat = [[
+        ALCD,
+        ALID,
+        ALTX
+    ]]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
+
+class SecsS05F07(SecsStreamFunction):
+    """list enabled alarms - request
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F07
+        Header only
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F07()
+        S5F7 W .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 7
+
+    _dataFormat = None
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS05F08(SecsStreamFunction):
+    """list enabled alarms - data
+
+    **Data Items**
+
+    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
+    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F08
+        [
+            {
+                ALCD: B[1]
+                ALID: U1/U2/U4/U8/I1/I2/I4/I8
+                ALTX: A[120]
+            }
+            ...
+        ]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F08([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        S5F8
+          <L [1]
+            <L [3]
+              <B 0x81>
+              <U1 100 >
+              <A "text">
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 8
+
+    _dataFormat = [[
+        ALCD,
+        ALID,
+        ALTX
+    ]]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = True
+
+
+class SecsS05F09(SecsStreamFunction):
+    """exception post - notify
+
+    **Data Items**
+
+    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`EXTYPE <secsgem.secs.dataitems.EXTYPE>`
+    - :class:`EXMESSAGE <secsgem.secs.dataitems.EXMESSAGE>`
+    - :class:`EXRECVRA <secsgem.secs.dataitems.EXRECVRA>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F09
+        {
+            TIMESTAMP: A[32]
+            EXID: A[20]
+            EXTYPE: A
+            EXMESSAGE: A
+            EXRECVRA: [
+                DATA: A[40]
+                ...
+            ]
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F09({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", "EXMESSAGE": "Exception", "EXRECVRA": ["EXRECVRA1", "EXRECVRA2"] })
+        S5F9
+          <L [5]
+            <A "161006221500">
+            <A "EX123">
+            <A "ALARM">
+            <A "Exception">
+            <L [2]
+              <A "EXRECVRA1">
+              <A "EXRECVRA2">
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 9
+
+    _dataFormat = [
+        TIMESTAMP,
+        EXID,
+        EXTYPE,
+        EXMESSAGE,
+        [EXRECVRA]
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F10(SecsStreamFunction):
+    """exception post - confirm
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F10
+        Header only
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F10()
+        S5F10 .
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 5
+    _function = 10
+
+    _dataFormat = None
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F11(SecsStreamFunction):
+    """exception clear - notify
+
+    **Data Items**
+
+    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`EXTYPE <secsgem.secs.dataitems.EXTYPE>`
+    - :class:`EXMESSAGE <secsgem.secs.dataitems.EXMESSAGE>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F11
+        {
+            TIMESTAMP: A[32]
+            EXID: A[20]
+            EXTYPE: A
+            EXMESSAGE: A
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F11({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", "EXMESSAGE": "Exception"})
+        S5F11
+          <L [4]
+            <A "161006221500">
+            <A "EX123">
+            <A "ALARM">
+            <A "Exception">
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 11
+
+    _dataFormat = [
+        TIMESTAMP,
+        EXID,
+        EXTYPE,
+        EXMESSAGE,
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F12(SecsStreamFunction):
+    """exception clear - confirm
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F12
+        Header only
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F12()
+        S5F12 .
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 5
+    _function = 12
+
+    _dataFormat = None
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F13(SecsStreamFunction):
+    """exception recover - request
+
+    **Data Items**
+
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`EXRECVRA <secsgem.secs.dataitems.EXRECVRA>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F13
+        {
+            EXID: A[20]
+            EXRECVRA: A[40]
+        }
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F13({"EXID": "EX123", "EXRECVRA": "EXRECVRA2"})
+        S5F13 W
+          <L [2]
+            <A "EX123">
+            <A "EXRECVRA2">
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 13
+
+    _dataFormat = [
+        EXID,
+        EXRECVRA
+    ]
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS05F14(SecsStreamFunction):
+    """exception recover - acknowledge
+
+    **Data Items**
+
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F14
+        {
+            EXID: A[20]
+            DATA: {
+                ACKA: BOOLEAN[1]
+                DATA: {
+                    ERRCODE: I1/I2/I4/I8
+                    ERRTEXT: A[120]
+                }
+            }
+        }
+
+    **Example**::
+        >>> import secsgem
+        >>> secsgem.SecsS05F14({"EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        S5F14
+          <L [2]
+            <A "EX123">
+            <L [2]
+              <BOOLEAN False >
+              <L [2]
+                <I1 10 >
+                <A "Error">
+              >
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 14
+
+    _dataFormat = [
+        EXID,
+        [
+            ACKA,
+            [
+                ERRCODE,
+                ERRTEXT
+            ]
+        ]
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F15(SecsStreamFunction):
+    """exception recover complete - notify
+
+    **Data Items**
+
+    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F15
+        {
+            TIMESTAMP: A[32]
+            EXID: A[20]
+            DATA: {
+                ACKA: BOOLEAN[1]
+                DATA: {
+                    ERRCODE: I1/I2/I4/I8
+                    ERRTEXT: A[120]
+                }
+            }
+        }
+
+    **Example**::
+        >>> import secsgem
+        >>> secsgem.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        S5F15
+          <L [3]
+            <A "161006221500">
+            <A "EX123">
+            <L [2]
+              <BOOLEAN False >
+              <L [2]
+                <I1 10 >
+                <A "Error">
+              >
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 15
+
+    _dataFormat = [
+        TIMESTAMP,
+        EXID,
+        [
+            ACKA,
+            [
+                ERRCODE,
+                ERRTEXT
+            ]
+        ]
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = True
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F16(SecsStreamFunction):
+    """exception recover complete - confirm
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F16
+        Header only
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F16()
+        S5F16 .
+
+    :param value: function has no parameters
+    :type value: None
+    """
+    _stream = 5
+    _function = 16
+
+    _dataFormat = None
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
+class SecsS05F17(SecsStreamFunction):
+    """exception recover abort - request
+
+    **Data Items**
+
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F17
+        EXID: A[20]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F17("EX123")
+        S5F17 W
+          <A "EX123"> .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 17
+
+    _dataFormat = EXID
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+
+class SecsS05F18(SecsStreamFunction):
+    """exception recover abort - acknowledge
+
+    **Data Items**
+
+    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS05F18
+        {
+            EXID: A[20]
+            DATA: {
+                ACKA: BOOLEAN[1]
+                DATA: {
+                    ERRCODE: I1/I2/I4/I8
+                    ERRTEXT: A[120]
+                }
+            }
+        }
+
+    **Example**::
+        >>> import secsgem
+        >>> secsgem.SecsS05F18({"EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        S5F18
+          <L [2]
+            <A "EX123">
+            <L [2]
+              <BOOLEAN False >
+              <L [2]
+                <I1 10 >
+                <A "Error">
+              >
+            >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: list
+    """
+    _stream = 5
+    _function = 18
+
+    _dataFormat = [
+        EXID,
+        [
+            ACKA,
+            [
+                ERRCODE,
+                ERRTEXT
+            ]
+        ]
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
+
+
 class SecsS06F00(SecsStreamFunction):
     """abort transaction stream 6
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS06F00
+        Header only
 
     **Example**::
 
@@ -1530,9 +2399,11 @@ class SecsS06F05(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F05
         {
-            DATAID: A/I*/U*
-            DATALENGTH: I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
+            DATALENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
 
     **Example**::
@@ -1574,6 +2445,8 @@ class SecsS06F06(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F06
         GRANT6: B[1]
 
     **Example**::
@@ -1609,9 +2482,9 @@ class SecsS06F07(SecsStreamFunction):
 
     **Structure**::
 
-        {
-            DATAID: A/I*/U*
-        }
+        >>> import secsgem
+        >>> secsgem.SecsS06F07
+        DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
@@ -1649,18 +2522,20 @@ class SecsS06F08(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F08
         {
-            DATAID: A/I*/U*
-            CEID: A/I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
+            CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DS: [
                 {
-                    DSID: U4[1]
+                    DSID: U1/U2/U4/U8/I1/I2/I4/I8/A
                     DV: [
                         {
-                            DVNAME: A/I*/U*
-                            DVVAL: any
+                            DVNAME: U1/U2/U4/U8/I1/I2/I4/I8/A
+                            DVVAL: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                         }
-                         ...
+                        ...
                     ]
                 }
                 ...
@@ -1737,14 +2612,16 @@ class SecsS06F11(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F11
         {
-            DATAID: A/I*/U*
-            CEID: A/I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
+            CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
             RPT: [
                 {
-                    RPTID: A/I*/U*
+                    RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
                     V: [
-                        DATA: any
+                        DATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                         ...
                     ]
                 }
@@ -1807,6 +2684,8 @@ class SecsS06F12(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F12
         ACKC6: B[1]
 
     **Example**::
@@ -1842,9 +2721,9 @@ class SecsS06F15(SecsStreamFunction):
 
     **Structure**::
 
-        {
-            CEID: A/I*/U*
-        }
+        >>> import secsgem
+        >>> secsgem.SecsS06F15
+        CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
@@ -1882,14 +2761,16 @@ class SecsS06F16(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F16
         {
-            DATAID: A/I*/U*
-            CEID: A/I*/U*
+            DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
+            CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
             RPT: [
                 {
-                    RPTID: A/I*/U*
+                    RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
                     V: [
-                        DATA: various
+                        DATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                         ...
                     ]
                 }
@@ -1952,9 +2833,9 @@ class SecsS06F19(SecsStreamFunction):
 
     **Structure**::
 
-        {
-            RPTID: A/I*/U*
-        }
+        >>> import secsgem
+        >>> secsgem.SecsS06F19
+        RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
@@ -1989,9 +2870,12 @@ class SecsS06F20(SecsStreamFunction):
 
     **Structure**::
 
-        {
-            V: any
-        }
+        >>> import secsgem
+        >>> secsgem.SecsS06F20
+        [
+            V: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
+            ...
+        ]
 
     **Example**::
 
@@ -2029,9 +2913,9 @@ class SecsS06F21(SecsStreamFunction):
 
     **Structure**::
 
-        {
-            RPTID: A/I*/U*
-        }
+        >>> import secsgem
+        >>> secsgem.SecsS06F21
+        RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
@@ -2067,11 +2951,14 @@ class SecsS06F22(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS06F22
         [
             {
-                VID: A/I*/U*
-                V: any
+                VID: U1/U2/U4/U8/I1/I2/I4/I8/A
+                V: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             }
+            ...
         ]
 
     **Example**::
@@ -2115,6 +3002,12 @@ class SecsS06F22(SecsStreamFunction):
 class SecsS07F00(SecsStreamFunction):
     """abort transaction stream 7
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS07F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -2148,9 +3041,11 @@ class SecsS07F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F01
         {
             PPID: A/B[120]
-            LENGTH: U*/I*
+            LENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
 
     **Example**::
@@ -2192,6 +3087,8 @@ class SecsS07F02(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F02
         PPGNT: B[1]
 
     **Example**::
@@ -2228,9 +3125,11 @@ class SecsS07F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F03
         {
             PPID: A/B[120]
-            PPBODY: B
+            PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
     **Example**::
@@ -2272,6 +3171,8 @@ class SecsS07F04(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F04
         ACKC7: B[1]
 
     **Example**::
@@ -2307,6 +3208,8 @@ class SecsS07F05(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F05
         PPID: A/B[120]
 
     **Example**::
@@ -2343,9 +3246,11 @@ class SecsS07F06(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F06
         {
             PPID: A/B[120]
-            PPBODY: B
+            PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
     **Example**::
@@ -2387,6 +3292,8 @@ class SecsS07F17(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F17
         [
             PPID: A/B[120]
             ...
@@ -2428,6 +3335,8 @@ class SecsS07F18(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F18
         ACKC7: B[1]
 
     **Example**::
@@ -2456,6 +3365,12 @@ class SecsS07F18(SecsStreamFunction):
 
 class SecsS07F19(SecsStreamFunction):
     """current equipment process program - request
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS07F19
+        Header only
 
     **Example**::
 
@@ -2489,6 +3404,8 @@ class SecsS07F20(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS07F20
         [
             PPID: A/B[120]
             ...
@@ -2524,6 +3441,12 @@ class SecsS07F20(SecsStreamFunction):
 class SecsS09F00(SecsStreamFunction):
     """abort transaction stream 9
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS09F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -2556,6 +3479,8 @@ class SecsS09F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F01
         MHEAD: B[10]
 
     **Example**::
@@ -2591,6 +3516,8 @@ class SecsS09F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F03
         MHEAD: B[10]
 
     **Example**::
@@ -2626,6 +3553,8 @@ class SecsS09F05(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F05
         MHEAD: B[10]
 
     **Example**::
@@ -2661,6 +3590,8 @@ class SecsS09F07(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F07
         MHEAD: B[10]
 
     **Example**::
@@ -2696,6 +3627,8 @@ class SecsS09F09(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F09
         SHEAD: B[10]
 
     **Example**::
@@ -2731,6 +3664,8 @@ class SecsS09F11(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F11
         MHEAD: B[10]
 
     **Example**::
@@ -2767,9 +3702,11 @@ class SecsS09F13(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS09F13
         {
             MEXP: A[6]
-            EDID: A/B/U*/I*
+            EDID: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
     **Example**::
@@ -2805,6 +3742,12 @@ class SecsS09F13(SecsStreamFunction):
 class SecsS10F00(SecsStreamFunction):
     """abort transaction stream 10
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS10F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -2838,9 +3781,11 @@ class SecsS10F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS10F01
         {
             TID: B[1]
-            TEXT: A/B/I*/U*
+            TEXT: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
     **Example**::
@@ -2882,6 +3827,8 @@ class SecsS10F02(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS10F02
         ACKC10: B[1]
 
     **Example**::
@@ -2918,9 +3865,11 @@ class SecsS10F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS10F03
         {
             TID: B[1]
-            TEXT: A/B/I*/U*
+            TEXT: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
     **Example**::
@@ -2962,6 +3911,8 @@ class SecsS10F04(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS10F04
         ACKC10: B[1]
 
     **Example**::
@@ -2990,6 +3941,12 @@ class SecsS10F04(SecsStreamFunction):
 
 class SecsS12F00(SecsStreamFunction):
     """abort transaction stream 12
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS12F00
+        Header only
 
     **Example**::
 
@@ -3037,24 +3994,26 @@ class SecsS12F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F01
         {
             MID: A/B[80]
             IDTYP: B[1]
-            FNLOC: U2[1]
-            FFROT: U2[1]
-            ORLOC: B[1]
-            RPSEL: U1[1]
+            FNLOC: U2
+            FFROT: U2
+            ORLOC: B
+            RPSEL: U1
             REFP: [
-                REF: I*[2]
+                DATA: I1/I2/I4/I8
                 ...
             ]
-            DUTMS: A[n]
-            XDIES: F*/U*[1]
-            YDIES: F*/U*[1]
-            ROWCT: U*[1]
-            COLCT: U*[1]
-            NULBC: A/U1
-            PRDCT: U*
+            DUTMS: A
+            XDIES: U1/U2/U4/U8/F4/F8
+            YDIES: U1/U2/U4/U8/F4/F8
+            ROWCT: U1/U2/U4/U8
+            COLCT: U1/U2/U4/U8
+            NULBC: U1/A
+            PRDCT: U1/U2/U4/U8
             PRAXI: B[1]
         }
 
@@ -3141,6 +4100,8 @@ class SecsS12F02(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F02
         SDACK: B[1]
 
     **Example**::
@@ -3184,16 +4145,18 @@ class SecsS12F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F03
         {
             MID: A/B[80]
             IDTYP: B[1]
             MAPFT: B[1]
-            FNLOC: U2[1]
-            FFROT: U2[1]
-            ORLOC: B[1]
+            FNLOC: U2
+            FFROT: U2
+            ORLOC: B
             PRAXI: B[1]
-            BCEQU: U1[n]
-            NULBC: A/U1
+            BCEQU: U1/A
+            NULBC: U1/A
         }
 
     **Example**::
@@ -3272,25 +4235,27 @@ class SecsS12F04(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F04
         {
             MID: A/B[80]
             IDTYP: B[1]
-            FNLOC: U2[1]
-            ORLOC: B[1]
-            RPSEL: U1[1]
+            FNLOC: U2
+            ORLOC: B
+            RPSEL: U1
             REFP: [
-                REF: I*[2]
+                DATA: I1/I2/I4/I8
                 ...
             ]
-            DUTMS: A[n]
-            XDIES: F*/U*[1]
-            YDIES: F*/U*[1]
-            ROWCT: U*[1]
-            COLCT: U*[1]
-            PRDCT: U*
-            BCEQU: U1[n]
-            NULBC: A/U1
-            MLCL: U*[1]
+            DUTMS: A
+            XDIES: U1/U2/U4/U8/F4/F8
+            YDIES: U1/U2/U4/U8/F4/F8
+            ROWCT: U1/U2/U4/U8
+            COLCT: U1/U2/U4/U8
+            PRDCT: U1/U2/U4/U8
+            BCEQU: U1/A
+            NULBC: U1/A
+            MLCL: U1/U2/U4/U8
         }
 
     **Example**::
@@ -3379,11 +4344,13 @@ class SecsS12F05(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F05
         {
             MID: A/B[80]
             IDTYP: B[1]
             MAPFT: B[1]
-            MLCL: U*[1]
+            MLCL: U1/U2/U4/U8
         }
 
     **Example**::
@@ -3429,6 +4396,8 @@ class SecsS12F06(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F06
         GRNT1: B[1]
 
     **Example**::
@@ -3467,14 +4436,17 @@ class SecsS12F07(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F07
         {
             MID: A/B[80]
             IDTYP: B[1]
-            [
+            DATA: [
                 {
-                    RSINF: I*[3]
-                    BINLT: A/U1
+                    RSINF: I1/I2/I4/I8[3]
+                    BINLT: U1/A
                 }
+                ...
             ]
         }
 
@@ -3533,6 +4505,8 @@ class SecsS12F08(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F08
         MDACK: B[1]
 
     **Example**::
@@ -3571,11 +4545,13 @@ class SecsS12F09(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F09
         {
             MID: A/B[80]
             IDTYP: B[1]
-            STRP: I*[2]
-            BINLT: A/U1[]
+            STRP: I1/I2/I4/I8[2]
+            BINLT: U1/A
         }
 
     **Example**::
@@ -3621,6 +4597,8 @@ class SecsS12F10(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F10
         MDACK: B[1]
 
     **Example**::
@@ -3659,14 +4637,17 @@ class SecsS12F11(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F11
         {
             MID: A/B[80]
             IDTYP: B[1]
-            [
+            DATA: [
                 {
-                    XYPOS: I*[2]
-                    BINLT: A/U1
+                    XYPOS: I1/I2/I4/I8[2]
+                    BINLT: U1/A
                 }
+                ...
             ]
         }
 
@@ -3725,6 +4706,8 @@ class SecsS12F12(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F12
         MDACK: B[1]
 
     **Example**::
@@ -3761,6 +4744,8 @@ class SecsS12F13(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F13
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -3808,14 +4793,17 @@ class SecsS12F14(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F14
         {
             MID: A/B[80]
             IDTYP: B[1]
-            [
+            DATA: [
                 {
-                    RSINF: I*[3]
-                    BINLT: A/U1
+                    RSINF: I1/I2/I4/I8[3]
+                    BINLT: U1/A
                 }
+                ...
             ]
         }
 
@@ -3875,6 +4863,8 @@ class SecsS12F15(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F15
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -3922,11 +4912,13 @@ class SecsS12F16(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F16
         {
             MID: A/B[80]
             IDTYP: B[1]
-            STRP: I*[2]
-            BINLT: A/U1
+            STRP: I1/I2/I4/I8[2]
+            BINLT: U1/A
         }
 
     **Example**::
@@ -3974,6 +4966,8 @@ class SecsS12F17(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F17
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4024,14 +5018,17 @@ class SecsS12F18(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F18
         {
             MID: A/B[80]
             IDTYP: B[1]
-            [
+            DATA: [
                 {
-                    XYPOS: I*[2]
-                    BINLT: A/U1
+                    XYPOS: I1/I2/I4/I8[2]
+                    BINLT: U1/A
                 }
+                ...
             ]
         }
 
@@ -4091,6 +5088,8 @@ class SecsS12F19(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS12F19
         {
             MAPER: B[1]
             DATLC: U1
@@ -4129,6 +5128,12 @@ class SecsS12F19(SecsStreamFunction):
 class SecsS14F00(SecsStreamFunction):
     """abort transaction stream 14
 
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS14F00
+        Header only
+
     **Example**::
 
         >>> import secsgem
@@ -4166,23 +5171,25 @@ class SecsS14F01(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS14F01
         {
             OBJSPEC: A
-            OBJTYPE: A/U*
+            OBJTYPE: U1/U2/U4/U8/A
             OBJID: [
-                DATA: A/U*
+                DATA: U1/U2/U4/U8/A
                 ...
             ]
             FILTER: [
                 {
-                    ATTRID: A/U*
-                    ATTRDATA: any
+                    ATTRID: U1/U2/U4/U8/A
+                    ATTRDATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                     ATTRRELN: U1
                 }
                 ...
             ]
             ATTRID: [
-                DATA: A/U*
+                DATA: U1/U2/U4/U8/A
                 ...
             ]
         }
@@ -4263,14 +5270,16 @@ class SecsS14F02(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS14F02
         {
             DATA: [
                 {
-                    OBJID: A/U*
+                    OBJID: U1/U2/U4/U8/A
                     ATTRIBS: [
                         {
-                            ATTRID: A/U*
-                            ATTRDATA: any
+                            ATTRID: U1/U2/U4/U8/A
+                            ATTRDATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                         }
                         ...
                     ]
@@ -4278,10 +5287,10 @@ class SecsS14F02(SecsStreamFunction):
                 ...
             ]
             ERRORS: {
-                OBJACK: U1
+                OBJACK: U1[1]
                 ERROR: [
                     {
-                        ERRCODE: U*
+                        ERRCODE: I1/I2/I4/I8
                         ERRTEXT: A[120]
                     }
                     ...
@@ -4382,17 +5391,19 @@ class SecsS14F03(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS14F03
         {
             OBJSPEC: A
-            OBJTYPE: A/U*
+            OBJTYPE: U1/U2/U4/U8/A
             OBJID: [
-                DATA: A/U*
+                DATA: U1/U2/U4/U8/A
                 ...
             ]
             ATTRIBS: [
                 {
-                    ATTRID: A/U*
-                    ATTRDATA: any
+                    ATTRID: U1/U2/U4/U8/A
+                    ATTRDATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                 }
                 ...
             ]
@@ -4459,14 +5470,16 @@ class SecsS14F04(SecsStreamFunction):
 
     **Structure**::
 
+        >>> import secsgem
+        >>> secsgem.SecsS14F04
         {
             DATA: [
                 {
-                    OBJID: A/U*
+                    OBJID: U1/U2/U4/U8/A
                     ATTRIBS: [
                         {
-                            ATTRID: A/U*
-                            ATTRDATA: any
+                            ATTRID: U1/U2/U4/U8/A
+                            ATTRDATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                         }
                         ...
                     ]
@@ -4474,10 +5487,10 @@ class SecsS14F04(SecsStreamFunction):
                 ...
             ]
             ERRORS: {
-                OBJACK: U1
+                OBJACK: U1[1]
                 ERROR: [
                     {
-                        ERRCODE: U*
+                        ERRCODE: I1/I2/I4/I8
                         ERRTEXT: A[120]
                     }
                     ...

@@ -20,8 +20,12 @@ from __future__ import absolute_import
 from .variables import SecsVar
 from ..common import indent_block
 
+class StructureDisplayingMeta(type):
+    def __repr__(cls):
+        return cls.getFormat()
 
 class SecsStreamFunction(object):
+    __metaclass__ = StructureDisplayingMeta   
     """Secs stream and function base class
 
     This class is inherited to create a stream/function class.
@@ -167,3 +171,15 @@ class SecsStreamFunction(object):
         :rtype: various
         """
         return self.data.get()
+
+    @classmethod
+    def getFormat(cls):
+        """Gets the format of the function
+
+        :returns: returns the string representation of the function
+        :rtype: string
+        """
+        if cls._dataFormat is not None:
+            return SecsVar.getFormat(cls._dataFormat)
+        else:
+            return "Header only"
