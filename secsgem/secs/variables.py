@@ -60,6 +60,29 @@ class SecsVar(object):
         else:
             raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
+    @staticmethod
+    def getFormat(dataformat):
+        """Gets the format of the function
+
+        :returns: returns the string representation of the function
+        :rtype: string
+        """
+        if dataformat is None:
+            return None
+
+        if isinstance(dataformat, list):
+            if len(dataformat) == 1:
+                return SecsVarArray.getFormat(dataformat[0])
+            else:
+                return SecsVarList.getFormat(dataformat)
+        elif inspect.isclass(dataformat):
+            if issubclass(dataformat, SecsVar):
+                return dataformat.getFormat()
+            else:
+                raise TypeError("Can't generate dataformat for class {}".format(dataformat.__name__))
+        else:
+            raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
+
     def set(self, value):
         """Set the internal value to the provided value
 
@@ -385,6 +408,32 @@ class SecsVarList(SecsVar):
 
         self.objectIntitialized = True
 
+    @staticmethod
+    def getFormat(dataformat, showname=False):
+        """Gets the format of the variable
+
+        :returns: returns the string representation of the function
+        :rtype: string
+        """
+        if showname:
+            arrayName = "{}: ".format(SecsVarList.get_name_from_format(dataformat))
+        else:
+            arrayName = ""
+
+        if isinstance(dataformat, list):
+            items = []
+            for item in dataformat:
+                if isinstance(item, str):
+                    continue
+                elif isinstance(item, list):
+                    if len(item) == 1:
+                        items.append(indent_block(SecsVarArray.getFormat(item[0], True), 4))
+                    else:
+                        items.append(indent_block(SecsVarList.getFormat(item, True), 4))
+                else:
+                    items.append(indent_block(item.getFormat(), 4))
+            return arrayName + "{\n" + "\n".join(items) + "\n}"
+
     def __repr__(self):
         if len(self.data) == 0:
             return "<{}>".format(self.textCode)
@@ -586,6 +635,28 @@ class SecsVarArray(SecsVar):
 
         if value is not None:
             self.set(value)
+
+    @staticmethod
+    def getFormat(dataformat, showname=False):
+        """Gets the format of the variable
+
+        :returns: returns the string representation of the function
+        :rtype: string
+        """
+
+        if showname:
+            arrayName = "{}: "
+            if isinstance(dataformat, list):
+                arrayName = arrayName.format(SecsVarList.get_name_from_format(dataformat))
+            else:
+                arrayName = arrayName.format(dataformat.__name__)
+        else:
+            arrayName = ""
+
+        if isinstance(dataformat, list):
+            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(SecsVarList.getFormat(dataformat), 4))
+        else:
+            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.getFormat(not showname), 4))
 
     def __repr__(self):
         if len(self.data) == 0:
