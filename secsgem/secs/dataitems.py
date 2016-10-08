@@ -21,7 +21,48 @@ from .variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, 
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
-class ACKC5(SecsVarBinary):
+# DataItemMeta adds __type__ member as base class
+class DataItemMeta(type):
+    def __new__(mcs, name, bases, attrs, **kwargs):
+        if name != "DataItemBase":
+            bases += (attrs["__type__"], )
+        return type.__new__(mcs, name, bases, attrs)    
+
+# DataItemBase initializes __type__ member as base class and provides getFormat
+class DataItemBase(object):
+    __metaclass__ = DataItemMeta
+    __type__ = None
+    __allowedtypes__ = None
+    __count__ = -1
+
+    def __init__(self, value=None):
+        self.name = self.__class__.__name__
+
+        if self.__type__ is SecsVarDynamic:
+            self.__type__.__init__(self, self.__allowedtypes__, value, self.__count__)
+        else:
+            self.__type__.__init__(self, value, self.__count__)
+    
+    @classmethod
+    def getFormat(cls, showname=True):
+        if showname:
+            clsname = format(cls.__name__)
+        else:
+            clsname = "DATA"
+
+        if cls.__type__ is SecsVarDynamic:
+            if cls.__count__ > 0:
+                return "{}: {}[{}]".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]), cls.__count__)
+            else:
+                return "{}: {}".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]))
+        else:
+            if cls.__count__ > 0:
+                return "{}: {}[{}]".format(clsname, cls.textCode, cls.__count__)
+            else:
+                return "{}: {}".format(clsname, cls.textCode)
+
+
+class ACKC5(DataItemBase):
     """Acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -41,16 +82,14 @@ class ACKC5(SecsVarBinary):
         - :class:`SecsS05F04 <secsgem.secs.functions.SecsS05F04>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     ERROR = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ACKC6(SecsVarBinary):
+class ACKC6(DataItemBase):
     """Acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -73,16 +112,14 @@ class ACKC6(SecsVarBinary):
         - :class:`SecsS06F14 <secsgem.secs.functions.SecsS06F14>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     ERROR = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ACKC7(SecsVarBinary):
+class ACKC7(DataItemBase):
     """Acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -123,6 +160,9 @@ class ACKC7(SecsVarBinary):
         - :class:`SecsS07F44 <secsgem.secs.functions.SecsS07F44>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     NO_PERMISSION = 1
     LENGTH_ERROR = 2
@@ -131,13 +171,8 @@ class ACKC7(SecsVarBinary):
     MODE_UNSUPPORTED = 5
     PERFORMED_LATER = 6
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ACKC10(SecsVarBinary):
+class ACKC10(DataItemBase):
     """Acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -163,17 +198,54 @@ class ACKC10(SecsVarBinary):
         - :class:`SecsS10F10 <secsgem.secs.functions.SecsS10F10>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     NOT_DISPLAYED = 1
     TERMINAL_NOT_AVAILABLE = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
+class ACKA(DataItemBase):
+    """Request success
+
+       :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       :Length: 1
+
+    **Values**
+        +-------+---------+
+        | Value |         |
+        +=======+=========+
+        | True  | Success |
+        +-------+---------+
+        | False | Failed  |
+        +-------+---------+
+
+    **Used In Function**
+        - :class:`SecsS05F14 <secsgem.secs.functions.SecsS05F14>`
+        - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
+        - :class:`SecsS05F18 <secsgem.secs.functions.SecsS05F18>`
+        - :class:`SecsS16F02 <secsgem.secs.functions.SecsS16F02>`
+        - :class:`SecsS16F04 <secsgem.secs.functions.SecsS16F04>`
+        - :class:`SecsS16F06 <secsgem.secs.functions.SecsS16F06>`
+        - :class:`SecsS16F12 <secsgem.secs.functions.SecsS16F12>`
+        - :class:`SecsS16F14 <secsgem.secs.functions.SecsS16F14>`
+        - :class:`SecsS16F16 <secsgem.secs.functions.SecsS16F16>`
+        - :class:`SecsS16F18 <secsgem.secs.functions.SecsS16F18>`
+        - :class:`SecsS16F24 <secsgem.secs.functions.SecsS16F24>`
+        - :class:`SecsS16F26 <secsgem.secs.functions.SecsS16F26>`
+        - :class:`SecsS16F28 <secsgem.secs.functions.SecsS16F28>`
+        - :class:`SecsS16F30 <secsgem.secs.functions.SecsS16F30>`
+        - :class:`SecsS17F04 <secsgem.secs.functions.SecsS17F04>`
+        - :class:`SecsS17F08 <secsgem.secs.functions.SecsS17F08>`
+        - :class:`SecsS17F14 <secsgem.secs.functions.SecsS17F14>`
+
+    """
+    __type__ = SecsVarBoolean
+    __count__ = 1
 
 
-class ALCD(SecsVarBinary):
+class ALCD(DataItemBase):
     """Alarm code byte
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -211,6 +283,9 @@ class ALCD(SecsVarBinary):
         - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     PERSONAL_SAFETY = 1
     EQUIPMENT_SAFETY = 2
     PARAMETER_CONTROL_WARNING = 3
@@ -221,13 +296,38 @@ class ALCD(SecsVarBinary):
     DATA_INTEGRITY = 8
     ALARM_SET = 128
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
+class ALED(DataItemBase):
+    """Alarm en-/disable code byte
+
+       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Length: 1
+
+    **Values**
+        +---------+-------------+----------------------------------------------+
+        | Value   | Description | Constant                                     |
+        +=========+=============+==============================================+
+        | 0       | Disable     | :const:`secsgem.secs.dataitems.ALED.DISABLE` |
+        +---------+-------------+----------------------------------------------+
+        | 1-127   | Not used    |                                              |
+        +---------+-------------+----------------------------------------------+
+        | 128     | Enable      | :const:`secsgem.secs.dataitems.ALED.ENABLE`  |
+        +---------+-------------+----------------------------------------------+
+        | 129-255 | Not used    |                                              |
+        +---------+-------------+----------------------------------------------+
+
+    **Used In Function**
+        - :class:`SecsS05F03 <secsgem.secs.functions.SecsS05F03>`
+
+    """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
+    DISABLE = 0
+    ENABLE = 128
 
 
-class ALID(SecsVarDynamic):
+class ALID(DataItemBase):
     """Alarm ID
 
     :Types:
@@ -247,13 +347,11 @@ class ALID(SecsVarDynamic):
         - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
-class ALTX(SecsVarString):
+class ALTX(DataItemBase):
     """Alarm ID
 
     :Types:
@@ -264,13 +362,11 @@ class ALTX(SecsVarString):
         - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=120)
+    __type__ = SecsVarString
+    __count__ = 120
 
 
-class ATTRDATA(SecsVarDynamic):
+class ATTRDATA(DataItemBase):
     """Object attribute value
 
     :Types:
@@ -313,13 +409,11 @@ class ATTRDATA(SecsVarDynamic):
         - :class:`SecsS18F03 <secsgem.secs.functions.SecsS18F03>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
-class ATTRID(SecsVarDynamic):
+class ATTRID(DataItemBase):
     """Object attribute identifier
 
     :Types:
@@ -354,13 +448,11 @@ class ATTRID(SecsVarDynamic):
         - :class:`SecsS18F03 <secsgem.secs.functions.SecsS18F03>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
 
 
-class ATTRRELN(SecsVarU1):
+class ATTRRELN(DataItemBase):
     """Attribute relation to attribute of object
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
@@ -392,6 +484,8 @@ class ATTRRELN(SecsVarU1):
         - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
 
     """
+    __type__ = SecsVarU1
+
     EQUAL = 0
     NOT_EQUAL = 1
     LESS = 2
@@ -401,13 +495,8 @@ class ATTRRELN(SecsVarU1):
     PRESENT = 6
     ABSENT = 7
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value)
-
-
-class BCEQU(SecsVarDynamic):
+class BCEQU(DataItemBase):
     """Bin code equivalents
 
     :Types:
@@ -419,13 +508,11 @@ class BCEQU(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarString]
 
 
-class BINLT(SecsVarDynamic):
+class BINLT(DataItemBase):
     """Bin list
 
     :Types:
@@ -441,13 +528,11 @@ class BINLT(SecsVarDynamic):
         - :class:`SecsS12F18 <secsgem.secs.functions.SecsS12F18>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarString]
 
 
-class CEED(SecsVarBoolean):
+class CEED(DataItemBase):
     """Collection event or trace enable/disable code
 
        :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
@@ -467,14 +552,11 @@ class CEED(SecsVarBoolean):
         - :class:`SecsS17F05 <secsgem.secs.functions.SecsS17F05>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=1)
+    __type__ = SecsVarBoolean
+    __count__ = 1
 
 
-class CEID(SecsVarDynamic):
+class CEID(DataItemBase):
     """Collection event ID
 
     :Types:
@@ -507,13 +589,11 @@ class CEID(SecsVarDynamic):
         - :class:`SecsS17F12 <secsgem.secs.functions.SecsS17F12>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class COLCT(SecsVarDynamic):
+class COLCT(DataItemBase):
     """Column count in dies
 
     :Types:
@@ -527,13 +607,11 @@ class COLCT(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
-class COMMACK(SecsVarBinary):
+class COMMACK(DataItemBase):
     """Establish communications acknowledge
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -553,16 +631,14 @@ class COMMACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS01F14 <secsgem.secs.functions.SecsS01F14>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     DENIED = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class CPACK(SecsVarBinary):
+class CPACK(DataItemBase):
     """Command parameter acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -584,17 +660,15 @@ class CPACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS02F42 <secsgem.secs.functions.SecsS02F42>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     PARAMETER_UNKNOWN = 1
     CPVAL_ILLEGAL_VALUE = 2
     CPVAL_ILLEGAL_FORMAT = 3
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class CPNAME(SecsVarDynamic):
+class CPNAME(DataItemBase):
     """Command parameter name
 
     :Types:
@@ -619,13 +693,11 @@ class CPNAME(SecsVarDynamic):
         - :class:`SecsS16F27 <secsgem.secs.functions.SecsS16F27>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class CPVAL(SecsVarDynamic):
+class CPVAL(DataItemBase):
     """Command parameter name
 
     :Types:
@@ -651,13 +723,11 @@ class CPVAL(SecsVarDynamic):
         - :class:`SecsS18F13 <secsgem.secs.functions.SecsS18F13>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
 
 
-class DATAID(SecsVarDynamic):
+class DATAID(DataItemBase):
     """Data ID
 
     :Types:
@@ -718,13 +788,11 @@ class DATAID(SecsVarDynamic):
         - :class:`SecsS17F09 <secsgem.secs.functions.SecsS17F09>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class DATALENGTH(SecsVarDynamic):
+class DATALENGTH(DataItemBase):
     """Length of data to be sent
 
     :Types:
@@ -753,13 +821,11 @@ class DATALENGTH(SecsVarDynamic):
         - :class:`SecsS19F19 <secsgem.secs.functions.SecsS19F19>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
-class DATLC(SecsVarU1):
+class DATLC(DataItemBase):
     """Data location
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
@@ -768,14 +834,10 @@ class DATLC(SecsVarU1):
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarU1        
 
 
-class DRACK(SecsVarBinary):
+class DRACK(DataItemBase):
     """Define report acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -801,19 +863,17 @@ class DRACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS02F34 <secsgem.secs.functions.SecsS02F34>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
     INSUFFICIENT_SPACE = 1
     INVALID_FORMAT = 2
     RPTID_REDEFINED = 3
     VID_UNKNOWN = 4
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class DSID(SecsVarDynamic):
+class DSID(DataItemBase):
     """Data set ID
 
     :Types:
@@ -833,13 +893,11 @@ class DSID(SecsVarDynamic):
         - :class:`SecsS06F09 <secsgem.secs.functions.SecsS06F09>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class DUTMS(SecsVarString):
+class DUTMS(DataItemBase):
     """Die units of measure
 
     :Types:
@@ -850,13 +908,10 @@ class DUTMS(SecsVarString):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarString
 
 
-class DVNAME(SecsVarDynamic):
+class DVNAME(DataItemBase):
     """Data value name
 
     :Types:
@@ -875,13 +930,11 @@ class DVNAME(SecsVarDynamic):
         - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class DVVAL(SecsVarDynamic):
+class DVVAL(DataItemBase):
     """Data value
 
     :Types:
@@ -906,13 +959,11 @@ class DVVAL(SecsVarDynamic):
         - :class:`SecsS06F09 <secsgem.secs.functions.SecsS06F09>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
-class EAC(SecsVarBinary):
+class EAC(DataItemBase):
     """Equipment acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -936,18 +987,16 @@ class EAC(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS02F16 <secsgem.secs.functions.SecsS02F16>`
     """
+    __type__ = SecsVarBinary    
+    __count__ = 1
+
     ACK = 0
     INVALID_CONSTANT = 1
     BUSY = 2
     OUT_OF_RANGE = 3
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ECDEF(SecsVarDynamic):
+class ECDEF(DataItemBase):
     """Equipment constant default value
 
     :Types:
@@ -968,13 +1017,11 @@ class ECDEF(SecsVarDynamic):
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
-class ECID(SecsVarDynamic):
+class ECID(DataItemBase):
     """Equipment constant ID
 
     :Types:
@@ -994,13 +1041,11 @@ class ECID(SecsVarDynamic):
         - :class:`SecsS02F29 <secsgem.secs.functions.SecsS02F29>`
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class ECMAX(SecsVarDynamic):
+class ECMAX(DataItemBase):
     """Equipment constant maximum value
 
     :Types:
@@ -1021,13 +1066,11 @@ class ECMAX(SecsVarDynamic):
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
-class ECMIN(SecsVarDynamic):
+class ECMIN(DataItemBase):
     """Equipment constant minimum value
 
     :Types:
@@ -1048,13 +1091,11 @@ class ECMIN(SecsVarDynamic):
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
-class ECNAME(SecsVarString):
+class ECNAME(DataItemBase):
     """Equipment constant name
 
     :Types:
@@ -1063,13 +1104,10 @@ class ECNAME(SecsVarString):
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarString
 
 
-class ECV(SecsVarDynamic):
+class ECV(DataItemBase):
     """Equipment constant value
 
     :Types:
@@ -1091,13 +1129,11 @@ class ECV(SecsVarDynamic):
         - :class:`SecsS02F14 <secsgem.secs.functions.SecsS02F14>`
         - :class:`SecsS02F15 <secsgem.secs.functions.SecsS02F15>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
-class EDID(SecsVarDynamic):
+class EDID(DataItemBase):
     """Expected data identification
 
     :Types:
@@ -1116,13 +1152,11 @@ class EDID(SecsVarDynamic):
         - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
 
 
-class ERACK(SecsVarBinary):
+class ERACK(DataItemBase):
     """Enable/disable event report acknowledge
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1143,16 +1177,14 @@ class ERACK(SecsVarBinary):
         - :class:`SecsS02F38 <secsgem.secs.functions.SecsS02F38>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     CEID_UNKNOWN = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ERRCODE(SecsVarDynamic):
+class ERRCODE(DataItemBase):
     """Reference point
 
     :Types:
@@ -1220,13 +1252,11 @@ class ERRCODE(SecsVarDynamic):
         - :class:`SecsS17F14 <secsgem.secs.functions.SecsS17F14>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
-class ERRTEXT(SecsVarString):
+class ERRTEXT(DataItemBase):
     """Error description for error code
 
     :Types:
@@ -1286,14 +1316,73 @@ class ERRTEXT(SecsVarString):
         - :class:`SecsS17F14 <secsgem.secs.functions.SecsS17F14>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=120)
+    __type__ = SecsVarString
+    __count__ = 120
 
 
-class FFROT(SecsVarU2):
+class EXID(DataItemBase):
+    """Exception identifier
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
+        - :class:`SecsS05F13 <secsgem.secs.functions.SecsS05F13>`
+        - :class:`SecsS05F14 <secsgem.secs.functions.SecsS05F14>`
+        - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
+        - :class:`SecsS05F17 <secsgem.secs.functions.SecsS05F17>`
+        - :class:`SecsS05F18 <secsgem.secs.functions.SecsS05F18>`
+    """
+    __type__ = SecsVarString
+    __count__ = 20
+
+
+class EXMESSAGE(DataItemBase):
+    """Exception message
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
+    """
+    __type__ = SecsVarString
+
+
+class EXRECVRA(DataItemBase):
+    """Exception recovery action
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F13 <secsgem.secs.functions.SecsS05F13>`
+    """
+    __type__ = SecsVarString
+    __count__ = 40
+
+
+class EXTYPE(DataItemBase):
+    """Exception type
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
+        - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
+        - :class:`SecsS14F02 <secsgem.secs.functions.SecsS14F02>`
+        - :class:`SecsS14F08 <secsgem.secs.functions.SecsS14F08>`
+    """
+    __type__ = SecsVarString
+
+
+class FFROT(DataItemBase):
     """Film frame rotation
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
@@ -1305,14 +1394,10 @@ class FFROT(SecsVarU2):
         - :class:`SecsS12F03 <secsgem.secs.functions.SecsS12F03>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarU2
 
 
-class FNLOC(SecsVarU2):
+class FNLOC(DataItemBase):
     """Flat/notch location
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
@@ -1325,14 +1410,10 @@ class FNLOC(SecsVarU2):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarU2
 
 
-class GRANT6(SecsVarBinary):
+class GRANT6(DataItemBase):
     """Permission to send
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1354,17 +1435,15 @@ class GRANT6(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS06F06 <secsgem.secs.functions.SecsS06F06>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     GRANTED = 0
     BUSY = 1
     NOT_INTERESTED = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class GRNT1(SecsVarBinary):
+class GRNT1(DataItemBase):
     """Grant code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1395,6 +1474,9 @@ class GRNT1(SecsVarBinary):
         - :class:`SecsS12F06 <secsgem.secs.functions.SecsS12F06>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
     BUSY = 1
     NO_SPACE = 2
@@ -1403,13 +1485,8 @@ class GRNT1(SecsVarBinary):
     MATERIALID_UNKNOWN = 5
     UNKNOWN_MAP_FORMAT = 6
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class HCACK(SecsVarBinary):
+class HCACK(DataItemBase):
     """Host command parameter acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1441,6 +1518,9 @@ class HCACK(SecsVarBinary):
         - :class:`SecsS02F50 <secsgem.secs.functions.SecsS02F50>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
     INVALID_COMMAND = 1
     CANT_PERFORM_NOW = 2
@@ -1449,13 +1529,8 @@ class HCACK(SecsVarBinary):
     ALREADY_IN_CONDITION = 5
     NO_OBJECT = 6
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class IDTYP(SecsVarBinary):
+class IDTYP(DataItemBase):
     """ID type
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1490,17 +1565,15 @@ class IDTYP(SecsVarBinary):
         - :class:`SecsS12F18 <secsgem.secs.functions.SecsS12F18>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     WAFER = 0
     WAFER_CASSETTE = 1
     FILM_FRAME = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class LENGTH(SecsVarDynamic):
+class LENGTH(DataItemBase):
     """Service/process program length
 
     :Types:
@@ -1519,13 +1592,11 @@ class LENGTH(SecsVarDynamic):
         - :class:`SecsS07F29 <secsgem.secs.functions.SecsS07F29>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
-class LRACK(SecsVarBinary):
+class LRACK(DataItemBase):
     """Link report acknowledge code
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1553,6 +1624,9 @@ class LRACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS02F36 <secsgem.secs.functions.SecsS02F36>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
     INSUFFICIENT_SPACE = 1
     INVALID_FORMAT = 2
@@ -1560,13 +1634,8 @@ class LRACK(SecsVarBinary):
     CEID_UNKNOWN = 4
     RPTID_UNKNOWN = 5
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class MAPER(SecsVarBinary):
+class MAPER(DataItemBase):
     """Map error
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1588,17 +1657,15 @@ class MAPER(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ID_UNKNOWN = 0
     INVALID_DATA = 1
     FORMAT_ERROR = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class MAPFT(SecsVarBinary):
+class MAPFT(DataItemBase):
     """Map data format
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1622,17 +1689,15 @@ class MAPFT(SecsVarBinary):
         - :class:`SecsS12F05 <secsgem.secs.functions.SecsS12F05>`
         
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ROW = 0
     ARRAY = 1
     COORDINATE = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class MDACK(SecsVarBinary):
+class MDACK(DataItemBase):
     """Map data acknowledge
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1659,18 +1724,16 @@ class MDACK(SecsVarBinary):
         - :class:`SecsS12F12 <secsgem.secs.functions.SecsS12F12>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
     FORMAT_ERROR = 1
     UNKNOWN_ID = 2
     ABORT_MAP = 3
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class MDLN(SecsVarString):
+class MDLN(DataItemBase):
     """Equipment model type 
 
     :Types:
@@ -1688,13 +1751,11 @@ class MDLN(SecsVarString):
         - :class:`SecsS07F43 <secsgem.secs.functions.SecsS07F43>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=20)
+    __type__ = SecsVarString
+    __count__ = 20
 
 
-class MEXP(SecsVarString):
+class MEXP(DataItemBase):
     """Message expected
 
     :Types:
@@ -1703,13 +1764,11 @@ class MEXP(SecsVarString):
     **Used In Function**
         - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=6)
+    __type__ = SecsVarString
+    __count__ = 6
 
 
-class MHEAD(SecsVarBinary):
+class MHEAD(DataItemBase):
     """SECS message header
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1723,14 +1782,11 @@ class MHEAD(SecsVarBinary):
         - :class:`SecsS09F11 <secsgem.secs.functions.SecsS09F11>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=10)
+    __type__ = SecsVarBinary
+    __count__ = 10
 
 
-class MID(SecsVarDynamic):
+class MID(DataItemBase):
     """Material ID
 
     :Types:
@@ -1781,13 +1837,12 @@ class MID(SecsVarDynamic):
         - :class:`SecsS18F11 <secsgem.secs.functions.SecsS18F11>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarString, SecsVarBinary]
+    __count__ = 80
 
-        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], value, count=80)
 
-
-class MLCL(SecsVarDynamic):
+class MLCL(DataItemBase):
     """Message length
 
     :Types:
@@ -1801,13 +1856,11 @@ class MLCL(SecsVarDynamic):
         - :class:`SecsS12F05 <secsgem.secs.functions.SecsS12F05>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value, count=1)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
-class NULBC(SecsVarDynamic):
+class NULBC(DataItemBase):
     """Column count in dies
 
     :Types:
@@ -1820,13 +1873,11 @@ class NULBC(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarString]
 
 
-class OBJACK(SecsVarU1):
+class OBJACK(DataItemBase):
     """Object acknowledgement code
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
@@ -1857,16 +1908,14 @@ class OBJACK(SecsVarU1):
         - :class:`SecsS14F28 <secsgem.secs.functions.SecsS14F28>`
 
     """
+    __type__ = SecsVarU1
+    __count__ = 1
+
     SUCCESSFUL = 0
     ERROR = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class OBJID(SecsVarDynamic):
+class OBJID(DataItemBase):
     """Object identifier
 
     :Types:
@@ -1884,13 +1933,11 @@ class OBJID(SecsVarDynamic):
         - :class:`SecsS14F04 <secsgem.secs.functions.SecsS14F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
 
 
-class OBJSPEC(SecsVarString):
+class OBJSPEC(DataItemBase):
     """Specific object instance
 
     :Types:
@@ -1919,13 +1966,10 @@ class OBJSPEC(SecsVarString):
         - :class:`SecsS15F47 <secsgem.secs.functions.SecsS15F47>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarString
 
 
-class OBJTYPE(SecsVarDynamic):
+class OBJTYPE(DataItemBase):
     """Class of object identifier
 
     :Types:
@@ -1947,13 +1991,11 @@ class OBJTYPE(SecsVarDynamic):
         - :class:`SecsS14F27 <secsgem.secs.functions.SecsS14F27>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
 
 
-class OFLACK(SecsVarBinary):
+class OFLACK(DataItemBase):
     """Acknowledge code for OFFLINE request
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1971,15 +2013,13 @@ class OFLACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS01F16 <secsgem.secs.functions.SecsS01F16>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACK = 0
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ONLACK(SecsVarBinary):
+class ONLACK(DataItemBase):
     """Acknowledge code for ONLINE request
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2001,17 +2041,15 @@ class ONLACK(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS01F18 <secsgem.secs.functions.SecsS01F18>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ACCEPTED = 0
     NOT_ALLOWED = 1
     ALREADY_ON = 2
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class ORLOC(SecsVarBinary):
+class ORLOC(DataItemBase):
     """Origin location 
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2040,6 +2078,7 @@ class ORLOC(SecsVarBinary):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
+    __type__ = SecsVarBinary
 
     CENTER_DIE = 0
     UPPER_RIGHT = 1
@@ -2047,13 +2086,8 @@ class ORLOC(SecsVarBinary):
     LOWER_LEFT = 3
     LOWER_RIGHT = 3
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value)
-
-
-class PPBODY(SecsVarDynamic):
+class PPBODY(DataItemBase):
     """Status variable ID
 
     :Types:
@@ -2076,13 +2110,11 @@ class PPBODY(SecsVarDynamic):
         - :class:`SecsS07F41 <secsgem.secs.functions.SecsS07F41>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
 
 
-class PPGNT(SecsVarBinary):
+class PPGNT(DataItemBase):
     """Process program grant status
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2112,6 +2144,9 @@ class PPGNT(SecsVarBinary):
         - :class:`SecsS07F30 <secsgem.secs.functions.SecsS07F30>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     OK = 0
     ALREADY_HAVE = 1
     NO_SPACE = 2
@@ -2119,13 +2154,8 @@ class PPGNT(SecsVarBinary):
     BUSY = 4
     WILL_NOT_ACCEPT = 5
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class PPID(SecsVarDynamic):
+class PPID(DataItemBase):
     """Process program ID
 
     :Types:
@@ -2155,13 +2185,12 @@ class PPID(SecsVarDynamic):
         - :class:`SecsS07F53 <secsgem.secs.functions.SecsS07F53>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarString, SecsVarBinary]
+    __count__ = 120
 
-        super(self.__class__, self).__init__([SecsVarString, SecsVarBinary], value, count=120)
 
-
-class PRAXI(SecsVarBinary):
+class PRAXI(DataItemBase):
     """Process axis
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2195,6 +2224,9 @@ class PRAXI(SecsVarBinary):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     ROWS_TOP_INCR = 0
     ROWS_TOP_DECR = 1
     ROWS_BOT_INCR = 2
@@ -2204,13 +2236,8 @@ class PRAXI(SecsVarBinary):
     COLS_RIGHT_INCR = 6
     COLS_RIGHT_DECR = 7
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class PRDCT(SecsVarDynamic):
+class PRDCT(DataItemBase):
     """Process die count
 
     :Types:
@@ -2224,13 +2251,11 @@ class PRDCT(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
-class RCMD(SecsVarDynamic):
+class RCMD(DataItemBase):
     """Remote command
 
     :Types:
@@ -2243,13 +2268,11 @@ class RCMD(SecsVarDynamic):
         - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
         - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarI1, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarI1, SecsVarString]
 
 
-class REFP(SecsVarDynamic):
+class REFP(DataItemBase):
     """Reference point
 
     :Types:
@@ -2264,13 +2287,11 @@ class REFP(SecsVarDynamic):
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
-class ROWCT(SecsVarDynamic):
+class ROWCT(DataItemBase):
     """Row count in dies
 
     :Types:
@@ -2284,13 +2305,11 @@ class ROWCT(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
-class RPSEL(SecsVarU1):
+class RPSEL(DataItemBase):
     """Reference point select 
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
@@ -2300,14 +2319,10 @@ class RPSEL(SecsVarU1):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarU1
 
 
-class RPTID(SecsVarDynamic):
+class RPTID(DataItemBase):
     """Report ID
 
     :Types:
@@ -2342,13 +2357,11 @@ class RPTID(SecsVarDynamic):
         - :class:`SecsS17F12 <secsgem.secs.functions.SecsS17F12>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class RSINF(SecsVarDynamic):
+class RSINF(DataItemBase):
     """Starting location
 
     :Types:
@@ -2362,13 +2375,12 @@ class RSINF(SecsVarDynamic):
         - :class:`SecsS12F14 <secsgem.secs.functions.SecsS12F14>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __count__ = 3
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=3)
 
-
-class SDACK(SecsVarBinary):
+class SDACK(DataItemBase):
     """Map setup acknowledge
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2387,15 +2399,13 @@ class SDACK(SecsVarBinary):
         - :class:`SecsS12F02 <secsgem.secs.functions.SecsS12F02>`
 
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+    
     ACK = 0
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class SDBIN(SecsVarBinary):
+class SDBIN(DataItemBase):
     """Send bin information
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2415,16 +2425,14 @@ class SDBIN(SecsVarBinary):
     **Used In Function**
         - :class:`SecsS12F17 <secsgem.secs.functions.SecsS12F17>`
     """
+    __type__ = SecsVarBinary
+    __count__ = 1
+
     SEND = 0
     DONT_SEND = 1
 
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__(value, count=1)
-
-
-class SHEAD(SecsVarBinary):
+class SHEAD(DataItemBase):
     """SECS message header
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2434,14 +2442,11 @@ class SHEAD(SecsVarBinary):
         - :class:`SecsS09F09 <secsgem.secs.functions.SecsS09F09>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=10)
+    __type__ = SecsVarBinary
+    __count__ = 10
 
 
-class SOFTREV(SecsVarString):
+class SOFTREV(DataItemBase):
     """Software revision 
 
     :Types:
@@ -2459,13 +2464,11 @@ class SOFTREV(SecsVarString):
         - :class:`SecsS07F43 <secsgem.secs.functions.SecsS07F43>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=20)
+    __type__ = SecsVarString
+    __count__ = 20
 
 
-class STRP(SecsVarDynamic):
+class STRP(DataItemBase):
     """Starting position
 
     :Types:
@@ -2478,13 +2481,12 @@ class STRP(SecsVarDynamic):
         - :class:`SecsS12F09 <secsgem.secs.functions.SecsS12F09>`
         - :class:`SecsS12F16 <secsgem.secs.functions.SecsS12F16>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __count__ = 2
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
-
-class SV(SecsVarDynamic):
+class SV(DataItemBase):
     """Status variable value
 
     :Types:
@@ -2507,13 +2509,11 @@ class SV(SecsVarDynamic):
         - :class:`SecsS01F04 <secsgem.secs.functions.SecsS01F04>`
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
-class SVID(SecsVarDynamic):
+class SVID(DataItemBase):
     """Status variable ID
 
     :Types:
@@ -2533,13 +2533,11 @@ class SVID(SecsVarDynamic):
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class SVNAME(SecsVarString):
+class SVNAME(DataItemBase):
     """Status variable name
 
     :Types:
@@ -2548,13 +2546,10 @@ class SVNAME(SecsVarString):
     **Used In Function**
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarString
 
 
-class TEXT(SecsVarDynamic):
+class TEXT(DataItemBase):
     """Line of characters
 
     :Types:
@@ -2576,13 +2571,11 @@ class TEXT(SecsVarDynamic):
         - :class:`SecsS10F09 <secsgem.secs.functions.SecsS10F09>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
 
 
-class TID(SecsVarBinary):
+class TID(DataItemBase):
     """Terminal ID
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2595,14 +2588,11 @@ class TID(SecsVarBinary):
         - :class:`SecsS10F07 <secsgem.secs.functions.SecsS10F07>`
 
     """
-
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value, count=1)
+    __type__ = SecsVarBinary
+    __count__ = 1
 
 
-class TIME(SecsVarString):
+class TIME(DataItemBase):
     """Time of day
 
     :Types:
@@ -2612,13 +2602,30 @@ class TIME(SecsVarString):
         - :class:`SecsS02F18 <secsgem.secs.functions.SecsS02F18>`
         - :class:`SecsS02F31 <secsgem.secs.functions.SecsS02F31>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarString
+    __count__ = 32
 
-        super(self.__class__, self).__init__(value, count=32)
+class TIMESTAMP(DataItemBase):
+    """Timestamp
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
+        - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
+        - :class:`SecsS15F41 <secsgem.secs.functions.SecsS15F41>`
+        - :class:`SecsS15F44 <secsgem.secs.functions.SecsS15F44>`
+        - :class:`SecsS16F05 <secsgem.secs.functions.SecsS16F05>`
+        - :class:`SecsS16F07 <secsgem.secs.functions.SecsS16F07>`
+        - :class:`SecsS16F09 <secsgem.secs.functions.SecsS16F09>`
+    """
+    __type__ = SecsVarString
+    __count__ = 32
 
 
-class UNITS(SecsVarString):
+class UNITS(DataItemBase):
     """Units identifier
 
     :Types:
@@ -2630,13 +2637,10 @@ class UNITS(SecsVarString):
         - :class:`SecsS02F48 <secsgem.secs.functions.SecsS02F48>`
         - :class:`SecsS07F22 <secsgem.secs.functions.SecsS07F22>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__(value)
+    __type__ = SecsVarString
 
 
-class V(SecsVarDynamic):
+class V(DataItemBase):
     """Variable data
 
     :Types:
@@ -2663,13 +2667,11 @@ class V(SecsVarDynamic):
         - :class:`SecsS06F22 <secsgem.secs.functions.SecsS06F22>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
-class VID(SecsVarDynamic):
+class VID(DataItemBase):
     """Variable ID
 
     :Types:
@@ -2695,13 +2697,11 @@ class VID(SecsVarDynamic):
         - :class:`SecsS17F01 <secsgem.secs.functions.SecsS17F01>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
-class XDIES(SecsVarDynamic):
+class XDIES(DataItemBase):
     """Die size/index X-axis
 
     :Types:
@@ -2717,13 +2717,11 @@ class XDIES(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
 
 
-class XYPOS(SecsVarDynamic):
+class XYPOS(DataItemBase):
     """X/Y coordinate position
 
     :Types:
@@ -2736,13 +2734,12 @@ class XYPOS(SecsVarDynamic):
         - :class:`SecsS12F11 <secsgem.secs.functions.SecsS12F11>`
         - :class:`SecsS12F18 <secsgem.secs.functions.SecsS12F18>`
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __count__ = 2
 
-        super(self.__class__, self).__init__([SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8], value, count=2)
 
-
-class YDIES(SecsVarDynamic):
+class YDIES(DataItemBase):
     """Die size/index Y-axis
 
     :Types:
@@ -2758,8 +2755,6 @@ class YDIES(SecsVarDynamic):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    def __init__(self, value=None):
-        self.name = self.__class__.__name__
-
-        super(self.__class__, self).__init__([SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8], value)
+    __type__ = SecsVarDynamic    
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
 
