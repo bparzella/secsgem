@@ -126,6 +126,17 @@ class TestSecsVar(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             secsvar.set(b"test")
 
+    def testGetFormatWithNone(self):
+        self.assertEqual(SecsVar.getFormat(None), None)
+
+    def testGetFormatWithNonSecsVarClass(self):
+        with self.assertRaises(TypeError):
+            SecsVar.getFormat(int)
+
+    def testGetFormatWithNonClass(self):
+        with self.assertRaises(TypeError):
+            SecsVar.getFormat(10)
+
 
 class TestSecsVarDynamic(unittest.TestCase):
     def testConstructorU4(self):

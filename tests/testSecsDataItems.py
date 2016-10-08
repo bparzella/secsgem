@@ -20,7 +20,7 @@ import nose
 import secsgem.secs.dataitems
 
 def find_subclasses(module):
-    return [cls for name, cls in inspect.getmembers(module) if inspect.isclass(cls) and not cls.__name__.startswith("SecsVar")]
+    return [cls for name, cls in inspect.getmembers(module) if inspect.isclass(cls) and not cls.__name__.startswith("SecsVar") and not cls.__name__ == "DataItemMeta"]
 
 class TestDataItems(object):
     def checkConstructorWithoutValue(self, cls):
