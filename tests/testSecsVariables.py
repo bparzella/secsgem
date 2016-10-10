@@ -17,6 +17,8 @@
 
 from __future__ import print_function
 
+import sys
+
 import unittest
 import nose
 
@@ -127,15 +129,15 @@ class TestSecsVar(unittest.TestCase):
             secsvar.set(b"test")
 
     def testGetFormatWithNone(self):
-        self.assertEqual(SecsVar.getFormat(None), None)
+        self.assertEqual(SecsVar.get_format(None), None)
 
     def testGetFormatWithNonSecsVarClass(self):
         with self.assertRaises(TypeError):
-            SecsVar.getFormat(int)
+            SecsVar.get_format(int)
 
     def testGetFormatWithNonClass(self):
         with self.assertRaises(TypeError):
-            SecsVar.getFormat(10)
+            SecsVar.get_format(10)
 
 
 class TestSecsVarDynamic(unittest.TestCase):

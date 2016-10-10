@@ -19,7 +19,6 @@ from past.builtins import long, unicode
 from builtins import chr
 from future.utils import implements_iterator
 
-import sys
 import struct
 import inspect
 import unicodedata
@@ -61,7 +60,7 @@ class SecsVar(object):
             raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
     @staticmethod
-    def getFormat(dataformat):
+    def get_format(dataformat):
         """Gets the format of the function
 
         :returns: returns the string representation of the function
@@ -72,12 +71,12 @@ class SecsVar(object):
 
         if isinstance(dataformat, list):
             if len(dataformat) == 1:
-                return SecsVarArray.getFormat(dataformat[0])
+                return SecsVarArray.get_format(dataformat[0])
             else:
-                return SecsVarList.getFormat(dataformat)
+                return SecsVarList.get_format(dataformat)
         elif inspect.isclass(dataformat):
             if issubclass(dataformat, SecsVar):
-                return dataformat.getFormat()
+                return dataformat.get_format()
             else:
                 raise TypeError("Can't generate dataformat for class {}".format(dataformat.__name__))
         else:
@@ -406,10 +405,10 @@ class SecsVarList(SecsVar):
         if value is not None:
             self.set(value)
 
-        self.objectIntitialized = True
+        self._object_intitialized = True
 
     @staticmethod
-    def getFormat(dataformat, showname=False):
+    def get_format(dataformat, showname=False):
         """Gets the format of the variable
 
         :returns: returns the string representation of the function
@@ -427,11 +426,11 @@ class SecsVarList(SecsVar):
                     continue
                 elif isinstance(item, list):
                     if len(item) == 1:
-                        items.append(indent_block(SecsVarArray.getFormat(item[0], True), 4))
+                        items.append(indent_block(SecsVarArray.get_format(item[0], True), 4))
                     else:
-                        items.append(indent_block(SecsVarList.getFormat(item, True), 4))
+                        items.append(indent_block(SecsVarList.get_format(item, True), 4))
                 else:
-                    items.append(indent_block(item.getFormat(), 4))
+                    items.append(indent_block(item.get_format(), 4))
             return arrayName + "{\n" + "\n".join(items) + "\n}"
 
     def __repr__(self):
@@ -497,7 +496,7 @@ class SecsVarList(SecsVar):
             raise AttributeError(item)
 
     def __setattr__(self, item, value):
-        if 'objectIntitialized' not in self.__dict__:
+        if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
         elif item in self.data:
             if isinstance(value, type(self.data[item])) or isinstance(value, self.data[item].__class__.__bases__):
@@ -637,7 +636,7 @@ class SecsVarArray(SecsVar):
             self.set(value)
 
     @staticmethod
-    def getFormat(dataformat, showname=False):
+    def get_format(dataformat, showname=False):
         """Gets the format of the variable
 
         :returns: returns the string representation of the function
@@ -654,9 +653,9 @@ class SecsVarArray(SecsVar):
             arrayName = ""
 
         if isinstance(dataformat, list):
-            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(SecsVarList.getFormat(dataformat), 4))
+            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(SecsVarList.get_format(dataformat), 4))
         else:
-            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.getFormat(not showname), 4))
+            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.get_format(not showname), 4))
 
     def __repr__(self):
         if len(self.data) == 0:

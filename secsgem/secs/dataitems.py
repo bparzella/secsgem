@@ -28,7 +28,7 @@ class DataItemMeta(type):
             bases += (attrs["__type__"], )
         return type.__new__(mcs, name, bases, attrs)    
 
-# DataItemBase initializes __type__ member as base class and provides getFormat
+# DataItemBase initializes __type__ member as base class and provides get_format
 class DataItemBase(object):
     __metaclass__ = DataItemMeta
     __type__ = None
@@ -44,7 +44,7 @@ class DataItemBase(object):
             self.__type__.__init__(self, value, self.__count__)
     
     @classmethod
-    def getFormat(cls, showname=True):
+    def get_format(cls, showname=True):
         if showname:
             clsname = format(cls.__name__)
         else:

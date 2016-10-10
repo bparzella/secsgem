@@ -21,11 +21,12 @@ from .variables import SecsVar
 from ..common import indent_block
 
 class StructureDisplayingMeta(type):
+    """Meta class overriding the default __repr__ of a class"""
+
     def __repr__(cls):
-        return cls.getFormat()
+        return cls.get_format()
 
 class SecsStreamFunction(object):
-    __metaclass__ = StructureDisplayingMeta   
     """Secs stream and function base class
 
     This class is inherited to create a stream/function class.
@@ -60,6 +61,7 @@ class SecsStreamFunction(object):
     :param value: set the value of stream/function parameters
     :type value: various
     """
+    __metaclass__ = StructureDisplayingMeta
 
     _stream = 0
     _function = 0
@@ -93,7 +95,7 @@ class SecsStreamFunction(object):
         if value is not None and self.data is not None:
             self.data.set(value)
 
-        self.objectIntitialized = True
+        self._object_intitialized = True
 
     def __repr__(self):
         function = "S{0}F{1}".format(self.stream, self.function)
@@ -119,7 +121,7 @@ class SecsStreamFunction(object):
         return self.data.__getattr__(item)
 
     def __setattr__(self, item, value):
-        if 'objectIntitialized' not in self.__dict__:
+        if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
         elif item in self.data.data:
             return self.data.__setattr__(item, value)
@@ -173,13 +175,13 @@ class SecsStreamFunction(object):
         return self.data.get()
 
     @classmethod
-    def getFormat(cls):
+    def get_format(cls):
         """Gets the format of the function
 
         :returns: returns the string representation of the function
         :rtype: string
         """
         if cls._dataFormat is not None:
-            return SecsVar.getFormat(cls._dataFormat)
+            return SecsVar.get_format(cls._dataFormat)
         else:
             return "Header only"
