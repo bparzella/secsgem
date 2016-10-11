@@ -354,6 +354,147 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.isAlive())
 
+    def testEnableAlarm(self):
+        self.establishCommunication()
+
+        clientCommandThread = threading.Thread(target=self.client.enable_alarm, args=(25, ), name="TestGemHostHandlerPassive_testEnableAlarm")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(function=3)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 3)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertEqual(function.ALED.get(), secsgem.ALED.ENABLE)
+        self.assertEqual(function.ALID.get(), 25)
+
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F04(secsgem.ACKC5.ACCEPTED))
+        self.server.simulate_packet(packet)
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+    def testDisableAlarm(self):
+        self.establishCommunication()
+
+        clientCommandThread = threading.Thread(target=self.client.disable_alarm, args=(25, ), name="TestGemHostHandlerPassive_testDisableAlarm")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(function=3)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 3)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertEqual(function.ALED.get(), secsgem.ALED.DISABLE)
+        self.assertEqual(function.ALID.get(), 25)
+
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F04(secsgem.ACKC5.ACCEPTED))
+        self.server.simulate_packet(packet)
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+    def testListAlarmsAll(self):
+        self.establishCommunication()
+
+        clientCommandThread = threading.Thread(target=self.client.list_alarms, name="TestGemHostHandlerPassive_testListAlarmsAll")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(function=5)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 5)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertEqual(function.get(), [])
+
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F06([]))
+        self.server.simulate_packet(packet)
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+    def testListAlarmSingle(self):
+        self.establishCommunication()
+
+        clientCommandThread = threading.Thread(target=self.client.list_alarms, args=([25], ), name="TestGemHostHandlerPassive_testListAlarmSingle")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(function=5)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 5)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertEqual(function.get(), [25])
+
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F06([{"ALCD": 0, "ALID": 25, "ALTX": "sampleText"}]))
+        self.server.simulate_packet(packet)
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+    def testListAlarmsEnabled(self):
+        self.establishCommunication()
+
+        clientCommandThread = threading.Thread(target=self.client.list_enabled_alarms, name="TestGemHostHandlerPassive_testListAlarmsEnabled")
+        clientCommandThread.daemon = True  # make thread killable on program termination
+        clientCommandThread.start()
+
+        packet = self.server.expect_packet(function=7)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 7)
+
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F08([]))
+        self.server.simulate_packet(packet)
+
+        clientCommandThread.join(1)
+        self.assertFalse(clientCommandThread.isAlive())
+
+    def testReceiveAlarm(self):
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS05F01({"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 5)
+        self.assertEqual(packet.header.function, 2)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertEqual(function.get(), secsgem.ACKC5.ACCEPTED)
+
     def testReceiveTerminal(self):
         self.establishCommunication()
 

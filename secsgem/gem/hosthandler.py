@@ -15,7 +15,8 @@
 #####################################################################
 """Handler for GEM host."""
 
-from ..gem.handler import GemHandler
+from ..secs.dataitems import ALED, ACKC5
+from .handler import GemHandler
 from collections import OrderedDict
 
 
@@ -45,6 +46,7 @@ class GemHostHandler(GemHandler):
 
         self.reportSubscriptions = {}
 
+        self.register_callback(5, 1, self.s05f01_handler)
         self.register_callback(6, 11, self.s06f11_handler)
         self.register_callback(10, 1, self.s10f01_handler)
 
@@ -146,6 +148,62 @@ class GemHostHandler(GemHandler):
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
+    def enable_alarm(self, alid):
+        """Enable alarm
+
+        :param alid: alarm id to enable
+        :type alid: :class:`secsgem.secs.dataitems.ALID`
+        """
+        self.logger.info("Enable alarm %d", alid)
+
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)({"ALED": ALED.ENABLE, "ALID": alid}))).get()
+
+    def disable_alarm(self, alid):
+        """Disable alarm
+
+        :param alid: alarm id to disable
+        :type alid: :class:`secsgem.secs.dataitems.ALID`
+        """
+        self.logger.info("Disable alarm %d", alid)
+
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)({"ALED": ALED.DISABLE, "ALID": alid}))).get()
+
+    def list_alarms(self, alids=None):
+        """List alarms
+
+        :param alids: alarms to list details for
+        :type alids: array of int/str
+        """
+        if alids == None:
+            alids = []
+            self.logger.info("List all alarms")
+        else:
+            self.logger.info("List alarms %s", alids)
+            
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
+
+    def list_enabled_alarms(self):
+        """List enabled alarms"""
+        self.logger.info("List all enabled alarms")
+            
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
+
+    def s05f01_handler(self, handler, packet):
+        """Callback handler for Stream 5, Function 1, Alarm request
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        s5f1 = self.secs_decode(packet)
+
+        handler.send_response(self.stream_function(5, 2)(ACKC5.ACCEPTED), packet.header.system)
+
+        self.fire_event("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
+        
     def s06f11_handler(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
 

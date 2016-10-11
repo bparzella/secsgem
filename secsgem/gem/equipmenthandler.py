@@ -18,7 +18,7 @@
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary, SecsVarDynamic
-from ..secs.dataitems import SV, ECV
+from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -29,6 +29,8 @@ ECID_TIME_FORMAT = 2
 SVID_CLOCK = 1001
 SVID_CONTROL_STATE = 1002
 SVID_EVENTS_ENABLED = 1003
+SVID_ALARMS_ENABLED = 1004
+SVID_ALARMS_SET = 1005
 
 CEID_EQUIPMENT_OFFLINE = 1
 CEID_CONTROL_STATE_LOCAL = 2
@@ -246,6 +248,46 @@ class EquipmentConstant(object):
             setattr(self, key, value)
 
 
+class Alarm(object):
+    """Alarm definition
+
+    You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+    Custom parameters can be set with the keyword arguments,
+    they will be passed to the GemEquipmentHandlers callback
+    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_sv_value_request`.
+
+    :param svid: ID of the status variable
+    :type svid: various
+    :param name: long name of the status variable
+    :type name: string
+    :param unit: unit (see SEMI E5, Units of Measure)
+    :type unit: string
+    :param value_type: type of the status variable
+    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+    :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+    :type use_callback: boolean
+    """
+
+    def __init__(self, alid, name, text, code, ce_on, ce_off, **kwargs):
+        self.alid = alid
+        self.name = name
+        self.text = text
+        self.code = code
+        self.ce_on = ce_on
+        self.ce_off = ce_off
+        self.enabled = False
+        self.set = False
+
+        if isinstance(self.alid, int):
+            self.id_type = SecsVarU4
+        else:
+            self.id_type = SecsVarString
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
 class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions.
 
@@ -287,6 +329,8 @@ class GemEquipmentHandler(GemHandler):
             SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
             SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", SecsVarBinary),
             SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", SecsVarArray),
+            SVID_ALARMS_ENABLED: StatusVariable(SVID_ALARMS_ENABLED, "AlarmsEnabled", "", SecsVarArray),
+            SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", SecsVarArray),
         }
 
         self._collection_events = {
@@ -298,6 +342,9 @@ class GemEquipmentHandler(GemHandler):
         self._equipment_constants = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
+        }
+
+        self._alarms = {
         }
 
         self._registered_reports = {}
@@ -358,6 +405,10 @@ class GemEquipmentHandler(GemHandler):
         self.register_callback(2, 33, self.s02f33_handler)
         self.register_callback(2, 35, self.s02f35_handler)
         self.register_callback(2, 37, self.s02f37_handler)
+
+        self.register_callback(5, 3, self.s05f03_handler)
+        self.register_callback(5, 5, self.s05f05_handler)
+        self.register_callback(5, 7, self.s05f07_handler)
 
         self.register_callback(6, 15, self.s06f15_handler)
 
@@ -549,6 +600,12 @@ class GemEquipmentHandler(GemHandler):
         if sv.svid == SVID_EVENTS_ENABLED:
             events = self._get_events_enabled()
             return sv.value_type(SV, events)
+        if sv.svid == SVID_ALARMS_ENABLED:
+            alarms = self._get_alarms_enabled()
+            return sv.value_type(SV, alarms)
+        if sv.svid == SVID_ALARMS_SET:
+            alarms = self._get_alarms_set()
+            return sv.value_type(SV, alarms)
 
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(sv.svid), sv)
@@ -1018,6 +1075,125 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 30)(responses), packet.header.system)
 
+    # alarms
+
+    @property
+    def alarms(self):
+        """The list of the alarms
+
+        :returns: Alarms list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.Alarm`
+        """
+        return self._alarms
+
+    def set_alarm(self, alid):
+        """The list of the alarms
+
+        :param alid: Alarm id
+        :type alid: str/int
+        """
+        if alid not in self.alarms:
+            raise ValueError("Unknown alarm id {}".format(alid))
+        
+        if self.alarms[alid].set:
+            return
+
+        if self.alarms[alid].enabled:
+            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET , "ALID": alid, "ALTX": self.alarms[alid].text}))
+        
+        self.alarms[alid].set = True
+
+        self.trigger_collection_events([self.alarms[alid].ce_on])
+
+    def clear_alarm(self, alid):
+        """The list of the alarms
+
+        :param alid: Alarm id
+        :type alid: str/int
+        """
+        if alid not in self.alarms:
+            raise ValueError("Unknown alarm id {}".format(alid))
+        
+        if not self.alarms[alid].set:
+            return
+
+        if self.alarms[alid].enabled:
+            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code , "ALID": alid, "ALTX": self.alarms[alid].text}))
+
+        self.alarms[alid].set = False
+
+        self.trigger_collection_events([self.alarms[alid].ce_off])
+        
+    def s05f03_handler(self, handler, packet):
+        """Callback handler for Stream 5, Function 3, Alarm en-/disabled
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        # 0  = Accepted
+        # 1  = Error
+        result = ACKC5.ACCEPTED 
+
+        alid = message.ALID.get()
+        if not alid in self._alarms:
+            result = ACKC5.ERROR
+        else:
+            self.alarms[alid].enabled = (message.ALED.get() == ALED.ENABLE)
+
+        handler.send_response(self.stream_function(5, 4)(result), packet.header.system)
+
+    def s05f05_handler(self, handler, packet):
+        """Callback handler for Stream 5, Function 5, Alarm list
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        result = []
+
+        alids = message.get()
+
+        if len(alids) == 0:
+            alids = list(self.alarms.keys())
+
+        for alid in alids:
+            result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), "ALID": alid, "ALTX": self.alarms[alid].text})
+
+        handler.send_response(self.stream_function(5, 6)(result), packet.header.system)
+
+    def s05f07_handler(self, handler, packet):
+        """Callback handler for Stream 5, Function 7, Enabled alarm list
+
+        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        message = self.secs_decode(packet)
+
+        print message
+
+        result = []
+
+        for alid in list(self.alarms.keys()):
+            if self.alarms[alid].enabled:
+                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), "ALID": alid, "ALTX": self.alarms[alid].text})
+
+        handler.send_response(self.stream_function(5, 8)(result), packet.header.system)
+
     # helpers
 
     def _get_clock(self):
@@ -1064,6 +1240,34 @@ class GemEquipmentHandler(GemHandler):
                 enabled_ceid.append(ceid)
 
         return enabled_ceid
+
+    def _get_alarms_enabled(self):
+        """list of the enabled alarms
+
+        :returns: alarms
+        :rtype: list of various
+        """
+        enabled_alarms = []
+
+        for alid in self._alarms:
+            if self._alarms[alid].enabled:
+                enabled_alarms.append(alid)
+
+        return enabled_alarms
+
+    def _get_alarms_set(self):
+        """list of the set alarms
+
+        :returns: alarms
+        :rtype: list of various
+        """
+        set_alarms = []
+
+        for alid in self._alarms:
+            if self._alarms[alid].set:
+                set_alarms.append(alid)
+
+        return set_alarms
 
     def on_connection_closed(self, connection):
         """Connection was closed"""
