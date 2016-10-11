@@ -1184,8 +1184,6 @@ class GemEquipmentHandler(GemHandler):
         """
         message = self.secs_decode(packet)
 
-        print message
-
         result = []
 
         for alid in list(self.alarms.keys()):
