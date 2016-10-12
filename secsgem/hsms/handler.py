@@ -17,22 +17,24 @@
 
 from __future__ import absolute_import
 
-import logging
-import queue
 import random
 import threading
+import logging
+import queue
 
 from ..common import EventProducer
 
 from .connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
-from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader, HsmsSelectReqHeader, \
-    HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsDeselectReqHeader, HsmsDeselectRspHeader, \
-    HsmsSeparateReqHeader
+from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
+    HsmsSelectReqHeader, HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, \
+    HsmsDeselectReqHeader, HsmsDeselectRspHeader, HsmsSeparateReqHeader
 
 from .connectionstatemachine import ConnectionStateMachine
 
 class HsmsHandler(EventProducer):
-    """Baseclass for creating Host/Equipment models. This layer contains the HSMS functionality. Inherit from this class and override required functions.
+    """Baseclass for creating Host/Equipment models.
+    This layer contains the HSMS functionality.
+    Inherit from this class and override required functions.
 
     :param address: IP address of remote host
     :type address: string
@@ -275,10 +277,7 @@ class HsmsHandler(EventProducer):
         else:
             if hasattr(self, 'secs_decode') and callable(getattr(self, 'secs_decode')):
                 message = self.secs_decode(packet)
-                if message is None:
-                    self.communicationLogger.info("< %s", packet, extra=self._get_log_extra())
-                else:
-                    self.communicationLogger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
+                self.communicationLogger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
             else:
                 self.communicationLogger.info("< %s", packet, extra=self._get_log_extra())
 
@@ -348,10 +347,7 @@ class HsmsHandler(EventProducer):
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(self.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), packet.encode())
 
-        if packet is None:
-            self.communicationLogger.info("> %s", out_packet, extra=self._get_log_extra())
-        else:
-            self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
+        self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
 
         return self.connection.send_packet(out_packet)
 
@@ -369,10 +365,7 @@ class HsmsHandler(EventProducer):
 
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, self.sessionID), packet.encode())
 
-        if packet is None:
-            self.communicationLogger.info("> %s", out_packet, extra=self._get_log_extra())
-        else:
-            self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
+        self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
 
         if not self.connection.send_packet(out_packet):
             self.logger.error("Sending packet failed")
@@ -398,10 +391,7 @@ class HsmsHandler(EventProducer):
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False, self.sessionID), function.encode())
 
-        if function is None:
-            self.communicationLogger.info("> %s", out_packet, extra=self._get_log_extra())
-        else:
-            self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
         return self.connection.send_packet(out_packet)
 

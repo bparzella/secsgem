@@ -777,7 +777,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x00)
         self.assertEqual(packet.header.sessionID, 0x0)
         self.assertEqual(packet.header.stream, 5)
-        self.assertEqual(packet.header.function, 04)
+        self.assertEqual(packet.header.function, 4)
 
         return self.client.secs_decode(packet)
 

@@ -1745,19 +1745,3 @@ class SecsVarU4(SecsVarNumber):
     _structCode = "L"
     preferredTypes = [int, long]
 
-SECSVARSAVAILABLE = [
-    SecsVarList,
-    SecsVarArray,
-    SecsVarBinary,
-    SecsVarBoolean,
-    SecsVarI8,
-    SecsVarI1,
-    SecsVarI2,
-    SecsVarI4,
-    SecsVarF8,
-    SecsVarF4,
-    SecsVarU8,
-    SecsVarU1,
-    SecsVarU2,
-    SecsVarU4
-]

@@ -16,6 +16,7 @@
 """Data items for functions"""
 
 from __future__ import absolute_import
+from future.utils import with_metaclass
 
 from .variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
@@ -26,11 +27,10 @@ class DataItemMeta(type):
     def __new__(mcs, name, bases, attrs, **kwargs):
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
-        return type.__new__(mcs, name, bases, attrs)    
+        return type.__new__(mcs, name, bases, attrs)
 
 # DataItemBase initializes __type__ member as base class and provides get_format
-class DataItemBase(object):
-    __metaclass__ = DataItemMeta
+class DataItemBase(with_metaclass(DataItemMeta)):
     __type__ = None
     __allowedtypes__ = None
     __count__ = -1

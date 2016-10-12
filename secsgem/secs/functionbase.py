@@ -16,6 +16,7 @@
 """Base class for for SECS stream and functions"""
 
 from __future__ import absolute_import
+from future.utils import with_metaclass
 
 from .variables import SecsVar
 from ..common import indent_block
@@ -26,7 +27,7 @@ class StructureDisplayingMeta(type):
     def __repr__(cls):
         return cls.get_format()
 
-class SecsStreamFunction(object):
+class SecsStreamFunction(with_metaclass(StructureDisplayingMeta)):
     """Secs stream and function base class
 
     This class is inherited to create a stream/function class.
@@ -61,8 +62,6 @@ class SecsStreamFunction(object):
     :param value: set the value of stream/function parameters
     :type value: various
     """
-    __metaclass__ = StructureDisplayingMeta
-
     _stream = 0
     _function = 0
 
