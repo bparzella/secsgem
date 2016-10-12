@@ -92,13 +92,13 @@ class HsmsConnectionManager(EventProducer):
 
         for serverPort in self.servers.keys():
             if serverPort not in required_ports:
-                self.logger.debug("stopping server on port {0}".format(serverPort))
+                self.logger.debug("stopping server on port %d", serverPort)
                 self.servers[serverPort].stop()
                 del self.servers[serverPort]
 
         for requiredPort in required_ports:
             if requiredPort not in self.servers:
-                self.logger.debug("starting server on port {0}".format(requiredPort))
+                self.logger.debug("starting server on port %d", requiredPort)
                 self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 

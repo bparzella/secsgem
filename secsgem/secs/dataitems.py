@@ -13,18 +13,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=I0011, W0233
 """Data items for functions"""
 
 from __future__ import absolute_import
 from future.utils import with_metaclass
 
-from .variables import SecsVarList, SecsVarArray, SecsVarString, SecsVarBinary, \
+from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
 # DataItemMeta adds __type__ member as base class
 class DataItemMeta(type):
-    def __new__(mcs, name, bases, attrs, **kwargs):
+    def __new__(mcs, name, bases, attrs):
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
         return type.__new__(mcs, name, bases, attrs)
@@ -42,7 +43,7 @@ class DataItemBase(with_metaclass(DataItemMeta)):
             self.__type__.__init__(self, self.__allowedtypes__, value, self.__count__)
         else:
             self.__type__.__init__(self, value, self.__count__)
-    
+
     @classmethod
     def get_format(cls, showname=True):
         if showname:

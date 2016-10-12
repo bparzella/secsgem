@@ -204,8 +204,6 @@ __version__ = '1.0'
 __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
-import types
-
 try:
   unicode = unicode
 except NameError:  # pragma: no cover

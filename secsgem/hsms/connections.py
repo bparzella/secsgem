@@ -31,7 +31,6 @@ from .packets import HsmsPacket
 
 # TODO: timeouts (T7, T8)
 
-"""Names for hsms header SType"""
 hsmsSTypes = {
     1: "Select.req",
     2: "Select.rsp",
@@ -42,7 +41,7 @@ hsmsSTypes = {
     7: "Reject.req",
     9: "Separate.req"
 }
-
+"""Names for hsms header SType"""
 
 def is_errorcode_ewouldblock(errorcode):
     if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
@@ -138,8 +137,8 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
             try:
                 self.delegate.on_connection_established(self)
-            except Exception as e:
-                self.logger.error('ignoring exception "{0}" for on_connection_established handler'.format(e), exc_info=True)
+            except Exception:
+                self.logger.exception('ignoring exception for on_connection_established handler')
 
     def _on_hsms_connection_close(self, data):
         pass
@@ -226,8 +225,8 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
             try:
                 self.delegate.on_connection_packet_received(self, response)
-            except Exception as e:
-                self.logger.error('ignoring exception "{0}" for on_connection_packet_received handler'.format(e), exc_info=True)
+            except Exception:
+                self.logger.exception('ignoring exception for on_connection_packet_received handler')
 
         # return True if more data is available
         if len(self.receiveBuffer) > 0:
@@ -275,15 +274,15 @@ class HsmsConnection(object):  # pragma: no cover
                     while self._process_receive_buffer():
                         pass
 
-        except Exception as e:
-            self.logger.error('exception {0}'.format(e), exc_info=True)
+        except Exception:
+            self.logger.exception('exception')
 
         # notify listeners of disconnection
         if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
             try:
                 self.delegate.on_connection_before_closed(self)
-            except Exception as e:
-                self.logger.error('ignoring exception "{0}" for on_connection_before_closed handler'.format(e), exc_info=True)
+            except Exception:
+                self.logger.exception('ignoring exception for on_connection_before_closed handler')
 
         # close the socket
         self.sock.close()
@@ -292,8 +291,8 @@ class HsmsConnection(object):  # pragma: no cover
         if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
             try:
                 self.delegate.on_connection_closed(self)
-            except Exception as e:
-                self.logger.error('ignoring exception "{0}" for on_connection_closed handler'.format(e), exc_info=True)
+            except Exception:
+                self.logger.exception('ignoring exception for on_connection_closed handler')
 
         # reset all flags
         self.connected = False
@@ -403,7 +402,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         while not self.stopServerThread:
             try:
                 select_result = select.select([self.serverSock], [], [], self.selectTimeout)
-            except:
+            except Exception:
                 continue
 
             if not select_result[0]:
@@ -466,11 +465,11 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         :param address: IP address of remote host
         :type address: string
         """
+        del address  # unused parameter
+
         # setup socket
         self.sock = sock
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-
-        _ = address
 
         # make socket nonblocking
         self.sock.setblocking(0)
@@ -587,7 +586,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
         .. warning:: Do not call this directly, used internally.
         """
-        (sock, (source_ip, source_port)) = accept_result
+        (sock, (source_ip, _)) = accept_result
 
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
@@ -651,8 +650,8 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
                     threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
 
-        except Exception as e:
-            self.logger.error('exception {0}'.format(e), exc_info=True)
+        except Exception:
+            self.logger.exception('exception')
 
         self.threadRunning = False
 
@@ -741,7 +740,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         :returns: False if thread was stopped
         :rtype: boolean
         """
-        for i in range(int(timeout) * 5):
+        for _ in range(int(timeout) * 5):
             time.sleep(0.2)
 
             # check if connection was disabled

@@ -17,7 +17,7 @@
 
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
-from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary, SecsVarDynamic
+from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary
 from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD
 
 from datetime import datetime
@@ -545,6 +545,8 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
+        del dvid  # unused variable
+
         return dv.value_type(dv.value)
 
     def _get_dv_value(self, dv):
@@ -583,6 +585,8 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
+        del svid  # unused variable
+
         return sv.value_type(sv.value)
 
     def _get_sv_value(self, sv):
@@ -933,6 +937,8 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.SecsVar`
         """
+        del ecid  # unused variable
+
         return ec.value_type(ec.value)
 
     def on_ec_value_update(self, ecid, ec, value):
@@ -947,6 +953,8 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.SecsVar`
         """
+        del ecid  # unused variable
+
         ec.value = value
 
     def _get_ec_value(self, ec):
@@ -1182,8 +1190,6 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        message = self.secs_decode(packet)
-
         result = []
 
         for alid in list(self.alarms.keys()):

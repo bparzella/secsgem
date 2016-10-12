@@ -248,7 +248,7 @@ class GemHandler(SecsHandler):
         :type ppbody: string
         """
         # send remote command
-        self.logger.info("Send process program {0}".format(ppid))
+        self.logger.info("Send process program %s", ppid)
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)({"ppid": ppid, "ppbody": ppbody}))).ACKC7
 
@@ -258,7 +258,7 @@ class GemHandler(SecsHandler):
         :param ppid: Transferred process programs ID
         :type ppid: string
         """
-        self.logger.info("Request process program {0}".format(ppid))
+        self.logger.info("Request process program %s", ppid)
 
         # send remote command
         s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))

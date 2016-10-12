@@ -73,7 +73,7 @@ class GemHostHandler(GemHandler):
         :param report_id: optional - ID for report, autonumbering if None
         :type report_id: integer
         """
-        self.logger.info("Subscribing to collection event {0}".format(ceid))
+        self.logger.info("Subscribing to collection event %s", ceid)
 
         if report_id is None:
             report_id = self.reportIDCounter
@@ -99,7 +99,7 @@ class GemHostHandler(GemHandler):
         :param params: DV IDs to add for collection event
         :type params: list of strings
         """
-        self.logger.info("Send RCMD {0}".format(rcmd))
+        self.logger.info("Send RCMD %s", rcmd)
 
         s2f41 = self.stream_function(2, 41)()
         s2f41.RCMD = rcmd
@@ -119,7 +119,7 @@ class GemHostHandler(GemHandler):
         :param ppids: Process programs to delete
         :type ppids: list of strings
         """
-        self.logger.info("Delete process programs {0}".format(ppids))
+        self.logger.info("Delete process programs %s", ppids)
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
