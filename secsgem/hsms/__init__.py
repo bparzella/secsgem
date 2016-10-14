@@ -14,12 +14,11 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 # pylint: disable=I0011, W0401
-# flake8: ignore=F401
 """module imports"""
 
 from __future__ import absolute_import
 
-from .connections import *
-from .connectionmanager import *
-from .packets import *
-from .handler import *
+from .connections import *  # noqa
+from .connectionmanager import *  # noqa
+from .packets import *  # noqa
+from .handler import *  # noqa

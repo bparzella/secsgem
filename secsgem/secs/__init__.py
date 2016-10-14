@@ -19,7 +19,7 @@
 
 from __future__ import absolute_import
 
-from .functionbase import *
-from .functions import *
-from .handler import *
-from .variables import *
+from .functionbase import *  # noqa
+from .functions import *  # noqa
+from .handler import *  # noqa
+from .variables import *  # noqa

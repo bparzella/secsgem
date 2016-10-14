@@ -26,7 +26,7 @@ import unicodedata
 from collections import OrderedDict
 
 from ..common import indent_block
-from ..common.codec_jis_x_0201 import *
+from ..common.codec_jis_x_0201 import *  # noqa
 
 class SecsVar(object):
     """Base class for SECS variables. Due to the python types, wrapper classes for variables are required. If constructor is called with SecsVar or subclass only the value is copied."""
