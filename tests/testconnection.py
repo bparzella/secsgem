@@ -65,6 +65,8 @@ class HsmsTestConnection(object):
 
         self.connected = False
 
+        self.failSend = False
+
         self.packets = []
 
     def simulate_connect(self):
@@ -92,6 +94,9 @@ class HsmsTestConnection(object):
         return self.systemCounter
 
     def send_packet(self, packet):
+        if self.failSend:
+            return False
+
         self.logger.info("> %s", packet)
         self.packets.append(packet)
 
@@ -141,6 +146,9 @@ class HsmsTestServer(object):
 
     def simulate_disconnect(self):
         self.connection.simulate_disconnect()
+
+    def fail_next_send(self):
+        self.connection.failSend = True
 
     def expect_packet(self, system_id=None, s_type=None, stream=None, function=None, timeout=5):
         end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)

@@ -45,7 +45,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
     def testLinktestTimer(self):
         self.client.disable()
         
-        self.client.linktestTimeout = 0.2
+        self.client.linktestTimeout = 0.1
         self.client.enable()
 
         self.server.simulate_connect()
@@ -75,6 +75,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.assertIsNot(packet, None)
         self.assertEqual(packet.header.sType, 0x02)
         self.assertEqual(packet.header.sessionID, 0xffff)
+
 
     def testSelectWhileDisconnecting(self):
         self.server.simulate_connect()
@@ -150,7 +151,6 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.assertIsNot(packet, None)
         self.assertEqual(packet.header.sType, 0x07)
         self.assertEqual(packet.header.sessionID, 0xffff)
-
 
     def testLinktestWhileDisconnecting(self):
         self.server.simulate_connect()
@@ -277,8 +277,75 @@ class TestHsmsHandlerActive(unittest.TestCase):
 
         print(self.client)
 
-    def testSelectTimeout(self):
-        self.client.connection.T6 = 0.1
+    def testSecsPacketWithoutSecsDecode(self):
         self.server.simulate_connect()
 
-        time.sleep(0.2)
+        packet = self.server.expect_packet(s_type=0x01)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x01)
+        self.assertEqual(packet.header.sessionID, 0xffff)
+
+        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+
+        print(self.client)
+
+    def testPacketSendingFailed(self):
+        self.server.simulate_connect()
+
+        self.server.fail_next_send()
+
+        self.assertEqual(self.client.send_and_waitfor_response(secsgem.SecsS01F01()), None)
+
+    def testSelectReqSendingFailed(self):
+        self.server.simulate_connect()
+
+        self.server.fail_next_send()
+
+        self.assertEqual(self.client.send_select_req(), None)
+
+    def testLinktestReqSendingFailed(self):
+        self.server.simulate_connect()
+
+        self.server.fail_next_send()
+
+        self.assertEqual(self.client.send_linktest_req(), None)
+
+    def testDeselectReqSendingFailed(self):
+        self.server.simulate_connect()
+
+        self.server.fail_next_send()
+
+        self.assertEqual(self.client.send_deselect_req(), None)
+
+    def testPacketSendingTimeout(self):
+        self.server.simulate_connect()
+
+        self.client.connection.T3 = 0.1
+
+        self.assertEqual(self.client.send_and_waitfor_response(secsgem.SecsS01F01()), None)
+
+    def testSelectReqSendingTimeout(self):
+        self.server.simulate_connect()
+
+        self.client.connection.T6 = 0.1
+
+        self.assertEqual(self.client.send_select_req(), None)
+
+    def testLinktestReqSendingTimeout(self):
+        self.server.simulate_connect()
+
+        self.client.connection.T6 = 0.1
+
+        self.assertEqual(self.client.send_linktest_req(), None)
+
+    def testDeelectReqSendingTimeout(self):
+        self.server.simulate_connect()
+
+        self.client.connection.T6 = 0.1
+
+        self.assertEqual(self.client.send_deselect_req(), None)
+

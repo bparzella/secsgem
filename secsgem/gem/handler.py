@@ -250,7 +250,7 @@ class GemHandler(SecsHandler):
         # send remote command
         self.logger.info("Send process program %s", ppid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)({"ppid": ppid, "ppbody": ppbody}))).ACKC7
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)({"PPID": ppid, "PPBODY": ppbody}))).get()
 
     def request_process_program(self, ppid):
         """Request a process program
@@ -262,7 +262,7 @@ class GemHandler(SecsHandler):
 
         # send remote command
         s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
-        return s7f6.PPID, s7f6.PPBODY
+        return s7f6.PPID.get(), s7f6.PPBODY.get()
 
     def waitfor_communicating(self, timeout=None):
         """Wait until connection gets into communicating state. Returns immediately if state is communicating

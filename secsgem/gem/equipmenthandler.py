@@ -17,7 +17,8 @@
 
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
-from ..secs.variables import SecsVarString, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarArray, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarBinary
+from ..secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, \
+    SecsVarI4, SecsVarBinary
 from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD
 
 from datetime import datetime
