@@ -1150,7 +1150,7 @@ class GemEquipmentHandler(GemHandler):
         result = ACKC5.ACCEPTED 
 
         alid = message.ALID.get()
-        if not alid in self._alarms:
+        if alid not in self._alarms:
             result = ACKC5.ERROR
         else:
             self.alarms[alid].enabled = (message.ALED.get() == ALED.ENABLE)

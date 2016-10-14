@@ -174,7 +174,7 @@ class GemHostHandler(GemHandler):
         :param alids: alarms to list details for
         :type alids: array of int/str
         """
-        if alids == None:
+        if alids is None:
             alids = []
             self.logger.info("List all alarms")
         else:
