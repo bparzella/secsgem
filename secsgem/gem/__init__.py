@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 # pylint: disable=I0011, W0401
+# flake8: ignore=F401
 """module imports"""
 
 from __future__ import absolute_import
