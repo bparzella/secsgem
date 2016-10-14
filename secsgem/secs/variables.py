@@ -1,7 +1,7 @@
 #####################################################################
 # variables.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
 """SECS variable types"""
 
 from past.builtins import long, unicode
-from builtins import chr
+from builtins import chr  # noqa
 from future.utils import implements_iterator
 
 import struct
