@@ -61,12 +61,13 @@ class SecsVar(object):
             raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
     @staticmethod
-    def get_format(dataformat):
+    def get_format(dataformat, showname=False):
         """Gets the format of the function
 
         :returns: returns the string representation of the function
         :rtype: string
         """
+        del showname  # unused variable
         if dataformat is None:
             return None
 
