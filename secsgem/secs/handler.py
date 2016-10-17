@@ -210,7 +210,7 @@ class SecsHandler(HsmsHandler):
         if not self._callback_handler.has(sf_callback_index):
             self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
             if packet.header.requireResponse:
-                self.send_response(functions.SecsS09F05(packet.header.encode()), packet.header.system)
+                self.send_response(self.stream_function(9, 5)(packet.header.encode()), packet.header.system)
             
             return
 
