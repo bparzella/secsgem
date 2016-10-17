@@ -45,7 +45,6 @@ class CallbackHandler(object):
         if callback in self._callbacks:
             return self._callbacks[callback](sender, data)
 
-        print dir(self.delegate)
         delegate_handler = getattr(self.delegate, "_on_" + callback, None)
         if callable(delegate_handler):
             return delegate_handler(sender, data)
