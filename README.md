@@ -6,7 +6,7 @@ This module is still work in progress. I'd love to get your input, your use case
 [![Image](https://readthedocs.org/projects/secsgem/badge/)](http://secsgem.readthedocs.org/en/latest/) 
 [![Build Status](https://travis-ci.org/bparzella/secsgem.svg?branch=master)](https://travis-ci.org/bparzella/secsgem) 
 [![Build status](https://ci.appveyor.com/api/projects/status/43y437avx1xkca2h?svg=true)](https://ci.appveyor.com/project/bparzella/secsgem)
-[![Coverage Status](https://coveralls.io/repos/github/bparzella/secsgem/badge.png?branch=master)](https://coveralls.io/github/bparzella/secsgem?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/bparzella/secsgem/badge.svg?branch=master)](https://coveralls.io/github/bparzella/secsgem?branch=master)
 [![Code Health](https://landscape.io/github/bparzella/secsgem/master/landscape.svg?style=flat)](https://landscape.io/github/bparzella/secsgem/master)
 
 
