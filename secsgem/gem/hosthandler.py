@@ -46,10 +46,6 @@ class GemHostHandler(GemHandler):
 
         self.reportSubscriptions = {}
 
-        self.register_callback(5, 1, self.s05f01_handler)
-        self.register_callback(6, 11, self.s06f11_handler)
-        self.register_callback(10, 1, self.s10f01_handler)
-
     def clear_collection_events(self):
         """Clear all collection events"""
         self.logger.info("Clearing collection events")
@@ -188,10 +184,8 @@ class GemHostHandler(GemHandler):
             
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
 
-    def s05f01_handler(self, handler, packet):
+    def _on_s05f01(self, handler, packet):
         """Callback handler for Stream 5, Function 1, Alarm request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -204,10 +198,8 @@ class GemHostHandler(GemHandler):
 
         self.fire_event("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
         
-    def s06f11_handler(self, handler, packet):
+    def _on_s06f11(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -225,15 +217,14 @@ class GemHostHandler(GemHandler):
             for i, s in enumerate(report_dvs):
                 values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
 
-            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
+            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), \
+                "handler": self.connection, 'peer': self}
             self.fire_event("collection_event_received", data)
 
         handler.send_response(self.stream_function(6, 12)(0), packet.header.system)
 
-    def s10f01_handler(self, handler, packet):
+    def _on_s10f01(self, handler, packet):
         """Callback handler for Stream 10, Function 1, Terminal Request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`

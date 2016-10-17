@@ -21,12 +21,12 @@ import logging
 import threading
 import copy
 
-from ..common import StreamFunctionCallbackHandler
+from ..common.callbacks import CallbackHandler
 from ..hsms.handler import HsmsHandler
 from . import functions
 
 
-class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
+class SecsHandler(HsmsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
 
     :param address: IP address of remote host
@@ -46,8 +46,9 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
     """
 
     def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        StreamFunctionCallbackHandler.__init__(self)
         HsmsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+
+        self._callback_handler = CallbackHandler(self)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -57,6 +58,36 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         self._remoteCommands = {}
 
         self.secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
+
+    def _generate_sf_callback_name(self, stream, function):
+        return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
+
+    def register_callback(self, stream, function, callback):
+        """Register the function callback for stream and function. Multiple callbacks can be registered for one function.
+
+        :param stream: stream to register callback for
+        :type stream: integer
+        :param function: function to register callback for
+        :type function: integer
+        :param callback: method to call when stream and functions is received
+        :type callback: def callback(connection)
+        """
+        name = self._generate_sf_callback_name(stream, function)
+        self._callback_handler.register(name, callback)
+
+    def unregister_callback(self, stream, function, callback):
+        """Unregister the function callback for stream and function. 
+        Multiple callbacks can be registered for one function, only the supplied callback will be removed.
+
+        :param stream: stream to unregister callback for
+        :type stream: integer
+        :param function: function to register callback for
+        :type function: integer
+        :param callback: method to remove from callback list
+        :type callback: def callback(connection)
+        """
+        name = self._generate_sf_callback_name(stream, function)
+        self._callback_handler.unregister(name)
 
     @property
     def collection_events(self):
@@ -172,18 +203,22 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         """
         return self._remoteCommands
 
-    def _run_callbacks(self, callback_index, response):
-        handeled = False
-        for callback in self.callbacks[callback_index]:
-            try:
-                if not callback(self, response) is False:
-                    handeled = True
-            except Exception:
-                self.logger.exception('Callback aborted because of exception, abort sent')
-                self.send_response(self.stream_function(response.header.stream, 0)(), response.header.system)
+    def _handle_stream_function(self, packet):
+        sf_callback_index = self._generate_sf_callback_name(packet.header.stream, packet.header.function)
 
-        if not handeled:
-            self.logger.warning("no callback wanted to handle handle %s\n%s", callback_index, response)
+        # return S09F05 if no callback present
+        if not self._callback_handler.has(sf_callback_index):
+            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
+            if packet.header.requireResponse:
+                self.send_response(functions.SecsS09F05(packet.header.encode()), packet.header.system)
+            
+            return
+
+        try:
+            self._callback_handler.call(sf_callback_index, self, packet)
+        except Exception:
+            self.logger.exception('Callback aborted because of exception, abort sent')
+            self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
 
     def _on_hsms_packet_received(self, packet):
         """Packet received from hsms layer
@@ -192,13 +227,8 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         # check if callbacks available for this stream and function
-        callback_index = self._generate_callback_name(packet.header.stream, packet.header.function)
-        if callback_index in self.callbacks:
-            threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_secsHandler_callback_{}".format(callback_index)).start()
-        else:
-            self.logger.warning("unexpected function received %s\n%s", callback_index, packet.header)
-            if packet.header.requireResponse:
-                self.send_response(functions.SecsS09F05(packet.header.encode()), packet.header.system)
+        threading.Thread(target=self._handle_stream_function, args=(packet, ), \
+            name="secsgem_secsHandler_callback_S{}F{}".format(packet.header.stream, packet.header.function)).start()
 
     def disable_ceids(self):
         """Disable all Collection Events."""
@@ -402,8 +432,7 @@ class SecsHandler(StreamFunctionCallbackHandler, HsmsHandler, object):
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        # self.logger.debug("decoding function S{}F{} using {}".format(packet.header.stream, packet.header.function, self.secsStreamsFunctions[packet.header.stream][packet.header.function].__name__))
         function = self.secsStreamsFunctions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
-        # self.logger.debug("decoded {}".format(function))
+
         return function

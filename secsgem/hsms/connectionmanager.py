@@ -19,7 +19,7 @@ from __future__ import absolute_import
 
 import logging
 
-from ..common import EventProducer
+from ..common.events import EventProducer
 
 from .handler import HsmsHandler
 from .connections import HsmsMultiPassiveServer

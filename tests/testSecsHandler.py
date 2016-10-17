@@ -142,7 +142,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.performSelect()
 
         #send s01e01
-        clientCommandThread = threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.SecsS01F01(),), name="TestSecsHandlerPassive_testStreamFunctionSending")
+        clientCommandThread = threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.SecsS01F01(),), \
+            name="TestSecsHandlerPassive_testStreamFunctionSending")
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
@@ -397,7 +398,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
+            "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -424,7 +426,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
+            "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -543,7 +546,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.performSelect()
 
-        clientCommandThread = threading.Thread(target=self.client.send_equipment_terminal, args=(0, "Hello World"), name="TestSecsHandlerPassive_testSendEquipmentTerminal")
+        clientCommandThread = threading.Thread(target=self.client.send_equipment_terminal, args=(0, "Hello World"), \
+            name="TestSecsHandlerPassive_testSendEquipmentTerminal")
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
@@ -646,6 +650,15 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
     def testGetDvidNameMissingDvid(self):
         self.assertEqual(self.client.get_dvid_name(0), "")
+
+    def testUnregisterCallback(self):
+        f = Mock()
+
+        self.client.register_callback(0, 0, f)
+        self.assertIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
+
+        self.client.unregister_callback(0, 0, f)
+        self.assertNotIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
 
 class TestSecsHandlerActive(unittest.TestCase):
     def setUp(self):

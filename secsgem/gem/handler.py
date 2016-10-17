@@ -21,9 +21,6 @@ import threading
 from ..common.fysom import Fysom
 from ..secs.handler import SecsHandler
 
-from ..secs.functions import SecsS09F05
-
-
 class GemHandler(SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
 
@@ -53,19 +50,22 @@ class GemHandler(SecsHandler):
 
         self.isHost = True
 
-        # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
+        # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. 
+        # but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
         self.communicationState = Fysom({
             'initial': 'DISABLED',  # 1
             'events': [
                 {'name': 'enable', 'src': 'DISABLED', 'dst': 'ENABLED'},  # 2
-                {'name': 'disable', 'src': ['ENABLED', 'NOT_COMMUNICATING', 'COMMUNICATING', 'EQUIPMENT_INITIATED_CONNECT', 'WAIT_DELAY', 'WAIT_CRA', "HOST_INITIATED_CONNECT", "WAIT_CR_FROM_HOST"], 'dst': 'DISABLED'},  # 3
+                {'name': 'disable', 'src': ['ENABLED', 'NOT_COMMUNICATING', 'COMMUNICATING', 'EQUIPMENT_INITIATED_CONNECT', 'WAIT_DELAY', 'WAIT_CRA', \
+                    "HOST_INITIATED_CONNECT", "WAIT_CR_FROM_HOST"], 'dst': 'DISABLED'},  # 3
                 {'name': 'select', 'src': 'NOT_COMMUNICATING', 'dst': 'EQUIPMENT_INITIATED_CONNECT'},  # 5
                 {'name': 'communicationreqfail', 'src': 'WAIT_CRA', 'dst': 'WAIT_DELAY'},  # 6
                 {'name': 'delayexpired', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 7
                 {'name': 'messagereceived', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 8
                 {'name': 's1f14received', 'src': 'WAIT_CRA', 'dst': 'COMMUNICATING'},  # 9
                 {'name': 'communicationfail', 'src': 'COMMUNICATING', 'dst': 'NOT_COMMUNICATING'},  # 14
-                {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'], 'dst': 'COMMUNICATING'},  # 15 (WAIT_CR_FROM_HOST is running in background - AND state - so if s1f13 is received we go all communicating)
+                # 15 (WAIT_CR_FROM_HOST is running in background - AND state - so if s1f13 is received we go all communicating)
+                {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'], 'dst': 'COMMUNICATING'},  
             ],
             'callbacks': {
                 'onWAIT_CRA': self._on_state_wait_cra,
@@ -90,9 +90,6 @@ class GemHandler(SecsHandler):
 
         self.waitEventList = []
 
-        self.register_callback(1, 1, self.s01f01_handler)
-        self.register_callback(1, 13, self.s01f13_handler)
-
     def __repr__(self):
         return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
 
@@ -103,7 +100,8 @@ class GemHandler(SecsHandler):
         :rtype: dict
         """
         data = SecsHandler._serialize_data(self)
-        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.establishCommunicationTimeout, 'reportIDCounter': self.reportIDCounter})
+        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.establishCommunicationTimeout, \
+            'reportIDCounter': self.reportIDCounter})
         return data
 
     def enable(self):
@@ -131,7 +129,8 @@ class GemHandler(SecsHandler):
                 if self.isHost:
                     self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), \
+                        packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -139,14 +138,8 @@ class GemHandler(SecsHandler):
         elif self.communicationState.isstate('WAIT_DELAY'):
             pass
         elif self.communicationState.isstate('COMMUNICATING'):
-            # check if callbacks available for this stream and function
-            callback_index = self._generate_callback_name(packet.header.stream, packet.header.function)
-            if callback_index in self.callbacks:
-                threading.Thread(target=self._run_callbacks, args=(callback_index, packet), name="secsgem_gemHandler_callback_{}".format(callback_index)).start()
-            else:
-                self.logger.warning("unexpected function received %s\n%s", callback_index, packet.header)
-                if packet.header.requireResponse:
-                    self.send_response(SecsS09F05(packet.header.encode()), packet.header.system)
+            threading.Thread(target=self._handle_stream_function, args=(packet, ), \
+                name="secsgem_gemHandler_callback_S{}F{}".format(packet.header.stream, packet.header.function)).start()
 
     def _on_hsms_select(self):
         """Selected received from hsms layer"""
@@ -285,10 +278,8 @@ class GemHandler(SecsHandler):
 
         return result
 
-    def s01f01_handler(self, handler, packet):
+    def _on_s01f01(self, handler, packet):
         """Callback handler for Stream 1, Function 1, Are You There
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -300,10 +291,8 @@ class GemHandler(SecsHandler):
         else:
             handler.send_response(self.stream_function(1, 2)([self.MDLN, self.SOFTREV]), packet.header.system)
 
-    def s01f13_handler(self, handler, packet):
+    def _on_s01f13(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -313,4 +302,5 @@ class GemHandler(SecsHandler):
         if self.isHost:
             handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
         else:
-            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), packet.header.system)
+            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), \
+                packet.header.system)

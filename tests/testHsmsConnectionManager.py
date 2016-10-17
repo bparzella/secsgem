@@ -16,8 +16,6 @@
 
 import unittest
 
-from mock import Mock, patch
-
 import secsgem
 
 from testconnection import HsmsTestServer

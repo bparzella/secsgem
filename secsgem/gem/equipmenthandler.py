@@ -391,28 +391,6 @@ class GemEquipmentHandler(GemHandler):
 
         self.controlState.start()
 
-        self.register_callback(1, 3, self.s01f03_handler)
-
-        self.register_callback(1, 11, self.s01f11_handler)
-
-        self.register_callback(1, 15, self.s01f15_handler)
-        self.register_callback(1, 17, self.s01f17_handler)
-
-        self.register_callback(2, 13, self.s02f13_handler)
-        self.register_callback(2, 15, self.s02f15_handler)
-
-        self.register_callback(2, 29, self.s02f29_handler)
-
-        self.register_callback(2, 33, self.s02f33_handler)
-        self.register_callback(2, 35, self.s02f35_handler)
-        self.register_callback(2, 37, self.s02f37_handler)
-
-        self.register_callback(5, 3, self.s05f03_handler)
-        self.register_callback(5, 5, self.s05f05_handler)
-        self.register_callback(5, 7, self.s05f07_handler)
-
-        self.register_callback(6, 15, self.s06f15_handler)
-
     # control state model
 
     def _on_control_state_control(self, _):
@@ -481,10 +459,8 @@ class GemEquipmentHandler(GemHandler):
         self.controlState.switch_online_remote()
         self.onlineControlState = "REMOTE"
 
-    def s01f15_handler(self, handler, packet):
+    def _on_s01f15(self, handler, packet):
         """Callback handler for Stream 1, Function 15, Request offline
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -501,10 +477,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(1, 16)(OFLACK), packet.header.system)
 
-    def s01f17_handler(self, handler, packet):
+    def _on_s01f17(self, handler, packet):
         """Callback handler for Stream 1, Function 17, Request online
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -617,10 +591,8 @@ class GemEquipmentHandler(GemHandler):
         else:
             return sv.value_type(sv.value)
 
-    def s01f03_handler(self, handler, packet):
+    def _on_s01f03(self, handler, packet):
         """Callback handler for Stream 1, Function 3, Equipment status request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -645,10 +617,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(1, 4)(responses), packet.header.system)
 
-    def s01f11_handler(self, handler, packet):
+    def _on_s01f11(self, handler, packet):
         """Callback handler for Stream 1, Function 11, SV namelist request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -719,10 +689,8 @@ class GemEquipmentHandler(GemHandler):
 
                     self.send_and_waitfor_response(self.stream_function(6, 11)({"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
-    def s02f33_handler(self, handler, packet):
+    def _on_s02f33(self, handler, packet):
         """Callback handler for Stream 2, Function 33, Define Report
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -774,10 +742,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 34)(DRACK), packet.header.system)
 
-    def s02f35_handler(self, handler, packet):
+    def _on_s02f35(self, handler, packet):
         """Callback handler for Stream 2, Function 35, Link event report
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -820,14 +786,13 @@ class GemEquipmentHandler(GemHandler):
                         for rptid in event.RPTID.get():
                             ce.reports.append(rptid)
                     else:
-                        self._registered_collection_events[event.CEID.get()] = CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
+                        self._registered_collection_events[event.CEID.get()] = \
+                            CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
 
         handler.send_response(self.stream_function(2, 36)(LRACK), packet.header.system)
 
-    def s02f37_handler(self, handler, packet):
+    def _on_s02f37(self, handler, packet):
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -845,10 +810,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 38)(ERACK), packet.header.system)
 
-    def s06f15_handler(self, handler, packet):
+    def _on_s06f15(self, handler, packet):
         """Callback handler for Stream 6, Function 15, event report request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -994,10 +957,8 @@ class GemEquipmentHandler(GemHandler):
         else:
             ec.value = value
 
-    def s02f13_handler(self, handler, packet):
+    def _on_s02f13(self, handler, packet):
         """Callback handler for Stream 2, Function 13, Equipment constant request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1022,10 +983,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 14)(responses), packet.header.system)
 
-    def s02f15_handler(self, handler, packet):
+    def _on_s02f15(self, handler, packet):
         """Callback handler for Stream 2, Function 15, Equipment constant send
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1056,10 +1015,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(2, 16)(eac), packet.header.system)
 
-    def s02f29_handler(self, handler, packet):
+    def _on_s02f29(self, handler, packet):
         """Callback handler for Stream 2, Function 29, EC namelist request
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1073,14 +1030,16 @@ class GemEquipmentHandler(GemHandler):
         if len(message) == 0:
             for ecid in self._equipment_constants:
                 ec = self._equipment_constants[ecid]
-                responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
+                responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", \
+                    "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
                     ec = self._equipment_constants[ecid]
-                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
+                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", \
+                        "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
 
         handler.send_response(self.stream_function(2, 30)(responses), packet.header.system)
 
@@ -1108,7 +1067,8 @@ class GemEquipmentHandler(GemHandler):
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET , "ALID": alid, "ALTX": self.alarms[alid].text}))
+            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET , \
+                "ALID": alid, "ALTX": self.alarms[alid].text}))
         
         self.alarms[alid].set = True
 
@@ -1133,10 +1093,8 @@ class GemEquipmentHandler(GemHandler):
 
         self.trigger_collection_events([self.alarms[alid].ce_off])
         
-    def s05f03_handler(self, handler, packet):
+    def _on_s05f03(self, handler, packet):
         """Callback handler for Stream 5, Function 3, Alarm en-/disabled
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1157,10 +1115,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(5, 4)(result), packet.header.system)
 
-    def s05f05_handler(self, handler, packet):
+    def _on_s05f05(self, handler, packet):
         """Callback handler for Stream 5, Function 5, Alarm list
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1181,10 +1137,8 @@ class GemEquipmentHandler(GemHandler):
 
         handler.send_response(self.stream_function(5, 6)(result), packet.header.system)
 
-    def s05f07_handler(self, handler, packet):
+    def _on_s05f07(self, handler, packet):
         """Callback handler for Stream 5, Function 7, Enabled alarm list
-
-        .. seealso:: :func:`secsgem.common.StreamFunctionCallbackHandler.register_callback`
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1195,7 +1149,8 @@ class GemEquipmentHandler(GemHandler):
 
         for alid in list(self.alarms.keys()):
             if self.alarms[alid].enabled:
-                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), "ALID": alid, "ALTX": self.alarms[alid].text})
+                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), \
+                    "ALID": alid, "ALTX": self.alarms[alid].text})
 
         handler.send_response(self.stream_function(5, 8)(result), packet.header.system)
 

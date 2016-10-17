@@ -29,7 +29,10 @@ from ..common import indent_block
 from ..common.codec_jis_x_0201 import *  # noqa
 
 class SecsVar(object):
-    """Base class for SECS variables. Due to the python types, wrapper classes for variables are required. If constructor is called with SecsVar or subclass only the value is copied."""
+    """Base class for SECS variables. 
+    Due to the python types, wrapper classes for variables are required. 
+    If constructor is called with SecsVar or subclass only the value is copied.
+    """
     formatCode = -1
 
     def __init__(self):
@@ -324,7 +327,8 @@ class SecsVarDynamic(SecsVar):
         var_types = self.types
         #if no types are set use internal order
         if not self.types:
-            var_types = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+            var_types = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
+                SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
         # first try to find the preferred type for the kind of value
         for var_type in var_types:
@@ -363,7 +367,8 @@ class ANYVALUE(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, \
+            SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
 
 
 class SecsVarList(SecsVar):
@@ -1228,27 +1233,23 @@ class SecsVarText(SecsVar):
 
         return False
 
+    def __supports_value_listtypes(self, value):
+        if self.count > 0 and len(value) > self.count:
+            return False
+        for item in value:
+            if not self.__check_single_item_support(item):
+                return False
+
+        return True
+
     def supports_value(self, value):
         """Check if the current instance supports the provided value
 
         :param value: value to test
         :type value: any
         """
-        if isinstance(value, list) or isinstance(value, tuple):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            for item in value:
-                if not self.__check_single_item_support(item):
-                    return False
-
-            return True
-        elif isinstance(value, bytearray):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            for item in value:
-                if not self.__check_single_item_support(item):
-                    return False
-            return True
+        if isinstance(value, list) or isinstance(value, tuple) or isinstance(value, bytearray):
+            return self.__supports_value_listtypes(value)
         elif isinstance(value, bytes):
             if self.count > 0 and len(value) > self.count:
                 return False
