@@ -75,7 +75,7 @@ class SecsHandler(HsmsHandler):
         name = self._generate_sf_callback_name(stream, function)
         self._callback_handler.register(name, callback)
 
-    def unregister_callback(self, stream, function, callback):
+    def unregister_callback(self, stream, function):
         """Unregister the function callback for stream and function. 
         Multiple callbacks can be registered for one function, only the supplied callback will be removed.
 

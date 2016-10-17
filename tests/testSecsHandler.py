@@ -657,7 +657,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.client.register_callback(0, 0, f)
         self.assertIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
 
-        self.client.unregister_callback(0, 0, f)
+        self.client.unregister_callback(0, 0)
         self.assertNotIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
 
 class TestSecsHandlerActive(unittest.TestCase):
