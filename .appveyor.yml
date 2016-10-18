@@ -15,4 +15,4 @@ install:
   - "%PYTHON%/Scripts/pip.exe install coverage"
 
 test_script:
-  - "%PYTHON%/Scripts/nosetests --with-doctest"
+  - "%PYTHON%/Scripts/nosetests -v --with-doctest"
