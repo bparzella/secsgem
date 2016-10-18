@@ -12,7 +12,7 @@ The SecsHandler has additional functionality to add callbacks for specific strea
     ...     print "Connected"
     ...
     >>> client = secsgem.SecsHandler("10.211.55.33", 5000, False, 0, "test", event_handler=secsgem.EventHandler(events={'hsms_connected': on_connect}))
-    >>> client.register_callback(1, 13, s01f13_handler)
+    >>> client.register_stream_function(1, 13, s01f13_handler)
     >>>
     >>> client.enable()
     Connected

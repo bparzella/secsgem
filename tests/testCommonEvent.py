@@ -116,7 +116,7 @@ class TestEventProducer(unittest.TestCase):
         eventHandler = secsgem.EventHandler(events={"test_event": f})
         producer = secsgem.EventProducer(eventHandler)
 
-        self.assertEqual(producer.parentEventHandler, eventHandler)
+        self.assertEqual(producer._eventHandler, eventHandler)
 
     def testFireEvent(self):
         f = Mock(return_value=True)
@@ -128,11 +128,12 @@ class TestEventProducer(unittest.TestCase):
 
         f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
 
-    def testFireEventAsync(self):
-        def dummyFunc(event_name, params):
-            return True
+    def testFireEventSync(self):
+        f = Mock(return_value=True)
 
-        eventHandler = secsgem.EventHandler(events={"test_event": dummyFunc})
+        eventHandler = secsgem.EventHandler(events={"test_event": f})
         producer = secsgem.EventProducer(eventHandler)
 
-        producer.fire_event("test_event", {"PARAM1": "Param1Data"}, True)
+        producer.fire_event("test_event", {"PARAM1": "Param1Data"}, False)
+
+        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})

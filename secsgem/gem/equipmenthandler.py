@@ -475,7 +475,7 @@ class GemEquipmentHandler(GemHandler):
             self.controlState.remote_offline()
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
-        handler.send_response(self.stream_function(1, 16)(OFLACK), packet.header.system)
+        return self.stream_function(1, 16)(OFLACK)
 
     def _on_s01f17(self, handler, packet):
         """Callback handler for Stream 1, Function 17, Request online
@@ -495,7 +495,7 @@ class GemEquipmentHandler(GemHandler):
         elif self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
             ONLACK = 2
 
-        handler.send_response(self.stream_function(1, 18)(ONLACK), packet.header.system)
+        return self.stream_function(1, 18)(ONLACK)
 
     # data values
 
@@ -615,7 +615,7 @@ class GemEquipmentHandler(GemHandler):
                     sv = self._status_variables[svid]
                     responses.append(self._get_sv_value(sv))
 
-        handler.send_response(self.stream_function(1, 4)(responses), packet.header.system)
+        return self.stream_function(1, 4)(responses)
 
     def _on_s01f11(self, handler, packet):
         """Callback handler for Stream 1, Function 11, SV namelist request
@@ -641,7 +641,7 @@ class GemEquipmentHandler(GemHandler):
                     sv = self._status_variables[svid]
                     responses.append({"SVID": sv.svid, "SVNAME": sv.name, "UNITS": sv.unit})
 
-        handler.send_response(self.stream_function(1, 12)(responses), packet.header.system)
+        return self.stream_function(1, 12)(responses)
 
     # collection events
 
@@ -740,7 +740,7 @@ class GemEquipmentHandler(GemHandler):
                         # add report
                         self._registered_reports[report.RPTID] = CollectionEventReport(report.RPTID, report.VID)
 
-        handler.send_response(self.stream_function(2, 34)(DRACK), packet.header.system)
+        return self.stream_function(2, 34)(DRACK)
 
     def _on_s02f35(self, handler, packet):
         """Callback handler for Stream 2, Function 35, Link event report
@@ -789,7 +789,7 @@ class GemEquipmentHandler(GemHandler):
                         self._registered_collection_events[event.CEID.get()] = \
                             CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
 
-        handler.send_response(self.stream_function(2, 36)(LRACK), packet.header.system)
+        return self.stream_function(2, 36)(LRACK)
 
     def _on_s02f37(self, handler, packet):
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report
@@ -808,7 +808,7 @@ class GemEquipmentHandler(GemHandler):
         if not self._set_ce_state(message.CEED.get(), message.CEID.get()):
             ERACK = 1
 
-        handler.send_response(self.stream_function(2, 38)(ERACK), packet.header.system)
+        return self.stream_function(2, 38)(ERACK)
 
     def _on_s06f15(self, handler, packet):
         """Callback handler for Stream 6, Function 15, event report request
@@ -828,7 +828,7 @@ class GemEquipmentHandler(GemHandler):
             if self._registered_collection_events[ceid].enabled:
                 reports = self._build_collection_event(ceid)
 
-        handler.send_response(self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports}), packet.header.system)
+        return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
     def _set_ce_state(self, ceed, ceids):
         """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list)
@@ -981,7 +981,7 @@ class GemEquipmentHandler(GemHandler):
                     ec = self._equipment_constants[ecid]
                     responses.append(self._get_ec_value(ec))
 
-        handler.send_response(self.stream_function(2, 14)(responses), packet.header.system)
+        return self.stream_function(2, 14)(responses)
 
     def _on_s02f15(self, handler, packet):
         """Callback handler for Stream 2, Function 15, Equipment constant send
@@ -1013,7 +1013,7 @@ class GemEquipmentHandler(GemHandler):
             for ec in message:
                 self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV)
 
-        handler.send_response(self.stream_function(2, 16)(eac), packet.header.system)
+        return self.stream_function(2, 16)(eac)
 
     def _on_s02f29(self, handler, packet):
         """Callback handler for Stream 2, Function 29, EC namelist request
@@ -1041,7 +1041,7 @@ class GemEquipmentHandler(GemHandler):
                     responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", \
                         "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
 
-        handler.send_response(self.stream_function(2, 30)(responses), packet.header.system)
+        return self.stream_function(2, 30)(responses)
 
     # alarms
 
@@ -1113,7 +1113,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             self.alarms[alid].enabled = (message.ALED.get() == ALED.ENABLE)
 
-        handler.send_response(self.stream_function(5, 4)(result), packet.header.system)
+        return self.stream_function(5, 4)(result)
 
     def _on_s05f05(self, handler, packet):
         """Callback handler for Stream 5, Function 5, Alarm list
@@ -1135,7 +1135,7 @@ class GemEquipmentHandler(GemHandler):
         for alid in alids:
             result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), "ALID": alid, "ALTX": self.alarms[alid].text})
 
-        handler.send_response(self.stream_function(5, 6)(result), packet.header.system)
+        return self.stream_function(5, 6)(result)
 
     def _on_s05f07(self, handler, packet):
         """Callback handler for Stream 5, Function 7, Enabled alarm list
@@ -1152,7 +1152,7 @@ class GemEquipmentHandler(GemHandler):
                 result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), \
                     "ALID": alid, "ALTX": self.alarms[alid].text})
 
-        handler.send_response(self.stream_function(5, 8)(result), packet.header.system)
+        return self.stream_function(5, 8)(result)
 
     # helpers
 

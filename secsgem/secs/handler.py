@@ -59,11 +59,29 @@ class SecsHandler(HsmsHandler):
 
         self.secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
 
+    def register_callback(self, callback_name, callback):
+        """Register a callback for a named callback
+
+        :param callback_name: name of callback to register for
+        :type callback_name: string
+        :param callback: method to call when stream and functions is received
+        :type callback: def callback(connection)
+        """
+        self._callback_handler.register(callback_name, callback)
+
+    def unregister_callback(self, callback_name):
+        """Unregister the function callback for a named callback 
+
+        :param callback_name: name of callback to unregister
+        :type callback_name: string
+        """
+        self._callback_handler.unregister(callback_name)
+
     def _generate_sf_callback_name(self, stream, function):
         return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
 
-    def register_callback(self, stream, function, callback):
-        """Register the function callback for stream and function. Multiple callbacks can be registered for one function.
+    def register_stream_function(self, stream, function, callback):
+        """Register the function callback for stream and function.
 
         :param stream: stream to register callback for
         :type stream: integer
@@ -75,16 +93,13 @@ class SecsHandler(HsmsHandler):
         name = self._generate_sf_callback_name(stream, function)
         self._callback_handler.register(name, callback)
 
-    def unregister_callback(self, stream, function):
+    def unregister_stream_function(self, stream, function):
         """Unregister the function callback for stream and function. 
-        Multiple callbacks can be registered for one function, only the supplied callback will be removed.
 
         :param stream: stream to unregister callback for
         :type stream: integer
         :param function: function to register callback for
         :type function: integer
-        :param callback: method to remove from callback list
-        :type callback: def callback(connection)
         """
         name = self._generate_sf_callback_name(stream, function)
         self._callback_handler.unregister(name)
@@ -215,7 +230,9 @@ class SecsHandler(HsmsHandler):
             return
 
         try:
-            self._callback_handler.call(sf_callback_index, self, packet)
+            result = self._callback_handler.call(sf_callback_index, self, packet)
+            if result is not None:
+                self.send_response(result, packet.header.system)
         except Exception:
             self.logger.exception('Callback aborted because of exception, abort sent')
             self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)

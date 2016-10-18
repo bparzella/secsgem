@@ -107,9 +107,9 @@ class EventProducer(object):
     :type event_handler: :class:`secsgem.common.EventHandler`
     """
     def __init__(self, event_handler):
-        self.parentEventHandler = event_handler
+        self._eventHandler = event_handler
 
-    def fire_event(self, event_name, data, async=False):
+    def fire_event(self, event_name, data, async=True):
         """Fire an event
 
         :param event_name: event to fire
@@ -117,9 +117,9 @@ class EventProducer(object):
         :param data: parameters for event
         :type data: dict
         """
-        if self.parentEventHandler:
+        if self._eventHandler:
             if async:
-                threading.Thread(target=self.parentEventHandler.fire_event, args=(event_name, data), \
+                threading.Thread(target=self._eventHandler.fire_event, args=(event_name, data), \
                     name="EventProducer_fireEventAsync_{}".format(event_name)).start()
             else:
-                self.parentEventHandler.fire_event(event_name, data)
+                self._eventHandler.fire_event(event_name, data)

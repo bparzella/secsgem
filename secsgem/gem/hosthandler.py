@@ -15,7 +15,7 @@
 #####################################################################
 """Handler for GEM host."""
 
-from ..secs.dataitems import ALED, ACKC5
+from ..secs.dataitems import ALED, ACKC5, ACKC10
 from .handler import GemHandler
 from collections import OrderedDict
 
@@ -184,6 +184,10 @@ class GemHostHandler(GemHandler):
             
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
 
+    def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
+        del ALID, ALCD, ALTX  # unused variables
+        return ACKC5.ACCEPTED
+
     def _on_s05f01(self, handler, packet):
         """Callback handler for Stream 5, Function 1, Alarm request
 
@@ -194,9 +198,11 @@ class GemHostHandler(GemHandler):
         """
         s5f1 = self.secs_decode(packet)
 
-        handler.send_response(self.stream_function(5, 2)(ACKC5.ACCEPTED), packet.header.system)
-
+        result = self._callback_handler.call("alarm_received", handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
+            
         self.fire_event("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
+
+        return self.stream_function(5, 2)(ACKC5.ACCEPTED)
         
     def _on_s06f11(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
@@ -221,7 +227,11 @@ class GemHostHandler(GemHandler):
                 "handler": self.connection, 'peer': self}
             self.fire_event("collection_event_received", data)
 
-        handler.send_response(self.stream_function(6, 12)(0), packet.header.system)
+        return self.stream_function(6, 12)(0)
+
+    def _on_terminal_received(self, handler, TID, TEXT):
+        del TID, TEXT  # unused variables
+        return ACKC10.ACCEPTED
 
     def _on_s10f01(self, handler, packet):
         """Callback handler for Stream 10, Function 1, Terminal Request
@@ -233,6 +243,8 @@ class GemHostHandler(GemHandler):
         """
         s10f1 = self.secs_decode(packet)
 
-        handler.send_response(self.stream_function(10, 2)(0), packet.header.system)
+        result = self._callback_handler.call("terminal_received", handler, s10f1.TID, s10f1.TEXT)
 
         self.fire_event("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
+
+        return self.stream_function(10, 2)(result)

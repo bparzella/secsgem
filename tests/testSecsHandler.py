@@ -120,7 +120,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testStreamFunctionReceiving(self):
         self.server.simulate_connect()
 
-        self.client.register_callback(1, 1, self.handleS01F01)
+        self.client.register_stream_function(1, 1, self.handleS01F01)
 
         self.performSelect()
 
@@ -163,7 +163,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testStreamFunctionReceivingUnselected(self):
         self.server.simulate_connect()
 
-        self.client.register_callback(1, 1, self.handleS01F01)
+        self.client.register_stream_function(1, 1, self.handleS01F01)
 
         #send s01e01
         system_id = self.server.get_next_system_counter()
@@ -197,7 +197,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         f = Mock(side_effect=Exception("testException"))
 
-        self.client.register_callback(1, 1, f)
+        self.client.register_stream_function(1, 1, f)
 
         self.performSelect()
 
@@ -597,7 +597,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         f = Mock(return_value=False)
-        self.client.register_callback(1, 2, f)
+        self.client.register_stream_function(1, 2, f)
 
         self.performSelect()
 
@@ -609,7 +609,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         f = Mock(side_effect=Exception("testException"))
-        self.client.register_callback(1, 2, f)
+        self.client.register_stream_function(1, 2, f)
 
         self.performSelect()
 
@@ -651,14 +651,39 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testGetDvidNameMissingDvid(self):
         self.assertEqual(self.client.get_dvid_name(0), "")
 
-    def testUnregisterCallback(self):
+    def testUnregisterStreamFunctionCallback(self):
         f = Mock()
 
-        self.client.register_callback(0, 0, f)
+        self.client.register_stream_function(0, 0, f)
         self.assertIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
 
-        self.client.unregister_callback(0, 0)
+        self.client.unregister_stream_function(0, 0)
         self.assertNotIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
+
+    def testRegisterCallback(self):
+        f = Mock()
+
+        self.client.register_callback("test", f)
+        self.assertIn("test", self.client._callback_handler._callbacks)
+
+    def testCallCallback(self):
+        f = Mock()
+
+        self.client.register_callback("test", f)
+        self.assertIn("test", self.client._callback_handler._callbacks)
+
+        self.client._callback_handler.call("test")
+
+        f.assert_called_once()
+
+    def testUnRegisterCallback(self):
+        f = Mock()
+
+        self.client.register_callback("test", f)
+        self.assertIn("test", self.client._callback_handler._callbacks)
+
+        self.client.unregister_callback("test")
+        self.assertNotIn("test", self.client._callback_handler._callbacks)
 
 class TestSecsHandlerActive(unittest.TestCase):
     def setUp(self):

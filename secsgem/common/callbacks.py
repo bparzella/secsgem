@@ -40,13 +40,12 @@ class CallbackHandler(object):
         
         return False
 
-
-    def call(self, callback, sender, data):
+    def call(self, callback, *args):
         if callback in self._callbacks:
-            return self._callbacks[callback](sender, data)
+            return self._callbacks[callback](*args)
 
         delegate_handler = getattr(self.delegate, "_on_" + callback, None)
         if callable(delegate_handler):
-            return delegate_handler(sender, data)
+            return delegate_handler(*args)
 
         return None

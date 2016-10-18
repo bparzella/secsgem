@@ -126,14 +126,14 @@ class HsmsConnectionManager(EventProducer):
 
         if self._testServerObject:
             if active:
-                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self._testServerObject)
             else:
-                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self._testServerObject)
         else:  # pragma: no cover
             if active:
-                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler)
+                handler = connection_handler(address, port, active, session_id, name, self._eventHandler)
             else:
-                handler = connection_handler(address, port, active, session_id, name, self.parentEventHandler, self.servers[port])
+                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self.servers[port])
 
         handler.enable()
 

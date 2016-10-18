@@ -287,9 +287,9 @@ class GemHandler(SecsHandler):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if self.isHost:
-            handler.send_response(self.stream_function(1, 2)(), packet.header.system)
+            return self.stream_function(1, 2)()
         else:
-            handler.send_response(self.stream_function(1, 2)([self.MDLN, self.SOFTREV]), packet.header.system)
+            return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
 
     def _on_s01f13(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
@@ -300,7 +300,6 @@ class GemHandler(SecsHandler):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         if self.isHost:
-            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
+            return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
         else:
-            handler.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), \
-                packet.header.system)
+            return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]})
