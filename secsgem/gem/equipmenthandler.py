@@ -467,7 +467,7 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        # message = self.secs_decode(packet)
+        del handler, packet  # unused parameters
 
         OFLACK = 0
 
@@ -485,7 +485,7 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
-        # message = self.secs_decode(packet)
+        del handler, packet  # unused parameters
 
         ONLACK = 1
 
@@ -599,6 +599,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         responses = []
@@ -625,6 +627,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         responses = []
@@ -697,6 +701,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         # 0  = Accept
@@ -750,6 +756,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         # 0  = Accepted
@@ -799,6 +807,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         # 0  = Accepted
@@ -818,6 +828,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         ceid = message.get()
@@ -965,6 +977,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         responses = []
@@ -991,6 +1005,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         eac = 0
@@ -1023,6 +1039,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         responses = []
@@ -1101,6 +1119,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         # 0  = Accepted
@@ -1123,6 +1143,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         result = []
@@ -1145,6 +1167,8 @@ class GemEquipmentHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler, packet  # unused parameters
+
         result = []
 
         for alid in list(self.alarms.keys()):

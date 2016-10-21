@@ -286,6 +286,8 @@ class GemHandler(SecsHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler, packet  # unused parameters
+
         if self.isHost:
             return self.stream_function(1, 2)()
         else:
@@ -299,6 +301,8 @@ class GemHandler(SecsHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler, packet  # unused parameters
+
         if self.isHost:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
         else:

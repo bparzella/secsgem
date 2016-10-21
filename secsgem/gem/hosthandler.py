@@ -185,7 +185,7 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
 
     def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
-        del ALID, ALCD, ALTX  # unused variables
+        del handler, ALID, ALCD, ALTX  # unused variables
         return ACKC5.ACCEPTED
 
     def _on_s05f01(self, handler, packet):
@@ -199,10 +199,10 @@ class GemHostHandler(GemHandler):
         s5f1 = self.secs_decode(packet)
 
         result = self._callback_handler.call("alarm_received", handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
-            
+
         self.fire_event("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
 
-        return self.stream_function(5, 2)(ACKC5.ACCEPTED)
+        return self.stream_function(5, 2)(result)
         
     def _on_s06f11(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
@@ -212,6 +212,8 @@ class GemHostHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
+        del handler  # unused parameters
+
         message = self.secs_decode(packet)
 
         for report in message.RPT:
@@ -230,7 +232,7 @@ class GemHostHandler(GemHandler):
         return self.stream_function(6, 12)(0)
 
     def _on_terminal_received(self, handler, TID, TEXT):
-        del TID, TEXT  # unused variables
+        del handler, TID, TEXT  # unused variables
         return ACKC10.ACCEPTED
 
     def _on_s10f01(self, handler, packet):
@@ -244,7 +246,6 @@ class GemHostHandler(GemHandler):
         s10f1 = self.secs_decode(packet)
 
         result = self._callback_handler.call("terminal_received", handler, s10f1.TID, s10f1.TEXT)
-
         self.fire_event("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
 
         return self.stream_function(10, 2)(result)
