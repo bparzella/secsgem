@@ -20,120 +20,122 @@ from mock import Mock
 
 import secsgem
 
-class TestEventHandler(unittest.TestCase):
-    def testConstructorNoParams(self):
-        eventHandler = secsgem.EventHandler()
-
-        self.assertEqual(eventHandler.eventHandlers, {})
-        self.assertEqual(eventHandler.target, None)
-        self.assertEqual(eventHandler.genericHandler, None)
-
-    def testFireEventWithoutHandler(self):
-        eventHandler = secsgem.EventHandler()
-
-        self.assertFalse(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-    def testFireEventWithDefaultHandlerTrue(self):
-        f = Mock(return_value=True)
-
-        eventHandler = secsgem.EventHandler(generic_handler=f)
-
-        self.assertEqual(eventHandler.genericHandler, f)
-        
-        self.assertTrue(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
-
-    def testFireEventWithDefaultHandlerFalse(self):
-        f = Mock(return_value=False)
-
-        eventHandler = secsgem.EventHandler(generic_handler=f)
-
-        self.assertEqual(eventHandler.genericHandler, f)
-
-        self.assertFalse(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
-
-    def testFireEventWithSpecificHandler(self):
-        f = Mock(return_value=True)
-
-        eventHandler = secsgem.EventHandler(events={"test_event": f})
-
-        self.assertIn(f, eventHandler.eventHandlers["test_event"])
-
-        self.assertTrue(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
-
-    def testFireEventWithSpecificHandlerTarget(self):
-        c = Mock()
-        c._on_event_test_event.return_value = True
-
-        eventHandler = secsgem.EventHandler(target=c)
-
-        self.assertEqual(eventHandler.target, c)
-
-        self.assertTrue(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-        c._on_event_test_event.assert_called_once_with({"PARAM1": "Param1Data"})
-
-    def testFireEventWithGenericHandlerTarget(self):
-        c = Mock()
-        c._on_event.return_value = True
-
-        eventHandler = secsgem.EventHandler(target=c)
-
-        self.assertEqual(eventHandler.target, c)
-
-        self.assertTrue(eventHandler.fire_event("test_event", {"PARAM1": "Param1Data"}))
-
-        c._on_event.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
-
-    def testRemoveExistingHandler(self):
-        f = Mock(return_value=True)
-
-        eventHandler = secsgem.EventHandler(events={"test_event": f})
-
-        self.assertIn(f, eventHandler.eventHandlers["test_event"])
-
-        eventHandler.remove_event_handler("test_event", f)
-
-        self.assertNotIn(f, eventHandler.eventHandlers["test_event"])
-
-    def testRemoveUnknownHandler(self):
-        f = Mock(return_value=True)
-
-        eventHandler = secsgem.EventHandler()
-
-        eventHandler.remove_event_handler("test_event", f)
-
-
 class TestEventProducer(unittest.TestCase):
     def testConstructor(self):
-        f = Mock(return_value=True)
+        producer = secsgem.EventProducer()
 
-        eventHandler = secsgem.EventHandler(events={"test_event": f})
-        producer = secsgem.EventProducer(eventHandler)
+        self.assertEqual(producer._events, {})
 
-        self.assertEqual(producer._eventHandler, eventHandler)
+    def testAddEvent(self):
+        f = Mock()
 
-    def testFireEvent(self):
-        f = Mock(return_value=True)
+        producer = secsgem.EventProducer()
 
-        eventHandler = secsgem.EventHandler(events={"test_event": f})
-        producer = secsgem.EventProducer(eventHandler)
+        producer.test += f
 
-        producer.fire_event("test_event", {"PARAM1": "Param1Data"})
+        self.assertIn("test", producer)
 
-        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
+    def testRemoveEvent(self):
+        f = Mock()
 
-    def testFireEventSync(self):
-        f = Mock(return_value=True)
+        producer = secsgem.EventProducer()
 
-        eventHandler = secsgem.EventHandler(events={"test_event": f})
-        producer = secsgem.EventProducer(eventHandler)
+        producer.test += f
 
-        producer.fire_event("test_event", {"PARAM1": "Param1Data"}, False)
+        self.assertIn("test", producer)
 
-        f.assert_called_once_with("test_event", {"PARAM1": "Param1Data"})
+        producer.test -= f
+
+        self.assertNotIn("test", producer)
+
+    def testEventRepr(self):
+        f = Mock()
+
+        producer = secsgem.EventProducer()
+
+        producer.test += f
+
+        print producer.test
+        print producer
+
+    def testJoinProducers(self):
+        f1 = Mock()
+        f2 = Mock()
+
+        producer1 = secsgem.EventProducer()
+        producer2 = secsgem.EventProducer()
+
+        producer1.test1 += f1
+        producer2.test2 += f2
+
+        producer1 += producer2
+
+        self.assertIn("test2", producer1)
+
+    def testAddTarget(self):
+        c = Mock()
+
+        producer = secsgem.EventProducer()
+
+        producer.targets += c
+
+        self.assertIn(c, producer.targets)
+
+    def testRemoveTarget(self):
+        c = Mock()
+
+        producer = secsgem.EventProducer()
+
+        producer.targets += c
+
+        self.assertIn(c, producer.targets)
+
+        producer.targets -= c
+
+        self.assertNotIn(c, producer.targets)
+
+    def testJoinProducersTargets(self):
+        c1 = Mock()
+        c2 = Mock()
+
+        producer1 = secsgem.EventProducer()
+        producer2 = secsgem.EventProducer()
+
+        producer1.targets += c1
+        producer2.targets += c2
+
+        producer1 += producer2
+
+        self.assertIn(c2, producer1.targets)
+
+    def testFire(self):
+        f1 = Mock()
+        f2 = Mock()
+        c1 = Mock()
+        c2 = Mock()
+
+        producer = secsgem.EventProducer()
+
+        producer.targets += c1
+        producer.targets += c2
+        producer.test += f1
+        producer.test += f2
+
+        producer.fire("test", "dummydata")
+
+        f1.assert_called_once_with("dummydata")
+        f2.assert_called_once_with("dummydata")
+        c1._on_event_test.assert_called_once_with("dummydata")
+        c2._on_event_test.assert_called_once_with("dummydata")
+        c1._on_event.assert_called_once_with("test", "dummydata")
+        c2._on_event.assert_called_once_with("test", "dummydata")
+
+    def testInvalidTargetAssignment(self):
+        test = 1
+
+        producer = secsgem.EventProducer()
+
+        with self.assertRaises(AttributeError):
+            producer.targets = test
+
+

@@ -17,7 +17,6 @@
 from __future__ import print_function
 
 import threading
-import time
 import unittest
 
 import secsgem
@@ -28,7 +27,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, False, 0, "test", None, self.server)
+        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -174,7 +173,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, True, 0, "test", None, self.server)
+        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -193,6 +192,11 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sessionID, 0xffff)
 
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
+
+    def testSelectSendError(self):
+        self.server.fail_next_send()
+
+        self.server.simulate_connect()
 
     def testDeselect(self):
         self.server.simulate_connect()

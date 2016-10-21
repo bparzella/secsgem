@@ -302,16 +302,14 @@ class GemEquipmentHandler(GemHandler):
     :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
     :type initial_control_state: string
     """
 
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None, initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
-        GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None, initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
+        GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = False
 

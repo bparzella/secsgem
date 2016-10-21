@@ -25,14 +25,10 @@ from .handler import HsmsHandler
 from .connections import HsmsMultiPassiveServer
 
 
-class HsmsConnectionManager(EventProducer):
-    """High level class that handles multiple active and passive connections and the model for them.
-
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
-    """
-    def __init__(self, event_handler=None):
-        EventProducer.__init__(self, event_handler)
+class HsmsConnectionManager(object):
+    """High level class that handles multiple active and passive connections and the model for them."""
+    def __init__(self):
+        self._eventProducer = EventProducer()
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -43,6 +39,11 @@ class HsmsConnectionManager(EventProducer):
         self.stopping = False
 
         self._testServerObject = None 
+
+    """Property for event handling""" 
+    @property
+    def events(self):
+        return self._eventProducer
 
     def has_connection_to(self, index):
         """Check if connection to certain peer exists.
@@ -126,15 +127,16 @@ class HsmsConnectionManager(EventProducer):
 
         if self._testServerObject:
             if active:
-                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._testServerObject)
             else:
-                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._testServerObject)
         else:  # pragma: no cover
             if active:
-                handler = connection_handler(address, port, active, session_id, name, self._eventHandler)
+                handler = connection_handler(address, port, active, session_id, name)
             else:
-                handler = connection_handler(address, port, active, session_id, name, self._eventHandler, self.servers[port])
+                handler = connection_handler(address, port, active, session_id, name, self.servers[port])
 
+        handler._eventProducer += self._eventProducer
         handler.enable()
 
         self.handlers[connection_id] = handler

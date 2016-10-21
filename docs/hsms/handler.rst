@@ -8,7 +8,8 @@ It also replies to incoming HSMS requests like linktest automatically.
     >>> def on_connect(event, data):
     ...     print "Connected"
     ...
-    >>> client = secsgem.HsmsHandler("10.211.55.33", 5000, False, 0, "test", event_handler=secsgem.EventHandler(events={'hsms_connected': on_connect}))
+    >>> client = secsgem.HsmsHandler("10.211.55.33", 5000, False, 0, "test")
+    >>> client.events.hsms_connected += on_connect
     >>> client.enable()
     Connected
     >>> client.send_linktest_req()

@@ -34,14 +34,12 @@ class GemHandler(SecsHandler):
     :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        SecsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        SecsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "secsgem"  #: model number returned by S01E13/14
         self.SOFTREV = "0.0.5"  #: software version returned by S01E13/14
@@ -206,7 +204,7 @@ class GemHandler(SecsHandler):
         """
         self.logger.debug("connectionState -> COMMUNICATING")
 
-        self.fire_event("handler_communicating", {'handler': self}, True)
+        self.events.fire("handler_communicating", {'handler': self})
 
         for event in self.waitEventList:
             event.set()

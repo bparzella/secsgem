@@ -22,6 +22,7 @@ import threading
 import logging
 import queue
 
+from ..common.callbacks import CallbackHandler
 from ..common.events import EventProducer
 
 from .connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
@@ -31,7 +32,7 @@ from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
 
 from .connectionstatemachine import ConnectionStateMachine
 
-class HsmsHandler(EventProducer):
+class HsmsHandler(object):
     """Baseclass for creating Host/Equipment models.
     This layer contains the HSMS functionality.
     Inherit from this class and override required functions.
@@ -46,8 +47,6 @@ class HsmsHandler(EventProducer):
     :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
 
@@ -58,7 +57,8 @@ class HsmsHandler(EventProducer):
         def onConnect(event, data):
             print "Connected"
 
-        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test", event_handler=secsgem.EventHandler(events={'hsms_connected': onConnect}))
+        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
+        client.events.hsms_connected += onConnect
 
         client.enable()
 
@@ -67,8 +67,12 @@ class HsmsHandler(EventProducer):
         client.disable()
 
     """
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        EventProducer.__init__(self, event_handler)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        self._eventProducer = EventProducer()
+        self._eventProducer.targets += self
+
+        self._callback_handler = CallbackHandler()
+        self._callback_handler.target = self
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self.communicationLogger = logging.getLogger("hsms_communication")
@@ -110,6 +114,16 @@ class HsmsHandler(EventProducer):
                 self.connection = HsmsPassiveConnection(self.address, self.port, self.sessionID, self)
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
+
+    """Property for event handling""" 
+    @property
+    def events(self):
+        return self._eventProducer
+
+    """Property for callback handling""" 
+    @property
+    def callbacks(self):
+        return self._callback_handler
 
     def get_next_system_counter(self):
         """Returns the next System.
@@ -169,7 +183,7 @@ class HsmsHandler(EventProducer):
         :type data: object
         """
         # send event
-        self.fire_event('hsms_selected', {'connection': self})
+        self.events.fire('hsms_selected', {'connection': self})
 
         # notify hsms handler of selection
         if hasattr(self, '_on_hsms_select') and callable(getattr(self, '_on_hsms_select')):
@@ -190,7 +204,7 @@ class HsmsHandler(EventProducer):
         # update connection state
         self.connectionState.connect()
 
-        self.fire_event("hsms_connected", {'connection': self})
+        self.events.fire("hsms_connected", {'connection': self})
 
     def on_connection_before_closed(self, _):
         """Connection is about to be closed"""
@@ -203,7 +217,7 @@ class HsmsHandler(EventProducer):
         self.connected = False
         self.connectionState.disconnect()
 
-        self.fire_event("hsms_disconnected", {'connection': self})
+        self.events.fire("hsms_disconnected", {'connection': self})
 
     def __handle_hsms_requests(self, packet):
         self.communicationLogger.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType], extra=self._get_log_extra())

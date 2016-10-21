@@ -26,7 +26,7 @@ class TestCallbackHandler(unittest.TestCase):
 
         callbackHandler = secsgem.CallbackHandler()
 
-        callbackHandler.register("test", f)
+        callbackHandler.test = f
 
         self.assertIn("test", callbackHandler._callbacks)
         self.assertEqual(callbackHandler._callbacks["test"], f)
@@ -37,8 +37,8 @@ class TestCallbackHandler(unittest.TestCase):
 
         callbackHandler = secsgem.CallbackHandler()
 
-        callbackHandler.register("test", f1)
-        callbackHandler.register("test", f2)
+        callbackHandler.test = f1
+        callbackHandler.test = f2
 
         self.assertIn("test", callbackHandler._callbacks)
         self.assertEqual(callbackHandler._callbacks["test"], f2)
@@ -48,42 +48,43 @@ class TestCallbackHandler(unittest.TestCase):
 
         callbackHandler = secsgem.CallbackHandler()
 
-        callbackHandler.register("test", f)
+        callbackHandler.test = f
 
         self.assertIn("test", callbackHandler._callbacks)
         self.assertEqual(callbackHandler._callbacks["test"], f)
 
-        self.assertTrue(callbackHandler.unregister("test"))
+        callbackHandler.test = None
 
         self.assertNotIn("test", callbackHandler._callbacks)
 
     def testUnregisterUnregisteredCallback(self):
         callbackHandler = secsgem.CallbackHandler()
 
-        self.assertFalse(callbackHandler.unregister("test"))
+        callbackHandler.test = None
 
         self.assertNotIn("test", callbackHandler._callbacks)
 
-    def testHasWithCallback(self):
+    def testInWithCallback(self):
         f = Mock()
 
         callbackHandler = secsgem.CallbackHandler()
 
-        callbackHandler.register("test", f)
+        callbackHandler.test = f
 
-        self.assertTrue(callbackHandler.has("test"))
+        self.assertIn("test", callbackHandler)
 
-    def testHasWithDelegate(self):
+    def testInWithDelegate(self):
         c = Mock()
 
-        callbackHandler = secsgem.CallbackHandler(c)
+        callbackHandler = secsgem.CallbackHandler()
+        callbackHandler.target = c
 
-        self.assertTrue(callbackHandler.has("test"))
+        self.assertIn("test", callbackHandler)
 
-    def testHasWithNone(self):
+    def testNotIn(self):
         callbackHandler = secsgem.CallbackHandler()
 
-        self.assertFalse(callbackHandler.has("test"))
+        self.assertNotIn("test", callbackHandler)
 
     def testCallWithCallback(self):
         f = Mock()
@@ -91,9 +92,9 @@ class TestCallbackHandler(unittest.TestCase):
 
         callbackHandler = secsgem.CallbackHandler()
 
-        callbackHandler.register("test", f)
+        callbackHandler.test = f
 
-        self.assertEqual(callbackHandler.call("test", self, "data"), "testvalue")
+        self.assertEqual(callbackHandler.test(self, "data"), "testvalue")
 
         f.assert_called_once_with(self, "data")
 
@@ -101,13 +102,27 @@ class TestCallbackHandler(unittest.TestCase):
         c = Mock()
         c._on_test.return_value = "testvalue"
 
-        callbackHandler = secsgem.CallbackHandler(c)
+        callbackHandler = secsgem.CallbackHandler()
+        callbackHandler.target = c
 
-        callbackHandler.call("test", self, "data")
+        print callbackHandler.target
+
+        callbackHandler.test(self, "data")
 
         c._on_test.assert_called_once_with(self, "data")
 
     def testCallWithNone(self):
         callbackHandler = secsgem.CallbackHandler()
 
-        self.assertIsNone(callbackHandler.call("test", self, "data"))
+        self.assertIsNone(callbackHandler.test(self, "data"))
+
+    def testIteration(self):
+        f = Mock()
+        f.return_value = "testvalue"
+
+        callbackHandler = secsgem.CallbackHandler()
+
+        callbackHandler.test = f
+
+        for callback in callbackHandler:
+            print callback

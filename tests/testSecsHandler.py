@@ -26,7 +26,7 @@ from testconnection import HsmsTestServer
 class TestSecsHandler(unittest.TestCase):
     def testSecsDecode(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         packet = server.generate_stream_function_packet(0, secsgem.SecsS01F02(["MDLN", "SOFTREV"]))
 
@@ -39,7 +39,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeNone(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.secs_decode(None)
 
@@ -47,7 +47,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         packet = secsgem.HsmsPacket()
         packet.header.stream = 99
@@ -57,7 +57,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         packet = secsgem.HsmsPacket()
         packet.header.function = 99
@@ -67,7 +67,7 @@ class TestSecsHandler(unittest.TestCase):
     
     def testStreamFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(1, 1)
 
@@ -75,7 +75,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testStreamFunctionInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(99, 1)
 
@@ -83,7 +83,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testStreamFunctionInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, server)
+        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(1, 99)
 
@@ -94,7 +94,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", None, self.server)
+        self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -663,33 +663,39 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testRegisterCallback(self):
         f = Mock()
 
-        self.client.register_callback("test", f)
-        self.assertIn("test", self.client._callback_handler._callbacks)
+        self.client.callbacks.test = f
+        self.assertIn("test", self.client.callbacks._callbacks)
+
+    def testCallbackIn(self):
+        f = Mock()
+
+        self.client.callbacks.test = f
+        self.assertIn("test", self.client.callbacks)
 
     def testCallCallback(self):
         f = Mock()
 
-        self.client.register_callback("test", f)
+        self.client.callbacks.test = f
         self.assertIn("test", self.client._callback_handler._callbacks)
 
-        self.client._callback_handler.call("test")
+        self.client.callbacks.test()
 
         f.assert_called_once()
 
     def testUnRegisterCallback(self):
         f = Mock()
 
-        self.client.register_callback("test", f)
+        self.client.callbacks.test = f
         self.assertIn("test", self.client._callback_handler._callbacks)
 
-        self.client.unregister_callback("test")
+        self.client.callbacks.test = None
         self.assertNotIn("test", self.client._callback_handler._callbacks)
 
 class TestSecsHandlerActive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", None, self.server)
+        self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()

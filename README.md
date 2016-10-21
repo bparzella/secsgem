@@ -34,8 +34,8 @@ import secsgem
 from communication_log_file_handler import CommunicationLogFileHandler
 
 class SampleHost(secsgem.GemHostHandler):
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "gemhost"
         self.SOFTREV = "1.0.0"

@@ -13,7 +13,7 @@ It has functionality to send remote commands and handling process programs.
 
 The handler also implements a maintains a communication state, which is defined in the standard.
 
-    >>> client = secsgem.GemHostHandler("10.211.55.33", 5000, False, 0, "test", event_handler=secsgem.EventHandler())
+    >>> client = secsgem.GemHostHandler("10.211.55.33", 5000, False, 0, "test")
     >>>
     >>> client.enable()
     >>> client.waitfor_communicating()
@@ -29,7 +29,8 @@ Waiting for the communicating state can also be done asynchronious
     >>> def on_communicating(event, data):
     ...     print "Communicating"
     ...
-    >>> client = secsgem.GemHostHandler("10.211.55.33", 5000, False, 0, "test", event_handler=secsgem.EventHandler(events={'handler_communicating': on_communicating}))
+    >>> client = secsgem.GemHostHandler("10.211.55.33", 5000, False, 0, "test")
+    >>> client.events.handler_communicating += on_communicating
     >>>
     >>> client.enable()
     Communicating

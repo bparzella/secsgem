@@ -21,7 +21,6 @@ import logging
 import threading
 import copy
 
-from ..common.callbacks import CallbackHandler
 from ..hsms.handler import HsmsHandler
 from . import functions
 
@@ -39,16 +38,12 @@ class SecsHandler(HsmsHandler):
     :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        HsmsHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
-
-        self._callback_handler = CallbackHandler(self)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        HsmsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -58,24 +53,6 @@ class SecsHandler(HsmsHandler):
         self._remoteCommands = {}
 
         self.secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
-
-    def register_callback(self, callback_name, callback):
-        """Register a callback for a named callback
-
-        :param callback_name: name of callback to register for
-        :type callback_name: string
-        :param callback: method to call when stream and functions is received
-        :type callback: def callback(connection)
-        """
-        self._callback_handler.register(callback_name, callback)
-
-    def unregister_callback(self, callback_name):
-        """Unregister the function callback for a named callback 
-
-        :param callback_name: name of callback to unregister
-        :type callback_name: string
-        """
-        self._callback_handler.unregister(callback_name)
 
     def _generate_sf_callback_name(self, stream, function):
         return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
@@ -91,7 +68,7 @@ class SecsHandler(HsmsHandler):
         :type callback: def callback(connection)
         """
         name = self._generate_sf_callback_name(stream, function)
-        self._callback_handler.register(name, callback)
+        setattr(self._callback_handler, name, callback)
 
     def unregister_stream_function(self, stream, function):
         """Unregister the function callback for stream and function. 
@@ -102,7 +79,7 @@ class SecsHandler(HsmsHandler):
         :type function: integer
         """
         name = self._generate_sf_callback_name(stream, function)
-        self._callback_handler.unregister(name)
+        setattr(self._callback_handler, name, None)
 
     @property
     def collection_events(self):
@@ -222,7 +199,7 @@ class SecsHandler(HsmsHandler):
         sf_callback_index = self._generate_sf_callback_name(packet.header.stream, packet.header.function)
 
         # return S09F05 if no callback present
-        if not self._callback_handler.has(sf_callback_index):
+        if sf_callback_index not in self._callback_handler:
             self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
             if packet.header.requireResponse:
                 self.send_response(self.stream_function(9, 5)(packet.header.encode()), packet.header.system)
@@ -230,7 +207,7 @@ class SecsHandler(HsmsHandler):
             return
 
         try:
-            result = self._callback_handler.call(sf_callback_index, self, packet)
+            result = self._callback_handler._call(sf_callback_index, self, packet)
             if result is not None:
                 self.send_response(result, packet.header.system)
         except Exception:

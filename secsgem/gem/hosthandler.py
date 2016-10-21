@@ -33,14 +33,12 @@ class GemHostHandler(GemHandler):
     :type session_id: integer
     :param name: Name of the underlying configuration
     :type name: string
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-        GemHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = True
 
@@ -198,9 +196,9 @@ class GemHostHandler(GemHandler):
         """
         s5f1 = self.secs_decode(packet)
 
-        result = self._callback_handler.call("alarm_received", handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
+        result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
-        self.fire_event("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
+        self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
 
         return self.stream_function(5, 2)(result)
         
@@ -227,7 +225,7 @@ class GemHostHandler(GemHandler):
 
             data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), \
                 "handler": self.connection, 'peer': self}
-            self.fire_event("collection_event_received", data)
+            self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)
 
@@ -245,7 +243,7 @@ class GemHostHandler(GemHandler):
         """
         s10f1 = self.secs_decode(packet)
 
-        result = self._callback_handler.call("terminal_received", handler, s10f1.TID, s10f1.TEXT)
-        self.fire_event("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
+        result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
+        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
 
         return self.stream_function(10, 2)(result)

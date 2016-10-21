@@ -5,8 +5,8 @@ Now we want to integrate the stream/function from the last example (:doc:`/custo
 You create a new class inherited from the GemHandler and update the function list of that class::
 
     class NewHandler(secsgem.GemHostHandler):
-        def __init__(self, address, port, active, session_id, name, event_handler=None, custom_connection_handler=None):
-            secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, event_handler, custom_connection_handler)
+        def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+            secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.secsStreamsFunctions[1].update({
                 12: SecsS01F12_New,

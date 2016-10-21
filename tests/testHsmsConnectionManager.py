@@ -16,6 +16,8 @@
 
 import unittest
 
+from mock import Mock
+
 import secsgem
 
 from testconnection import HsmsTestServer
@@ -26,6 +28,15 @@ class TestHsmsConnectionManager(unittest.TestCase):
         manager = secsgem.HsmsConnectionManager()
 
         self.assertIsNotNone(manager)
+
+    def testAddEvent(self):
+        f = Mock()
+
+        manager = secsgem.HsmsConnectionManager()
+
+        manager.events.test += f
+
+        self.assertIn("test", manager.events) 
 
     def testAddPassivePeer(self):
         server = HsmsTestServer()

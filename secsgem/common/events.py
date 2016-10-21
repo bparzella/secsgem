@@ -15,111 +15,139 @@
 #####################################################################
 """Contains helper functions"""
 
-import logging
-import threading
+from future.utils import implements_iterator
 
-class EventHandler(object):
-    """Class for event handling. Provides functionality for managing events.
+class Event(object):
+    """Class to handle the callbacks for a single event"""
+    def __init__(self):
+        self._callbacks = []
 
-    :param target: receiver object for event callbacks
-    :type target: object
-    :params events: dictionary of event names with handlers
-    :type events: dict
-    :param generic_handler: receiver function for all events
-    :type generic_handler: def handler(eventName, data)
-    """
-    def __init__(self, target=None, events=None, generic_handler=None):
-        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+    def __iadd__(self, other):
+        self._callbacks.append(other)
+        return self
 
-        self.eventHandlers = {}
-        self.target = target
-        self.genericHandler = generic_handler
+    def __isub__(self, other):
+        self._callbacks.remove(other)
+        return self
 
-        if not events:
-            events = {}
+    def __call__(self, data):
+        for callback in self._callbacks:
+            callback(data)
 
-        for event in events:
-            self.add_event_handler(event, events[event])
+    def __len__(self):
+        return len(self._callbacks)
 
-    def fire_event(self, event_name, params):
-        """Fire an event
+    def __repr__(self):
+        return "{}: {}".format(self.__class__.__name__, self._callbacks)
 
-        :param event_name: event to fire
-        :type event_name: string
-        :param params: parameters for event
-        :type params: dict
-        """
-        handled = False
+class Targets(object):
+    """Class to handle a list of objects"""
+    def __init__(self):
+        self._targets = []
 
-        if self.target:
-            generic_handler = getattr(self.target, "_on_event", None)
-            if callable(generic_handler):
-                if generic_handler(event_name, params) is not False:
-                    handled = True
+    def __iadd__(self, other):
+        self._targets.append(other)
+        return self
 
-            specific_handler = getattr(self.target, "_on_event_" + event_name, None)
-            if callable(specific_handler):
-                if specific_handler(params):
-                    handled = True
+    def __isub__(self, other):
+        self._targets.remove(other)
+        return self
 
-        if event_name in self.eventHandlers:
-            for eventHandler in self.eventHandlers[event_name]:
-                if eventHandler(event_name, params) is not False:
-                    handled = True
+    @implements_iterator
+    class TargetsIter(object):
+        def __init__(self, values):
+            self._values = values
+            self._counter = 0
 
-        if self.genericHandler:
-            if self.genericHandler(event_name, params) is not False:
-                handled = True
+        def __iter__(self):  # pragma: no cover
+            return self
 
-        return handled
+        def __next__(self):
+            if self._counter < len(self._values):
+                i = self._counter
+                self._counter += 1
+                return self._values[i]
+            else:
+                raise StopIteration()
 
-    def add_event_handler(self, event_name, handler):
-        """Register handler for an event. Multiple handlers can be registered for one event.
-
-        :param event_name: event to register handler for
-        :type event_name: string
-        :param handler: method to call when event is received
-        :type handler: def handler(event_name, handler)
-        """
-        if event_name not in self.eventHandlers:
-            self.eventHandlers[event_name] = []
-
-        self.eventHandlers[event_name].append(handler)
-
-    def remove_event_handler(self, event_name, handler):
-        """Unregister handler for an event.
-
-        :param event_name: event to unregister handler for
-        :type event_name: string
-        :param handler: method to unregister
-        :type handler: def handler(event_name, handler)
-        """
-        if event_name not in self.eventHandlers:
-            return
-
-        self.eventHandlers[event_name].remove(handler)
-
+    def __iter__(self):
+        return self.TargetsIter(self._targets)
 
 class EventProducer(object):
-    """Class for event production. Provides functionality for sending events.
+    """Manages the consumers for the events and handles firing events"""
+    def __init__(self):
+        self._targets = Targets()
+        self._events = {}
+    
+    def __getattr__(self, name):
+        if name not in self._events:
+            self._events[name] = Event()
 
-    :param event_handler: object for event handling
-    :type event_handler: :class:`secsgem.common.EventHandler`
-    """
-    def __init__(self, event_handler):
-        self._eventHandler = event_handler
+        return self._events[name]
 
-    def fire_event(self, event_name, data, async=True):
-        """Fire an event
+    def __iadd__(self, other):
+        for event_name in other._events:
+            if event_name not in self._events:
+                self._events[event_name] = Event()
+            
+            for callback in other._events[event_name]._callbacks:
+                self._events[event_name] += callback
+                
+        for target in other._targets:
+            self._targets += target
+        return self
+    
+    def fire(self, event, data):
+        """Fire a event
 
-        :param event_name: event to fire
-        :type event_name: string
-        :param data: parameters for event
+        calls all the available handlers for a specific event
+
+        :param event: name of the event
+        :type event: string
+        :param data: data connected to this event
         :type data: dict
         """
-        if self._eventHandler:
-            if async:
-                threading.Thread(target=self._eventHandler.fire_event, args=(event_name, data), \
-                    name="EventProducer_fireEventAsync_{}".format(event_name)).start()
+        for target in self._targets:
+            generic_handler = getattr(target, "_on_event", None)
+            if callable(generic_handler):
+                generic_handler(event, data)
+
+            specific_handler = getattr(target, "_on_event_" + event, None)
+            if callable(specific_handler):
+                specific_handler(data)
+
+        if event in self._events:
+            self._events[event](data)
+    
+    def __repr__(self):
+        return "{}: {}".format(self.__class__.__name__, self._events) 
+
+    @implements_iterator
+    class EventsIter(object):
+        def __init__(self, keys):
+            self._keys = list(keys)
+            self._counter = 0
+
+        def __iter__(self):  # pragma: no cover
+            return self
+
+        def __next__(self):
+            if self._counter < len(self._keys):
+                i = self._counter
+                self._counter += 1
+                return self._keys[i]
             else:
-                self._eventHandler.fire_event(event_name, data)
+                raise StopIteration()
+
+    def __iter__(self):
+        return self.EventsIter([event for event in self._events.keys() if len(self._events[event]) > 0])
+
+    """ targets used as consumer for this producer """
+    @property
+    def targets(self):
+        return self._targets
+    
+    @targets.setter
+    def targets(self, value):
+        if self._targets != value:
+            raise AttributeError("can't set attribute")
