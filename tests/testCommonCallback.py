@@ -105,8 +105,6 @@ class TestCallbackHandler(unittest.TestCase):
         callbackHandler = secsgem.CallbackHandler()
         callbackHandler.target = c
 
-        print callbackHandler.target
-
         callbackHandler.test(self, "data")
 
         c._on_test.assert_called_once_with(self, "data")
@@ -125,4 +123,4 @@ class TestCallbackHandler(unittest.TestCase):
         callbackHandler.test = f
 
         for callback in callbackHandler:
-            print callback
+            print(callback)

@@ -55,8 +55,8 @@ class TestEventProducer(unittest.TestCase):
 
         producer.test += f
 
-        print producer.test
-        print producer
+        print(producer.test)
+        print(producer)
 
     def testJoinProducers(self):
         f1 = Mock()
