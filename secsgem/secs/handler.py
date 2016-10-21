@@ -208,7 +208,7 @@ class SecsHandler(HsmsHandler):
 
         try:
             callback = getattr(self._callback_handler, sf_callback_index)
-            result = callback(sf_callback_index, self, packet)
+            result = callback(self, packet)
             if result is not None:
                 self.send_response(result, packet.header.system)
         except Exception:
