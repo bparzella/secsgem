@@ -115,14 +115,14 @@ class HsmsHandler(object):
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port, self.sessionID, self)
 
-    """Property for event handling""" 
     @property
     def events(self):
+        """Property for event handling""" 
         return self._eventProducer
 
-    """Property for callback handling""" 
     @property
     def callbacks(self):
+        """Property for callback handling""" 
         return self._callback_handler
 
     def get_next_system_counter(self):

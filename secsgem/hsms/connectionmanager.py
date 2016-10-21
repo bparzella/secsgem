@@ -40,9 +40,9 @@ class HsmsConnectionManager(object):
 
         self._testServerObject = None 
 
-    """Property for event handling""" 
     @property
     def events(self):
+        """Property for event handling""" 
         return self._eventProducer
 
     def has_connection_to(self, index):

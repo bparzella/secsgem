@@ -142,9 +142,9 @@ class EventProducer(object):
     def __iter__(self):
         return self.EventsIter([event for event in self._events.keys() if len(self._events[event]) > 0])
 
-    """ targets used as consumer for this producer """
     @property
     def targets(self):
+        """Targets used as consumer for this producer"""
         return self._targets
     
     @targets.setter
