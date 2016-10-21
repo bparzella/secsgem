@@ -86,14 +86,14 @@ class EventProducer(object):
         return self._events[name]
 
     def __iadd__(self, other):
-        for event_name in other._events:
+        for event_name in other._events:  # noqa
             if event_name not in self._events:
                 self._events[event_name] = Event()
             
-            for callback in other._events[event_name]._callbacks:
+            for callback in other._events[event_name]._callbacks:  # noqa
                 self._events[event_name] += callback
                 
-        for target in other._targets:
+        for target in other._targets:  # noqa
             self._targets += target
         return self
     

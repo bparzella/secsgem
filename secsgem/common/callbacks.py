@@ -23,7 +23,7 @@ class CallbackCallWrapper(object):
         self.handler = handler
 
     def __call__(self, *args):
-        return self.handler._call(self.name, *args)
+        return self.handler._call(self.name, *args)  # noqa
 
 class CallbackHandler(object):
     def __init__(self):
