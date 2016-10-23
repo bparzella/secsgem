@@ -34,6 +34,7 @@ from .connectionstatemachine import ConnectionStateMachine
 
 class HsmsHandler(object):
     """Baseclass for creating Host/Equipment models.
+
     This layer contains the HSMS functionality.
     Inherit from this class and override required functions.
 
@@ -67,6 +68,7 @@ class HsmsHandler(object):
         client.disable()
 
     """
+
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
         self._eventProducer = EventProducer()
         self._eventProducer.targets += self
@@ -335,6 +337,7 @@ class HsmsHandler(object):
         del self._systemQueues[system_id]
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
 
     def _serialize_data(self):

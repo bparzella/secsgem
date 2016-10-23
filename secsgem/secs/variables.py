@@ -30,9 +30,11 @@ from ..common.codec_jis_x_0201 import *  # noqa
 
 class SecsVar(object):
     """Base class for SECS variables. 
+
     Due to the python types, wrapper classes for variables are required. 
     If constructor is called with SecsVar or subclass only the value is copied.
     """
+
     formatCode = -1
 
     def __init__(self):
@@ -178,18 +180,23 @@ class SecsVarDynamic(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         return self.value.__repr__()
 
     def __len__(self):
+        """Get the lenth"""
         return self.value.__len__()
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         return self.value.__getitem__(key)
 
     def __setitem__(self, key, item):
+        """Set an item using the indexer operator"""
         self.value.__setitem__(key, item)
 
     def __eq__(self, other):
+        """Check equality with other object"""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value.value
         elif isinstance(other, SecsVar):
@@ -203,6 +210,7 @@ class SecsVarDynamic(SecsVar):
                 return [other] == self.value.value
 
     def __hash__(self):
+        """Get data item for hashing"""
         if isinstance(self.value.value, list):
             return hash(self.value.value[0])
         else:
@@ -364,6 +372,7 @@ class ANYVALUE(SecsVarDynamic):
        - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
 
     """
+
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
@@ -381,6 +390,7 @@ class SecsVarList(SecsVar):
     :param count: number of fields in the list
     :type count: integer
     """
+
     formatCode = 0
     textCode = 'L'
     preferredTypes = [dict]
@@ -392,9 +402,11 @@ class SecsVarList(SecsVar):
             self._counter = 0
 
         def __iter__(self):
+            """Get an iterator"""
             return self
 
         def __next__(self):
+            """Get the next item or raise StopIteration if at end of list"""
             if self._counter < len(self._keys):
                 i = self._counter
                 self._counter += 1
@@ -441,6 +453,7 @@ class SecsVarList(SecsVar):
             return arrayName + "{\n" + "\n".join(items) + "\n}"
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.data) == 0:
             return "<{}>".format(self.textCode)
 
@@ -452,18 +465,22 @@ class SecsVarList(SecsVar):
         return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.data)
 
     def __getitem__(self, index):
+        """Get an item using the indexer operator"""
         if isinstance(index, int):
             return self.data[list(self.data.keys())[index]]
         else:
             return self.data[index]
 
     def __iter__(self):
+        """Get an iterator"""
         return SecsVarList.SecsVarListIter(self.data.keys())
 
     def __setitem__(self, index, value):
+        """Set an item using the indexer operator"""
         if isinstance(index, int):
             index = list(self.data.keys())[index]
 
@@ -497,12 +514,14 @@ class SecsVarList(SecsVar):
         return result_data
 
     def __getattr__(self, item):
+        """Get an item as member of the object"""
         try:
             return self.data.__getitem__(item)
         except KeyError:
             raise AttributeError(item)
 
     def __setattr__(self, item, value):
+        """Set an item as member of the object"""
         if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
         elif item in self.data:
@@ -607,6 +626,7 @@ class SecsVarArray(SecsVar):
     :param count: number of fields in the list
     :type count: integer
     """
+
     formatCode = 0
     textCode = 'L'
     preferredTypes = [list]
@@ -618,9 +638,11 @@ class SecsVarArray(SecsVar):
             self._counter = 0
 
         def __iter__(self):
+            """Get an iterator"""
             return self
 
         def __next__(self):
+            """Get the next item or raise StopIteration if at end of list"""
             if self._counter < len(self._values):
                 i = self._counter
                 self._counter += 1
@@ -649,7 +671,6 @@ class SecsVarArray(SecsVar):
         :returns: returns the string representation of the function
         :rtype: string
         """
-
         if showname:
             arrayName = "{}: "
             if isinstance(dataformat, list):
@@ -665,6 +686,7 @@ class SecsVarArray(SecsVar):
             return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.get_format(not showname), 4))
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.data) == 0:
             return "<{}>".format(self.textCode)
 
@@ -676,15 +698,19 @@ class SecsVarArray(SecsVar):
         return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.data)
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         return self.data[key]
 
     def __iter__(self):
+        """Get an iterator"""
         return SecsVarArray.SecsVarArrayIter(self.data)
 
     def __setitem__(self, key, value):
+        """Set an item using the indexer operator"""
         if isinstance(value, type(self.data[key])) or isinstance(value, self.data[key].__class__.__bases__):
             self.data[key] = value
         elif isinstance(value, SecsVar):
@@ -778,6 +804,7 @@ class SecsVarBinary(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o10
     textCode = "B"
     preferredTypes = [bytes, bytearray]
@@ -791,6 +818,7 @@ class SecsVarBinary(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -799,9 +827,11 @@ class SecsVarBinary(SecsVar):
         return "<{} {}>".format(self.textCode, data.strip())
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.value)
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         if key >= self.count:
             raise IndexError("Index {} out of bounds ({})".format(key, self.count))
 
@@ -811,6 +841,7 @@ class SecsVarBinary(SecsVar):
         return self.value[key]
 
     def __setitem__(self, key, item):
+        """Set an item using the indexer operator"""
         if key >= self.count:
             raise IndexError("Index {} out of bounds ({})".format(key, self.count))
 
@@ -821,6 +852,7 @@ class SecsVarBinary(SecsVar):
         self.value[key] = item
 
     def __eq__(self, other):
+        """Check equality with other object"""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         elif isinstance(other, SecsVar):
@@ -829,6 +861,7 @@ class SecsVarBinary(SecsVar):
             return other == self.value
 
     def __hash__(self):
+        """Get data item for hashing"""
         return hash(bytes(self.value))
 
     def __check_single_item_support(self, value):
@@ -848,7 +881,6 @@ class SecsVarBinary(SecsVar):
         :param value: value to test
         :type value: any
         """
-
         if isinstance(value, list) or isinstance(value, tuple):
             if self.count > 0 and len(value) > self.count:
                 return False
@@ -963,6 +995,7 @@ class SecsVarBoolean(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o11
     textCode = "BOOLEAN"
     preferredTypes = [bool]
@@ -979,6 +1012,7 @@ class SecsVarBoolean(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -990,15 +1024,19 @@ class SecsVarBoolean(SecsVar):
         return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.value)
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         return self.value[key]
 
     def __setitem__(self, key, item):
+        """Set an item using the indexer operator"""
         self.value[key] = item
 
     def __eq__(self, other):
+        """Check equality with other object"""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         elif isinstance(other, SecsVar):
@@ -1009,6 +1047,7 @@ class SecsVarBoolean(SecsVar):
             return [other] == self.value
 
     def __hash__(self):
+        """Get data item for hashing"""
         return hash(str(self.value))
 
     def __check_single_item_support(self, value):
@@ -1078,7 +1117,6 @@ class SecsVarBoolean(SecsVar):
         :param value: new value
         :type value: list/boolean
         """
-
         if isinstance(value, list) or isinstance(value, tuple):
             if 0 <= self.count < len(value):
                 raise ValueError("Value longer than {} chars".format(self.count))
@@ -1166,6 +1204,7 @@ class SecsVarText(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = -1
     textCode = u""
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
@@ -1181,6 +1220,7 @@ class SecsVarText(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.value) == 0:
             return u"<{}>".format(self.textCode)
 
@@ -1209,9 +1249,11 @@ class SecsVarText(SecsVar):
         return u"<{}{}>".format(self.textCode, data)
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.value)
 
     def __eq__(self, other):
+        """Check equality with other object"""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         elif isinstance(other, SecsVar):
@@ -1220,6 +1262,7 @@ class SecsVarText(SecsVar):
             return other == self.value
 
     def __hash__(self):
+        """Get data item for hashing"""
         return hash(self.value)
 
     def __check_single_item_support(self, value):
@@ -1346,6 +1389,7 @@ class SecsVarString(SecsVarText):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o20
     textCode = u"A"
     preferredTypes = [bytes, unicode]
@@ -1361,6 +1405,7 @@ class SecsVarJIS8(SecsVarText):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o21
     textCode = u"J"
     preferredTypes = [bytes, unicode]
@@ -1376,6 +1421,7 @@ class SecsVarNumber(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
+    
     formatCode = 0
     textCode = ""
     _basetype = int
@@ -1393,6 +1439,7 @@ class SecsVarNumber(SecsVar):
             self.set(value)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -1404,15 +1451,19 @@ class SecsVarNumber(SecsVar):
         return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.value)
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         return self.value[key]
 
     def __setitem__(self, key, item):
+        """Set an item using the indexer operator"""
         self.value[key] = item
 
     def __eq__(self, other):
+        """Check equality with other object"""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         elif isinstance(other, SecsVar):
@@ -1423,6 +1474,7 @@ class SecsVarNumber(SecsVar):
             return [other] == self.value
 
     def __hash__(self):
+        """Get data item for hashing"""
         return hash(str(self.value))
 
     def __check_single_item_support(self, value):
@@ -1516,7 +1568,6 @@ class SecsVarNumber(SecsVar):
         :returns: internal value
         :rtype: list/integer/float
         """
-
         if len(self.value) == 1:
             return self.value[0]
 
@@ -1577,6 +1628,7 @@ class SecsVarI8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o30
     textCode = "I8"
     _basetype = int
@@ -1595,6 +1647,7 @@ class SecsVarI1(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o31
     textCode = "I1"
     _basetype = int
@@ -1613,6 +1666,7 @@ class SecsVarI2(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o32
     textCode = "I2"
     _basetype = int
@@ -1631,6 +1685,7 @@ class SecsVarI4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o34
     textCode = "I4"
     _basetype = int
@@ -1649,6 +1704,7 @@ class SecsVarF8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o40
     textCode = "F8"
     _basetype = float
@@ -1667,6 +1723,7 @@ class SecsVarF4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o44
     textCode = "F4"
     _basetype = float
@@ -1685,6 +1742,7 @@ class SecsVarU8(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o50
     textCode = "U8"
     _basetype = int
@@ -1703,6 +1761,7 @@ class SecsVarU1(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o51
     textCode = "U1"
     _basetype = int
@@ -1721,6 +1780,7 @@ class SecsVarU2(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+
     formatCode = 0o52
     textCode = "U2"
     _basetype = int
@@ -1739,6 +1799,7 @@ class SecsVarU4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
+    
     formatCode = 0o54
     textCode = "U4"
     _basetype = int

@@ -119,24 +119,21 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
 
     def get_process_program_list(self):
-        """Get process program list
-        """
+        """Get process program list"""
         self.logger.info("Get process program list")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
     def go_online(self):
-        """Set control state to online
-        """
+        """Set control state to online"""
         self.logger.info("Go online")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)())).get()
 
     def go_offline(self):
-        """Set control state to offline
-        """
+        """Set control state to offline"""
         self.logger.info("Go offline")
 
         # send remote command

@@ -172,7 +172,6 @@ class CollectionEventLink(object):
         :returns: List of linked reports
         :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
         """
-
         return self._reports
 
 
@@ -229,6 +228,7 @@ class EquipmentConstant(object):
     :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
     :type use_callback: boolean
     """
+
     def __init__(self, ecid, name, min_value, max_value, default_value, unit, value_type, use_callback=True, **kwargs):
         self.ecid = ecid
         self.name = name
@@ -435,25 +435,21 @@ class GemEquipmentHandler(GemHandler):
         self.trigger_collection_events([CEID_CONTROL_STATE_REMOTE])
 
     def control_switch_online(self):
-        """Operator switches to online control state
-        """
+        """Operator switches to online control state"""
         self.controlState.switch_online()
 
     def control_switch_offline(self):
-        """Operator switches to offline control state
-        """
+        """Operator switches to offline control state"""
         self.controlState.switch_offline()
         self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
     def control_switch_online_local(self):
-        """Operator switches to the local online control state
-        """
+        """Operator switches to the local online control state"""
         self.controlState.switch_online_local()
         self.onlineControlState = "LOCAL"
 
     def control_switch_online_remote(self):
-        """Operator switches to the local online control state
-        """
+        """Operator switches to the local online control state"""
         self.controlState.switch_online_remote()
         self.onlineControlState = "REMOTE"
 
@@ -1193,7 +1189,7 @@ class GemEquipmentHandler(GemHandler):
             return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
     def _get_control_state_id(self):
-        """the id of the control state for the current control state
+        """The id of the control state for the current control state
 
         :returns: control state
         :rtype: integer
@@ -1210,7 +1206,7 @@ class GemEquipmentHandler(GemHandler):
             return 5
 
     def _get_events_enabled(self):
-        """list of the enabled collection events
+        """List of the enabled collection events
 
         :returns: collection event
         :rtype: list of various
@@ -1224,7 +1220,7 @@ class GemEquipmentHandler(GemHandler):
         return enabled_ceid
 
     def _get_alarms_enabled(self):
-        """list of the enabled alarms
+        """List of the enabled alarms
 
         :returns: alarms
         :rtype: list of various
@@ -1238,7 +1234,7 @@ class GemEquipmentHandler(GemHandler):
         return enabled_alarms
 
     def _get_alarms_set(self):
-        """list of the set alarms
+        """List of the set alarms
 
         :returns: alarms
         :rtype: list of various

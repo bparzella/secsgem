@@ -89,6 +89,7 @@ class GemHandler(SecsHandler):
         self.waitEventList = []
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
 
     def _serialize_data(self):

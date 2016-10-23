@@ -25,6 +25,7 @@ class StructureDisplayingMeta(type):
     """Meta class overriding the default __repr__ of a class"""
 
     def __repr__(cls):
+        """Generate textual representation for an object of this class"""
         return cls.get_format()
 
 class SecsStreamFunction(with_metaclass(StructureDisplayingMeta)):
@@ -62,6 +63,7 @@ class SecsStreamFunction(with_metaclass(StructureDisplayingMeta)):
     :param value: set the value of stream/function parameters
     :type value: various
     """
+
     _stream = 0
     _function = 0
 
@@ -97,6 +99,7 @@ class SecsStreamFunction(with_metaclass(StructureDisplayingMeta)):
         self._object_intitialized = True
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
             return "{}{} .".format(function, " W" if self._isReplyRequired else "")
@@ -108,18 +111,23 @@ class SecsStreamFunction(with_metaclass(StructureDisplayingMeta)):
             indent_block(data))
 
     def __getitem__(self, key):
+        """Get an item using the indexer operator"""
         return self.data[key]
 
     def __setitem__(self, key, item):
+        """Set an item using the indexer operator"""
         self.data[key] = item
 
     def __len__(self):
+        """Get the lenth"""
         return len(self.data)
 
     def __getattr__(self, item):
+        """Get an item as object member"""
         return self.data.__getattr__(item)
 
     def __setattr__(self, item, value):
+        """Set an item as object member"""
         if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
         elif item in self.data.data:

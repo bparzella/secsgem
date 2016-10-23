@@ -120,6 +120,7 @@ class HsmsConnection(object):  # pragma: no cover
             'connected': self.connected }
 
     def __str__(self):
+        """Get the contents of this object as a string"""
         return "{} connection to {}:{} sessionID={}".format(("Active" if self.active else "Passive"), \
             self.remoteAddress, str(self.remotePort), str(self.sessionID))
 
@@ -336,6 +337,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         # TODO: create example
 
     """
+
     def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
@@ -461,6 +463,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         # TODO: create example
 
     """
+
     def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
@@ -535,7 +538,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
         self.listenThread = None
 
     def create_connection(self, address, port=5000, session_id=0, delegate=None):
-        """ Create and remember connection for the server
+        """Create and remember connection for the server
 
         :param address: IP address of target host
         :type address: string
@@ -685,6 +688,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         # TODO: create example
 
     """
+
     def __init__(self, address, port=5000, session_id=0, delegate=None):
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)

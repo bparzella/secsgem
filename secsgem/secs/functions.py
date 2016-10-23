@@ -23,7 +23,7 @@ from .dataitems import *
 
 
 class SecsS00F00(SecsStreamFunction):
-    """Hsms communication
+    r"""Hsms communication
 
     **Structure**::
 
@@ -40,6 +40,7 @@ class SecsS00F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 0
     _function = 0
 
@@ -55,7 +56,7 @@ class SecsS00F00(SecsStreamFunction):
 
 
 class SecsS01F00(SecsStreamFunction):
-    """abort transaction stream 1
+    r"""abort transaction stream 1
 
     **Structure**::
 
@@ -72,6 +73,7 @@ class SecsS01F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 1
     _function = 0
 
@@ -87,7 +89,7 @@ class SecsS01F00(SecsStreamFunction):
 
 
 class SecsS01F01(SecsStreamFunction):
-    """are you online - request
+    r"""are you online - request
 
     **Structure**::
 
@@ -104,6 +106,7 @@ class SecsS01F01(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 1
     _function = 1
 
@@ -119,7 +122,7 @@ class SecsS01F01(SecsStreamFunction):
 
 
 class SecsS01F02(SecsStreamFunction):
-    """on line data
+    r"""on line data
 
     .. caution::
 
@@ -151,6 +154,7 @@ class SecsS01F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 2
 
@@ -166,7 +170,7 @@ class SecsS01F02(SecsStreamFunction):
 
 
 class SecsS01F03(SecsStreamFunction):
-    """Selected equipment status - request
+    r"""Selected equipment status - request
 
     **Data Items**
 
@@ -195,6 +199,7 @@ class SecsS01F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 3
 
@@ -210,7 +215,7 @@ class SecsS01F03(SecsStreamFunction):
 
 
 class SecsS01F04(SecsStreamFunction):
-    """selected equipment status - data
+    r"""selected equipment status - data
 
     **Data Items**
 
@@ -239,6 +244,7 @@ class SecsS01F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 4
 
@@ -254,7 +260,7 @@ class SecsS01F04(SecsStreamFunction):
 
 
 class SecsS01F11(SecsStreamFunction):
-    """status variable namelist - request
+    r"""status variable namelist - request
 
     **Data Items**
 
@@ -284,6 +290,7 @@ class SecsS01F11(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 11
 
@@ -299,7 +306,7 @@ class SecsS01F11(SecsStreamFunction):
 
 
 class SecsS01F12(SecsStreamFunction):
-    """status variable namelist - reply
+    r"""status variable namelist - reply
 
     **Data Items**
 
@@ -341,6 +348,7 @@ class SecsS01F12(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 12
 
@@ -362,7 +370,7 @@ class SecsS01F12(SecsStreamFunction):
 
 
 class SecsS01F13(SecsStreamFunction):
-    """establish communication - request
+    r"""establish communication - request
 
     .. caution::
 
@@ -394,6 +402,7 @@ class SecsS01F13(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 1
     _function = 13
 
@@ -409,7 +418,7 @@ class SecsS01F13(SecsStreamFunction):
 
 
 class SecsS01F14(SecsStreamFunction):
-    """establish communication - acknowledge
+    r"""establish communication - acknowledge
 
     .. caution::
 
@@ -454,6 +463,7 @@ class SecsS01F14(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 1
     _function = 14
 
@@ -472,7 +482,7 @@ class SecsS01F14(SecsStreamFunction):
 
 
 class SecsS01F15(SecsStreamFunction):
-    """request offline
+    r"""request offline
 
     **Structure**::
 
@@ -489,6 +499,7 @@ class SecsS01F15(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 1
     _function = 15
 
@@ -504,7 +515,7 @@ class SecsS01F15(SecsStreamFunction):
 
 
 class SecsS01F16(SecsStreamFunction):
-    """offline acknowledge
+    r"""offline acknowledge
 
     **Data Items**
 
@@ -526,6 +537,7 @@ class SecsS01F16(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 1
     _function = 16
 
@@ -541,7 +553,7 @@ class SecsS01F16(SecsStreamFunction):
 
 
 class SecsS01F17(SecsStreamFunction):
-    """request offline
+    r"""request offline
 
     **Structure**::
 
@@ -558,6 +570,7 @@ class SecsS01F17(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 1
     _function = 17
 
@@ -573,7 +586,7 @@ class SecsS01F17(SecsStreamFunction):
 
 
 class SecsS01F18(SecsStreamFunction):
-    """online acknowledge
+    r"""online acknowledge
 
     **Data Items**
 
@@ -595,6 +608,7 @@ class SecsS01F18(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 1
     _function = 18
 
@@ -610,7 +624,7 @@ class SecsS01F18(SecsStreamFunction):
 
 
 class SecsS02F00(SecsStreamFunction):
-    """abort transaction stream 2
+    r"""abort transaction stream 2
 
     **Structure**::
 
@@ -627,6 +641,7 @@ class SecsS02F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 2
     _function = 0
 
@@ -642,7 +657,7 @@ class SecsS02F00(SecsStreamFunction):
 
 
 class SecsS02F13(SecsStreamFunction):
-    """equipment constant - request
+    r"""equipment constant - request
 
     **Data Items**
 
@@ -672,6 +687,7 @@ class SecsS02F13(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 13
 
@@ -687,7 +703,7 @@ class SecsS02F13(SecsStreamFunction):
 
 
 class SecsS02F14(SecsStreamFunction):
-    """equipment constant - data
+    r"""equipment constant - data
 
     **Data Items**
 
@@ -715,6 +731,7 @@ class SecsS02F14(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 14
 
@@ -730,7 +747,7 @@ class SecsS02F14(SecsStreamFunction):
 
 
 class SecsS02F15(SecsStreamFunction):
-    """new equipment constant - send
+    r"""new equipment constant - send
 
     **Data Items**
 
@@ -768,6 +785,7 @@ class SecsS02F15(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 15
 
@@ -788,7 +806,7 @@ class SecsS02F15(SecsStreamFunction):
 
 
 class SecsS02F16(SecsStreamFunction):
-    """new equipment constant - acknowledge
+    r"""new equipment constant - acknowledge
 
     **Data Items**
 
@@ -810,6 +828,7 @@ class SecsS02F16(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 2
     _function = 16
 
@@ -825,7 +844,7 @@ class SecsS02F16(SecsStreamFunction):
 
 
 class SecsS02F17(SecsStreamFunction):
-    """date and time - request
+    r"""date and time - request
 
     **Structure**::
 
@@ -842,6 +861,7 @@ class SecsS02F17(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 2
     _function = 17
 
@@ -857,7 +877,7 @@ class SecsS02F17(SecsStreamFunction):
 
 
 class SecsS02F18(SecsStreamFunction):
-    """date and time - data
+    r"""date and time - data
 
     **Data Items**
 
@@ -879,6 +899,7 @@ class SecsS02F18(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: ASCII string
     """
+
     _stream = 2
     _function = 18
 
@@ -894,7 +915,7 @@ class SecsS02F18(SecsStreamFunction):
 
 
 class SecsS02F29(SecsStreamFunction):
-    """equipment constant namelist - request
+    r"""equipment constant namelist - request
 
     **Data Items**
 
@@ -924,6 +945,7 @@ class SecsS02F29(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 29
 
@@ -939,7 +961,7 @@ class SecsS02F29(SecsStreamFunction):
 
 
 class SecsS02F30(SecsStreamFunction):
-    """equipment constant namelist
+    r"""equipment constant namelist
 
     **Data Items**
 
@@ -995,6 +1017,7 @@ class SecsS02F30(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 30
 
@@ -1019,7 +1042,7 @@ class SecsS02F30(SecsStreamFunction):
 
 
 class SecsS02F33(SecsStreamFunction):
-    """define report
+    r"""define report
 
     **Data Items**
 
@@ -1073,6 +1096,7 @@ class SecsS02F33(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 33
 
@@ -1096,7 +1120,7 @@ class SecsS02F33(SecsStreamFunction):
 
 
 class SecsS02F34(SecsStreamFunction):
-    """define report - acknowledge
+    r"""define report - acknowledge
 
     **Data Items**
 
@@ -1118,6 +1142,7 @@ class SecsS02F34(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 2
     _function = 34
 
@@ -1133,7 +1158,7 @@ class SecsS02F34(SecsStreamFunction):
 
 
 class SecsS02F35(SecsStreamFunction):
-    """link event report
+    r"""link event report
 
     **Data Items**
 
@@ -1180,6 +1205,7 @@ class SecsS02F35(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 35
 
@@ -1203,7 +1229,7 @@ class SecsS02F35(SecsStreamFunction):
 
 
 class SecsS02F36(SecsStreamFunction):
-    """link event report - acknowledge
+    r"""link event report - acknowledge
 
     **Data Items**
 
@@ -1225,6 +1251,7 @@ class SecsS02F36(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 2
     _function = 36
 
@@ -1240,7 +1267,7 @@ class SecsS02F36(SecsStreamFunction):
 
 
 class SecsS02F37(SecsStreamFunction):
-    """en-/disable event report
+    r"""en-/disable event report
 
     **Data Items**
 
@@ -1274,6 +1301,7 @@ class SecsS02F37(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 37
 
@@ -1292,7 +1320,7 @@ class SecsS02F37(SecsStreamFunction):
 
 
 class SecsS02F38(SecsStreamFunction):
-    """en-/disable event report - acknowledge
+    r"""en-/disable event report - acknowledge
 
     **Data Items**
 
@@ -1314,6 +1342,7 @@ class SecsS02F38(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 2
     _function = 38
 
@@ -1329,7 +1358,7 @@ class SecsS02F38(SecsStreamFunction):
 
 
 class SecsS02F41(SecsStreamFunction):
-    """host command - send
+    r"""host command - send
 
     **Data Items**
 
@@ -1374,6 +1403,7 @@ class SecsS02F41(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 41
 
@@ -1398,7 +1428,7 @@ class SecsS02F41(SecsStreamFunction):
 
 
 class SecsS02F42(SecsStreamFunction):
-    """host command - acknowledge
+    r"""host command - acknowledge
 
     **Data Items**
 
@@ -1447,6 +1477,7 @@ class SecsS02F42(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 2
     _function = 42
 
@@ -1471,7 +1502,7 @@ class SecsS02F42(SecsStreamFunction):
 
 
 class SecsS05F00(SecsStreamFunction):
-    """abort transaction stream 5
+    r"""abort transaction stream 5
 
     **Structure**::
 
@@ -1488,6 +1519,7 @@ class SecsS05F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 5
     _function = 0
 
@@ -1503,7 +1535,7 @@ class SecsS05F00(SecsStreamFunction):
 
 
 class SecsS05F01(SecsStreamFunction):
-    """alarm report - send
+    r"""alarm report - send
 
     **Data Items**
 
@@ -1535,6 +1567,7 @@ class SecsS05F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 1
 
@@ -1554,7 +1587,7 @@ class SecsS05F01(SecsStreamFunction):
 
 
 class SecsS05F02(SecsStreamFunction):
-    """alarm report - acknowledge
+    r"""alarm report - acknowledge
 
     **Data Items**
 
@@ -1576,6 +1609,7 @@ class SecsS05F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 5
     _function = 2
 
@@ -1591,7 +1625,7 @@ class SecsS05F02(SecsStreamFunction):
 
 
 class SecsS05F03(SecsStreamFunction):
-    """en-/disable alarm - send
+    r"""en-/disable alarm - send
 
     **Data Items**
 
@@ -1620,6 +1654,7 @@ class SecsS05F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 3
 
@@ -1638,7 +1673,7 @@ class SecsS05F03(SecsStreamFunction):
 
 
 class SecsS05F04(SecsStreamFunction):
-    """en-/disable alarm - acknowledge
+    r"""en-/disable alarm - acknowledge
 
     **Data Items**
 
@@ -1660,6 +1695,7 @@ class SecsS05F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 5
     _function = 4
 
@@ -1675,7 +1711,7 @@ class SecsS05F04(SecsStreamFunction):
 
 
 class SecsS05F05(SecsStreamFunction):
-    """list alarms - request
+    r"""list alarms - request
 
     **Data Items**
 
@@ -1703,6 +1739,7 @@ class SecsS05F05(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 5
 
@@ -1718,7 +1755,7 @@ class SecsS05F05(SecsStreamFunction):
 
 
 class SecsS05F06(SecsStreamFunction):
-    """list alarms - data
+    r"""list alarms - data
 
     **Data Items**
 
@@ -1755,6 +1792,7 @@ class SecsS05F06(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 6
 
@@ -1774,7 +1812,7 @@ class SecsS05F06(SecsStreamFunction):
 
 
 class SecsS05F07(SecsStreamFunction):
-    """list enabled alarms - request
+    r"""list enabled alarms - request
 
     **Structure**::
 
@@ -1791,6 +1829,7 @@ class SecsS05F07(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 7
 
@@ -1806,7 +1845,7 @@ class SecsS05F07(SecsStreamFunction):
 
 
 class SecsS05F08(SecsStreamFunction):
-    """list enabled alarms - data
+    r"""list enabled alarms - data
 
     **Data Items**
 
@@ -1843,6 +1882,7 @@ class SecsS05F08(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 8
 
@@ -1862,7 +1902,7 @@ class SecsS05F08(SecsStreamFunction):
 
 
 class SecsS05F09(SecsStreamFunction):
-    """exception post - notify
+    r"""exception post - notify
 
     **Data Items**
 
@@ -1911,6 +1951,7 @@ class SecsS05F09(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 9
 
@@ -1932,7 +1973,7 @@ class SecsS05F09(SecsStreamFunction):
 
 
 class SecsS05F10(SecsStreamFunction):
-    """exception post - confirm
+    r"""exception post - confirm
 
     **Structure**::
 
@@ -1949,6 +1990,7 @@ class SecsS05F10(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 5
     _function = 10
 
@@ -1964,7 +2006,7 @@ class SecsS05F10(SecsStreamFunction):
 
 
 class SecsS05F11(SecsStreamFunction):
-    """exception clear - notify
+    r"""exception clear - notify
 
     **Data Items**
 
@@ -1999,6 +2041,7 @@ class SecsS05F11(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 11
 
@@ -2019,7 +2062,7 @@ class SecsS05F11(SecsStreamFunction):
 
 
 class SecsS05F12(SecsStreamFunction):
-    """exception clear - confirm
+    r"""exception clear - confirm
 
     **Structure**::
 
@@ -2036,6 +2079,7 @@ class SecsS05F12(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 5
     _function = 12
 
@@ -2051,7 +2095,7 @@ class SecsS05F12(SecsStreamFunction):
 
 
 class SecsS05F13(SecsStreamFunction):
-    """exception recover - request
+    r"""exception recover - request
 
     **Data Items**
 
@@ -2080,6 +2124,7 @@ class SecsS05F13(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 13
 
@@ -2098,7 +2143,7 @@ class SecsS05F13(SecsStreamFunction):
 
 
 class SecsS05F14(SecsStreamFunction):
-    """exception recover - acknowledge
+    r"""exception recover - acknowledge
 
     **Data Items**
 
@@ -2140,6 +2185,7 @@ class SecsS05F14(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 14
 
@@ -2164,7 +2210,7 @@ class SecsS05F14(SecsStreamFunction):
 
 
 class SecsS05F15(SecsStreamFunction):
-    """exception recover complete - notify
+    r"""exception recover complete - notify
 
     **Data Items**
 
@@ -2209,6 +2255,7 @@ class SecsS05F15(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 15
 
@@ -2234,7 +2281,7 @@ class SecsS05F15(SecsStreamFunction):
 
 
 class SecsS05F16(SecsStreamFunction):
-    """exception recover complete - confirm
+    r"""exception recover complete - confirm
 
     **Structure**::
 
@@ -2251,6 +2298,7 @@ class SecsS05F16(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 5
     _function = 16
 
@@ -2266,7 +2314,7 @@ class SecsS05F16(SecsStreamFunction):
 
 
 class SecsS05F17(SecsStreamFunction):
-    """exception recover abort - request
+    r"""exception recover abort - request
 
     **Data Items**
 
@@ -2288,6 +2336,7 @@ class SecsS05F17(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 17
 
@@ -2303,7 +2352,7 @@ class SecsS05F17(SecsStreamFunction):
 
 
 class SecsS05F18(SecsStreamFunction):
-    """exception recover abort - acknowledge
+    r"""exception recover abort - acknowledge
 
     **Data Items**
 
@@ -2345,6 +2394,7 @@ class SecsS05F18(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 5
     _function = 18
 
@@ -2369,7 +2419,7 @@ class SecsS05F18(SecsStreamFunction):
 
 
 class SecsS06F00(SecsStreamFunction):
-    """abort transaction stream 6
+    r"""abort transaction stream 6
 
     **Structure**::
 
@@ -2386,6 +2436,7 @@ class SecsS06F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 6
     _function = 0
 
@@ -2401,7 +2452,7 @@ class SecsS06F00(SecsStreamFunction):
 
 
 class SecsS06F05(SecsStreamFunction):
-    """multi block data inquiry
+    r"""multi block data inquiry
 
     **Data Items**
 
@@ -2430,6 +2481,7 @@ class SecsS06F05(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 5
 
@@ -2448,7 +2500,7 @@ class SecsS06F05(SecsStreamFunction):
 
 
 class SecsS06F06(SecsStreamFunction):
-    """multi block data grant
+    r"""multi block data grant
 
     **Data Items**
 
@@ -2470,6 +2522,7 @@ class SecsS06F06(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 6
     _function = 6
 
@@ -2485,7 +2538,7 @@ class SecsS06F06(SecsStreamFunction):
 
 
 class SecsS06F07(SecsStreamFunction):
-    """data transfer request
+    r"""data transfer request
 
     **Data Items**
 
@@ -2507,6 +2560,7 @@ class SecsS06F07(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: integer
     """
+
     _stream = 6
     _function = 7
 
@@ -2522,7 +2576,7 @@ class SecsS06F07(SecsStreamFunction):
 
 
 class SecsS06F08(SecsStreamFunction):
-    """data transfer data
+    r"""data transfer data
 
     **Data Items**
 
@@ -2588,6 +2642,7 @@ class SecsS06F08(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 6
     _function = 8
 
@@ -2619,7 +2674,7 @@ class SecsS06F08(SecsStreamFunction):
 
 
 class SecsS06F11(SecsStreamFunction):
-    """event report
+    r"""event report
 
     **Data Items**
 
@@ -2669,6 +2724,7 @@ class SecsS06F11(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 11
 
@@ -2694,7 +2750,7 @@ class SecsS06F11(SecsStreamFunction):
 
 
 class SecsS06F12(SecsStreamFunction):
-    """event report - acknowledge
+    r"""event report - acknowledge
 
     **Data Items**
 
@@ -2716,6 +2772,7 @@ class SecsS06F12(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 6
     _function = 12
 
@@ -2731,7 +2788,7 @@ class SecsS06F12(SecsStreamFunction):
 
 
 class SecsS06F15(SecsStreamFunction):
-    """event report request
+    r"""event report request
 
     **Data Items**
 
@@ -2753,6 +2810,7 @@ class SecsS06F15(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 15
 
@@ -2768,7 +2826,7 @@ class SecsS06F15(SecsStreamFunction):
 
 
 class SecsS06F16(SecsStreamFunction):
-    """event report data
+    r"""event report data
 
     **Data Items**
 
@@ -2818,6 +2876,7 @@ class SecsS06F16(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 16
 
@@ -2843,7 +2902,7 @@ class SecsS06F16(SecsStreamFunction):
 
 
 class SecsS06F19(SecsStreamFunction):
-    """individual report request
+    r"""individual report request
 
     **Data Items**
 
@@ -2865,6 +2924,7 @@ class SecsS06F19(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 19
 
@@ -2880,7 +2940,7 @@ class SecsS06F19(SecsStreamFunction):
 
 
 class SecsS06F20(SecsStreamFunction):
-    """individual report data
+    r"""individual report data
 
     **Data Items**
 
@@ -2908,6 +2968,7 @@ class SecsS06F20(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 20
 
@@ -2923,7 +2984,7 @@ class SecsS06F20(SecsStreamFunction):
 
 
 class SecsS06F21(SecsStreamFunction):
-    """annotated individual report request
+    r"""annotated individual report request
 
     **Data Items**
 
@@ -2945,6 +3006,7 @@ class SecsS06F21(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 21
 
@@ -2960,7 +3022,7 @@ class SecsS06F21(SecsStreamFunction):
 
 
 class SecsS06F22(SecsStreamFunction):
-    """annotated individual report data
+    r"""annotated individual report data
 
     **Data Items**
 
@@ -2998,6 +3060,7 @@ class SecsS06F22(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: list
     """
+
     _stream = 6
     _function = 22
 
@@ -3018,7 +3081,7 @@ class SecsS06F22(SecsStreamFunction):
 
 
 class SecsS07F00(SecsStreamFunction):
-    """abort transaction stream 7
+    r"""abort transaction stream 7
 
     **Structure**::
 
@@ -3035,6 +3098,7 @@ class SecsS07F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 7
     _function = 0
 
@@ -3050,7 +3114,7 @@ class SecsS07F00(SecsStreamFunction):
 
 
 class SecsS07F01(SecsStreamFunction):
-    """process program load - inquire
+    r"""process program load - inquire
 
     **Data Items**
 
@@ -3079,6 +3143,7 @@ class SecsS07F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 1
 
@@ -3097,7 +3162,7 @@ class SecsS07F01(SecsStreamFunction):
 
 
 class SecsS07F02(SecsStreamFunction):
-    """process program load - grant
+    r"""process program load - grant
 
     **Data Items**
 
@@ -3119,6 +3184,7 @@ class SecsS07F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 7
     _function = 2
 
@@ -3134,7 +3200,7 @@ class SecsS07F02(SecsStreamFunction):
 
 
 class SecsS07F03(SecsStreamFunction):
-    """process program - send
+    r"""process program - send
 
     **Data Items**
 
@@ -3163,6 +3229,7 @@ class SecsS07F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 3
 
@@ -3181,7 +3248,7 @@ class SecsS07F03(SecsStreamFunction):
 
 
 class SecsS07F04(SecsStreamFunction):
-    """process program - acknowledge
+    r"""process program - acknowledge
 
     **Data Items**
 
@@ -3203,6 +3270,7 @@ class SecsS07F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 7
     _function = 4
 
@@ -3218,7 +3286,7 @@ class SecsS07F04(SecsStreamFunction):
 
 
 class SecsS07F05(SecsStreamFunction):
-    """process program - request
+    r"""process program - request
 
     **Data Items**
 
@@ -3240,6 +3308,7 @@ class SecsS07F05(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 7
     _function = 5
 
@@ -3255,7 +3324,7 @@ class SecsS07F05(SecsStreamFunction):
 
 
 class SecsS07F06(SecsStreamFunction):
-    """process program - data
+    r"""process program - data
 
     **Data Items**
 
@@ -3284,6 +3353,7 @@ class SecsS07F06(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 6
 
@@ -3302,7 +3372,7 @@ class SecsS07F06(SecsStreamFunction):
 
 
 class SecsS07F17(SecsStreamFunction):
-    """delete process program - send
+    r"""delete process program - send
 
     **Data Items**
 
@@ -3330,6 +3400,7 @@ class SecsS07F17(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 17
 
@@ -3345,7 +3416,7 @@ class SecsS07F17(SecsStreamFunction):
 
 
 class SecsS07F18(SecsStreamFunction):
-    """delete process program - acknowledge
+    r"""delete process program - acknowledge
 
     **Data Items**
 
@@ -3367,6 +3438,7 @@ class SecsS07F18(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 7
     _function = 18
 
@@ -3382,7 +3454,7 @@ class SecsS07F18(SecsStreamFunction):
 
 
 class SecsS07F19(SecsStreamFunction):
-    """current equipment process program - request
+    r"""current equipment process program - request
 
     **Structure**::
 
@@ -3399,6 +3471,7 @@ class SecsS07F19(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 19
 
@@ -3414,7 +3487,7 @@ class SecsS07F19(SecsStreamFunction):
 
 
 class SecsS07F20(SecsStreamFunction):
-    """current equipment process program - data
+    r"""current equipment process program - data
 
     **Data Items**
 
@@ -3442,6 +3515,7 @@ class SecsS07F20(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 7
     _function = 20
 
@@ -3457,7 +3531,7 @@ class SecsS07F20(SecsStreamFunction):
 
 
 class SecsS09F00(SecsStreamFunction):
-    """abort transaction stream 9
+    r"""abort transaction stream 9
 
     **Structure**::
 
@@ -3474,6 +3548,7 @@ class SecsS09F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 9
     _function = 0
 
@@ -3489,7 +3564,7 @@ class SecsS09F00(SecsStreamFunction):
 
 
 class SecsS09F01(SecsStreamFunction):
-    """unrecognized device id
+    r"""unrecognized device id
 
     **Data Items**
 
@@ -3511,6 +3586,7 @@ class SecsS09F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 1
 
@@ -3526,7 +3602,7 @@ class SecsS09F01(SecsStreamFunction):
 
 
 class SecsS09F03(SecsStreamFunction):
-    """unrecognized stream type
+    r"""unrecognized stream type
 
     **Data Items**
 
@@ -3548,6 +3624,7 @@ class SecsS09F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 3
 
@@ -3563,7 +3640,7 @@ class SecsS09F03(SecsStreamFunction):
 
 
 class SecsS09F05(SecsStreamFunction):
-    """unrecognized function type
+    r"""unrecognized function type
 
     **Data Items**
 
@@ -3585,6 +3662,7 @@ class SecsS09F05(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 5
 
@@ -3600,7 +3678,7 @@ class SecsS09F05(SecsStreamFunction):
 
 
 class SecsS09F07(SecsStreamFunction):
-    """illegal data
+    r"""illegal data
 
     **Data Items**
 
@@ -3622,6 +3700,7 @@ class SecsS09F07(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 7
 
@@ -3637,7 +3716,7 @@ class SecsS09F07(SecsStreamFunction):
 
 
 class SecsS09F09(SecsStreamFunction):
-    """transaction timer timeout
+    r"""transaction timer timeout
 
     **Data Items**
 
@@ -3659,6 +3738,7 @@ class SecsS09F09(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 9
 
@@ -3674,7 +3754,7 @@ class SecsS09F09(SecsStreamFunction):
 
 
 class SecsS09F11(SecsStreamFunction):
-    """data too long
+    r"""data too long
 
     **Data Items**
 
@@ -3696,6 +3776,7 @@ class SecsS09F11(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 9
     _function = 11
 
@@ -3711,7 +3792,7 @@ class SecsS09F11(SecsStreamFunction):
 
 
 class SecsS09F13(SecsStreamFunction):
-    """conversation timeout
+    r"""conversation timeout
 
     **Data Items**
 
@@ -3740,6 +3821,7 @@ class SecsS09F13(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 9
     _function = 13
 
@@ -3758,7 +3840,7 @@ class SecsS09F13(SecsStreamFunction):
 
 
 class SecsS10F00(SecsStreamFunction):
-    """abort transaction stream 10
+    r"""abort transaction stream 10
 
     **Structure**::
 
@@ -3775,6 +3857,7 @@ class SecsS10F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 10
     _function = 0
 
@@ -3790,7 +3873,7 @@ class SecsS10F00(SecsStreamFunction):
 
 
 class SecsS10F01(SecsStreamFunction):
-    """terminal - request
+    r"""terminal - request
 
     **Data Items**
 
@@ -3819,6 +3902,7 @@ class SecsS10F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 10
     _function = 1
 
@@ -3837,7 +3921,7 @@ class SecsS10F01(SecsStreamFunction):
 
 
 class SecsS10F02(SecsStreamFunction):
-    """terminal - acknowledge
+    r"""terminal - acknowledge
 
     **Data Items**
 
@@ -3859,6 +3943,7 @@ class SecsS10F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 10
     _function = 2
 
@@ -3874,7 +3959,7 @@ class SecsS10F02(SecsStreamFunction):
 
 
 class SecsS10F03(SecsStreamFunction):
-    """terminal single - display
+    r"""terminal single - display
 
     **Data Items**
 
@@ -3903,6 +3988,7 @@ class SecsS10F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 10
     _function = 3
 
@@ -3921,7 +4007,7 @@ class SecsS10F03(SecsStreamFunction):
 
 
 class SecsS10F04(SecsStreamFunction):
-    """terminal single - acknowledge
+    r"""terminal single - acknowledge
 
     **Data Items**
 
@@ -3943,6 +4029,7 @@ class SecsS10F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 10
     _function = 4
 
@@ -3958,7 +4045,7 @@ class SecsS10F04(SecsStreamFunction):
 
 
 class SecsS12F00(SecsStreamFunction):
-    """abort transaction stream 12
+    r"""abort transaction stream 12
 
     **Structure**::
 
@@ -3975,6 +4062,7 @@ class SecsS12F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 12
     _function = 0
 
@@ -3990,7 +4078,7 @@ class SecsS12F00(SecsStreamFunction):
 
 
 class SecsS12F01(SecsStreamFunction):
-    """map setup data - send
+    r"""map setup data - send
 
     **Data Items**
 
@@ -4079,6 +4167,7 @@ class SecsS12F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 1
 
@@ -4110,7 +4199,7 @@ class SecsS12F01(SecsStreamFunction):
 
 
 class SecsS12F02(SecsStreamFunction):
-    """map setup data - acknowledge
+    r"""map setup data - acknowledge
 
     **Data Items**
 
@@ -4132,6 +4221,7 @@ class SecsS12F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 12
     _function = 2
 
@@ -4147,7 +4237,7 @@ class SecsS12F02(SecsStreamFunction):
 
 
 class SecsS12F03(SecsStreamFunction):
-    """map setup data - request
+    r"""map setup data - request
 
     **Data Items**
 
@@ -4206,6 +4296,7 @@ class SecsS12F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 3
 
@@ -4231,7 +4322,7 @@ class SecsS12F03(SecsStreamFunction):
 
 
 class SecsS12F04(SecsStreamFunction):
-    """map setup data
+    r"""map setup data
 
     **Data Items**
 
@@ -4320,6 +4411,7 @@ class SecsS12F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 4
 
@@ -4351,7 +4443,7 @@ class SecsS12F04(SecsStreamFunction):
 
 
 class SecsS12F05(SecsStreamFunction):
-    """map transmit inquire
+    r"""map transmit inquire
 
     **Data Items**
 
@@ -4386,6 +4478,7 @@ class SecsS12F05(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 5
 
@@ -4406,7 +4499,7 @@ class SecsS12F05(SecsStreamFunction):
 
 
 class SecsS12F06(SecsStreamFunction):
-    """map transmit - grant
+    r"""map transmit - grant
 
     **Data Items**
 
@@ -4428,6 +4521,7 @@ class SecsS12F06(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 12
     _function = 6
 
@@ -4443,7 +4537,7 @@ class SecsS12F06(SecsStreamFunction):
 
 
 class SecsS12F07(SecsStreamFunction):
-    """map data type 1 - send
+    r"""map data type 1 - send
 
     **Data Items**
 
@@ -4496,6 +4590,7 @@ class SecsS12F07(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 7
 
@@ -4520,7 +4615,7 @@ class SecsS12F07(SecsStreamFunction):
 
 
 class SecsS12F08(SecsStreamFunction):
-    """map data type 1 - acknowledge
+    r"""map data type 1 - acknowledge
 
     **Data Items**
 
@@ -4542,6 +4637,7 @@ class SecsS12F08(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 12
     _function = 8
 
@@ -4557,7 +4653,7 @@ class SecsS12F08(SecsStreamFunction):
 
 
 class SecsS12F09(SecsStreamFunction):
-    """map data type 2 - send
+    r"""map data type 2 - send
 
     **Data Items**
 
@@ -4592,6 +4688,7 @@ class SecsS12F09(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 9
 
@@ -4612,7 +4709,7 @@ class SecsS12F09(SecsStreamFunction):
 
 
 class SecsS12F10(SecsStreamFunction):
-    """map data type 2 - acknowledge
+    r"""map data type 2 - acknowledge
 
     **Data Items**
 
@@ -4634,6 +4731,7 @@ class SecsS12F10(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 12
     _function = 10
 
@@ -4649,7 +4747,7 @@ class SecsS12F10(SecsStreamFunction):
 
 
 class SecsS12F11(SecsStreamFunction):
-    """map data type 3 - send
+    r"""map data type 3 - send
 
     **Data Items**
 
@@ -4702,6 +4800,7 @@ class SecsS12F11(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 11
 
@@ -4726,7 +4825,7 @@ class SecsS12F11(SecsStreamFunction):
 
 
 class SecsS12F12(SecsStreamFunction):
-    """map data type 3 - acknowledge
+    r"""map data type 3 - acknowledge
 
     **Data Items**
 
@@ -4748,6 +4847,7 @@ class SecsS12F12(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: byte
     """
+
     _stream = 12
     _function = 12
 
@@ -4763,7 +4863,7 @@ class SecsS12F12(SecsStreamFunction):
 
 
 class SecsS12F13(SecsStreamFunction):
-    """map data type 1 - request
+    r"""map data type 1 - request
 
     **Data Items**
 
@@ -4792,6 +4892,7 @@ class SecsS12F13(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 13
 
@@ -4810,7 +4911,7 @@ class SecsS12F13(SecsStreamFunction):
 
 
 class SecsS12F14(SecsStreamFunction):
-    """map data type 1
+    r"""map data type 1
 
     **Data Items**
 
@@ -4863,6 +4964,7 @@ class SecsS12F14(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 14
 
@@ -4887,7 +4989,7 @@ class SecsS12F14(SecsStreamFunction):
 
 
 class SecsS12F15(SecsStreamFunction):
-    """map data type 2 - request
+    r"""map data type 2 - request
 
     **Data Items**
 
@@ -4916,6 +5018,7 @@ class SecsS12F15(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 15
 
@@ -4934,7 +5037,7 @@ class SecsS12F15(SecsStreamFunction):
 
 
 class SecsS12F16(SecsStreamFunction):
-    """map data type 2
+    r"""map data type 2
 
     **Data Items**
 
@@ -4969,6 +5072,7 @@ class SecsS12F16(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 16
 
@@ -4989,7 +5093,7 @@ class SecsS12F16(SecsStreamFunction):
 
 
 class SecsS12F17(SecsStreamFunction):
-    """map data type 3 - request
+    r"""map data type 3 - request
 
     **Data Items**
 
@@ -5021,6 +5125,7 @@ class SecsS12F17(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 17
 
@@ -5040,7 +5145,7 @@ class SecsS12F17(SecsStreamFunction):
 
 
 class SecsS12F18(SecsStreamFunction):
-    """map data type 3
+    r"""map data type 3
 
     **Data Items**
 
@@ -5093,6 +5198,7 @@ class SecsS12F18(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 18
 
@@ -5117,7 +5223,7 @@ class SecsS12F18(SecsStreamFunction):
 
 
 class SecsS12F19(SecsStreamFunction):
-    """map error report - send
+    r"""map error report - send
 
     **Data Items**
 
@@ -5146,6 +5252,7 @@ class SecsS12F19(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 12
     _function = 19
 
@@ -5164,7 +5271,7 @@ class SecsS12F19(SecsStreamFunction):
 
 
 class SecsS14F00(SecsStreamFunction):
-    """abort transaction stream 14
+    r"""abort transaction stream 14
 
     **Structure**::
 
@@ -5181,6 +5288,7 @@ class SecsS14F00(SecsStreamFunction):
     :param value: function has no parameters
     :type value: None
     """
+
     _stream = 14
     _function = 0
 
@@ -5196,7 +5304,7 @@ class SecsS14F00(SecsStreamFunction):
 
 
 class SecsS14F01(SecsStreamFunction):
-    """GetAttr request
+    r"""GetAttr request
 
     **Data Items**
 
@@ -5261,6 +5369,7 @@ class SecsS14F01(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 14
     _function = 1
 
@@ -5300,7 +5409,7 @@ class SecsS14F01(SecsStreamFunction):
 
 
 class SecsS14F02(SecsStreamFunction):
-    """GetAttr data
+    r"""GetAttr data
 
     **Data Items**
 
@@ -5392,6 +5501,7 @@ class SecsS14F02(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 14
     _function = 2
 
@@ -5431,7 +5541,7 @@ class SecsS14F02(SecsStreamFunction):
 
 
 class SecsS14F03(SecsStreamFunction):
-    """SetAttr request
+    r"""SetAttr request
 
     **Data Items**
 
@@ -5483,6 +5593,7 @@ class SecsS14F03(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 14
     _function = 3
 
@@ -5509,7 +5620,7 @@ class SecsS14F03(SecsStreamFunction):
 
 
 class SecsS14F04(SecsStreamFunction):
-    """SetAttr data
+    r"""SetAttr data
 
     **Data Items**
 
@@ -5601,6 +5712,7 @@ class SecsS14F04(SecsStreamFunction):
     :param value: parameters for this function (see example)
     :type value: dict
     """
+
     _stream = 14
     _function = 4
 

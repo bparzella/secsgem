@@ -36,6 +36,7 @@ class HsmsHeader:
         HsmsHeader({sessionID:0x0064, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, requireResponse:False})
 
     """
+
     def __init__(self, system, session_id):
         self.sessionID = session_id
         self.requireResponse = False
@@ -46,10 +47,12 @@ class HsmsHeader:
         self.system = system
 
     def __str__(self):
+        """Generate string representation for an object of this class"""
         return '{sessionID:0x%04x, stream:%02d, function:%02d, pType:0x%02x, sType:0x%02x, system:0x%08x, requireResponse:%r}' % \
             (self.sessionID, self.stream, self.function, self.pType, self.sType, self.system, self.requireResponse)
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         return "%s(%s)" % (self.__class__.__name__, self.__str__())
 
     def encode(self):
@@ -340,6 +343,7 @@ class HsmsPacket:
         HsmsPacket({'header': HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
 
     """
+
     def __init__(self, header=None, data=b""):
         if header is None:
             self.header = HsmsHeader(0, 0)
@@ -349,10 +353,12 @@ class HsmsPacket:
         self.data = data
 
     def __str__(self):
+        """Generate string representation for an object of this class"""
         data = "'header': " + self.header.__str__()
         return data
 
     def __repr__(self):
+        """Generate textual representation for an object of this class"""
         return "%s({'header': %s, 'data': '%s'})" % (self.__class__.__name__, self.header.__repr__(), self.data.decode("utf-8"))
 
     def encode(self):
@@ -378,7 +384,7 @@ class HsmsPacket:
 
     @staticmethod
     def decode(text):
-        """Decode byte array hsms packet to HsmsPacket object
+        r"""Decode byte array hsms packet to HsmsPacket object
 
         :returns: received packet object
         :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
