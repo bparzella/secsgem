@@ -384,7 +384,7 @@ class HsmsPacket:
 
     @staticmethod
     def decode(text):
-        r"""Decode byte array hsms packet to HsmsPacket object
+        """Decode byte array hsms packet to HsmsPacket object
 
         :returns: received packet object
         :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
