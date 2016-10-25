@@ -11,13 +11,13 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 setup(
     name='secsgem',
 
-    version='0.0.5',
+    version='0.0.6',
 
     description='Python SECS/GEM implementation',
     long_description=long_description,
 
     url='https://github.com/bparzella/secsgem',
-    download_url='https://github.com/bparzella/secsgem/tarball/v0.0.5',
+    download_url='https://github.com/bparzella/secsgem/tarball/v0.0.6',
 
     author='Benjamin Parzella',
     author_email='bparzella@gmail.com',
