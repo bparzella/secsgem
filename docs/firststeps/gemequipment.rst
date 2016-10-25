@@ -1,7 +1,8 @@
-How to implement an equipment
-=============================
+Implementing a GEM equipment
+============================
 
-This package can be used to create a GEM equipment implementation. This is done by subclassing the :class:`secsgem.gem.equipmenthandler.GemEquipmentHandler` class::
+This package can be used to create a GEM equipment implementation.
+This is done by subclassing the :class:`secsgem.gem.equipmenthandler.GemEquipmentHandler` class::
 
     import secsgem
     import code
@@ -16,6 +17,7 @@ This package can be used to create a GEM equipment implementation. This is done 
     code.interact("equipment object is available as variable 'h', press ctrl-d to stop", local=locals())
 
     h.disable()
+
 
 Using your own name
 -------------------

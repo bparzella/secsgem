@@ -658,8 +658,10 @@ class SecsVarArray(SecsVar):
         self.data = []
         if isinstance(dataFormat, list):
             self.name = SecsVarList.get_name_from_format(dataFormat)
-        else:
+        elif hasattr(dataFormat, "__name__"):
             self.name = dataFormat.__name__
+        else:
+            self.name = "UNKNOWN"
 
         if value is not None:
             self.set(value)

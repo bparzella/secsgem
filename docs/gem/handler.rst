@@ -24,7 +24,7 @@ The handler also implements a maintains a communication state, which is defined 
     This is process program test1
     >>> client.disable()
 
-Waiting for the communicating state can also be done asynchronious
+Waiting for the communicating state can also be done asynchronous
 
     >>> def on_communicating(event, data):
     ...     print "Communicating"

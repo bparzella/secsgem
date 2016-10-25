@@ -58,7 +58,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'secsgem'
-copyright = u'2015, Benjamin Parzella'
+copyright = u'2015-2016, Benjamin Parzella'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
