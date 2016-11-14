@@ -211,8 +211,8 @@ class EquipmentConstant(object):
 
     If use_callbacks is disabled, you can set the value with the value property.
 
-    :param svid: ID of the equipment constant
-    :type svid: various
+    :param ecid: ID of the equipment constant
+    :type ecid: various
     :param name: long name
     :type name: string
     :param min_value: minimum value
@@ -254,20 +254,16 @@ class Alarm(object):
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callback
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_sv_value_request`.
-
-    :param svid: ID of the status variable
-    :type svid: various
-    :param name: long name of the status variable
+    :param alid: ID of the alarm
+    :type alid: various
+    :param name: long name of the alarm
     :type name: string
-    :param unit: unit (see SEMI E5, Units of Measure)
-    :type unit: string
-    :param value_type: type of the status variable
-    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
-    :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-    :type use_callback: boolean
+    :param text: alarm text
+    :type text: string
+    :param ce_on: collection event for alarm set
+    :type ce_on: types supported by data item CEID
+    :param ce_off: collection event for alarm cleared
+    :type ce_off: types supported by data item CEID
     """
 
     def __init__(self, alid, name, text, code, ce_on, ce_off, **kwargs):
