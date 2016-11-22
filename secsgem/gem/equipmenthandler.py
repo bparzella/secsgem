@@ -1261,7 +1261,7 @@ class GemEquipmentHandler(GemHandler):
         
         kwargs = {}
         for param in message.PARAMS.get():
-            kwargs[bytes(param['CPNAME'])]=param['CPVAL']
+            kwargs[param['CPNAME']]=param['CPVAL']
 
         callback(**kwargs)
 
