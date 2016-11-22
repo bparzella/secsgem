@@ -1263,8 +1263,6 @@ class GemEquipmentHandler(GemHandler):
         for param in message.PARAMS.get():
             kwargs[bytes(param['CPNAME'])]=param['CPVAL']
 
-        print kwargs
-
         callback(**kwargs)
 
         self.trigger_collection_events([self._remote_commands[rcmd_name].ce_finished])
