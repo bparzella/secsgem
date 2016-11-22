@@ -21,10 +21,12 @@ import unittest
 from dateutil.tz import tzlocal
 from dateutil.parser import parse
 
+from mock import Mock
+
 import secsgem
 from secsgem.secs.variables import SecsVarString, SecsVarU4
 from secsgem.gem.equipmenthandler import DataValue, StatusVariable, CollectionEvent, \
-    CollectionEventLink, CollectionEventReport, EquipmentConstant, Alarm
+    CollectionEventLink, CollectionEventReport, EquipmentConstant, Alarm, RemoteCommand
 
 from testGemHandler import GemHandlerPassiveGroup
 from testconnection import HsmsTestServer
@@ -179,6 +181,28 @@ class TestAlarm(unittest.TestCase):
         self.assertEqual(alarm.ce_off, 200025)
         self.assertEqual(alarm.param1, "param1")
         self.assertEqual(alarm.param2, 2)
+
+
+class TestRemoteCommand(unittest.TestCase):
+    def testConstructorWithInt(self):
+        rcmd = RemoteCommand(123, "TestRCMD", [], 100025, param1="param1", param2=2)
+
+        self.assertEqual(rcmd.rcmd, 123)
+        self.assertEqual(rcmd.name, "TestRCMD")
+        self.assertEqual(rcmd.params, [])
+        self.assertEqual(rcmd.ce_finished, 100025)
+        self.assertEqual(rcmd.param1, "param1")
+        self.assertEqual(rcmd.param2, 2)
+
+    def testConstructorWithStr(self):
+        rcmd = RemoteCommand("TEST_RCMD", "TestRCMD", [], 100025, param1="param1", param2=2)
+
+        self.assertEqual(rcmd.rcmd, "TEST_RCMD")
+        self.assertEqual(rcmd.name, "TestRCMD")
+        self.assertEqual(rcmd.params, [])
+        self.assertEqual(rcmd.ce_finished, 100025)
+        self.assertEqual(rcmd.param1, "param1")
+        self.assertEqual(rcmd.param2, 2)
 
 
 class TestGemEquipmentHandler(unittest.TestCase):
@@ -713,6 +737,14 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.client.alarms.update({
             25: secsgem.Alarm(25, "test alarm", "test text", secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
             30: secsgem.Alarm(30, "test alarm 2", "test text 2", secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.EQUIPMENT_SAFETY, 100030, 200030),
+        })
+
+    def setupTestRemoteCommands(self):
+        self.client.collection_events.update({
+            5001: secsgem.CollectionEvent(5001, "TEST_RCMD complete", []),
+        })
+        self.client.remote_commands.update({
+            "TEST_RCMD": secsgem.RemoteCommand("TEST_RCMD", "test rcmd", ["TEST_PARAMETER"], 5001),
         })
 
     def sendCEDefineReport(self, dataid=100, rptid=1000, vid=[30], empty_data=False):
@@ -1982,3 +2014,201 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(AL25[0].get(), secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(AL25[1].get(), 25)
         self.assertEqual(AL25[2].get(), "test text")
+
+    def testRemoteCommand(self):
+        self.setupTestRemoteCommands()
+        self.establishCommunication()
+
+        function = self.sendCEDefineReport(vid=[secsgem.SVID_CLOCK])
+        self.assertEqual(function.get(), 0)
+        function = self.sendCELinkReport(ceid=5001)
+        self.assertEqual(function.get(), 0)
+        function = self.sendCEEnableReport(ceid=[5001])
+        self.assertEqual(function.get(), 0)
+
+        f = Mock()
+
+        self.client.callbacks.rcmd_TEST_RCMD = f
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "TEST_RCMD", "PARAMS": [{"CPNAME": "TEST_PARAMETER", "CPVAL": ""}]})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.ACK_FINISH_LATER)
+
+        packet = self.server.expect_packet(stream=6)
+
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 6)
+        self.assertEqual(packet.header.function, 11)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function.get())
+        self.assertEqual(function.CEID.get(), 5001)
+
+        f.assert_called_once_with(TEST_PARAMETER="")
+
+    def testRemoteCommandUnregisteredCommand(self):
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "UNKNOWN_RCMD", "PARAMS": []})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.INVALID_COMMAND)
+
+    def testRemoteCommandUnregisteredCallback(self):
+        self.setupTestRemoteCommands()
+        self.establishCommunication()
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "TEST_RCMD", "PARAMS": []})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.INVALID_COMMAND)
+
+    def testRemoteCommandUnknownParameter(self):
+        self.setupTestRemoteCommands()
+        self.establishCommunication()
+
+        f = Mock()
+
+        self.client.callbacks.rcmd_TEST_RCMD = f
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "TEST_RCMD", "PARAMS": [{"CPNAME": "INVALID_PARAMETER", "CPVAL": ""}]})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.PARAMETER_INVALID)
+
+        assert not f.called
+
+    def testRemoteCommandSTART(self):
+        self.setupTestRemoteCommands()
+        self.establishCommunication()
+
+        function = self.sendCEDefineReport(vid=[secsgem.SVID_CLOCK])
+        self.assertEqual(function.get(), 0)
+        function = self.sendCELinkReport(ceid=secsgem.CEID_CMD_START_DONE)
+        self.assertEqual(function.get(), 0)
+        function = self.sendCEEnableReport(ceid=[secsgem.CEID_CMD_START_DONE])
+        self.assertEqual(function.get(), 0)
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "START", "PARAMS": []})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.ACK_FINISH_LATER)
+
+        packet = self.server.expect_packet(stream=6)
+
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 6)
+        self.assertEqual(packet.header.function, 11)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function.get())
+        self.assertEqual(function.CEID.get(), secsgem.CEID_CMD_START_DONE)
+
+    def testRemoteCommandSTOP(self):
+        self.setupTestRemoteCommands()
+        self.establishCommunication()
+
+        function = self.sendCEDefineReport(vid=[secsgem.SVID_CLOCK])
+        self.assertEqual(function.get(), 0)
+        function = self.sendCELinkReport(ceid=secsgem.CEID_CMD_STOP_DONE)
+        self.assertEqual(function.get(), 0)
+        function = self.sendCEEnableReport(ceid=[secsgem.CEID_CMD_STOP_DONE])
+        self.assertEqual(function.get(), 0)
+
+        system_id = self.server.get_next_system_counter()
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS02F41({"RCMD": "STOP", "PARAMS": []})))
+
+        packet = self.server.expect_packet(system_id=system_id)
+
+        self.assertIsNot(packet, None)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 2)
+        self.assertEqual(packet.header.function, 42)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function)
+        self.assertEqual(function.HCACK.get(), secsgem.HCACK.ACK_FINISH_LATER)
+
+        packet = self.server.expect_packet(stream=6)
+
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
+
+        self.assertIsNotNone(packet)
+        self.assertEqual(packet.header.sType, 0x00)
+        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.stream, 6)
+        self.assertEqual(packet.header.function, 11)
+
+        function = self.client.secs_decode(packet)
+
+        self.assertIsNotNone(function.get())
+        self.assertEqual(function.CEID.get(), secsgem.CEID_CMD_STOP_DONE)
+

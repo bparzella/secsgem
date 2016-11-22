@@ -173,4 +173,23 @@ The collection events for the alarm must be provided when adding the alarm. For 
         def clear_sample_alarm():
             self.clear_alarm(25)
 
+Adding remote commands
+----------------------
+
+A remote command can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.RemoteCommand` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.remote_commands` dictionary.
+The collection event and parameters for the remote command must be provided when adding it. For an example see the section above::
+
+    class SampleEquipment(secsgem.GemEquipmentHandler):
+        def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+
+            self.collection_events.update({
+                5001: secsgem.CollectionEvent(5001, "TEST_RCMD complete", []),
+            })
+            self.remote_commands.update({
+                "TEST_RCMD": secsgem.RemoteCommand("TEST_RCMD", "test rcmd", ["TEST_PARAMETER"], 5001),
+            })
+
+        def on_rcmd_TEST_RCMD(self, TEST_PARAMETER):
+            print "remote command TEST_RCMD received"
 

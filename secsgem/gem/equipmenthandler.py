@@ -19,7 +19,7 @@ from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, \
     SecsVarI4, SecsVarBinary
-from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD
+from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD, HCACK
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -37,6 +37,11 @@ CEID_EQUIPMENT_OFFLINE = 1
 CEID_CONTROL_STATE_LOCAL = 2
 CEID_CONTROL_STATE_REMOTE = 3
 
+CEID_CMD_START_DONE = 20
+CEID_CMD_STOP_DONE = 21
+
+RCMD_START = "START"
+RCMD_STOP = "STOP"
 
 class DataValue(object):
     """Data value definition
@@ -285,6 +290,39 @@ class Alarm(object):
             setattr(self, key, value)
 
 
+class RemoteCommand(object):
+    """Remote command definition
+
+    You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+    Custom parameters can be set with the keyword arguments,
+    they will be passed to the GemEquipmentHandlers callback
+    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler._on_rcmd_<remote_command>`.
+
+    :param rcmd: ID of the status variable
+    :type rcmd: various
+    :param name: long name of the status variable
+    :type name: string
+    :param params: array of available parameter names
+    :type params: list
+    :param ce_finished: collection event to trigger when remote command was finished
+    :type ce_finished: types supported by data item CEID
+    """
+
+    def __init__(self, rcmd, name, params, ce_finished, **kwargs):
+        self.rcmd = rcmd
+        self.name = name
+        self.params = params
+        self.ce_finished = ce_finished
+
+        if isinstance(self.rcmd, int):
+            self.id_type = SecsVarU4
+        else:
+            self.id_type = SecsVarString
+
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
 class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions.
 
@@ -332,6 +370,8 @@ class GemEquipmentHandler(GemHandler):
             CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
             CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
             CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
+            CEID_CMD_START_DONE: CollectionEvent(CEID_CMD_START_DONE, "CmdStartDone", []),
+            CEID_CMD_STOP_DONE: CollectionEvent(CEID_CMD_STOP_DONE, "CmdStopDone", []),
         }
 
         self._equipment_constants = {
@@ -340,6 +380,11 @@ class GemEquipmentHandler(GemHandler):
         }
 
         self._alarms = {
+        }
+
+        self._remote_commands = {
+            RCMD_START: RemoteCommand(RCMD_START, "Start", [], CEID_CMD_START_DONE),
+            RCMD_STOP: RemoteCommand(RCMD_STOP, "Stop", [], CEID_CMD_STOP_DONE),
         }
 
         self._registered_reports = {}
@@ -1168,6 +1213,68 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(5, 8)(result)
 
+    # remote commands
+
+    @property
+    def remote_commands(self):
+        """The list of the remote commands
+
+        :returns: Remote command list
+        :rtype: list of :class:`secsgem.gem.equipmenthandler.RemoteCommand`
+        """
+        return self._remote_commands
+
+    def _on_s02f41(self, handler, packet):
+        """Callback handler for Stream 2, Function 41, host command send
+
+        The remote command handing differs from usual stream function handling, because we send the ack with later completion first.
+        Then we run the actual remote command callback and signal success with the matching collection event.
+        
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        del handler  # unused parameters
+
+        message = self.secs_decode(packet)
+
+        rcmd_name = message.RCMD.get()
+        rcmd_callback_name = "rcmd_" + rcmd_name
+
+        if rcmd_name not in self._remote_commands:
+            self.logger.info("remote command %s not registered", rcmd_name)
+            return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
+
+        if rcmd_callback_name not in self._callback_handler:
+            self.logger.warn("callback for remote command %s not available", rcmd_name)
+            return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
+
+        for param in message.PARAMS:
+            if param.CPNAME.get() not in self._remote_commands[rcmd_name].params: 
+                self.logger.warn("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
+                return self.stream_function(2, 42)({"HCACK": HCACK.PARAMETER_INVALID, "PARAMS": []})
+
+        self.send_response(self.stream_function(2, 42)({"HCACK": HCACK.ACK_FINISH_LATER, "PARAMS": []}), packet.header.system)
+
+        callback = getattr(self._callback_handler, rcmd_callback_name)
+        
+        kwargs = {}
+        for param in message.PARAMS.get():
+            kwargs[bytes(param['CPNAME'])]=param['CPVAL']
+
+        print kwargs
+
+        callback(**kwargs)
+
+        self.trigger_collection_events([self._remote_commands[rcmd_name].ce_finished])
+
+    def _on_rcmd_START(self):
+        self.logger.warn("remote command START not implemented, this is required for GEM compliance")
+
+    def _on_rcmd_STOP(self):
+        self.logger.warn("remote command STOP not implemented, this is required for GEM compliance")
+    
     # helpers
 
     def _get_clock(self):

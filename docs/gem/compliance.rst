@@ -36,11 +36,11 @@ GEM Compliance
 +---------------------------------------+-----------------+-------------------+
 | `Alarm Management`_                   | Yes ✓           | No                |
 +---------------------------------------+-----------------+-------------------+
-| `Remote Control`_                     | No              | No                |
+| `Remote Control`_                     | Yes ✓           | Yes ✓             |
 +---------------------------------------+-----------------+-------------------+
-| 'Equipment Constants'_                | Yes ✓           | No                |
+| `Equipment Constants`_                | Yes ✓           | No                |
 +---------------------------------------+-----------------+-------------------+
-| 'Process Recipe Management'_          | No              | No                |
+| `Process Recipe Management`_          | No              | No                |
 +---------------------------------------+-----------------+-------------------+
 | `Material Movement`_                  | No              | No                |
 +---------------------------------------+-----------------+-------------------+
@@ -58,7 +58,7 @@ GEM Compliance
 State Models
 ++++++++++++
 
-* While the communication and control state models are implemented, the especially the control state model needs rework.
+* While the communication and control state models are implemented, especially the control state model needs rework.
 
 Equipment Processing States
 +++++++++++++++++++++++++++
@@ -94,7 +94,7 @@ Alarm Management
 Remote Control
 ++++++++++++++
 
-* Not implemented yet.
+* The START and STOP remote commands must be implemented to be GEM compliant. Currently only dummy functions are provided
 
 Equipment Constants
 +++++++++++++++++++
@@ -102,11 +102,6 @@ Equipment Constants
 * Persistence of the equipment constants is not implemented yet.
 * Limiting changing equipment to "safe" states is not yet implemented?
 * Equipment constant changed collection event is not yet implemented.
-
-Process Recipe Management
-+++++++++++++++++++++++++
-
-* Not implemented yet.
 
 Process Recipe Management
 +++++++++++++++++++++++++

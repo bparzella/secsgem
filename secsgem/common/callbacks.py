@@ -22,8 +22,8 @@ class CallbackCallWrapper(object):
         self.name = name
         self.handler = handler
 
-    def __call__(self, *args):
-        return self.handler._call(self.name, *args)  # noqa
+    def __call__(self, *args, **kwargs):
+        return self.handler._call(self.name, *args, **kwargs)  # noqa
 
 class CallbackHandler(object):
     def __init__(self):
@@ -74,12 +74,12 @@ class CallbackHandler(object):
 
         return False
 
-    def _call(self, callback, *args):
+    def _call(self, callback, *args, **kwargs):
         if callback in self._callbacks:
-            return self._callbacks[callback](*args)
+            return self._callbacks[callback](*args, **kwargs)
 
         delegate_handler = getattr(self.target, "_on_" + callback, None)
         if callable(delegate_handler):
-            return delegate_handler(*args)
+            return delegate_handler(*args, **kwargs)
 
         return None
