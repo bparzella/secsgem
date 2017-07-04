@@ -10,7 +10,7 @@ This module is still work in progress. I'd love to get your input, your use case
 [![Code Health](https://landscape.io/github/bparzella/secsgem/master/landscape.svg?style=flat)](https://landscape.io/github/bparzella/secsgem/master)
 
 
-##Installation
+## Installation
 To install the latest official release (0.0.6, 2016-10-25, https://pypi.python.org/pypi/secsgem):
 
 ```bash
@@ -23,7 +23,7 @@ To install the current development code (might be instable):
 $ pip install git+git://github.com/bparzella/secsgem
 ```
 
-##Sample
+## Sample
 
 ```python
 import logging
@@ -55,6 +55,6 @@ code.interact("host object is available as variable 'h'", local=locals())
 h.disable()
 ```
 
-##Contribute
+## Contribute
 
 This project is still at its beginning. If you can offer suggestions, additional information or help please contact me.
