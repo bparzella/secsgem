@@ -553,7 +553,7 @@ class SecsS01F16(SecsStreamFunction):
 
 
 class SecsS01F17(SecsStreamFunction):
-    """request offline
+    """request online
 
     **Structure**::
 
