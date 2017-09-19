@@ -363,7 +363,7 @@ class HsmsHandler(object):
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         """
         out_packet = HsmsPacket( \
-            HsmsStreamFunctionHeader(self.get_next_system_counter(), packet.stream, packet.function, True, self.sessionID), \
+            HsmsStreamFunctionHeader(self.get_next_system_counter(), packet.stream, packet.function, packet.is_reply_required, self.sessionID), \
             packet.encode())
 
         self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
