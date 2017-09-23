@@ -1247,12 +1247,12 @@ class GemEquipmentHandler(GemHandler):
             return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
 
         if rcmd_callback_name not in self._callback_handler:
-            self.logger.warn("callback for remote command %s not available", rcmd_name)
+            self.logger.warning("callback for remote command %s not available", rcmd_name)
             return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
 
         for param in message.PARAMS:
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params: 
-                self.logger.warn("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
+                self.logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)({"HCACK": HCACK.PARAMETER_INVALID, "PARAMS": []})
 
         self.send_response(self.stream_function(2, 42)({"HCACK": HCACK.ACK_FINISH_LATER, "PARAMS": []}), packet.header.system)
@@ -1268,10 +1268,10 @@ class GemEquipmentHandler(GemHandler):
         self.trigger_collection_events([self._remote_commands[rcmd_name].ce_finished])
 
     def _on_rcmd_START(self):
-        self.logger.warn("remote command START not implemented, this is required for GEM compliance")
+        self.logger.warning("remote command START not implemented, this is required for GEM compliance")
 
     def _on_rcmd_STOP(self):
-        self.logger.warn("remote command STOP not implemented, this is required for GEM compliance")
+        self.logger.warning("remote command STOP not implemented, this is required for GEM compliance")
     
     # helpers
 
