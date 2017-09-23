@@ -1038,6 +1038,13 @@ class TestSecsVarString(unittest.TestCase):
 
         self.assertEqual(secsvar.get(), "testString")
 
+    def testDecodeStringNonPrinting(self):
+        secsvar = SecsVarString()
+
+        secsvar.decode(b"A\ntestStrin\xc2")
+
+        self.assertEqual(secsvar.get(), u"testStrin\xc2")
+
     def testEncodeEmptyString(self):
         secsvar = SecsVarString("")
 
@@ -2199,9 +2206,10 @@ class TestSecsVarStringValues(GoodBadLists):
         {"VALUE": u"tRuE", "RESULT": "tRuE"},
         {"VALUE": u"No", "RESULT": "No"},
         {"VALUE": u"False", "RESULT": "False"},
+        {"VALUE": u"JOS\xc9", "RESULT": u"JOS\xc9"}, # CP1252
     ]
     _badUnicodeValues = [
-        {"VALUE": u'ABRA\xc3O JOS\xc9'},
+        {"VALUE": u'ABRA\u0103 JOS\xc9'},
         {"VALUE": u"TEST1", "LENGTH": 4},
     ]
 
@@ -2210,11 +2218,12 @@ class TestSecsVarStringValues(GoodBadLists):
         {"VALUE": [False, True, False, False], "RESULT": "\x00\x01\x00\x00"},
         {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": "\x00\x01\x05\x20\x10\x7F"},
         {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH": 6},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF], "RESULT": u"\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
     ]
     _badListValues = [
         {"VALUE": [1, -1, 256, 5]},
         {"VALUE": ["Test", "ASDF"]},
-        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0xFF]},
+        {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x100]},
         {"VALUE": [0x0, 0x1, 0x5, 0x20, 0x10, 0x7F], "LENGTH": 5},
     ]
 
@@ -2222,11 +2231,12 @@ class TestSecsVarStringValues(GoodBadLists):
     _goodTupleValues = [
         {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": "\x00\x01\x05\x20\x10\x7F"},
         {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH": 6},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF), "RESULT": u"\x00\x01\x05\x20\x10\xFF", "LENGTH": 6},
     ]
     _badTupleValues = [
         {"VALUE": (1, -1, 256, 5)},
         {"VALUE": ("Test", "ASDF")},
-        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0xFF)},
+        {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x100)},
         {"VALUE": (0x0, 0x1, 0x5, 0x20, 0x10, 0x7F), "LENGTH": 5},
     ]
 
@@ -2234,9 +2244,9 @@ class TestSecsVarStringValues(GoodBadLists):
     _goodByteArrayValues = [
         {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "RESULT": "\x00\x01\x05\x20\x10\x7F"},
         {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "RESULT": "\x00\x01\x05\x20\x10\x7F", "LENGTH" : 6},
+        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF"), "RESULT": u"\x00\x01\x05\x20\x10\xFF", "LENGTH" : 6},
     ]
     _badByteArrayValues = [
-        {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\xFF")},
         {"VALUE": bytearray(b"\x00\x01\x05\x20\x10\x7F"), "LENGTH" : 5},
     ]
 

@@ -1272,7 +1272,7 @@ class SecsVarText(SecsVar):
             return True
 
         if isinstance(value, (int, long)):
-            if 0 <= value <= 127:
+            if 0 <= value <= 255:
                 return True
             return False
 
@@ -1395,8 +1395,8 @@ class SecsVarString(SecsVarText):
     formatCode = 0o20
     textCode = u"A"
     preferredTypes = [bytes, unicode]
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
-    coding = "ascii"
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C" or ch > 127)
+    coding = "cp1252"
 
 
 class SecsVarJIS8(SecsVarText):
