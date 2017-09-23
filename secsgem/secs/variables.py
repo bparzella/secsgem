@@ -1396,7 +1396,7 @@ class SecsVarString(SecsVarText):
     textCode = u"A"
     preferredTypes = [bytes, unicode]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C" or ch > 127)
-    coding = "cp1252"
+    coding = "latin-1"
 
 
 class SecsVarJIS8(SecsVarText):
