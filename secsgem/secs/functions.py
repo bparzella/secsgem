@@ -595,18 +595,16 @@ class SecsS01F23(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F23
-        L[n]
-         CEID: A[n]
+        [
+         CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
+        ]
 
     **Example**::
 
         >>> import secsgem
         >>> secsgem.SecsS01F23()
-        S1F23
-         <L [2]
-          <U4 1 >
-          <U4 100 >
-         >.
+        S1F23 W
+         <L> .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -638,24 +636,22 @@ class SecsS01F24(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS01F24
-        L[n]
-         CEID: U1[1]
-         CEID: A[n]
-         L[n]
-          VID: U1[n]
+        L[
+         {
+          CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
+          CENAME: A
+          VID: [
+                DATA: U1/U2/U4/U8/I1/I2/I4/I8/A
+                ...
+            ]
+        ]
     
     **Example**::
 
         >>> import secsgem
         >>> secsgem.SecsS01F24()
         S1F24
-         <L [3]
-          <U4 1 >
-          <A [n] >
-		  <L [n]
-		   <U4 [1]>
-		  >
-         >.
+         <L> .
 
     :param value: parameters for this function (see example)
     :type value: byte
