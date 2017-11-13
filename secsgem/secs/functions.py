@@ -584,6 +584,103 @@ class SecsS01F17(SecsStreamFunction):
 
     _isMultiBlock = False
 
+class SecsS01F23(SecsStreamFunction):
+    """collection event name list request
+
+    **Data Items**
+
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F23
+        L[n]
+         CEID: A[n]
+
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F23()
+        S1F23
+         <L [2]
+          <U4 1 >
+          <U4 100 >
+         >.
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+
+    _stream = 1
+    _function = 23
+
+    _dataFormat = [CEID]
+
+    _toHost = False
+    _toEquipment = True
+
+    _hasReply = True
+    _isReplyRequired = True
+
+    _isMultiBlock = False
+
+class SecsS01F24(SecsStreamFunction):
+    """collection event name list response
+
+    **Data Items**
+
+    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`CENAME <secsgem.secs.dataitems.CENAME>`
+    - :class:`VID <secsgem.secs.dataitems.VID>`
+
+    **Structure**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F24
+        L[n]
+         CEID: U1[1]
+         CEID: A[n]
+         L[n]
+          VID: U1[n]
+    
+    **Example**::
+
+        >>> import secsgem
+        >>> secsgem.SecsS01F24()
+        S1F24
+         <L [3]
+          <U4 1 >
+          <A [n] >
+		  <L [n]
+		   <U4 [1]>
+		  >
+         >.
+
+    :param value: parameters for this function (see example)
+    :type value: byte
+    """
+
+    _stream = 1
+    _function = 24
+
+    _dataFormat = [
+        [
+            CEID,
+            CENAME,
+                [
+                    VID
+                ]
+        ]
+    ]
+
+    _toHost = True
+    _toEquipment = False
+
+    _hasReply = False
+    _isReplyRequired = False
+
+    _isMultiBlock = False
 
 class SecsS01F18(SecsStreamFunction):
     """online acknowledge
@@ -5769,6 +5866,8 @@ secsStreamsFunctions = {
         16: SecsS01F16,
         17: SecsS01F17,
         18: SecsS01F18,
+        23: SecsS01F23,
+        24: SecsS01F24,
     },
     2: {
         0: SecsS02F00,
