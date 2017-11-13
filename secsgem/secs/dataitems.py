@@ -611,6 +611,20 @@ class CEID(DataItemBase):
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
 
 
+class CENAME(DataItemBase):
+    """Collection event name
+
+    :Types:
+       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+    
+    **Used In Function**
+        - :class:`SecsS01F24 <secsgem.secs.functions.SecsS01F24>`
+    
+    """
+
+    __type__ = SecsVarString
+
+
 class COLCT(DataItemBase):
     """Column count in dies
 
