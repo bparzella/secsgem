@@ -608,7 +608,7 @@ class SecsS01F23(SecsStreamFunction):
           <L [2]
             <U1 1 >
             <U1 100 >
-          >.
+          > .
 
     :param value: parameters for this function (see example)
     :type value: byte
@@ -660,7 +660,7 @@ class SecsS01F24(SecsStreamFunction):
           <L [2]
             <L [3]
               <U1 1 >
-              <A "EquipmentOffline" >
+              <A "EquipmentOffline">
               <L>
             >
             <L [3]
@@ -668,7 +668,7 @@ class SecsS01F24(SecsStreamFunction):
               <A>
               <L>
             >
-          >.
+          > .
 
     :param value: parameters for this function (see example)
     :type value: byte
