@@ -606,8 +606,8 @@ class SecsS01F23(SecsStreamFunction):
         >>> secsgem.SecsS01F23([1,100])
         S1F23 W
           <L [2]
-            <U4 1 >
-            <U4 100 >
+            <U1 1 >
+            <U1 100 >
           >.
 
     :param value: parameters for this function (see example)
@@ -664,7 +664,7 @@ class SecsS01F24(SecsStreamFunction):
               <L>
             >
             <L [3]
-              <U4 100 >
+              <U1 100 >
               <A>
               <L>
             >
