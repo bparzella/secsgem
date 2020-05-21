@@ -24,6 +24,8 @@ import secsgem
 import secsgem.hsms.connectionstatemachine
 
 from testconnection import HsmsTestServer
+
+
 class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
@@ -38,12 +40,12 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
         self.client.disable()
 
     def testInitialState(self):
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testConnect(self):
         self.server.simulate_connect()
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_NOT_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_NOT_SELECTED)
 
 
     def testUnselectedDisconnect(self):
@@ -51,7 +53,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
         self.server.simulate_disconnect()
 
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testSelection(self):
         self.server.simulate_connect()
@@ -59,7 +61,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(self.server.get_next_system_counter())))
         self.assertIsNotNone(self.server.expect_packet(s_type=2))
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
     def testSelectedDisconnect(self):
         self.server.simulate_connect()
@@ -69,7 +71,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
         self.server.simulate_disconnect()
 
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
 
 class TestSecsConnectionStateModelActive(unittest.TestCase):
@@ -86,18 +88,18 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
         self.client.disable()
 
     def testInitialState(self):
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testConnect(self):
         self.server.simulate_connect()
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_NOT_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_NOT_SELECTED)
 
         request_packet = self.server.expect_packet(s_type=1)
         self.assertIsNotNone(request_packet)
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
     def testSelectedDisconnect(self):
         self.server.simulate_connect()
@@ -108,20 +110,20 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         self.server.simulate_disconnect()
 
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testUnselectedDisconnect(self):
         self.server.simulate_connect()
         self.server.simulate_disconnect()
 
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testNotYetSelected(self):
         self.server.simulate_connect()
 
         self.assertIsNotNone(self.server.expect_packet(s_type=1))
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_NOT_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_NOT_SELECTED)
 
     def testSelection(self):
         self.server.simulate_connect()
@@ -130,7 +132,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
         self.assertIsNotNone(request_packet)
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
 
-        self.assertEqual(self.client.connectionState.state, 'CONNECTED_SELECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
     def testSelectedDisconnect(self):
         self.server.simulate_connect()
@@ -141,7 +143,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         self.server.simulate_disconnect()
 
-        self.assertEqual(self.client.connectionState.state, 'NOT_CONNECTED')
+        self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
 class TestConnectionStateMachine(unittest.TestCase):
     def setUp(self):
@@ -149,41 +151,38 @@ class TestConnectionStateMachine(unittest.TestCase):
 
     # tests for supported state transitions
     def testInitialState(self):
-        self.assertEqual(self.stateMachine.state, 'NOT_CONNECTED')
-        self.assertTrue(self.stateMachine.is_NOT_CONNECTED())
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testNotConnected2Connected(self):
         self.stateMachine.connect()
-        self.assertEqual(self.stateMachine.state, 'CONNECTED_NOT_SELECTED')
-        self.assertTrue(self.stateMachine.is_CONNECTED_NOT_SELECTED())
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_NOT_SELECTED)
 
     def testConnectedNotSelected2NotConnected(self):
         self.stateMachine.connect()
         self.stateMachine.disconnect()
-        self.assertEqual(self.stateMachine.state, 'NOT_CONNECTED')
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testConnectedSelected2NotConnected(self):
         self.stateMachine.connect()
         self.stateMachine.select()
         self.stateMachine.disconnect()
-        self.assertEqual(self.stateMachine.state, 'NOT_CONNECTED')
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     def testConnectedNotSelected2ConnectedSelected(self):
         self.stateMachine.connect()
         self.stateMachine.select()
-        self.assertEqual(self.stateMachine.state, 'CONNECTED_SELECTED')
-        self.assertTrue(self.stateMachine.is_CONNECTED_SELECTED())
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
     def testConnectedSelected2ConnectedNotSelected(self):
         self.stateMachine.connect()
         self.stateMachine.select()
         self.stateMachine.deselect()
-        self.assertEqual(self.stateMachine.state, 'CONNECTED_NOT_SELECTED')
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_NOT_SELECTED)
 
     def testConnectedNotSelected2NotConnectedT7(self):
         self.stateMachine.connect()
         self.stateMachine.timeoutT7()
-        self.assertEqual(self.stateMachine.state, 'NOT_CONNECTED')
+        self.assertEqual(self.stateMachine.state, secsgem.hsms.connectionstatemachine.STATE_NOT_CONNECTED)
 
     # tests for unsupported state transitions
     def testUnconnectedDisconnect(self):

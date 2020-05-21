@@ -16,32 +16,55 @@
 """Contains the state machine for the connection state."""
 
 from transitions.extensions import HierarchicalMachine as Machine
+from transitions.extensions.nesting import NestedState
+NestedState.separator = '_'
+
+STATE_NOT_CONNECTED = "NOT-CONNECTED"
+STATE_CONNECTED = "CONNECTED"
+STATE_NOT_SELECTED = "NOT-SELECTED"
+STATE_CONNECTED_NOT_SELECTED = "{}{}{}".format(STATE_CONNECTED, NestedState.separator, STATE_NOT_SELECTED)
+STATE_SELECTED = "SELECTED"
+STATE_CONNECTED_SELECTED = "{}{}{}".format(STATE_CONNECTED, NestedState.separator, STATE_SELECTED)
+
 
 class ConnectionStateMachine(object):
-    states = ["NOT_CONNECTED", {'name': 'CONNECTED', 'children': ['NOT_SELECTED', 'SELECTED']}]
 
     def __init__(self, callbacks=None):
-        self.machine = Machine(model=self, states=ConnectionStateMachine.states, initial='NOT_CONNECTED', auto_transitions=False, queued=True)  # transition 1
+        self.callbacks = {}
 
-        if callbacks is None:
-            self.callbacks = {}
-        else:
+        self.states = [STATE_NOT_CONNECTED,
+                       {
+                            'name': STATE_CONNECTED,
+                            'on_enter': self._on_enter_CONNECTED,
+                            'on_exit': self._on_exit_CONNECTED,
+                            'children': [
+                                STATE_NOT_SELECTED,
+                                {
+                                    'name': STATE_SELECTED,
+                                    'on_enter': self._on_enter_CONNECTED_SELECTED
+                                }
+                            ]
+                       }]
+
+        self.machine = Machine(model=self, states=self.states, initial=STATE_NOT_CONNECTED, auto_transitions=False)  # transition 1
+
+        if callbacks:
             self.callbacks = callbacks
 
-        self.machine.add_transition('connect', 'NOT_CONNECTED', 'CONNECTED_NOT_SELECTED')  # transition 2
-        self.machine.add_transition('disconnect', 'CONNECTED', 'NOT_CONNECTED')  # transition 3
-        self.machine.add_transition('select', 'CONNECTED_NOT_SELECTED', 'CONNECTED_SELECTED')  # transition 4
-        self.machine.add_transition('deselect', 'CONNECTED_SELECTED', 'CONNECTED_NOT_SELECTED')  # transition 5
-        self.machine.add_transition('timeoutT7', 'CONNECTED_NOT_SELECTED', 'NOT_CONNECTED')  # transition 6
+        self.machine.add_transition('connect', STATE_NOT_CONNECTED, STATE_CONNECTED_NOT_SELECTED)  # transition 2
+        self.machine.add_transition('disconnect', STATE_CONNECTED, STATE_NOT_CONNECTED)  # transition 3
+        self.machine.add_transition('select', STATE_CONNECTED_NOT_SELECTED, STATE_CONNECTED_SELECTED)  # transition 4
+        self.machine.add_transition('deselect', STATE_CONNECTED_SELECTED, STATE_CONNECTED_NOT_SELECTED)  # transition 5
+        self.machine.add_transition('timeoutT7', STATE_CONNECTED_NOT_SELECTED, STATE_NOT_CONNECTED)  # transition 6
 
-    def on_enter_CONNECTED(self):
+    def _on_enter_CONNECTED(self):
         if "on_enter_CONNECTED" in self.callbacks:
             self.callbacks["on_enter_CONNECTED"]()
 
-    def on_exit_CONNECTED(self):
+    def _on_exit_CONNECTED(self):
         if "on_exit_CONNECTED" in self.callbacks:
             self.callbacks["on_exit_CONNECTED"]()
 
-    def on_enter_CONNECTED_SELECTED(self):
+    def _on_enter_CONNECTED_SELECTED(self):
         if "on_enter_CONNECTED_SELECTED" in self.callbacks:
             self.callbacks["on_enter_CONNECTED_SELECTED"]()
