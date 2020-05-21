@@ -1,4 +1,3 @@
 python-dateutil
 transitions>=0.8.1
 Mock
-future

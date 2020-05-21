@@ -14,8 +14,6 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-from __future__ import print_function
-
 import threading
 import unittest
 

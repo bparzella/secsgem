@@ -15,8 +15,6 @@
 #####################################################################
 """Contains callback handling routines"""
 
-from future.utils import implements_iterator
-
 class CallbackCallWrapper(object):
     def __init__(self, handler, name):
         self.name = name
@@ -44,7 +42,6 @@ class CallbackHandler(object):
     def __getattr__(self, name):
         return CallbackCallWrapper(self, name)
 
-    @implements_iterator
     class CallbacksIter(object):
         def __init__(self, keys):
             self._keys = list(keys)

@@ -16,8 +16,6 @@
 # pylint: disable=I0011, W0401
 """module imports"""
 
-from __future__ import absolute_import
-
 from .handler import *  # noqa
 from .equipmenthandler import *  # noqa
 from .hosthandler import *  # noqa

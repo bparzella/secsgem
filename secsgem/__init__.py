@@ -16,8 +16,6 @@
 # pylint: disable=I0011, W0401
 """module imports"""
 
-from __future__ import absolute_import
-
 from .hsms import *  # noqa
 from .secs import *  # noqa
 

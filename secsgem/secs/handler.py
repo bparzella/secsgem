@@ -15,8 +15,6 @@
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
-from __future__ import absolute_import
-
 import logging
 import threading
 import copy

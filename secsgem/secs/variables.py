@@ -15,9 +15,7 @@
 #####################################################################
 """SECS variable types"""
 
-from past.builtins import long, unicode
 from builtins import chr  # noqa
-from future.utils import implements_iterator
 
 import struct
 import inspect
@@ -204,8 +202,8 @@ class SecsVarDynamic(SecsVar):
         elif isinstance(other, list):
             return other == self.value.value
         else:
-            if isinstance(other, (bytes, unicode)) and isinstance(self.value.value, (bytes, unicode)):
-                return (unicode(other) == unicode(self.value.value)) 
+            if isinstance(other, (bytes, str)) and isinstance(self.value.value, (bytes, str)):
+                return (str(other) == str(self.value.value))
             else: 
                 return [other] == self.value.value
 
@@ -395,7 +393,6 @@ class SecsVarList(SecsVar):
     textCode = 'L'
     preferredTypes = [dict]
 
-    @implements_iterator
     class SecsVarListIter(object):
         def __init__(self, keys):
             self._keys = list(keys)
@@ -631,7 +628,6 @@ class SecsVarArray(SecsVar):
     textCode = 'L'
     preferredTypes = [list]
 
-    @implements_iterator
     class SecsVarArrayIter(object):
         def __init__(self, values):
             self._values = values
@@ -870,7 +866,7 @@ class SecsVarBinary(SecsVar):
         if isinstance(value, bool):
             return True
 
-        if isinstance(value, (int, long)):
+        if isinstance(value, int):
             if 0 <= value <= 255:
                 return True
             return False
@@ -900,7 +896,7 @@ class SecsVarBinary(SecsVar):
                 return False
             return True
 
-        elif isinstance(value, unicode):
+        elif isinstance(value, str):
             if self.count > 0 and len(value) > self.count:
                 return False
             try:
@@ -923,13 +919,13 @@ class SecsVarBinary(SecsVar):
 
         if isinstance(value, bytes):
             value = bytearray(value)
-        elif isinstance(value, unicode):
+        elif isinstance(value, str):
             value = bytearray(value.encode('ascii'))
         elif isinstance(value, list) or isinstance(value, tuple):
             value = bytearray(value)
         elif isinstance(value, bytearray):
             pass
-        elif isinstance(value, int) or isinstance(value, long):
+        elif isinstance(value, int):
             if 0 <= value <= 255:
                 value = bytearray([value])
             else:
@@ -1056,12 +1052,12 @@ class SecsVarBoolean(SecsVar):
         if isinstance(value, bool):
             return True
 
-        if isinstance(value, (int, long)):
+        if isinstance(value, int):
             if 0 <= value <= 1:
                 return True
             return False
 
-        if isinstance(value, str) or isinstance(value, unicode):
+        if isinstance(value, str) or isinstance(value, str):
             if value.upper() in self._trueStrings or value.upper() in self._falseStrings:
                 return True
 
@@ -1097,13 +1093,13 @@ class SecsVarBoolean(SecsVar):
         if isinstance(value, bool):
             return value
 
-        if isinstance(value, int) or isinstance(value, long):
+        if isinstance(value, int):
             if not 0 <= value <= 1:
                 raise ValueError("Value {} out of bounds".format(value))
 
             return bool(value)
 
-        if isinstance(value, str) or isinstance(value, unicode):
+        if isinstance(value, str) or isinstance(value, str):
             if value.upper() in self._trueStrings:
                 return True
             elif value.upper() in self._falseStrings:
@@ -1271,7 +1267,7 @@ class SecsVarText(SecsVar):
         if isinstance(value, bool):
             return True
 
-        if isinstance(value, (int, long)):
+        if isinstance(value, int):
             if 0 <= value <= 255:
                 return True
             return False
@@ -1299,11 +1295,11 @@ class SecsVarText(SecsVar):
             if self.count > 0 and len(value) > self.count:
                 return False
             return True
-        elif isinstance(value, (int, long, float, complex)):
+        elif isinstance(value, (int, float, complex)):
             if self.count > 0 and len(str(value)) > self.count:
                 return False
             return True
-        elif isinstance(value, unicode):
+        elif isinstance(value, str):
             if self.count > 0 and len(value) > self.count:
                 return False
             try:
@@ -1327,10 +1323,10 @@ class SecsVarText(SecsVar):
         elif isinstance(value, bytearray):
             value = bytes(value).decode(self.coding)
         elif isinstance(value, list) or isinstance(value, tuple):
-            value = unicode(bytes(bytearray(value)).decode(self.coding))
-        elif isinstance(value, int) or isinstance(value, long) or isinstance(value, float) or isinstance(value, complex):
+            value = str(bytes(bytearray(value)).decode(self.coding))
+        elif isinstance(value, int) or isinstance(value, float) or isinstance(value, complex):
             value = str(value)
-        elif isinstance(value, unicode):
+        elif isinstance(value, str):
             value.encode(self.coding)  # try if it can be encoded as ascii (values 0-127)
         else:
             raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
@@ -1338,7 +1334,7 @@ class SecsVarText(SecsVar):
         if 0 < self.count < len(value) :
             raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
-        self.value = unicode(value)
+        self.value = str(value)
 
     def get(self):
         """Return the internal value
@@ -1394,7 +1390,7 @@ class SecsVarString(SecsVarText):
 
     formatCode = 0o20
     textCode = u"A"
-    preferredTypes = [bytes, unicode]
+    preferredTypes = [bytes, str]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C" or ch > 127)
     coding = "latin-1"
 
@@ -1410,7 +1406,7 @@ class SecsVarJIS8(SecsVarText):
 
     formatCode = 0o21
     textCode = u"J"
-    preferredTypes = [bytes, unicode]
+    preferredTypes = [bytes, str]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
     coding = "jis-8"
 
@@ -1486,12 +1482,12 @@ class SecsVarNumber(SecsVar):
         if isinstance(value, bool):
             return True
 
-        if isinstance(value, long) or isinstance(value, int) or isinstance(value, float):
+        if isinstance(value, int) or isinstance(value, float):
             if value < self._min or value > self._max:
                 return False
             return True
 
-        if isinstance(value, bytes) or isinstance(value, unicode):
+        if isinstance(value, bytes) or isinstance(value, str):
             try:
                 val = self._basetype(value)
             except ValueError:
@@ -1638,7 +1634,7 @@ class SecsVarI8(SecsVarNumber):
     _max = 9223372036854775807
     _bytes = 8
     _structCode = "q"
-    preferredTypes = [long, int]
+    preferredTypes = [int]
 
 
 class SecsVarI1(SecsVarNumber):
@@ -1657,7 +1653,7 @@ class SecsVarI1(SecsVarNumber):
     _max = 127
     _bytes = 1
     _structCode = "b"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 
 
 class SecsVarI2(SecsVarNumber):
@@ -1676,7 +1672,7 @@ class SecsVarI2(SecsVarNumber):
     _max = 32767
     _bytes = 2
     _structCode = "h"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 
 
 class SecsVarI4(SecsVarNumber):
@@ -1695,7 +1691,7 @@ class SecsVarI4(SecsVarNumber):
     _max = 2147483647
     _bytes = 4
     _structCode = "l"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 
 
 class SecsVarF8(SecsVarNumber):
@@ -1752,7 +1748,7 @@ class SecsVarU8(SecsVarNumber):
     _max = 18446744073709551615
     _bytes = 8
     _structCode = "Q"
-    preferredTypes = [long, int]
+    preferredTypes = [int]
 
 
 class SecsVarU1(SecsVarNumber):
@@ -1771,7 +1767,7 @@ class SecsVarU1(SecsVarNumber):
     _max = 255
     _bytes = 1
     _structCode = "B"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 
 
 class SecsVarU2(SecsVarNumber):
@@ -1790,7 +1786,7 @@ class SecsVarU2(SecsVarNumber):
     _max = 65535
     _bytes = 2
     _structCode = "H"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 
 
 class SecsVarU4(SecsVarNumber):
@@ -1809,5 +1805,5 @@ class SecsVarU4(SecsVarNumber):
     _max = 4294967295
     _bytes = 4
     _structCode = "L"
-    preferredTypes = [int, long]
+    preferredTypes = [int]
 

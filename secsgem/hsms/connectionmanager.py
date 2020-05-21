@@ -15,8 +15,6 @@
 #####################################################################
 """Contains class for handling multiple connections."""
 
-from __future__ import absolute_import
-
 import logging
 
 from ..common.events import EventProducer

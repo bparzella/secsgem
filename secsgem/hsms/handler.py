@@ -15,8 +15,6 @@
 #####################################################################
 """Contains class to create model for hsms endpoints."""
 
-from __future__ import absolute_import
-
 import random
 import threading
 import logging

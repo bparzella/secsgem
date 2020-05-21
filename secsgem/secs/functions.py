@@ -16,8 +16,6 @@
 # pylint: disable=I0011, W0403, W0401, W0614
 """Wrappers for SECS stream and functions"""
 
-from __future__ import absolute_import
-
 from .functionbase import SecsStreamFunction
 from .dataitems import *
 

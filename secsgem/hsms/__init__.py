@@ -16,8 +16,6 @@
 # pylint: disable=I0011, W0401
 """module imports"""
 
-from __future__ import absolute_import
-
 from .connections import *  # noqa
 from .connectionmanager import *  # noqa
 from .packets import *  # noqa

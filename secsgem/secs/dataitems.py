@@ -16,9 +16,6 @@
 # pylint: disable=I0011, W0233
 """Data items for functions"""
 
-from __future__ import absolute_import
-from future.utils import with_metaclass
-
 from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
@@ -31,7 +28,7 @@ class DataItemMeta(type):
         return type.__new__(mcs, name, bases, attrs)
 
 # DataItemBase initializes __type__ member as base class and provides get_format
-class DataItemBase(with_metaclass(DataItemMeta)):
+class DataItemBase(metaclass=DataItemMeta):
     __type__ = None
     __allowedtypes__ = None
     __count__ = -1

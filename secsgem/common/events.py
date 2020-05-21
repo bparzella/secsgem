@@ -15,8 +15,6 @@
 #####################################################################
 """Contains helper functions"""
 
-from future.utils import implements_iterator
-
 class Event(object):
     """Class to handle the callbacks for a single event"""
 
@@ -64,7 +62,6 @@ class Targets(object):
         self._targets.remove(other)
         return self
 
-    @implements_iterator
     class TargetsIter(object):
         def __init__(self, values):
             self._values = values
@@ -141,7 +138,6 @@ class EventProducer(object):
         """Generate representation for an object"""
         return "{}: {}".format(self.__class__.__name__, self._events) 
 
-    @implements_iterator
     class EventsIter(object):
         def __init__(self, keys):
             self._keys = list(keys)

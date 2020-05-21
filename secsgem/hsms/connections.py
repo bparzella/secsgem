@@ -15,8 +15,6 @@
 #####################################################################
 """Contains objects and functions to create and handle hsms connection."""
 
-from __future__ import absolute_import
-
 import logging
 import socket
 import select
