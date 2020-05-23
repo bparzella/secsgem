@@ -1,5 +1,5 @@
 #####################################################################
-# testconnection.py
+# test_connection.py
 #
 # (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
 #

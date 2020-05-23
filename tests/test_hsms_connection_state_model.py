@@ -23,7 +23,7 @@ from transitions import MachineError
 import secsgem
 import secsgem.hsms.connectionstatemachine
 
-from testconnection import HsmsTestServer
+from test_connection import HsmsTestServer
 
 
 class TestSecsConnectionStateModelPassive(unittest.TestCase):

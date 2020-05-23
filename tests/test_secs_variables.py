@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #####################################################################
-# testSecsVariables.py
+# test_secs_variables.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -18,7 +18,8 @@
 import sys
 
 import unittest
-import nose
+
+import pytest
 
 from secsgem.secs.variables import *
 from secsgem.secs.dataitems import MDLN, OBJACK, SOFTREV, SVID
@@ -1869,14 +1870,8 @@ class GoodBadLists(object):
         print(self._type.__name__, "testing assignment of good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
 
         secsvar.set(value["VALUE"])
-        nose.tools.eq_(secsvar.get(), value["RESULT"])
+        assert secsvar.get() == value["RESULT"]
 
-    def testGoodAssignment(self):
-        for valueList in self.goodValues:
-            for value in valueList:
-                yield self.goodAssignmentCheck, value
-
-    @nose.tools.raises(TypeError, ValueError)
     def badAssignmentCheck(self, value):
         if "LENGTH" in value:
             secsvar = self._type(count=value["LENGTH"])
@@ -1884,13 +1879,9 @@ class GoodBadLists(object):
             secsvar = self._type()
 
         print(self._type.__name__, "testing assignment of bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
-        secsvar.set(value["VALUE"])
+        with pytest.raises((ValueError, TypeError)):
+            secsvar.set(value["VALUE"])
         print(self._type.__name__, "unexpected bad assignment", secsvar.get())
-
-    def testBadAssignment(self):
-        for valueList in self.badValues:
-            for value in valueList:
-                yield self.badAssignmentCheck, value
 
     def goodSupportedCheck(self, value):
         if "LENGTH" in value:
@@ -1899,12 +1890,8 @@ class GoodBadLists(object):
             secsvar = self._type()
 
         print(self._type.__name__, "testing isSupported for good", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
-        nose.tools.eq_(secsvar.supports_value(value["VALUE"]), True)
 
-    def testGoodSupported(self):
-        for valueList in self.goodValues:
-            for value in valueList:
-                yield self.goodSupportedCheck, value
+        assert secsvar.supports_value(value["VALUE"])
 
     def badSupportedCheck(self, value):
         if "LENGTH" in value:
@@ -1913,12 +1900,9 @@ class GoodBadLists(object):
             secsvar = self._type()
 
         print(self._type.__name__, "testing isSupported for bad", type(value["VALUE"]).__name__, "value", printable_value(value["VALUE"]))
-        nose.tools.eq_(secsvar.supports_value(value["VALUE"]), False)
 
-    def testBadSupported(self):
-        for valueList in self.badValues:
-            for value in valueList:
-                yield self.badSupportedCheck, value
+        assert secsvar.supports_value(value["VALUE"]) is False
+
 
 class TestSecsVarBinaryValues(GoodBadLists):
     _type = SecsVarBinary
@@ -2021,6 +2005,23 @@ class TestSecsVarBinaryValues(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarBooleanValues(GoodBadLists):
     _type = SecsVarBoolean
@@ -2136,6 +2137,23 @@ class TestSecsVarBooleanValues(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
+
 class TestSecsVarStringValues(GoodBadLists):
     _type = SecsVarString
 
@@ -2250,6 +2268,23 @@ class TestSecsVarStringValues(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarI8Values(GoodBadLists):
     _type = SecsVarI8
@@ -2384,6 +2419,23 @@ class TestSecsVarI8Values(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
+
 class TestSecsVarI1Values(GoodBadLists):
     _type = SecsVarI1
 
@@ -2511,6 +2563,23 @@ class TestSecsVarI1Values(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarI2Values(GoodBadLists):
     _type = SecsVarI2
@@ -2640,6 +2709,23 @@ class TestSecsVarI2Values(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarI4Values(GoodBadLists):
     _type = SecsVarI4
@@ -2772,6 +2858,23 @@ class TestSecsVarI4Values(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
+
 class TestSecsVarF8Values(GoodBadLists):
     _type = SecsVarF8
 
@@ -2883,6 +2986,23 @@ class TestSecsVarF8Values(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
+
 class TestSecsVarF4Values(GoodBadLists):
     _type = SecsVarF4
 
@@ -2993,6 +3113,23 @@ class TestSecsVarF4Values(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarU8Values(GoodBadLists):
     _type = SecsVarU8
@@ -3121,6 +3258,23 @@ class TestSecsVarU8Values(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
+
 class TestSecsVarU1Values(GoodBadLists):
     _type = SecsVarU1
 
@@ -3241,6 +3395,23 @@ class TestSecsVarU1Values(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarU2Values(GoodBadLists):
     _type = SecsVarU2
@@ -3366,6 +3537,23 @@ class TestSecsVarU2Values(GoodBadLists):
 
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)
+
 
 class TestSecsVarU4Values(GoodBadLists):
     _type = SecsVarU4
@@ -3494,3 +3682,18 @@ class TestSecsVarU4Values(GoodBadLists):
     goodValues = [_goodBoolValues, _goodFloatValues, _goodIntValues, _goodLongValues, _goodComplexValues, _goodStringValues, _goodUnicodeValues, _goodListValues, _goodTupleValues, _goodByteArrayValues]
     badValues = [_badBoolValues, _badFloatValues, _badIntValues, _badLongValues, _badComplexValues, _badStringValues, _badUnicodeValues, _badListValues, _badTupleValues, _badByteArrayValues]
 
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_assignment(self, value):
+        self.goodAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_assignment(self, value):
+        self.badAssignmentCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in goodValues for item in sublist])
+    def test_good_supported(self, value):
+        self.goodSupportedCheck(value)
+
+    @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
+    def test_bad_supported(self, value):
+        self.badSupportedCheck(value)

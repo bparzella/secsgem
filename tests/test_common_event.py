@@ -1,5 +1,5 @@
 #####################################################################
-# testCommonEvent.py
+# test_common_event.py
 #
 # (c) Copyright 2016, Benjamin Parzella. All rights reserved.
 #

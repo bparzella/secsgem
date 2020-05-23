@@ -1,5 +1,5 @@
 #####################################################################
-# testSecsFunctions.py
+# test_secs_functions.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -15,10 +15,12 @@
 #####################################################################
 import unittest
 
+import pytest
+
 from secsgem.secs.functions import *
 
 
-class testSecsFunctionNoData(object):
+class testSecsFunctionNoData:
     cls = None
 
     # test constructor
@@ -295,14 +297,30 @@ class testFunctionBase(unittest.TestCase):
         with self.assertRaises(AttributeError):
             item.Item1 = 11
 
-def check_stream_number(stream, cls):
-    assert stream == cls._stream
 
-def check_function_number(function, cls):
-    assert function == cls._function
-
-def test_streams_functions():
+def generate_stream_list():
+    streams = []
     for stream in secsStreamsFunctions:
         for function in secsStreamsFunctions[stream]:
-            yield (check_stream_number, stream, secsStreamsFunctions[stream][function])
-            yield (check_function_number, function, secsStreamsFunctions[stream][function])
+            streams.append((stream, secsStreamsFunctions[stream][function]))
+
+    return streams
+
+
+def generate_function_list():
+    streams = []
+    for stream in secsStreamsFunctions:
+        for function in secsStreamsFunctions[stream]:
+            streams.append((function, secsStreamsFunctions[stream][function]))
+
+    return streams
+
+
+@pytest.mark.parametrize("stream,cls", generate_stream_list())
+def test_stream_number(stream, cls):
+    assert stream == cls._stream
+
+
+@pytest.mark.parametrize("function,cls", generate_function_list())
+def test_function_number(function, cls):
+    assert function == cls._function

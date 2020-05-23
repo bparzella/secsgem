@@ -46,7 +46,8 @@ class ConnectionStateMachine(object):
                             ]
                        }]
 
-        self.machine = Machine(model=self, states=self.states, initial=STATE_NOT_CONNECTED, auto_transitions=False)  # transition 1
+        # transition 1
+        self.machine = Machine(model=self, states=self.states, initial=STATE_NOT_CONNECTED, auto_transitions=False)
 
         if callbacks:
             self.callbacks = callbacks

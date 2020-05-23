@@ -1,5 +1,5 @@
 #####################################################################
-# testGemEquipmentHandler.py
+# test_gem_equipment_handler.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -28,8 +28,8 @@ from secsgem.secs.variables import SecsVarString, SecsVarU4
 from secsgem.gem.equipmenthandler import DataValue, StatusVariable, CollectionEvent, \
     CollectionEventLink, CollectionEventReport, EquipmentConstant, Alarm, RemoteCommand
 
-from testGemHandler import GemHandlerPassiveGroup
-from testconnection import HsmsTestServer
+from test_gem_handler import GemHandlerPassiveGroup
+from test_connection import HsmsTestServer
 
 class TestDataValue(unittest.TestCase):
     def testConstructorWithInt(self):
@@ -331,7 +331,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
 
@@ -347,7 +347,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F00()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertEqual(self.client.controlState.current, "HOST_OFFLINE")
 
@@ -363,7 +363,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
 
@@ -396,7 +396,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
 
@@ -442,7 +442,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
 
@@ -696,7 +696,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         function = self.sendSVRequest([secsgem.SVID_ALARMS_SET])
         self.assertEqual(function[0].get(), [25])
@@ -710,7 +710,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         function = self.sendSVRequest([secsgem.SVID_ALARMS_SET])
         self.assertEqual(function[0].get(), [])
@@ -1241,7 +1241,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
         self.assertEqual(packet.header.sType, 0x00)
@@ -1577,7 +1577,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1598,7 +1598,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1623,7 +1623,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
 
@@ -1638,7 +1638,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1653,7 +1653,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1662,7 +1662,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
 
@@ -1683,7 +1683,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1692,7 +1692,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1709,7 +1709,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
         
@@ -1741,7 +1741,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1767,7 +1767,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1795,7 +1795,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1812,7 +1812,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
 
@@ -1834,7 +1834,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1847,7 +1847,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS06F12(0)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
 
@@ -1868,7 +1868,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1884,7 +1884,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertTrue(self.client.alarms[25].set)
 
@@ -1908,7 +1908,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.start()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertFalse(self.client.alarms[25].set)
 

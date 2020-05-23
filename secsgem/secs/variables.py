@@ -26,10 +26,11 @@ from collections import OrderedDict
 from ..common import indent_block
 from ..common.codec_jis_x_0201 import *  # noqa
 
-class SecsVar(object):
-    """Base class for SECS variables. 
 
-    Due to the python types, wrapper classes for variables are required. 
+class SecsVar(object):
+    """Base class for SECS variables.
+
+    Due to the python types, wrapper classes for variables are required.
     If constructor is called with SecsVar or subclass only the value is copied.
     """
 
@@ -104,14 +105,17 @@ class SecsVar(object):
         :rtype: string
         """
         if length < 0:
-            raise ValueError("Encoding {} not possible, data length too small {}".format(self.__class__.__name__, length))
+            raise ValueError("Encoding {} not possible, data length too small {}"
+                             .format(self.__class__.__name__, length))
         if length > 0xFFFFFF:
-            raise ValueError("Encoding {} not possible, data length too big {}".format(self.__class__.__name__, length))
+            raise ValueError("Encoding {} not possible, data length too big {}"
+                             .format(self.__class__.__name__, length))
 
         if length > 0xFFFF:
             length_bytes = 3
             format_byte = (self.formatCode << 2) | length_bytes
-            return bytes(bytearray((format_byte, (length & 0xFF0000) >> 16, (length & 0x00FF00) >> 8, (length & 0x0000FF))))
+            return bytes(bytearray((format_byte, (length & 0xFF0000) >> 16, (length & 0x00FF00) >> 8,
+                                    (length & 0x0000FF))))
         elif length > 0xFF:
             length_bytes = 2
             format_byte = (self.formatCode << 2) | length_bytes
@@ -151,7 +155,8 @@ class SecsVar(object):
             text_pos += 1
 
         if 0 <= self.formatCode != format_code:
-            raise ValueError("Decoding data for {} ({}) has invalid format {}".format(self.__class__.__name__, self.formatCode, format_code))
+            raise ValueError("Decoding data for {} ({}) has invalid format {}"
+                             .format(self.__class__.__name__, self.formatCode, format_code))
 
         return text_pos, format_code, length
 
@@ -204,7 +209,7 @@ class SecsVarDynamic(SecsVar):
         else:
             if isinstance(other, (bytes, str)) and isinstance(self.value.value, (bytes, str)):
                 return (str(other) == str(self.value.value))
-            else: 
+            else:
                 return [other] == self.value.value
 
     def __hash__(self):
@@ -226,7 +231,8 @@ class SecsVarDynamic(SecsVar):
     def set(self, value):
         """Set the internal value to the provided value
 
-        In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.SecsVar` class, to avoid confusion.
+        In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.SecsVar` class,
+        to avoid confusion.
 
         **Example**::
 
@@ -245,19 +251,22 @@ class SecsVarDynamic(SecsVar):
         if isinstance(value, SecsVar):
             if isinstance(value, SecsVarDynamic):
                 if not isinstance(value.value, tuple(self.types)) and self.types:
-                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.value.__class__.__name__, self.types))
+                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}"
+                                     .format(value.value.__class__.__name__, self.types))
 
                 self.value = value.value
             else:
                 if not isinstance(value, tuple(self.types)) and self.types:
-                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}".format(value.__class__.__name__, self.types))
+                    raise ValueError("Unsupported type {} for this instance of SecsVarDynamic, allowed {}"
+                                     .format(value.__class__.__name__, self.types))
 
                 self.value = value
         else:
             matched_type = self._match_type(value)
 
             if matched_type is None:
-                raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'.format(value, value.__class__.__name__, self.types))
+                raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'
+                                 .format(value, value.__class__.__name__, self.types))
 
             self.value = matched_type(count=self.count)
             self.value.set(value)
@@ -331,10 +340,10 @@ class SecsVarDynamic(SecsVar):
 
     def _match_type(self, value):
         var_types = self.types
-        #if no types are set use internal order
+        # if no types are set use internal order
         if not self.types:
-            var_types = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-                SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+            var_types = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4,
+                         SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
         # first try to find the preferred type for the kind of value
         for var_type in var_types:
@@ -374,8 +383,9 @@ class ANYVALUE(SecsVarDynamic):
     def __init__(self, value=None):
         self.name = self.__class__.__name__
 
-        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, \
-            SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary], value=value)
+        super(self.__class__, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8,
+                                              SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8,
+                                              SecsVarString, SecsVarBinary], value=value)
 
 
 class SecsVarList(SecsVar):
@@ -484,7 +494,8 @@ class SecsVarList(SecsVar):
         if isinstance(value, type(self.data[index])) or isinstance(value, self.data[index].__class__.__bases__):
             self.data[index] = value
         elif isinstance(value, SecsVar):
-            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[index].__class__.__name__))
+            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
+                                                                     self.data[index].__class__.__name__))
         else:
             self.data[index].set(value)
 
@@ -525,7 +536,8 @@ class SecsVarList(SecsVar):
             if isinstance(value, type(self.data[item])) or isinstance(value, self.data[item].__class__.__bases__):
                 self.data[item] = value
             elif isinstance(value, SecsVar):
-                raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[item].__class__.__name__))
+                raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
+                                                                         self.data[item].__class__.__name__))
             else:
                 self.data[item].set(value)
         else:
@@ -559,8 +571,9 @@ class SecsVarList(SecsVar):
                 self.data[field_name].set(value[field_name])
         elif isinstance(value, list):
             if len(value) > len(self.data):
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(len(self.data), len(value)))
-           
+                raise ValueError("Value has invalid field count (expected: {}, actual: {})"
+                                 .format(len(self.data), len(value)))
+
             counter = 0
             for itemvalue in value:
                 self.data[list(self.data.keys())[counter]].set(itemvalue)
@@ -576,7 +589,7 @@ class SecsVarList(SecsVar):
         """
         data = {}
         for field_name in self.data:
-            data[field_name] = self.data[field_name].get() 
+            data[field_name] = self.data[field_name].get()
 
         return data
 
@@ -712,7 +725,8 @@ class SecsVarArray(SecsVar):
         if isinstance(value, type(self.data[key])) or isinstance(value, self.data[key].__class__.__bases__):
             self.data[key] = value
         elif isinstance(value, SecsVar):
-            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__, self.data[key].__class__.__name__))
+            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
+                                                                     self.data[key].__class__.__name__))
         else:
             self.data[key].set(value)
 
@@ -737,7 +751,8 @@ class SecsVarArray(SecsVar):
 
         if self.count >= 0:
             if not len(value) == self.count:
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})".format(self.count, len(value)))
+                raise ValueError("Value has invalid field count (expected: {}, actual: {})"
+                                 .format(self.count, len(value)))
 
         self.data = []
 
@@ -929,11 +944,12 @@ class SecsVarBinary(SecsVar):
             if 0 <= value <= 255:
                 value = bytearray([value])
             else:
-                raise ValueError("Value {} of type {} is out of range for {}".format(value, type(value).__name__, self.__class__.__name__))
+                raise ValueError("Value {} of type {} is out of range for {}".format(value, type(value).__name__,
+                                                                                     self.__class__.__name__))
         else:
             raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
-        if 0 < self.count < len(value) :
+        if 0 < self.count < len(value):
             raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
         self.value = value
@@ -1205,7 +1221,7 @@ class SecsVarText(SecsVar):
 
     formatCode = -1
     textCode = u""
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
     coding = ""
 
     def __init__(self, value="", count=-1):
@@ -1331,7 +1347,7 @@ class SecsVarText(SecsVar):
         else:
             raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
-        if 0 < self.count < len(value) :
+        if 0 < self.count < len(value):
             raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
 
         self.value = str(value)
@@ -1391,7 +1407,7 @@ class SecsVarString(SecsVarText):
     formatCode = 0o20
     textCode = u"A"
     preferredTypes = [bytes, str]
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C" or ch > 127)
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C" or ch > 127)
     coding = "latin-1"
 
 
@@ -1407,7 +1423,7 @@ class SecsVarJIS8(SecsVarText):
     formatCode = 0o21
     textCode = u"J"
     preferredTypes = [bytes, str]
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0]=="C")
+    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
     coding = "jis-8"
 
 
@@ -1419,7 +1435,7 @@ class SecsVarNumber(SecsVar):
     :param count: number of items this value
     :type count: integer
     """
-    
+
     formatCode = 0
     textCode = ""
     _basetype = int
@@ -1519,7 +1535,6 @@ class SecsVarNumber(SecsVar):
             return True
         else:
             return self.__check_single_item_support(value)
-
 
     def set(self, value):
         """Set the internal value to the provided value
@@ -1797,7 +1812,7 @@ class SecsVarU4(SecsVarNumber):
     :param count: number of items this value
     :type count: integer
     """
-    
+
     formatCode = 0o54
     textCode = "U4"
     _basetype = int
@@ -1806,4 +1821,3 @@ class SecsVarU4(SecsVarNumber):
     _bytes = 4
     _structCode = "L"
     preferredTypes = [int]
-

@@ -1,5 +1,5 @@
 #####################################################################
-# testGemHostHandler.py
+# test_gem_host_handler.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -20,8 +20,8 @@ import unittest
 
 import secsgem
 
-from testconnection import HsmsTestServer
-from testGemHandler import GemHandlerPassiveGroup
+from test_connection import HsmsTestServer
+from test_gem_handler import GemHandlerPassiveGroup
 
 class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.GemHostHandler
@@ -80,7 +80,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def subscribeCollectionEvent(self, ceid, dvs, report_id):
         clientCommandThread = threading.Thread(target=self.client.subscribe_collection_event, args=(ceid, dvs, report_id), name="TestGemHostHandlerPassive_subscribeCollectionEvent")
@@ -103,7 +103,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSubscribeCollectionEvent(self):
         self.establishCommunication()
@@ -163,7 +163,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSubscribeCollectionEventWithoutReportId(self):
         self.establishCommunication()
@@ -224,7 +224,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def sendRemoteCommand(self, params):
         self.establishCommunication()
@@ -254,7 +254,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSendRemoteCommandDict(self):
         self.sendRemoteCommand(OrderedDict((("PARAM1", "PARAM1"), ("PARAM2", 2))))
@@ -286,7 +286,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testGetProcessProgramList(self):
         self.establishCommunication()
@@ -308,7 +308,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testGoOnline(self):
         self.establishCommunication()
@@ -330,7 +330,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testGoOffline(self):
         self.establishCommunication()
@@ -352,7 +352,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testEnableAlarm(self):
         self.establishCommunication()
@@ -378,7 +378,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testDisableAlarm(self):
         self.establishCommunication()
@@ -404,7 +404,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListAlarmsAll(self):
         self.establishCommunication()
@@ -429,7 +429,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListAlarmSingle(self):
         self.establishCommunication()
@@ -454,7 +454,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListAlarmsEnabled(self):
         self.establishCommunication()
@@ -475,7 +475,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testReceiveAlarm(self):
         self.establishCommunication()

@@ -21,8 +21,10 @@ import threading
 from ..common.fysom import Fysom
 from ..secs.handler import SecsHandler
 
+
 class GemHandler(SecsHandler):
-    """Baseclass for creating Host/Equipment models. This layer contains GEM functionality. Inherit from this class and override required functions.
+    """Baseclass for creating Host/Equipment models. This layer contains GEM functionality.
+    Inherit from this class and override required functions.
 
     :param address: IP address of remote host
     :type address: string
@@ -48,22 +50,25 @@ class GemHandler(SecsHandler):
 
         self.isHost = True
 
-        # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states. 
+        # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states.
         # but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
         self.communicationState = Fysom({
             'initial': 'DISABLED',  # 1
             'events': [
                 {'name': 'enable', 'src': 'DISABLED', 'dst': 'ENABLED'},  # 2
-                {'name': 'disable', 'src': ['ENABLED', 'NOT_COMMUNICATING', 'COMMUNICATING', 'EQUIPMENT_INITIATED_CONNECT', 'WAIT_DELAY', 'WAIT_CRA', \
-                    "HOST_INITIATED_CONNECT", "WAIT_CR_FROM_HOST"], 'dst': 'DISABLED'},  # 3
+                {'name': 'disable', 'src': ['ENABLED', 'NOT_COMMUNICATING', 'COMMUNICATING',
+                                            'EQUIPMENT_INITIATED_CONNECT', 'WAIT_DELAY', 'WAIT_CRA',
+                                            "HOST_INITIATED_CONNECT", "WAIT_CR_FROM_HOST"], 'dst': 'DISABLED'},  # 3
                 {'name': 'select', 'src': 'NOT_COMMUNICATING', 'dst': 'EQUIPMENT_INITIATED_CONNECT'},  # 5
                 {'name': 'communicationreqfail', 'src': 'WAIT_CRA', 'dst': 'WAIT_DELAY'},  # 6
                 {'name': 'delayexpired', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 7
                 {'name': 'messagereceived', 'src': 'WAIT_DELAY', 'dst': 'WAIT_CRA'},  # 8
                 {'name': 's1f14received', 'src': 'WAIT_CRA', 'dst': 'COMMUNICATING'},  # 9
                 {'name': 'communicationfail', 'src': 'COMMUNICATING', 'dst': 'NOT_COMMUNICATING'},  # 14
-                # 15 (WAIT_CR_FROM_HOST is running in background - AND state - so if s1f13 is received we go all communicating)
-                {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'], 'dst': 'COMMUNICATING'},  
+                # 15 (WAIT_CR_FROM_HOST is running in background - AND state -
+                # so if s1f13 is received we go all communicating)
+                {'name': 's1f13received', 'src': ['WAIT_CR_FROM_HOST', 'WAIT_DELAY', 'WAIT_CRA'],
+                 'dst': 'COMMUNICATING'},
             ],
             'callbacks': {
                 'onWAIT_CRA': self._on_state_wait_cra,
@@ -99,8 +104,9 @@ class GemHandler(SecsHandler):
         :rtype: dict
         """
         data = SecsHandler._serialize_data(self)
-        data.update({'communicationState': self.communicationState.current, 'commDelayTimeout': self.establishCommunicationTimeout, \
-            'reportIDCounter': self.reportIDCounter})
+        data.update({'communicationState': self.communicationState.current,
+                     'commDelayTimeout': self.establishCommunicationTimeout,
+                     'reportIDCounter': self.reportIDCounter})
         return data
 
     def enable(self):
@@ -126,10 +132,13 @@ class GemHandler(SecsHandler):
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}), packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
+                                                                    "MDLN": []}),
+                                       packet.header.system)
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]}), \
-                        packet.header.system)
+                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
+                                                                    "MDLN": [self.MDLN, self.SOFTREV]}),
+                                       packet.header.system)
 
                 self.communicationState.s1f13received()
             elif packet.header.stream == 1 and packet.header.function == 14:
@@ -137,8 +146,9 @@ class GemHandler(SecsHandler):
         elif self.communicationState.isstate('WAIT_DELAY'):
             pass
         elif self.communicationState.isstate('COMMUNICATING'):
-            threading.Thread(target=self._handle_stream_function, args=(packet, ), \
-                name="secsgem_gemHandler_callback_S{}F{}".format(packet.header.stream, packet.header.function)).start()
+            threading.Thread(target=self._handle_stream_function, args=(packet, ),
+                             name="secsgem_gemHandler_callback_S{}F{}".format(packet.header.stream,
+                                                                              packet.header.function)).start()
 
     def _on_hsms_select(self):
         """Selected received from hsms layer"""
@@ -242,7 +252,8 @@ class GemHandler(SecsHandler):
         # send remote command
         self.logger.info("Send process program %s", ppid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)({"PPID": ppid, "PPBODY": ppbody}))).get()
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
+            {"PPID": ppid, "PPBODY": ppbody}))).get()
 
     def request_process_program(self, ppid):
         """Request a process program
@@ -305,4 +316,5 @@ class GemHandler(SecsHandler):
         if self.isHost:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
         else:
-            return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": [self.MDLN, self.SOFTREV]})
+            return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
+                                                "MDLN": [self.MDLN, self.SOFTREV]})

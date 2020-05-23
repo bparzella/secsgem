@@ -21,7 +21,7 @@ from mock import Mock
 
 import secsgem
 
-from testconnection import HsmsTestServer
+from test_connection import HsmsTestServer
 
 class TestSecsHandler(unittest.TestCase):
     def testSecsDecode(self):
@@ -158,7 +158,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testStreamFunctionReceivingUnselected(self):
         self.server.simulate_connect()
@@ -239,7 +239,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testDisableCeidReports(self):
         self.server.simulate_connect()
@@ -267,7 +267,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListSVsAll(self):
         self.server.simulate_connect()
@@ -294,7 +294,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListSVsSpecific(self):
         self.server.simulate_connect()
@@ -321,7 +321,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testRequestSVs(self):
         self.server.simulate_connect()
@@ -348,7 +348,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testRequestSV(self):
         self.server.simulate_connect()
@@ -375,7 +375,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListECsAll(self):
         self.server.simulate_connect()
@@ -403,7 +403,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testListECsSpecific(self):
         self.server.simulate_connect()
@@ -431,7 +431,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testRequestECs(self):
         self.server.simulate_connect()
@@ -458,7 +458,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testRequestEC(self):
         self.server.simulate_connect()
@@ -485,7 +485,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSetECs(self):
         self.server.simulate_connect()
@@ -512,7 +512,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSetEC(self):
         self.server.simulate_connect()
@@ -539,7 +539,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSendEquipmentTerminal(self):
         self.server.simulate_connect()
@@ -568,7 +568,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testAreYouThere(self):
         self.server.simulate_connect()
@@ -591,7 +591,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testUnhandeledFunctionCallback(self):
         self.server.simulate_connect()

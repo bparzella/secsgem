@@ -43,6 +43,7 @@ CEID_CMD_STOP_DONE = 21
 RCMD_START = "START"
 RCMD_STOP = "STOP"
 
+
 class DataValue(object):
     """Data value definition
 
@@ -323,6 +324,7 @@ class RemoteCommand(object):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+
 class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions.
 
@@ -338,11 +340,13 @@ class GemEquipmentHandler(GemHandler):
     :type name: string
     :param custom_connection_handler: object for connection handling (ie multi server)
     :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-    :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+    :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
+    "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
     :type initial_control_state: string
     """
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None, initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
+    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None,
+                 initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
         GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = False
@@ -375,7 +379,9 @@ class GemEquipmentHandler(GemHandler):
         }
 
         self._equipment_constants = {
-            ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "EstablishCommunicationsTimeout", 10, 120, 10, "sec", SecsVarI2),
+            ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
+                                                                     "EstablishCommunicationsTimeout", 10, 120, 10,
+                                                                     "sec", SecsVarI2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
         }
 
@@ -399,16 +405,19 @@ class GemEquipmentHandler(GemHandler):
                 {'name': 'initial_attempt_online', 'src': 'OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 2
                 {'name': 'initial_host_offline', 'src': 'OFFLINE', 'dst': 'HOST_OFFLINE'},  # 2
                 {'name': 'switch_online', 'src': 'EQUIPMENT_OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 3
-                {'name': 'attempt_online_fail_equipment_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 4
+                {'name': 'attempt_online_fail_equipment_offline', 'src': 'ATTEMPT_ONLINE',
+                 'dst': 'EQUIPMENT_OFFLINE'},  # 4
                 {'name': 'attempt_online_fail_host_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'HOST_OFFLINE'},  # 4
                 {'name': 'attempt_online_success', 'src': 'ATTEMPT_ONLINE', 'dst': 'ONLINE'},  # 5
-                {'name': 'switch_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"], 'dst': 'EQUIPMENT_OFFLINE'},  # 6, 12
+                {'name': 'switch_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
+                 'dst': 'EQUIPMENT_OFFLINE'},  # 6, 12
                 {'name': 'initial_online', 'src': 'CONTROL', 'dst': 'ONLINE'},  # 1
                 {'name': 'initial_online_local', 'src': 'ONLINE', 'dst': 'ONLINE_LOCAL'},  # 7
                 {'name': 'initial_online_remote', 'src': 'ONLINE', 'dst': 'ONLINE_REMOTE'},  # 7
                 {'name': 'switch_online_local', 'src': 'ONLINE_REMOTE', 'dst': 'ONLINE_LOCAL'},  # 8
                 {'name': 'switch_online_remote', 'src': 'ONLINE_LOCAL', 'dst': 'ONLINE_REMOTE'},  # 9
-                {'name': 'remote_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"], 'dst': 'HOST_OFFLINE'},  # 10
+                {'name': 'remote_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
+                 'dst': 'HOST_OFFLINE'},  # 10
                 {'name': 'remote_online', 'src': 'HOST_OFFLINE', 'dst': 'ONLINE'},  # 11
             ],
             'callbacks': {
@@ -726,7 +735,8 @@ class GemEquipmentHandler(GemHandler):
                 if self._registered_collection_events[ceid].enabled:
                     reports = self._build_collection_event(ceid)
 
-                    self.send_and_waitfor_response(self.stream_function(6, 11)({"DATAID": 1, "CEID": ceid, "RPT": reports}))
+                    self.send_and_waitfor_response(self.stream_function(6, 11)(
+                        {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
     def _on_s02f33(self, handler, packet):
         """Callback handler for Stream 2, Function 33, Define Report
@@ -1051,14 +1061,14 @@ class GemEquipmentHandler(GemHandler):
                 eac = 1
             else:
                 constant = self.equipment_constants[ec.ECID.get()]
-                
+
                 if constant.min_value is not None:
                     if ec.ECV.get() < constant.min_value:
-                        eac = 3 
+                        eac = 3
 
                 if constant.max_value is not None:
                     if ec.ECV.get() > constant.max_value:
-                        eac = 3 
+                        eac = 3
 
         if eac == 0:
             for ec in message:
@@ -1083,16 +1093,20 @@ class GemEquipmentHandler(GemHandler):
         if len(message) == 0:
             for ecid in self._equipment_constants:
                 ec = self._equipment_constants[ecid]
-                responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", \
-                    "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
+                responses.append({"ECID": ec.ecid, "ECNAME": ec.name,
+                                  "ECMIN": ec.min_value if ec.min_value is not None else "",
+                                  "ECMAX": ec.max_value if ec.max_value is not None else "",
+                                  "ECDEF": ec.default_value, "UNITS": ec.unit})
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
                     ec = self._equipment_constants[ecid]
-                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name, "ECMIN": ec.min_value if ec.min_value is not None else "", \
-                        "ECMAX": ec.max_value if ec.max_value is not None else "", "ECDEF": ec.default_value, "UNITS": ec.unit})
+                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name,
+                                      "ECMIN": ec.min_value if ec.min_value is not None else "",
+                                      "ECMAX": ec.max_value if ec.max_value is not None else "",
+                                      "ECDEF": ec.default_value, "UNITS": ec.unit})
 
         return self.stream_function(2, 30)(responses)
 
@@ -1115,14 +1129,14 @@ class GemEquipmentHandler(GemHandler):
         """
         if alid not in self.alarms:
             raise ValueError("Unknown alarm id {}".format(alid))
-        
+
         if self.alarms[alid].set:
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET , \
-                "ALID": alid, "ALTX": self.alarms[alid].text}))
-        
+            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET,
+                                                                       "ALID": alid, "ALTX": self.alarms[alid].text}))
+
         self.alarms[alid].set = True
 
         self.trigger_collection_events([self.alarms[alid].ce_on])
@@ -1135,17 +1149,18 @@ class GemEquipmentHandler(GemHandler):
         """
         if alid not in self.alarms:
             raise ValueError("Unknown alarm id {}".format(alid))
-        
+
         if not self.alarms[alid].set:
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code , "ALID": alid, "ALTX": self.alarms[alid].text}))
+            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code,
+                                                                       "ALID": alid, "ALTX": self.alarms[alid].text}))
 
         self.alarms[alid].set = False
 
         self.trigger_collection_events([self.alarms[alid].ce_off])
-        
+
     def _on_s05f03(self, handler, packet):
         """Callback handler for Stream 5, Function 3, Alarm en-/disabled
 
@@ -1160,7 +1175,7 @@ class GemEquipmentHandler(GemHandler):
 
         # 0  = Accepted
         # 1  = Error
-        result = ACKC5.ACCEPTED 
+        result = ACKC5.ACCEPTED
 
         alid = message.ALID.get()
         if alid not in self._alarms:
@@ -1190,7 +1205,8 @@ class GemEquipmentHandler(GemHandler):
             alids = list(self.alarms.keys())
 
         for alid in alids:
-            result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), "ALID": alid, "ALTX": self.alarms[alid].text})
+            result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                           "ALID": alid, "ALTX": self.alarms[alid].text})
 
         return self.stream_function(5, 6)(result)
 
@@ -1208,8 +1224,8 @@ class GemEquipmentHandler(GemHandler):
 
         for alid in list(self.alarms.keys()):
             if self.alarms[alid].enabled:
-                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0), \
-                    "ALID": alid, "ALTX": self.alarms[alid].text})
+                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                               "ALID": alid, "ALTX": self.alarms[alid].text})
 
         return self.stream_function(5, 8)(result)
 
@@ -1227,9 +1243,10 @@ class GemEquipmentHandler(GemHandler):
     def _on_s02f41(self, handler, packet):
         """Callback handler for Stream 2, Function 41, host command send
 
-        The remote command handing differs from usual stream function handling, because we send the ack with later completion first.
+        The remote command handing differs from usual stream function handling, because we send the ack with later
+        completion first.
         Then we run the actual remote command callback and signal success with the matching collection event.
-        
+
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
@@ -1251,17 +1268,18 @@ class GemEquipmentHandler(GemHandler):
             return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
 
         for param in message.PARAMS:
-            if param.CPNAME.get() not in self._remote_commands[rcmd_name].params: 
+            if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
                 self.logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)({"HCACK": HCACK.PARAMETER_INVALID, "PARAMS": []})
 
-        self.send_response(self.stream_function(2, 42)({"HCACK": HCACK.ACK_FINISH_LATER, "PARAMS": []}), packet.header.system)
+        self.send_response(self.stream_function(2, 42)({"HCACK": HCACK.ACK_FINISH_LATER, "PARAMS": []}),
+                           packet.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
-        
+
         kwargs = {}
         for param in message.PARAMS.get():
-            kwargs[param['CPNAME']]=param['CPVAL']
+            kwargs[param['CPNAME']] = param['CPVAL']
 
         callback(**kwargs)
 
@@ -1272,7 +1290,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_rcmd_STOP(self):
         self.logger.warning("remote command STOP not implemented, this is required for GEM compliance")
-    
+
     # helpers
 
     def _get_clock(self):

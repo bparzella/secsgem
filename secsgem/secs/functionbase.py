@@ -18,12 +18,14 @@
 from .variables import SecsVar
 from ..common import indent_block
 
+
 class StructureDisplayingMeta(type):
     """Meta class overriding the default __repr__ of a class"""
 
     def __repr__(cls):
         """Generate textual representation for an object of this class"""
         return cls.get_format()
+
 
 class SecsStreamFunction(metaclass=StructureDisplayingMeta):
     """Secs stream and function base class

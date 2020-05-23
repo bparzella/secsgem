@@ -1,5 +1,5 @@
 #####################################################################
-# testHsmsConnections.py
+# test_hsms_connections.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #

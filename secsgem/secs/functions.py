@@ -17,7 +17,13 @@
 """Wrappers for SECS stream and functions"""
 
 from .functionbase import SecsStreamFunction
-from .dataitems import *
+from .dataitems import MDLN, SVID, SV, SVNAME, UNITS, COMMACK, OFLACK, ONLACK, ECID, ECV, EAC, TIME, ECNAME, ECMIN, \
+    ECMAX, ECDEF, DATAID, RPTID, VID, DRACK, CEID, LRACK, CEED, ERACK, RCMD, CPNAME, CPVAL, HCACK, CPACK, ALCD, ALID, \
+    ALTX, ACKC5, ALED, TIMESTAMP, EXID, EXTYPE, EXMESSAGE, EXRECVRA, ACKA, ERRCODE, ERRTEXT, DATALENGTH, GRANT6, DSID, \
+    DVNAME, DVVAL, V, ACKC6, PPID, LENGTH, PPGNT, PPBODY, ACKC7, MHEAD, SHEAD, MEXP, EDID, TID, TEXT, ACKC10, MID, \
+    IDTYP, FNLOC, FFROT, ORLOC, RPSEL, REFP, DUTMS, XDIES, YDIES, ROWCT, COLCT, NULBC, PRDCT, PRAXI, SDACK, MAPFT, \
+    BCEQU, MLCL, GRNT1, RSINF, BINLT, MDACK, STRP, XYPOS, SDBIN, MAPER, DATLC, OBJSPEC, OBJTYPE, OBJID, ATTRID, \
+    ATTRDATA, ATTRRELN, OBJACK
 
 
 class SecsS00F00(SecsStreamFunction):
@@ -328,7 +334,8 @@ class SecsS01F12(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}, {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}])
+        >>> secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"},
+        ...     {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}])
         S1F12
           <L [2]
             <L [3]
@@ -763,7 +770,7 @@ class SecsS02F15(SecsStreamFunction):
             }
             ...
         ]
-        
+
     **Example**::
 
         >>> import secsgem
@@ -990,7 +997,8 @@ class SecsS02F30(SecsStreamFunction):
 
         >>> import secsgem
         >>> secsgem.SecsS02F30([ \
-            {"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}, \
+            {"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), \
+                "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}, \
             {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
         S2F30
           <L [2]
@@ -1069,7 +1077,8 @@ class SecsS02F33(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, {"RPTID": 1001, "VID": [1, 2355]}]})
+        >>> secsgem.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, \
+{"RPTID": 1001, "VID": [1, 2355]}]})
         S2F33 W
           <L [2]
             <U1 1 >
@@ -1382,7 +1391,8 @@ class SecsS02F41(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
+        >>> secsgem.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, \
+{"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
         S2F41 W
           <L [2]
             <A "COMMAND">
@@ -1554,7 +1564,8 @@ class SecsS05F01(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F01({"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})
+        >>> secsgem.SecsS05F01({"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
+secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})
         S5F1
           <L [3]
             <B 0x81>
@@ -1777,7 +1788,8 @@ class SecsS05F06(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F06([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        >>> secsgem.SecsS05F06([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
+secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
         S5F6
           <L [1]
             <L [3]
@@ -1867,7 +1879,8 @@ class SecsS05F08(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F08([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        >>> secsgem.SecsS05F08([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
+secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
         S5F8
           <L [1]
             <L [3]
@@ -2027,7 +2040,8 @@ class SecsS05F11(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS05F11({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", "EXMESSAGE": "Exception"})
+        >>> secsgem.SecsS05F11({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", \
+"EXMESSAGE": "Exception"})
         S5F11
           <L [4]
             <A "161006221500">
@@ -2236,7 +2250,8 @@ class SecsS05F15(SecsStreamFunction):
 
     **Example**::
         >>> import secsgem
-        >>> secsgem.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        >>> secsgem.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": \
+{"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
         S5F15
           <L [3]
             <A "161006221500">
@@ -2703,7 +2718,8 @@ class SecsS06F11(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(100)]}]})
+        >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
+["VAR", secsgem.SecsVarU4(100)]}]})
         S6F11 W
           <L [3]
             <U1 1 >
@@ -2855,7 +2871,8 @@ class SecsS06F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": ["VAR", secsgem.SecsVarU4(100)]}]})
+        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
+["VAR", secsgem.SecsVarU4(100)]}]})
         S6F16
           <L [3]
             <U1 1 >
@@ -4464,7 +4481,8 @@ class SecsS12F05(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS12F05({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "MAPFT": secsgem.MAPFT.ARRAY, "MLCL": 0})
+        >>> secsgem.SecsS12F05({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "MAPFT": secsgem.MAPFT.ARRAY, \
+"MLCL": 0})
         S12F5 W
           <L [4]
             <A "materialID">
@@ -4674,7 +4692,8 @@ class SecsS12F09(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS12F09({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
+        >>> secsgem.SecsS12F09({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], \
+"BINLT": [1, 2, 3, 4, 5, 6]})
         S12F9 W
           <L [4]
             <A "materialID">
@@ -5058,7 +5077,8 @@ class SecsS12F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS12F16({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], "BINLT": [1, 2, 3, 4, 5, 6]})
+        >>> secsgem.SecsS12F16({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], \
+"BINLT": [1, 2, 3, 4, 5, 6]})
         S12F16
           <L [4]
             <A "materialID">
@@ -5572,7 +5592,8 @@ class SecsS14F03(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], "ATTRIBS": [ {"ATTRID": "CellStatus", "ATTRDATA": "3"} ] })
+        >>> secsgem.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], \
+"ATTRIBS": [ {"ATTRID": "CellStatus", "ATTRDATA": "3"} ] })
         S14F3 W
           <L [4]
             <A>

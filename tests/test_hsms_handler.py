@@ -19,7 +19,7 @@ import unittest
 
 import secsgem
 
-from testconnection import HsmsTestServer
+from test_connection import HsmsTestServer
 
 class TestHsmsHandlerPassive(unittest.TestCase):
     def setUp(self):
@@ -220,7 +220,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectRspHeader(packet.header.system)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testDeselectWhileDisconnecting(self):
         self.server.simulate_connect()

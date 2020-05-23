@@ -1,5 +1,5 @@
 #####################################################################
-# testSecsDataItems.py
+# test_common.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -14,18 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import inspect
-import nose
+import sys
+import unittest
 
-import secsgem.secs.dataitems
+import secsgem
 
-def find_subclasses(module):
-    return [cls for name, cls in inspect.getmembers(module) if inspect.isclass(cls) and not cls.__name__.startswith("SecsVar") and not cls.__name__ == "DataItemMeta"]
 
-class TestDataItems(object):
-    def checkConstructorWithoutValue(self, cls):
-        cls()
+class TestTopLevelFunctions(unittest.TestCase):
+    def test_is_windows(self):
+        if sys.platform == "win32":
+            self.assertEqual(secsgem.common.is_windows(), True)
+        else:
+            self.assertEqual(secsgem.common.is_windows(), False)
 
-    def testDataItems(self):
-        for cls in find_subclasses(secsgem.secs.dataitems):
-            yield self.checkConstructorWithoutValue, cls
+    def test_function_name(self):
+        self.assertEqual(secsgem.common.function_name(secsgem.common.is_windows), "is_windows")
+        self.assertEqual(secsgem.common.function_name(self.test_is_windows), "TestTopLevelFunctions.test_is_windows")
+

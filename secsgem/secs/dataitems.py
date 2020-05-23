@@ -20,12 +20,14 @@ from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
+
 # DataItemMeta adds __type__ member as base class
 class DataItemMeta(type):
     def __new__(mcs, name, bases, attrs):
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
         return type.__new__(mcs, name, bases, attrs)
+
 
 # DataItemBase initializes __type__ member as base class and provides get_format
 class DataItemBase(metaclass=DataItemMeta):
@@ -418,8 +420,8 @@ class ATTRDATA(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
+                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
 class ATTRID(DataItemBase):
@@ -605,7 +607,8 @@ class CEID(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class COLCT(DataItemBase):
@@ -713,7 +716,8 @@ class CPNAME(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class CPVAL(DataItemBase):
@@ -744,7 +748,8 @@ class CPVAL(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
+    __allowedtypes__ = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4,
+                        SecsVarI8, SecsVarString, SecsVarBinary]
 
 
 class DATAID(DataItemBase):
@@ -810,7 +815,8 @@ class DATAID(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class DATALENGTH(DataItemBase):
@@ -857,7 +863,7 @@ class DATLC(DataItemBase):
 
     """
 
-    __type__ = SecsVarU1        
+    __type__ = SecsVarU1
 
 
 class DRACK(DataItemBase):
@@ -919,7 +925,8 @@ class DSID(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class DUTMS(DataItemBase):
@@ -958,7 +965,8 @@ class DVNAME(DataItemBase):
     """
 
     __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class DVVAL(DataItemBase):
@@ -987,9 +995,9 @@ class DVVAL(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
+                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
 class EAC(DataItemBase):
@@ -1017,7 +1025,7 @@ class EAC(DataItemBase):
         - :class:`SecsS02F16 <secsgem.secs.functions.SecsS02F16>`
     """
 
-    __type__ = SecsVarBinary    
+    __type__ = SecsVarBinary
     __count__ = 1
 
     ACK = 0
@@ -1048,9 +1056,9 @@ class ECDEF(DataItemBase):
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, \
-        SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
+                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
 class ECID(DataItemBase):
@@ -1074,8 +1082,9 @@ class ECID(DataItemBase):
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class ECMAX(DataItemBase):
@@ -1100,9 +1109,9 @@ class ECMAX(DataItemBase):
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, \
-        SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
+                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
 class ECMIN(DataItemBase):
@@ -1127,9 +1136,9 @@ class ECMIN(DataItemBase):
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, \
-        SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
+                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
 class ECNAME(DataItemBase):
@@ -1168,9 +1177,9 @@ class ECV(DataItemBase):
         - :class:`SecsS02F15 <secsgem.secs.functions.SecsS02F15>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, \
-        SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4,
+                        SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
 
 
 class EDID(DataItemBase):
@@ -1193,8 +1202,9 @@ class EDID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString, SecsVarBinary]
 
 
 class ERACK(DataItemBase):
@@ -1295,7 +1305,7 @@ class ERRCODE(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
@@ -1647,7 +1657,7 @@ class LENGTH(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
@@ -1744,7 +1754,7 @@ class MAPFT(DataItemBase):
     **Used In Function**
         - :class:`SecsS12F03 <secsgem.secs.functions.SecsS12F03>`
         - :class:`SecsS12F05 <secsgem.secs.functions.SecsS12F05>`
-        
+
     """
 
     __type__ = SecsVarBinary
@@ -1793,7 +1803,7 @@ class MDACK(DataItemBase):
 
 
 class MDLN(DataItemBase):
-    """Equipment model type 
+    """Equipment model type
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1900,7 +1910,7 @@ class MID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarString, SecsVarBinary]
     __count__ = 80
 
@@ -1920,7 +1930,7 @@ class MLCL(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
@@ -1938,7 +1948,7 @@ class NULBC(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarString]
 
 
@@ -2000,7 +2010,7 @@ class OBJID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
 
 
@@ -2060,7 +2070,7 @@ class OBJTYPE(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
 
 
@@ -2121,7 +2131,7 @@ class ONLACK(DataItemBase):
 
 
 class ORLOC(DataItemBase):
-    """Origin location 
+    """Origin location
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2183,8 +2193,9 @@ class PPBODY(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString, SecsVarBinary]
 
 
 class PPGNT(DataItemBase):
@@ -2260,7 +2271,7 @@ class PPID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarString, SecsVarBinary]
     __count__ = 120
 
@@ -2328,7 +2339,7 @@ class PRDCT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
@@ -2346,7 +2357,7 @@ class RCMD(DataItemBase):
         - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarI1, SecsVarString]
 
 
@@ -2366,7 +2377,7 @@ class REFP(DataItemBase):
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
 
 
@@ -2385,12 +2396,12 @@ class ROWCT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
 
 
 class RPSEL(DataItemBase):
-    """Reference point select 
+    """Reference point select
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
 
@@ -2439,8 +2450,9 @@ class RPTID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class RSINF(DataItemBase):
@@ -2458,7 +2470,7 @@ class RSINF(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
     __count__ = 3
 
@@ -2485,7 +2497,7 @@ class SDACK(DataItemBase):
 
     __type__ = SecsVarBinary
     __count__ = 1
-    
+
     ACK = 0
 
 
@@ -2533,7 +2545,7 @@ class SHEAD(DataItemBase):
 
 
 class SOFTREV(DataItemBase):
-    """Software revision 
+    """Software revision
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2569,7 +2581,7 @@ class STRP(DataItemBase):
         - :class:`SecsS12F16 <secsgem.secs.functions.SecsS12F16>`
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
     __count__ = 2
 
@@ -2598,9 +2610,9 @@ class SV(DataItemBase):
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
+                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
 class SVID(DataItemBase):
@@ -2624,8 +2636,9 @@ class SVID(DataItemBase):
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class SVNAME(DataItemBase):
@@ -2664,8 +2677,9 @@ class TEXT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString, SecsVarBinary]
 
 
 class TID(DataItemBase):
@@ -2699,6 +2713,7 @@ class TIME(DataItemBase):
 
     __type__ = SecsVarString
     __count__ = 32
+
 
 class TIMESTAMP(DataItemBase):
     """Timestamp
@@ -2765,9 +2780,9 @@ class V(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
+                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
 
 
 class VID(DataItemBase):
@@ -2797,8 +2812,9 @@ class VID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarString]
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
+                        SecsVarString]
 
 
 class XDIES(DataItemBase):
@@ -2818,7 +2834,7 @@ class XDIES(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
 
 
@@ -2836,7 +2852,7 @@ class XYPOS(DataItemBase):
         - :class:`SecsS12F18 <secsgem.secs.functions.SecsS12F18>`
     """
 
-    __type__ = SecsVarDynamic    
+    __type__ = SecsVarDynamic
     __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
     __count__ = 2
 
@@ -2857,7 +2873,6 @@ class YDIES(DataItemBase):
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
 
     """
-    
-    __type__ = SecsVarDynamic    
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
 
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
