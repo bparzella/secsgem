@@ -1,5 +1,5 @@
 #####################################################################
-# testHsmsConnectionManager.py
+# test_hsms_connection_manager.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -20,7 +20,7 @@ from mock import Mock
 
 import secsgem
 
-from testconnection import HsmsTestServer
+from test_connection import HsmsTestServer
 
 
 class TestHsmsConnectionManager(unittest.TestCase):

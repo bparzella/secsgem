@@ -380,7 +380,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             self.enabled = False
 
             # stop connection thread if it is running
-            if self.serverThread and self.serverThread.isAlive():
+            if self.serverThread and self.serverThread.is_alive():
                 self.stopServerThread = True
 
                 if self.serverSock:
@@ -578,7 +578,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
         """
         self.stopThread = True
 
-        if self.listenThread.isAlive:
+        if self.listenThread.is_alive:
             while self.threadRunning:
                 pass
 
@@ -736,7 +736,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             self.enabled = False
 
             # stop connection thread if it is running
-            if self.connectionThread and self.connectionThread.isAlive():
+            if self.connectionThread and self.connectionThread.is_alive():
                 self.stopConnectionThread = True
 
             # wait for connection thread to stop

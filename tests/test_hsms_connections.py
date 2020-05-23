@@ -1,5 +1,5 @@
 #####################################################################
-# testSecsDataItems.py
+# test_hsms_connections.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -14,18 +14,15 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import inspect
-import nose
+import unittest
+import errno
 
-import secsgem.secs.dataitems
+import secsgem
 
-def find_subclasses(module):
-    return [cls for name, cls in inspect.getmembers(module) if inspect.isclass(cls) and not cls.__name__.startswith("SecsVar") and not cls.__name__ == "DataItemMeta"]
-
-class TestDataItems(object):
-    def checkConstructorWithoutValue(self, cls):
-        cls()
-
-    def testDataItems(self):
-        for cls in find_subclasses(secsgem.secs.dataitems):
-            yield self.checkConstructorWithoutValue, cls
+class TestTopLevelFunctions(unittest.TestCase):
+    def testIsErrorcodeEwouldBlock(self):
+        self.assertFalse(secsgem.is_errorcode_ewouldblock(0))
+        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EPERM))
+        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EBADF))
+        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EAGAIN))
+        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EWOULDBLOCK))

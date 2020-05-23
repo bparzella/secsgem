@@ -1,5 +1,5 @@
 #####################################################################
-# testCommonCallback.py
+# test_common_callback.py
 #
 # (c) Copyright 2016, Benjamin Parzella. All rights reserved.
 #

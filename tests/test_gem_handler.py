@@ -1,5 +1,5 @@
 #####################################################################
-# testGemHandler.py
+# test_gem_handler.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -19,7 +19,7 @@ import unittest
 
 import secsgem
 
-from testconnection import HsmsTestServer
+from test_connection import HsmsTestServer
 
 class GemHandlerPassiveGroup(object):
     def __init__(self):
@@ -203,7 +203,7 @@ class GemHandlerPassiveGroup(object):
         self.establishCommunication()
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
     def testSendProcessProgram(self):
         self.establishCommunication()
@@ -220,7 +220,7 @@ class GemHandlerPassiveGroup(object):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS07F04(secsgem.ACKC7.ACCEPTED)))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
         self.assertEqual(packet.header.sType, 0x00)
@@ -248,7 +248,7 @@ class GemHandlerPassiveGroup(object):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS07F06({"PPID": ppid, "PPBODY": ppbody})))
 
         clientCommandThread.join(1)
-        self.assertFalse(clientCommandThread.isAlive())
+        self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
         self.assertEqual(packet.header.sType, 0x00)

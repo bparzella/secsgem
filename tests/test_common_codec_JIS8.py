@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 #####################################################################
-# testHsmsConnections.py
+# test_common_codec_JIS8.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -14,15 +15,31 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import unittest
-import errno
+from builtins import chr
+
+import pytest
 
 import secsgem
 
-class TestTopLevelFunctions(unittest.TestCase):
-    def testIsErrorcodeEwouldBlock(self):
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(0))
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EPERM))
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EBADF))
-        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EAGAIN))
-        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EWOULDBLOCK))
+
+class TestCodecJIS8:
+    charMap = [
+        [u"¥", b"\\"],
+        [u"‾", b"~"],
+    ]
+
+    for i in range(0x00A1, 0x00E0):
+        charMap.append([chr(i + 0xFEC0), bytes(bytearray([i]))])
+
+    @pytest.mark.parametrize("char_map", charMap)
+    def test_encode_text(self, char_map):
+        assert char_map[0].encode("jis-8") == char_map[1]
+    
+    @pytest.mark.parametrize("char_map", charMap)
+    def test_decode_text(self, char_map):
+        assert char_map[1].decode("jis-8") == char_map[0]
+
+    def test_unknown_search(self):
+        assert secsgem.common.codec_jis_x_0201.jis_x_0201_search("invalid") == None
+
+

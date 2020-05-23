@@ -1,5 +1,5 @@
 #####################################################################
-# testCommon.py
+# test_common.py
 #
 # (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
 #
@@ -20,13 +20,13 @@ import unittest
 import secsgem
 
 class TestTopLevelFunctions(unittest.TestCase):
-    def testIsWindows(self):
+    def test_is_windows(self):
         if sys.platform == "win32":
             self.assertEqual(secsgem.common.is_windows(), True)
         else:
             self.assertEqual(secsgem.common.is_windows(), False)
 
-    def testFunctionName(self):
+    def test_function_name(self):
         self.assertEqual(secsgem.common.function_name(secsgem.common.is_windows), "is_windows")
-        self.assertEqual(secsgem.common.function_name(self.testIsWindows), "TestTopLevelFunctions.testIsWindows")
+        self.assertEqual(secsgem.common.function_name(self.test_is_windows), "TestTopLevelFunctions.test_is_windows")
 
