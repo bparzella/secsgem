@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
 import logging
@@ -402,12 +403,12 @@ class SecsHandler(HsmsHandler):
         if stream not in self.secsStreamsFunctions:
             self.logger.warning("unknown function S%02dF%02d", stream, function)
             return None
-        else:
-            if function not in self.secsStreamsFunctions[stream]:
-                self.logger.warning("unknown function S%02dF%02d", stream, function)
-                return None
-            else:
-                return self.secsStreamsFunctions[stream][function]
+
+        if function not in self.secsStreamsFunctions[stream]:
+            self.logger.warning("unknown function S%02dF%02d", stream, function)
+            return None
+
+        return self.secsStreamsFunctions[stream][function]
 
     def secs_decode(self, packet):
         """Get object of decoded stream and function class, or None if no class is available.

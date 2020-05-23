@@ -27,7 +27,7 @@ STATE_SELECTED = "SELECTED"
 STATE_CONNECTED_SELECTED = "{}{}{}".format(STATE_CONNECTED, NestedState.separator, STATE_SELECTED)
 
 
-class ConnectionStateMachine(object):
+class ConnectionStateMachine:
 
     def __init__(self, callbacks=None):
         self.callbacks = {}

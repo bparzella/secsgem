@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=I0011, W0403, W0401, W0614
 """Wrappers for SECS stream and functions"""
 
 from .functionbase import SecsStreamFunction

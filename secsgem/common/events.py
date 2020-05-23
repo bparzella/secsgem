@@ -13,10 +13,10 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains helper functions"""
+"""Contains helper functions."""
 
 
-class Event(object):
+class Event:
     """Class to handle the callbacks for a single event"""
 
     def __init__(self):
@@ -47,7 +47,7 @@ class Event(object):
         return "{}: {}".format(self.__class__.__name__, self._callbacks)
 
 
-class Targets(object):
+class Targets:
     """Class to handle a list of objects as target for events"""
 
     def __init__(self):
@@ -64,7 +64,7 @@ class Targets(object):
         self._targets.remove(other)
         return self
 
-    class TargetsIter(object):
+    class TargetsIter():
         def __init__(self, values):
             self._values = values
             self._counter = 0
@@ -79,15 +79,15 @@ class Targets(object):
                 i = self._counter
                 self._counter += 1
                 return self._values[i]
-            else:
-                raise StopIteration()
+
+            raise StopIteration()
 
     def __iter__(self):
         """Return the iterator"""
         return self.TargetsIter(self._targets)
 
 
-class EventProducer(object):
+class EventProducer:
     """Manages the consumers for the events and handles firing events"""
 
     def __init__(self):
@@ -141,7 +141,7 @@ class EventProducer(object):
         """Generate representation for an object"""
         return "{}: {}".format(self.__class__.__name__, self._events)
 
-    class EventsIter(object):
+    class EventsIter:
         def __init__(self, keys):
             self._keys = list(keys)
             self._counter = 0
@@ -156,12 +156,12 @@ class EventProducer(object):
                 i = self._counter
                 self._counter += 1
                 return self._keys[i]
-            else:
-                raise StopIteration()
+
+            raise StopIteration()
 
     def __iter__(self):
         """Return the iterator"""
-        return self.EventsIter([event for event in self._events.keys() if len(self._events[event]) > 0])
+        return self.EventsIter([event for event in self._events if len(self._events[event]) > 0])
 
     @property
     def targets(self):

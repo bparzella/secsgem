@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains class to create model for hsms endpoints."""
 
 import random
@@ -31,7 +32,7 @@ from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
 from .connectionstatemachine import ConnectionStateMachine
 
 
-class HsmsHandler(object):
+class HsmsHandler:
     """Baseclass for creating Host/Equipment models.
 
     This layer contains the HSMS functionality.
@@ -308,7 +309,7 @@ class HsmsHandler(object):
                                               extra=self._get_log_extra())
                 self.connection.send_packet(out_packet)
 
-                return True
+                return
 
             # someone is waiting for this message
             if packet.header.system in self._systemQueues:

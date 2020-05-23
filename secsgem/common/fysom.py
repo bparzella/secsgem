@@ -204,18 +204,12 @@ __version__ = '1.0'
 __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
-try:
-    unicode = unicode
-except NameError:  # pragma: no cover
-    unicode = str
-    basestring = (str, bytes)
-
 
 class FysomError(Exception):  # pragma: no cover
     pass
 
 
-class Fysom(object):  # pragma: no cover
+class Fysom:  # pragma: no cover
     def __init__(self, cfg):
         self._apply(cfg)
 
@@ -231,7 +225,7 @@ class Fysom(object):  # pragma: no cover
 
     def _apply(self, cfg):
         init = cfg['initial'] if 'initial' in cfg else None
-        if isinstance(init, basestring):
+        if isinstance(init, (str, bytes)):
             init = {'state': init}
         events = cfg['events'] if 'events' in cfg else []
         callbacks = cfg['callbacks'] if 'callbacks' in cfg else {}
@@ -243,7 +237,7 @@ class Fysom(object):  # pragma: no cover
                 self._autoforward[autoforward['src']] = autoforward['dst']
 
         def add(e):
-            src = [e['src']] if isinstance(e['src'], basestring) else e['src']
+            src = [e['src']] if isinstance(e['src'], (str, bytes)) else e['src']
             if e['name'] not in tmap:
                 tmap[e['name']] = {}
             for s in src:
@@ -284,7 +278,7 @@ class Fysom(object):  # pragma: no cover
             transitionAvailable = True
 
             while transitionAvailable:
-                class _e_obj(object):
+                class _e_obj:
                     pass
                 e = _e_obj()
                 e.fsm, e.event, e.src, e.dst = self, evt, src, dst
@@ -322,26 +316,31 @@ class Fysom(object):  # pragma: no cover
         fnname = 'onbefore' + e.event
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
+        return None
 
     def _after_event(self, e):
         for fnname in ['onafter' + e.event, 'on' + e.event]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(e)
+        return None
 
     def _leave_state(self, e):
         fnname = 'onleave' + e.src
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
+        return None
 
     def _enter_state(self, e):
         for fnname in ['onenter' + e.dst, 'on' + e.dst]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(e)
+        return None
 
     def _change_state(self, e):
         fnname = 'onchangestate'
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
+        return None
 
 
 if __name__ == '__main__':  # pragma: no cover

@@ -13,16 +13,18 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments, too-many-nested-blocks
 """Handler for GEM equipment."""
+
+from datetime import datetime
+
+from dateutil.tz import tzlocal
 
 from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, \
     SecsVarI4, SecsVarBinary
 from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD, HCACK
-
-from datetime import datetime
-from dateutil.tz import tzlocal
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
@@ -44,7 +46,7 @@ RCMD_START = "START"
 RCMD_STOP = "STOP"
 
 
-class DataValue(object):
+class DataValue:
     """Data value definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -81,7 +83,7 @@ class DataValue(object):
             setattr(self, key, value)
 
 
-class StatusVariable(object):
+class StatusVariable:
     """Status variable definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -121,7 +123,7 @@ class StatusVariable(object):
             setattr(self, key, value)
 
 
-class CollectionEvent(object):
+class CollectionEvent:
     """Collection event definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -154,7 +156,7 @@ class CollectionEvent(object):
             setattr(self, key, value)
 
 
-class CollectionEventLink(object):
+class CollectionEventLink:
     """Representation for registered/linked collection event
 
     :param ce: ID of the collection event
@@ -181,7 +183,7 @@ class CollectionEventLink(object):
         return self._reports
 
 
-class CollectionEventReport(object):
+class CollectionEventReport:
     """Report definition for registered collection events
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -205,7 +207,7 @@ class CollectionEventReport(object):
             setattr(self, key, value)
 
 
-class EquipmentConstant(object):
+class EquipmentConstant:
     """Equipment constant definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -255,7 +257,7 @@ class EquipmentConstant(object):
             setattr(self, key, value)
 
 
-class Alarm(object):
+class Alarm:
     """Alarm definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -291,7 +293,7 @@ class Alarm(object):
             setattr(self, key, value)
 
 
-class RemoteCommand(object):
+class RemoteCommand:
     """Remote command definition
 
     You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -578,8 +580,8 @@ class GemEquipmentHandler(GemHandler):
         """
         if dv.use_callback:
             return self.on_dv_value_request(dv.id_type(dv.dvid), dv)
-        else:
-            return dv.value_type(dv.value)
+
+        return dv.value_type(dv.value)
 
     # status variables
 
@@ -632,8 +634,8 @@ class GemEquipmentHandler(GemHandler):
 
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(sv.svid), sv)
-        else:
-            return sv.value_type(sv.value)
+
+        return sv.value_type(sv.value)
 
     def _on_s01f03(self, handler, packet):
         """Callback handler for Stream 1, Function 3, Equipment status request
@@ -993,8 +995,7 @@ class GemEquipmentHandler(GemHandler):
 
         if ec.use_callback:
             return self.on_ec_value_request(ec.id_type(ec.ecid), ec)
-        else:
-            return ec.value_type(ec.value)
+        return ec.value_type(ec.value)
 
     def _set_ec_value(self, ec, value):
         """Get the equipment constant value depending on its configuation
@@ -1285,6 +1286,8 @@ class GemEquipmentHandler(GemHandler):
 
         self.trigger_collection_events([self._remote_commands[rcmd_name].ce_finished])
 
+        return None
+
     def _on_rcmd_START(self):
         self.logger.warning("remote command START not implemented, this is required for GEM compliance")
 
@@ -1302,10 +1305,11 @@ class GemEquipmentHandler(GemHandler):
         now = datetime.now(tzlocal())
         if self._time_format == 0:
             return now.strftime("%y%m%d%H%M%S")
-        elif self._time_format == 2:
+
+        if self._time_format == 2:
             return now.isoformat()
-        else:
-            return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
+
+        return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
     def _get_control_state_id(self):
         """The id of the control state for the current control state
@@ -1323,6 +1327,8 @@ class GemEquipmentHandler(GemHandler):
             return 4
         if self.controlState.isstate("ONLINE_REMOTE"):
             return 5
+
+        return -1
 
     def _get_events_enabled(self):
         """List of the enabled collection events

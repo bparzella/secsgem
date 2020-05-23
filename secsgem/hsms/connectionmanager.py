@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains class for handling multiple connections."""
 
 import logging
@@ -23,7 +24,7 @@ from .handler import HsmsHandler
 from .connections import HsmsMultiPassiveServer
 
 
-class HsmsConnectionManager(object):
+class HsmsConnectionManager:
     """High level class that handles multiple active and passive connections and the model for them."""
 
     def __init__(self):
@@ -52,7 +53,7 @@ class HsmsConnectionManager(object):
         :returns: Is peer available
         :rtype: boolean
         """
-        for handlerID in self.handlers.keys():
+        for handlerID in self.handlers:
             handler = self.handlers[handlerID]
             if handler.name == index:
                 return handler
@@ -85,13 +86,13 @@ class HsmsConnectionManager(object):
         if additional_port > 0:
             required_ports.append(additional_port)
 
-        for handlerID in self.handlers.keys():
+        for handlerID in self.handlers:
             handler = self.handlers[handlerID]
             if not handler.active:
                 if handler.port not in required_ports:
                     required_ports.append(handler.port)
 
-        for serverPort in self.servers.keys():
+        for serverPort in self.servers:
             if serverPort not in required_ports:
                 self.logger.debug("stopping server on port %d", serverPort)
                 self.servers[serverPort].stop()
@@ -171,7 +172,7 @@ class HsmsConnectionManager(object):
         """Stop all servers and terminate the connections"""
         self.stopping = True
 
-        for handlerID in self.handlers.keys():
+        for handlerID in self.handlers:
             handler = self.handlers[handlerID]
             handler.connection.disconnect()
 

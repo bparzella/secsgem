@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=I0011, W0233
+# pylint: disable=locally-disabled, non-parent-init-called
 """Data items for functions"""
 
 from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
@@ -53,13 +53,13 @@ class DataItemBase(metaclass=DataItemMeta):
         if cls.__type__ is SecsVarDynamic:
             if cls.__count__ > 0:
                 return "{}: {}[{}]".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]), cls.__count__)
-            else:
-                return "{}: {}".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]))
-        else:
-            if cls.__count__ > 0:
-                return "{}: {}[{}]".format(clsname, cls.textCode, cls.__count__)
-            else:
-                return "{}: {}".format(clsname, cls.textCode)
+
+            return "{}: {}".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]))
+
+        if cls.__count__ > 0:
+            return "{}: {}[{}]".format(clsname, cls.textCode, cls.__count__)
+
+        return "{}: {}".format(clsname, cls.textCode)
 
 
 class ACKC5(DataItemBase):

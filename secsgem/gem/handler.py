@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
 
 import logging
@@ -300,8 +301,8 @@ class GemHandler(SecsHandler):
 
         if self.isHost:
             return self.stream_function(1, 2)()
-        else:
-            return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
+
+        return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
 
     def _on_s01f13(self, handler, packet):
         """Callback handler for Stream 1, Function 13, Establish Communication Request
@@ -315,6 +316,6 @@ class GemHandler(SecsHandler):
 
         if self.isHost:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
-        else:
-            return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                                "MDLN": [self.MDLN, self.SOFTREV]})
+
+        return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
+                                            "MDLN": [self.MDLN, self.SOFTREV]})

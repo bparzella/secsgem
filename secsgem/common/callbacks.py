@@ -13,10 +13,10 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains callback handling routines"""
+"""Contains callback handling routines."""
 
 
-class CallbackCallWrapper(object):
+class CallbackCallWrapper:
     def __init__(self, handler, name):
         self.name = name
         self.handler = handler
@@ -25,7 +25,7 @@ class CallbackCallWrapper(object):
         return self.handler._call(self.name, *args, **kwargs)  # noqa
 
 
-class CallbackHandler(object):
+class CallbackHandler:
     def __init__(self):
         self._callbacks = {}
         self.target = None
@@ -33,18 +33,19 @@ class CallbackHandler(object):
 
     def __setattr__(self, name, value):
         if '_object_intitialized' not in self.__dict__ or name in self.__dict__:
-            return dict.__setattr__(self, name, value)
+            dict.__setattr__(self, name, value)
+            return
+
+        if value is None:
+            if name in self._callbacks:
+                del self._callbacks[name]
         else:
-            if value is None:
-                if name in self._callbacks:
-                    del self._callbacks[name]
-            else:
-                self._callbacks[name] = value
+            self._callbacks[name] = value
 
     def __getattr__(self, name):
         return CallbackCallWrapper(self, name)
 
-    class CallbacksIter(object):
+    class CallbacksIter:
         def __init__(self, keys):
             self._keys = list(keys)
             self._counter = 0
@@ -57,8 +58,8 @@ class CallbackHandler(object):
                 i = self._counter
                 self._counter += 1
                 return self._keys[i]
-            else:
-                raise StopIteration()
+
+            raise StopIteration()
 
     def __iter__(self):
         return self.CallbacksIter(self._callbacks.keys())

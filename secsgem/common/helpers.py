@@ -59,8 +59,8 @@ def function_name(function):
     """
     if isinstance(function, types.FunctionType):
         return function.__name__
-    else:
-        return function.__self__.__class__.__name__ + "." + function.__name__
+
+    return function.__self__.__class__.__name__ + "." + function.__name__
 
 
 def indent_line(line, spaces=2):

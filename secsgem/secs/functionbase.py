@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level
 """Base class for for SECS stream and functions"""
 
 from .variables import SecsVar
@@ -129,8 +130,11 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         """Set an item as object member"""
         if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
-        elif item in self.data.data:
+
+        if item in self.data.data:
             return self.data.__setattr__(item, value)
+
+        return None
 
     def append(self, data):
         """Append data to list, if stream/function parameter is a list
@@ -189,5 +193,5 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         """
         if cls._dataFormat is not None:
             return SecsVar.get_format(cls._dataFormat)
-        else:
-            return "Header only"
+
+        return "Header only"

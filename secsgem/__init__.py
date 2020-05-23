@@ -13,8 +13,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=I0011, W0401
-"""module imports"""
+# pylint: disable=locally-disabled, wildcard-import
+"""module imports."""
 
 from .hsms import *  # noqa
 from .secs import *  # noqa

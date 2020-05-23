@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains objects and functions to create and handle hsms connection."""
 
 import logging
@@ -43,13 +44,13 @@ hsmsSTypes = {
 
 
 def is_errorcode_ewouldblock(errorcode):
-    if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
+    if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
         return True
 
     return False
 
 
-class HsmsConnection(object):  # pragma: no cover
+class HsmsConnection:  # pragma: no cover
     """Connection class used for active and passive hsms connections.
 
     :param active: Is the connection active (*True*) or passive (*False*)
@@ -201,9 +202,8 @@ class HsmsConnection(object):  # pragma: no cover
 
                     # retry will be cleared if send succeeded
                     retry = False
-                except socket.error as e:
-                    errorcode = e[0]
-                    if not is_errorcode_ewouldblock(errorcode):
+                except OSError as e:
+                    if not is_errorcode_ewouldblock(e.errno):
                         # raise if not EWOULDBLOCK
                         return False
                     # it is EWOULDBLOCK, so retry sending
@@ -272,9 +272,8 @@ class HsmsConnection(object):  # pragma: no cover
 
                     # add received data to input buffer
                     self.receiveBuffer += recv_data
-                except socket.error as e:
-                    errorcode = e[0]
-                    if not is_errorcode_ewouldblock(errorcode):
+                except OSError as e:
+                    if not is_errorcode_ewouldblock(e.errno):
                         raise e
 
                 # handle data in input buffer
@@ -518,7 +517,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
             self.disconnect()
 
 
-class HsmsMultiPassiveServer(object):  # pragma: no cover
+class HsmsMultiPassiveServer:  # pragma: no cover
     """Server class for multiple passive (incoming) connection.
     The server creates a listening socket and waits for incoming connections on this socket.
 
@@ -594,7 +593,7 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
         """
         self.stopThread = True
 
-        if self.listenThread.is_alive:
+        if self.listenThread.is_alive():
             while self.threadRunning:
                 pass
 
@@ -663,9 +662,8 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
                     try:
                         accept_result = self.listenSock.accept()
-                    except socket.error as e:
-                        errorcode = e[0]
-                        if not is_errorcode_ewouldblock(errorcode):
+                    except OSError as e:
+                        if not is_errorcode_ewouldblock(e.errno):
                             raise e
 
                     if accept_result is None:
