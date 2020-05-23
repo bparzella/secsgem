@@ -17,5 +17,5 @@ deploy:
     secure: VblqvR76D5pn2d0IobS7gwdHFPIOmRsEKnXBNzvtBlg6zRm9Kx7fzSzG2dnncHyOWoWQ1v8uGR6o3orEKUYgpSeWdkD2LvG5sXPH2q86ns61tyVhfwiFge0jd3ybkBjNGLHFQgPrBB+vTIINDqCiwepswm+0SU06nY8vIqtnL40=
   on:
     tags: true
-    distributions: sdist bdist_wheel
-    repo: bparzella/secsgem
+  distributions: sdist bdist_wheel
+  repo: bparzella/secsgem
