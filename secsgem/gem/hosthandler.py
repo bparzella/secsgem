@@ -77,10 +77,12 @@ class GemHostHandler(GemHandler):
         self.reportSubscriptions[report_id] = dvs
 
         # create report
-        self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}))
+        self.send_and_waitfor_response(self.stream_function(2, 33)(
+            {"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}))
 
         # link event report to collection event
-        self.send_and_waitfor_response(self.stream_function(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}))
+        self.send_and_waitfor_response(self.stream_function(2, 35)(
+            {"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}))
 
         # enable collection event
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
@@ -147,7 +149,8 @@ class GemHostHandler(GemHandler):
         """
         self.logger.info("Enable alarm %d", alid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)({"ALED": ALED.ENABLE, "ALID": alid}))).get()
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
+            {"ALED": ALED.ENABLE, "ALID": alid}))).get()
 
     def disable_alarm(self, alid):
         """Disable alarm
@@ -157,7 +160,8 @@ class GemHostHandler(GemHandler):
         """
         self.logger.info("Disable alarm %d", alid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)({"ALED": ALED.DISABLE, "ALID": alid}))).get()
+        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
+            {"ALED": ALED.DISABLE, "ALID": alid}))).get()
 
     def list_alarms(self, alids=None):
         """List alarms
@@ -170,13 +174,13 @@ class GemHostHandler(GemHandler):
             self.logger.info("List all alarms")
         else:
             self.logger.info("List alarms %s", alids)
-            
+
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
 
     def list_enabled_alarms(self):
         """List enabled alarms"""
         self.logger.info("List all enabled alarms")
-            
+
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
 
     def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
@@ -195,10 +199,11 @@ class GemHostHandler(GemHandler):
 
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
-        self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.connection, 'peer': self})
+        self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX,
+                                            "handler": self.connection, 'peer': self})
 
         return self.stream_function(5, 2)(result)
-        
+
     def _on_s06f11(self, handler, packet):
         """Callback handler for Stream 6, Function 11, Establish Communication Request
 
@@ -220,8 +225,8 @@ class GemHostHandler(GemHandler):
             for i, s in enumerate(report_dvs):
                 values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
 
-            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values, "name": self.get_ceid_name(message.CEID), \
-                "handler": self.connection, 'peer': self}
+            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values,
+                    "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)
@@ -241,6 +246,7 @@ class GemHostHandler(GemHandler):
         s10f1 = self.secs_decode(packet)
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
-        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection, 'peer': self})
+        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection,
+                                               'peer': self})
 
         return self.stream_function(10, 2)(result)

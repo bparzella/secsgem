@@ -15,6 +15,7 @@
 #####################################################################
 """Contains callback handling routines"""
 
+
 class CallbackCallWrapper(object):
     def __init__(self, handler, name):
         self.name = name
@@ -22,6 +23,7 @@ class CallbackCallWrapper(object):
 
     def __call__(self, *args, **kwargs):
         return self.handler._call(self.name, *args, **kwargs)  # noqa
+
 
 class CallbackHandler(object):
     def __init__(self):

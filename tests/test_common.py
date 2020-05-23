@@ -19,6 +19,7 @@ import unittest
 
 import secsgem
 
+
 class TestTopLevelFunctions(unittest.TestCase):
     def test_is_windows(self):
         if sys.platform == "win32":

@@ -24,7 +24,8 @@ from . import functions
 
 
 class SecsHandler(HsmsHandler):
-    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality. Inherit from this class and override required functions.
+    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
+    Inherit from this class and override required functions.
 
     :param address: IP address of remote host
     :type address: string
@@ -69,7 +70,7 @@ class SecsHandler(HsmsHandler):
         setattr(self._callback_handler, name, callback)
 
     def unregister_stream_function(self, stream, function):
-        """Unregister the function callback for stream and function. 
+        """Unregister the function callback for stream and function.
 
         :param stream: stream to unregister callback for
         :type stream: integer
@@ -164,7 +165,8 @@ class SecsHandler(HsmsHandler):
         *Example*::
 
             >>> handler = SecsHandler("127.0.0.1", 5000, True, 0, "test")
-            >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], 'ceids': [200, 343]}
+            >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], \
+'ceids': [200, 343]}
 
         **Key**
 
@@ -201,7 +203,7 @@ class SecsHandler(HsmsHandler):
             self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
             if packet.header.requireResponse:
                 self.send_response(self.stream_function(9, 5)(packet.header.encode()), packet.header.system)
-            
+
             return
 
         try:
@@ -220,7 +222,8 @@ class SecsHandler(HsmsHandler):
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
         """
         # check if callbacks available for this stream and function
-        threading.Thread(target=self._handle_stream_function, args=(packet, ), \
+        threading.Thread(
+            target=self._handle_stream_function, args=(packet, ),
             name="secsgem_secsHandler_callback_S{}F{}".format(packet.header.stream, packet.header.function)).start()
 
     def disable_ceids(self):

@@ -20,7 +20,7 @@ import pytest
 from secsgem.secs.functions import *
 
 
-class testSecsFunctionNoData(object):
+class testSecsFunctionNoData:
     cls = None
 
     # test constructor

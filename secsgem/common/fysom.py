@@ -210,8 +210,10 @@ except NameError:  # pragma: no cover
     unicode = str
     basestring = (str, bytes)
 
+
 class FysomError(Exception):  # pragma: no cover
     pass
+
 
 class Fysom(object):  # pragma: no cover
     def __init__(self, cfg):
@@ -292,6 +294,7 @@ class Fysom(object):  # pragma: no cover
                 if self.current != dst:
                     if self._before_event(e) is False:
                         return
+
                     def _tran():
                         delattr(self, 'transition')
                         self.current = dst
@@ -339,6 +342,7 @@ class Fysom(object):  # pragma: no cover
         fnname = 'onchangestate'
         if hasattr(self, fnname):
             return getattr(self, fnname)(e)
+
 
 if __name__ == '__main__':  # pragma: no cover
     pass

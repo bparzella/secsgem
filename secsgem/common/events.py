@@ -15,6 +15,7 @@
 #####################################################################
 """Contains helper functions"""
 
+
 class Event(object):
     """Class to handle the callbacks for a single event"""
 
@@ -44,6 +45,7 @@ class Event(object):
     def __repr__(self):
         """Generate representation for an object"""
         return "{}: {}".format(self.__class__.__name__, self._callbacks)
+
 
 class Targets(object):
     """Class to handle a list of objects as target for events"""
@@ -84,14 +86,15 @@ class Targets(object):
         """Return the iterator"""
         return self.TargetsIter(self._targets)
 
+
 class EventProducer(object):
     """Manages the consumers for the events and handles firing events"""
-    
+
     def __init__(self):
         """Initialize the event producer class"""
         self._targets = Targets()
         self._events = {}
-    
+
     def __getattr__(self, name):
         """Get an event as member of the EventProducer object"""
         if name not in self._events:
@@ -104,14 +107,14 @@ class EventProducer(object):
         for event_name in other._events:  # noqa
             if event_name not in self._events:
                 self._events[event_name] = Event()
-            
+
             for callback in other._events[event_name]._callbacks:  # noqa
                 self._events[event_name] += callback
-                
+
         for target in other._targets:  # noqa
             self._targets += target
         return self
-    
+
     def fire(self, event, data):
         """Fire a event
 
@@ -133,10 +136,10 @@ class EventProducer(object):
 
         if event in self._events:
             self._events[event](data)
-    
+
     def __repr__(self):
         """Generate representation for an object"""
-        return "{}: {}".format(self.__class__.__name__, self._events) 
+        return "{}: {}".format(self.__class__.__name__, self._events)
 
     class EventsIter(object):
         def __init__(self, keys):
@@ -164,7 +167,7 @@ class EventProducer(object):
     def targets(self):
         """Targets used as consumer for this producer"""
         return self._targets
-    
+
     @targets.setter
     def targets(self, value):
         if self._targets != value:

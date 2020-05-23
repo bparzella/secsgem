@@ -41,6 +41,7 @@ hsmsSTypes = {
 }
 """Names for hsms header SType"""
 
+
 def is_errorcode_ewouldblock(errorcode):
     if errorcode == errno.EAGAIN or errorcode == errno.EWOULDBLOCK:
         return True
@@ -111,38 +112,41 @@ class HsmsConnection(object):  # pragma: no cover
         :rtype: dict
         """
         return {
-            'active': self.active, 
-            'remoteAddress': self.remoteAddress, 
-            'remotePort': self.remotePort, 
-            'sessionID': self.sessionID, 
-            'connected': self.connected }
+            'active': self.active,
+            'remoteAddress': self.remoteAddress,
+            'remotePort': self.remotePort,
+            'sessionID': self.sessionID,
+            'connected': self.connected}
 
     def __str__(self):
         """Get the contents of this object as a string"""
-        return "{} connection to {}:{} sessionID={}".format(("Active" if self.active else "Passive"), \
-            self.remoteAddress, str(self.remotePort), str(self.sessionID))
+        return "{} connection to {}:{} sessionID={}".format(("Active" if self.active else "Passive"),
+                                                            self.remoteAddress, str(self.remotePort),
+                                                            str(self.sessionID))
 
     def _start_receiver(self):
         """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
 
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
-        .. seealso:: :class:`secsgem.hsms.connections.HsmsActiveConnection`, 
-            :class:`secsgem.hsms.connections.HsmsPassiveConnection`, 
+        .. seealso:: :class:`secsgem.hsms.connections.HsmsActiveConnection`,
+            :class:`secsgem.hsms.connections.HsmsPassiveConnection`,
             :class:`secsgem.hsms.connections.HsmsMultiPassiveConnection`
         """
         # mark connection as connected
         self.connected = True
 
         # start data receiving thread
-        threading.Thread(target=self.__receiver_thread, args=(), \
-            name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress, self.remotePort)).start()
+        threading.Thread(target=self.__receiver_thread, args=(),
+                         name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress,
+                                                                             self.remotePort)).start()
 
         # wait until thread is running
         while not self.threadRunning:
             pass
 
         # send event
-        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
+        if self.delegate and hasattr(self.delegate, 'on_connection_established') \
+                and callable(getattr(self.delegate, 'on_connection_established')):
             try:
                 self.delegate.on_connection_established(self)
             except Exception:
@@ -209,7 +213,8 @@ class HsmsConnection(object):  # pragma: no cover
     def _process_receive_buffer(self):
         """Parse the receive buffer and dispatch callbacks.
 
-        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
+        .. warning:: Do not call this directly, will be called from
+        :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
         """
         # check if enough data in input buffer
         if len(self.receiveBuffer) < 4:
@@ -230,7 +235,8 @@ class HsmsConnection(object):  # pragma: no cover
         response = HsmsPacket.decode(data)
 
         # redirect packet to hsms handler
-        if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
+        if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') \
+                and callable(getattr(self.delegate, 'on_connection_packet_received')):
             try:
                 self.delegate.on_connection_packet_received(self, response)
             except Exception:
@@ -278,7 +284,8 @@ class HsmsConnection(object):  # pragma: no cover
     def __receiver_thread(self):
         """Thread for receiving incoming data and adding it to the receive buffer.
 
-        .. warning:: Do not call this directly, will be called from :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
+        .. warning:: Do not call this directly, will be called from
+        :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
         """
         self.threadRunning = True
 
@@ -288,7 +295,8 @@ class HsmsConnection(object):  # pragma: no cover
             self.logger.exception('exception')
 
         # notify listeners of disconnection
-        if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
+        if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') \
+                and callable(getattr(self.delegate, 'on_connection_before_closed')):
             try:
                 self.delegate.on_connection_before_closed(self)
             except Exception:
@@ -298,7 +306,8 @@ class HsmsConnection(object):  # pragma: no cover
         self.sock.close()
 
         # notify listeners of disconnection
-        if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
+        if self.delegate and hasattr(self.delegate, 'on_connection_closed') \
+                and callable(getattr(self.delegate, 'on_connection_closed')):
             try:
                 self.delegate.on_connection_closed(self)
             except Exception:
@@ -319,7 +328,8 @@ class HsmsConnection(object):  # pragma: no cover
 class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     """Server class for single passive (incoming) connection
 
-    Creates a listening socket and waits for one incoming connection on this socket. After the connection is established the listening socket is closed.
+    Creates a listening socket and waits for one incoming connection on this socket.
+    After the connection is established the listening socket is closed.
 
     :param address: IP address of target host
     :type address: string
@@ -394,7 +404,9 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             self.disconnect()
 
     def __start_server_thread(self):
-        self.serverThread = threading.Thread(target=self.__server_thread, name="secsgem_HsmsPassiveConnection_serverThread_{}".format(self.remoteAddress))
+        self.serverThread = threading.Thread(target=self.__server_thread,
+                                             name="secsgem_HsmsPassiveConnection_serverThread_{}"
+                                             .format(self.remoteAddress))
         self.serverThread.start()
 
     def __server_thread(self):
@@ -507,7 +519,8 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
 
 
 class HsmsMultiPassiveServer(object):  # pragma: no cover
-    """Server class for multiple passive (incoming) connection. The server creates a listening socket and waits for incoming connections on this socket.
+    """Server class for multiple passive (incoming) connection.
+    The server creates a listening socket and waits for incoming connections on this socket.
 
     :param port: TCP port to listen on
     :type port: integer
@@ -555,7 +568,8 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
         return connection
 
     def start(self):
-        """Starts the server and returns. It will launch a listener running in background to wait for incoming connections."""
+        """Starts the server and returns.
+        It will launch a listener running in background to wait for incoming connections."""
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         if not is_windows():
@@ -565,13 +579,15 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
         self.listenSock.listen(1)
         self.listenSock.setblocking(0)
 
-        self.listenThread = threading.Thread(target=self._listen_thread, args=(), name="secsgem_hsmsMultiPassiveServer_listenThread_{}".format(self.port))
+        self.listenThread = threading.Thread(target=self._listen_thread, args=(),
+                                             name="secsgem_hsmsMultiPassiveServer_listenThread_{}".format(self.port))
         self.listenThread.start()
 
         self.logger.debug("listening")
 
     def stop(self, terminate_connections=True):
-        """Stops the server. The background job waiting for incoming connections will be terminated. Optionally all connections received will be closed.
+        """Stops the server. The background job waiting for incoming connections will be terminated.
+        Optionally all connections received will be closed.
 
         :param terminate_connections: terminate all connection made by this server
         :type terminate_connections: boolean
@@ -660,8 +676,9 @@ class HsmsMultiPassiveServer(object):  # pragma: no cover
 
                     self.logger.debug("connection from %s:%d", accept_result[1][0], accept_result[1][1])
 
-                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,), \
-                        name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}".format(accept_result[1][0], accept_result[1][1])).start()
+                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,),
+                                     name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}"
+                                     .format(accept_result[1][0], accept_result[1][1])).start()
 
         except Exception:
             self.logger.exception('exception')
@@ -765,7 +782,9 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         return True
 
     def __start_connect_thread(self):
-        self.connectionThread = threading.Thread(target=self.__connect_thread, name="secsgem_HsmsActiveConnection_connectThread_{}".format(self.remoteAddress))
+        self.connectionThread = threading.Thread(target=self.__connect_thread,
+                                                 name="secsgem_HsmsActiveConnection_connectThread_{}"
+                                                 .format(self.remoteAddress))
         self.connectionThread.start()
 
     def __connect_thread(self):

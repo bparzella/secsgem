@@ -18,6 +18,7 @@
 import sys
 import types
 
+
 def format_hex(text):
     """Returns byte arrays (string) formated as hex numbers.
 
@@ -37,6 +38,7 @@ def format_hex(text):
     """
     return ":".join("{0:02x}".format(c) for c in bytearray(text))
 
+
 def is_windows():
     """Returns True if running on windows
 
@@ -47,6 +49,7 @@ def is_windows():
         return True
 
     return False
+
 
 def function_name(function):
     """Gets name of function or method
@@ -59,6 +62,7 @@ def function_name(function):
     else:
         return function.__self__.__class__.__name__ + "." + function.__name__
 
+
 def indent_line(line, spaces=2):
     """Indent line by a number of spaces
 
@@ -70,6 +74,7 @@ def indent_line(line, spaces=2):
     :rtype: string
     """
     return (' ' * spaces) + line
+
 
 def indent_block(block, spaces=2):
     """Indent a multiline string by a number of spaces
