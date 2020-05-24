@@ -15,7 +15,7 @@
 #####################################################################
 # pylint: disable=locally-disabled, wildcard-import
 # flake8: ignore=F401
-"""module imports"""
+"""module imports."""
 
 from .functionbase import *  # noqa
 from .functions import *  # noqa

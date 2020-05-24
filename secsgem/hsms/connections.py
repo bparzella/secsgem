@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains objects and functions to create and handle hsms connection."""
 
 import logging
@@ -40,10 +39,16 @@ hsmsSTypes = {
     7: "Reject.req",
     9: "Separate.req"
 }
-"""Names for hsms header SType"""
+"""Names for hsms header SType."""
 
 
 def is_errorcode_ewouldblock(errorcode):
+    """
+    Check if the errorcode is a would-block error.
+
+    :param errorcode: Code of the error
+    :return: True if blocking error code
+    """
     if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
         return True
 
@@ -51,36 +56,38 @@ def is_errorcode_ewouldblock(errorcode):
 
 
 class HsmsConnection:  # pragma: no cover
-    """Connection class used for active and passive hsms connections.
-
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
-    """
+    """Connection class used for active and passive hsms connections."""
 
     selectTimeout = 0.5
-    """ Timeout for select calls """
+    """ Timeout for select calls ."""
 
     sendBlockSize = 1024 * 1024
-    """ Block size for outbound data """
+    """ Block size for outbound data ."""
 
     T3 = 45.0
-    """ Reply Timeout """
+    """ Reply Timeout ."""
 
     T5 = 10.0
-    """ Connect Separation Time """
+    """ Connect Separation Time ."""
 
     T6 = 5.0
-    """ Control Transaction Timeout """
+    """ Control Transaction Timeout ."""
 
     def __init__(self, active, address, port, session_id=0, delegate=None):
+        """
+        Initialize a hsms connection.
+
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param delegate: target for messages
+        :type delegate: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
+        """
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         # set parameters
@@ -107,7 +114,8 @@ class HsmsConnection:  # pragma: no cover
         self.disconnecting = False
 
     def _serialize_data(self):
-        """Returns data for serialization
+        """
+        Returns data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -120,13 +128,16 @@ class HsmsConnection:  # pragma: no cover
             'connected': self.connected}
 
     def __str__(self):
-        """Get the contents of this object as a string"""
+        """Get the contents of this object as a string."""
         return "{} connection to {}:{} sessionID={}".format(("Active" if self.active else "Passive"),
                                                             self.remoteAddress, str(self.remotePort),
                                                             str(self.sessionID))
 
     def _start_receiver(self):
-        """Start the thread for receiving and handling incoming messages. Will also do the initial Select and Linktest requests
+        """
+        Start the thread for receiving and handling incoming messages.
+
+        Will also do the initial Select and Linktest requests.
 
         .. warning:: Do not call this directly, will be called from HSMS client/server class.
         .. seealso:: :class:`secsgem.hsms.connections.HsmsActiveConnection`,
@@ -157,7 +168,7 @@ class HsmsConnection:  # pragma: no cover
         pass
 
     def disconnect(self):
-        """Close connection"""
+        """Close connection."""
         # return if thread isn't running
         if not self.threadRunning:
             return
@@ -176,7 +187,8 @@ class HsmsConnection:  # pragma: no cover
         self.disconnecting = False
 
     def send_packet(self, packet):
-        """Send the ASCII coded packet to the remote host
+        """
+        Send the ASCII coded packet to the remote host.
 
         :param packet: encoded data to be transmitted
         :type packet: string / byte array
@@ -211,7 +223,8 @@ class HsmsConnection:  # pragma: no cover
         return True
 
     def _process_receive_buffer(self):
-        """Parse the receive buffer and dispatch callbacks.
+        """
+        Parse the receive buffer and dispatch callbacks.
 
         .. warning:: Do not call this directly, will be called from
         :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
@@ -281,7 +294,8 @@ class HsmsConnection:  # pragma: no cover
                     pass
 
     def __receiver_thread(self):
-        """Thread for receiving incoming data and adding it to the receive buffer.
+        """
+        Thread for receiving incoming data and adding it to the receive buffer.
 
         .. warning:: Do not call this directly, will be called from
         :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
@@ -325,27 +339,31 @@ class HsmsConnection:  # pragma: no cover
 
 
 class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
-    """Server class for single passive (incoming) connection
+    """
+    Server class for single passive (incoming) connection.
 
     Creates a listening socket and waits for one incoming connection on this socket.
     After the connection is established the listening socket is closed.
-
-    :param address: IP address of target host
-    :type address: string
-    :param port: TCP port of target host
-    :type port: integer
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param delegate: target for messages
-    :type delegate: object
-
-    **Example**::
-
-        # TODO: create example
-
     """
 
     def __init__(self, address, port=5000, session_id=0, delegate=None):
+        """
+        Initialize a passive hsms connection.
+
+        :param address: IP address of target host
+        :type address: string
+        :param port: TCP port of target host
+        :type port: integer
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param delegate: target for messages
+        :type delegate: object
+
+        **Example**::
+
+            # TODO: create example
+
+        """
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
@@ -358,7 +376,8 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         self.serverSock = None
 
     def _on_hsms_connection_close(self, data):
-        """Signal from super that the connection was closed
+        """
+        Signal from super that the connection was closed.
 
         This is required to initiate the reconnect if the connection is still enabled
         """
@@ -366,7 +385,8 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             self.__start_server_thread()
 
     def enable(self):
-        """Enable the connection.
+        """
+        Enable the connection.
 
         Starts the connection process to the passive remote.
         """
@@ -379,7 +399,8 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             self.__start_server_thread()
 
     def disable(self):
-        """Disable the connection.
+        """
+        Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -409,7 +430,8 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         self.serverThread.start()
 
     def __server_thread(self):
-        """Thread function to (re)connect active connection to remote host.
+        """
+        Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -454,26 +476,30 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
 
 class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
-    """Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+    """
+    Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
     Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-
-    :param address: IP address of target host
-    :type address: string
-    :param port: TCP port of target host
-    :type port: integer
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param delegate: target for messages
-    :type delegate: object
-
-    **Example**::
-
-        # TODO: create example
-
     """
 
     def __init__(self, address, port=5000, session_id=0, delegate=None):
+        """
+        Initialize a passive client connection.
+
+        :param address: IP address of target host
+        :type address: string
+        :param port: TCP port of target host
+        :type port: integer
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param delegate: target for messages
+        :type delegate: object
+
+        **Example**::
+
+            # TODO: create example
+
+        """
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
@@ -481,7 +507,8 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         self.enabled = False
 
     def on_connected(self, sock, address):
-        """Connected callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        """
+        Connected callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
         :param sock: Socket for new connection
         :type sock: :class:`Socket`
@@ -501,14 +528,16 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         self._start_receiver()
 
     def enable(self):
-        """Enable the connection.
+        """
+        Enable the connection.
 
         Starts the connection process to the passive remote.
         """
         self.enabled = True
 
     def disable(self):
-        """Disable the connection.
+        """
+        Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -518,22 +547,27 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
 
 
 class HsmsMultiPassiveServer:  # pragma: no cover
-    """Server class for multiple passive (incoming) connection.
+    """
+    Server class for multiple passive (incoming) connection.
+
     The server creates a listening socket and waits for incoming connections on this socket.
-
-    :param port: TCP port to listen on
-    :type port: integer
-
-    **Example**::
-
-        # TODO: create example
-
     """
 
     selectTimeout = 0.5
-    """ Timeout for select calls """
+    """ Timeout for select calls ."""
 
     def __init__(self, port=5000):
+        """
+        Initialize a passive hsms server.
+
+        :param port: TCP port to listen on
+        :type port: integer
+
+        **Example**::
+
+            # TODO: create example
+
+        """
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         self.listenSock = None
@@ -548,7 +582,8 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.listenThread = None
 
     def create_connection(self, address, port=5000, session_id=0, delegate=None):
-        """Create and remember connection for the server
+        """
+        Create and remember connection for the server.
 
         :param address: IP address of target host
         :type address: string
@@ -567,8 +602,11 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         return connection
 
     def start(self):
-        """Starts the server and returns.
-        It will launch a listener running in background to wait for incoming connections."""
+        """
+        Starts the server and returns.
+
+        It will launch a listener running in background to wait for incoming connections.
+        """
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         if not is_windows():
@@ -585,7 +623,9 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.logger.debug("listening")
 
     def stop(self, terminate_connections=True):
-        """Stops the server. The background job waiting for incoming connections will be terminated.
+        """
+        Stops the server. The background job waiting for incoming connections will be terminated.
+
         Optionally all connections received will be closed.
 
         :param terminate_connections: terminate all connection made by this server
@@ -609,7 +649,8 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.logger.debug("server stopped")
 
     def _initialize_connection_thread(self, accept_result):
-        """Setup connection
+        """
+        Setup connection.
 
         .. warning:: Do not call this directly, used internally.
         """
@@ -647,7 +688,8 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         new_connection.on_connected(sock, source_ip)
 
     def _listen_thread(self):
-        """Thread listening for incoming connections
+        """
+        Thread listening for incoming connections.
 
         .. warning:: Do not call this directly, used internally.
         """
@@ -685,24 +727,26 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
 
 class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
-    """Client class for single active (outgoing) connection
-
-    :param address: IP address of target host
-    :type address: string
-    :param port: TCP port of target host
-    :type port: integer
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param delegate: target for messages
-    :type delegate: object
-
-    **Example**::
-
-        # TODO: create example
-
-    """
+    """Client class for single active (outgoing) connection."""
 
     def __init__(self, address, port=5000, session_id=0, delegate=None):
+        """
+        Initialize a active hsms connection.
+
+        :param address: IP address of target host
+        :type address: string
+        :param port: TCP port of target host
+        :type port: integer
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param delegate: target for messages
+        :type delegate: object
+
+        **Example**::
+
+            # TODO: create example
+
+        """
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
 
@@ -717,7 +761,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         self.firstConnection = True
 
     def _on_hsms_connection_close(self, data):
-        """Signal from super that the connection was closed
+        """
+        Signal from super that the connection was closed.
 
         This is required to initiate the reconnect if the connection is still enabled
         """
@@ -725,7 +770,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             self.__start_connect_thread()
 
     def enable(self):
-        """Enable the connection.
+        """
+        Enable the connection.
 
         Starts the connection process to the passive remote.
         """
@@ -741,7 +787,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             self.__start_connect_thread()
 
     def disable(self):
-        """Disable the connection.
+        """
+        Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -762,7 +809,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             self.disconnect()
 
     def __idle(self, timeout):
-        """Wait until timeout elapsed or connection thread is stopped
+        """
+        Wait until timeout elapsed or connection thread is stopped.
 
         :param timeout: number of seconds to wait
         :type timeout: float
@@ -786,7 +834,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         self.connectionThread.start()
 
     def __connect_thread(self):
-        """Thread function to (re)connect active connection to remote host.
+        """
+        Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -803,7 +852,8 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
                 return
 
     def __connect(self):
-        """Open connection to remote host
+        """
+        Open connection to remote host.
 
         :returns: True if connection was established, False if connection failed
         :rtype: boolean

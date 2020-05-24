@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 # pylint: disable=locally-disabled, non-parent-init-called
-"""Data items for functions"""
+"""Data items for functions."""
 
 from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
@@ -23,6 +23,8 @@ from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
 
 # DataItemMeta adds __type__ member as base class
 class DataItemMeta(type):
+    """Meta class for data items."""
+
     def __new__(mcs, name, bases, attrs):
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
@@ -31,11 +33,22 @@ class DataItemMeta(type):
 
 # DataItemBase initializes __type__ member as base class and provides get_format
 class DataItemBase(metaclass=DataItemMeta):
+    """
+    Base class for data items.
+
+    It provides type and output handling.
+    """
+
     __type__ = None
     __allowedtypes__ = None
     __count__ = -1
 
     def __init__(self, value=None):
+        """
+        Initialize a data item.
+
+        :param value: Value of the data item
+        """
         self.name = self.__class__.__name__
 
         if self.__type__ is SecsVarDynamic:
@@ -45,6 +58,12 @@ class DataItemBase(metaclass=DataItemMeta):
 
     @classmethod
     def get_format(cls, showname=True):
+        """
+        Format the contents as a string.
+
+        :param showname: Display the real class name when True
+        :return: Formatted value string
+        """
         if showname:
             clsname = format(cls.__name__)
         else:
@@ -63,7 +82,8 @@ class DataItemBase(metaclass=DataItemMeta):
 
 
 class ACKC5(DataItemBase):
-    """Acknowledge code
+    """
+    Acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -91,7 +111,8 @@ class ACKC5(DataItemBase):
 
 
 class ACKC6(DataItemBase):
-    """Acknowledge code
+    """
+    Acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -122,7 +143,8 @@ class ACKC6(DataItemBase):
 
 
 class ACKC7(DataItemBase):
-    """Acknowledge code
+    """
+    Acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -176,7 +198,8 @@ class ACKC7(DataItemBase):
 
 
 class ACKC10(DataItemBase):
-    """Acknowledge code
+    """
+    Acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -211,7 +234,8 @@ class ACKC10(DataItemBase):
 
 
 class ACKA(DataItemBase):
-    """Request success
+    """
+    Request success.
 
        :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        :Length: 1
@@ -251,7 +275,8 @@ class ACKA(DataItemBase):
 
 
 class ALCD(DataItemBase):
-    """Alarm code byte
+    """
+    Alarm code byte.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -304,7 +329,8 @@ class ALCD(DataItemBase):
 
 
 class ALED(DataItemBase):
-    """Alarm en-/disable code byte
+    """
+    Alarm en-/disable code byte.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -335,7 +361,8 @@ class ALED(DataItemBase):
 
 
 class ALID(DataItemBase):
-    """Alarm ID
+    """
+    Alarm ID.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -360,7 +387,8 @@ class ALID(DataItemBase):
 
 
 class ALTX(DataItemBase):
-    """Alarm ID
+    """
+    Alarm ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -376,7 +404,8 @@ class ALTX(DataItemBase):
 
 
 class ATTRDATA(DataItemBase):
-    """Object attribute value
+    """
+    Object attribute value.
 
     :Types:
        - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
@@ -425,7 +454,8 @@ class ATTRDATA(DataItemBase):
 
 
 class ATTRID(DataItemBase):
-    """Object attribute identifier
+    """
+    Object attribute identifier.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -465,7 +495,8 @@ class ATTRID(DataItemBase):
 
 
 class ATTRRELN(DataItemBase):
-    """Attribute relation to attribute of object
+    """
+    Attribute relation to attribute of object.
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
 
@@ -510,7 +541,8 @@ class ATTRRELN(DataItemBase):
 
 
 class BCEQU(DataItemBase):
-    """Bin code equivalents
+    """
+    Bin code equivalents.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -527,7 +559,8 @@ class BCEQU(DataItemBase):
 
 
 class BINLT(DataItemBase):
-    """Bin list
+    """
+    Bin list.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -548,7 +581,8 @@ class BINLT(DataItemBase):
 
 
 class CEED(DataItemBase):
-    """Collection event or trace enable/disable code
+    """
+    Collection event or trace enable/disable code.
 
        :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
        :Length: 1
@@ -573,7 +607,8 @@ class CEED(DataItemBase):
 
 
 class CEID(DataItemBase):
-    """Collection event ID
+    """
+    Collection event ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -612,7 +647,8 @@ class CEID(DataItemBase):
 
 
 class COLCT(DataItemBase):
-    """Column count in dies
+    """
+    Column count in dies.
 
     :Types:
        - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
@@ -631,7 +667,8 @@ class COLCT(DataItemBase):
 
 
 class COMMACK(DataItemBase):
-    """Establish communications acknowledge
+    """
+    Establish communications acknowledge.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -659,7 +696,8 @@ class COMMACK(DataItemBase):
 
 
 class CPACK(DataItemBase):
-    """Command parameter acknowledge code
+    """
+    Command parameter acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -690,7 +728,8 @@ class CPACK(DataItemBase):
 
 
 class CPNAME(DataItemBase):
-    """Command parameter name
+    """
+    Command parameter name.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -721,7 +760,8 @@ class CPNAME(DataItemBase):
 
 
 class CPVAL(DataItemBase):
-    """Command parameter name
+    """
+    Command parameter name.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -753,7 +793,8 @@ class CPVAL(DataItemBase):
 
 
 class DATAID(DataItemBase):
-    """Data ID
+    """
+    Data ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -820,7 +861,8 @@ class DATAID(DataItemBase):
 
 
 class DATALENGTH(DataItemBase):
-    """Length of data to be sent
+    """
+    Length of data to be sent.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -854,7 +896,8 @@ class DATALENGTH(DataItemBase):
 
 
 class DATLC(DataItemBase):
-    """Data location
+    """
+    Data location.
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
 
@@ -867,7 +910,8 @@ class DATLC(DataItemBase):
 
 
 class DRACK(DataItemBase):
-    """Define report acknowledge code
+    """
+    Define report acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -904,7 +948,8 @@ class DRACK(DataItemBase):
 
 
 class DSID(DataItemBase):
-    """Data set ID
+    """
+    Data set ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -930,7 +975,8 @@ class DSID(DataItemBase):
 
 
 class DUTMS(DataItemBase):
-    """Die units of measure
+    """
+    Die units of measure.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -945,7 +991,8 @@ class DUTMS(DataItemBase):
 
 
 class DVNAME(DataItemBase):
-    """Data value name
+    """
+    Data value name.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -970,7 +1017,8 @@ class DVNAME(DataItemBase):
 
 
 class DVVAL(DataItemBase):
-    """Data value
+    """
+    Data value.
 
     :Types:
        - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
@@ -1001,7 +1049,8 @@ class DVVAL(DataItemBase):
 
 
 class EAC(DataItemBase):
-    """Equipment acknowledge code
+    """
+    Equipment acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1035,7 +1084,8 @@ class EAC(DataItemBase):
 
 
 class ECDEF(DataItemBase):
-    """Equipment constant default value
+    """
+    Equipment constant default value.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1062,7 +1112,8 @@ class ECDEF(DataItemBase):
 
 
 class ECID(DataItemBase):
-    """Equipment constant ID
+    """
+    Equipment constant ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1088,7 +1139,8 @@ class ECID(DataItemBase):
 
 
 class ECMAX(DataItemBase):
-    """Equipment constant maximum value
+    """
+    Equipment constant maximum value.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1115,7 +1167,8 @@ class ECMAX(DataItemBase):
 
 
 class ECMIN(DataItemBase):
-    """Equipment constant minimum value
+    """
+    Equipment constant minimum value.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1142,7 +1195,8 @@ class ECMIN(DataItemBase):
 
 
 class ECNAME(DataItemBase):
-    """Equipment constant name
+    """
+    Equipment constant name.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1155,7 +1209,8 @@ class ECNAME(DataItemBase):
 
 
 class ECV(DataItemBase):
-    """Equipment constant value
+    """
+    Equipment constant value.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1183,7 +1238,8 @@ class ECV(DataItemBase):
 
 
 class EDID(DataItemBase):
-    """Expected data identification
+    """
+    Expected data identification.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1208,7 +1264,8 @@ class EDID(DataItemBase):
 
 
 class ERACK(DataItemBase):
-    """Enable/disable event report acknowledge
+    """
+    Enable/disable event report acknowledge.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1237,7 +1294,8 @@ class ERACK(DataItemBase):
 
 
 class ERRCODE(DataItemBase):
-    """Reference point
+    """
+    Reference point.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -1310,7 +1368,8 @@ class ERRCODE(DataItemBase):
 
 
 class ERRTEXT(DataItemBase):
-    """Error description for error code
+    """
+    Error description for error code.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1375,7 +1434,8 @@ class ERRTEXT(DataItemBase):
 
 
 class EXID(DataItemBase):
-    """Exception identifier
+    """
+    Exception identifier.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1395,7 +1455,8 @@ class EXID(DataItemBase):
 
 
 class EXMESSAGE(DataItemBase):
-    """Exception message
+    """
+    Exception message.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1409,7 +1470,8 @@ class EXMESSAGE(DataItemBase):
 
 
 class EXRECVRA(DataItemBase):
-    """Exception recovery action
+    """
+    Exception recovery action.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1424,7 +1486,8 @@ class EXRECVRA(DataItemBase):
 
 
 class EXTYPE(DataItemBase):
-    """Exception type
+    """
+    Exception type.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1441,7 +1504,8 @@ class EXTYPE(DataItemBase):
 
 
 class FFROT(DataItemBase):
-    """Film frame rotation
+    """
+    Film frame rotation.
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 
@@ -1457,7 +1521,8 @@ class FFROT(DataItemBase):
 
 
 class FNLOC(DataItemBase):
-    """Flat/notch location
+    """
+    Flat/notch location.
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 
@@ -1474,7 +1539,8 @@ class FNLOC(DataItemBase):
 
 
 class GRANT6(DataItemBase):
-    """Permission to send
+    """
+    Permission to send.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1505,7 +1571,8 @@ class GRANT6(DataItemBase):
 
 
 class GRNT1(DataItemBase):
-    """Grant code
+    """
+    Grant code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1549,7 +1616,8 @@ class GRNT1(DataItemBase):
 
 
 class HCACK(DataItemBase):
-    """Host command parameter acknowledge code
+    """
+    Host command parameter acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1594,7 +1662,8 @@ class HCACK(DataItemBase):
 
 
 class IDTYP(DataItemBase):
-    """ID type
+    """
+    ID type.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1638,7 +1707,8 @@ class IDTYP(DataItemBase):
 
 
 class LENGTH(DataItemBase):
-    """Service/process program length
+    """
+    Service/process program length.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -1662,7 +1732,8 @@ class LENGTH(DataItemBase):
 
 
 class LRACK(DataItemBase):
-    """Link report acknowledge code
+    """
+    Link report acknowledge code.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1702,7 +1773,8 @@ class LRACK(DataItemBase):
 
 
 class MAPER(DataItemBase):
-    """Map error
+    """
+    Map error.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1733,7 +1805,8 @@ class MAPER(DataItemBase):
 
 
 class MAPFT(DataItemBase):
-    """Map data format
+    """
+    Map data format.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1766,7 +1839,8 @@ class MAPFT(DataItemBase):
 
 
 class MDACK(DataItemBase):
-    """Map data acknowledge
+    """
+    Map data acknowledge.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -1803,7 +1877,8 @@ class MDACK(DataItemBase):
 
 
 class MDLN(DataItemBase):
-    """Equipment model type
+    """
+    Equipment model type.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1826,7 +1901,8 @@ class MDLN(DataItemBase):
 
 
 class MEXP(DataItemBase):
-    """Message expected
+    """
+    Message expected.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1840,7 +1916,8 @@ class MEXP(DataItemBase):
 
 
 class MHEAD(DataItemBase):
-    """SECS message header
+    """
+    SECS message header.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 10
@@ -1859,7 +1936,8 @@ class MHEAD(DataItemBase):
 
 
 class MID(DataItemBase):
-    """Material ID
+    """
+    Material ID.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -1916,7 +1994,8 @@ class MID(DataItemBase):
 
 
 class MLCL(DataItemBase):
-    """Message length
+    """
+    Message length.
 
     :Types:
        - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
@@ -1935,7 +2014,8 @@ class MLCL(DataItemBase):
 
 
 class NULBC(DataItemBase):
-    """Column count in dies
+    """
+    Column count in dies.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -1953,7 +2033,8 @@ class NULBC(DataItemBase):
 
 
 class OBJACK(DataItemBase):
-    """Object acknowledgement code
+    """
+    Object acknowledgement code.
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
        :Length: 1
@@ -1992,7 +2073,8 @@ class OBJACK(DataItemBase):
 
 
 class OBJID(DataItemBase):
-    """Object identifier
+    """
+    Object identifier.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2015,7 +2097,8 @@ class OBJID(DataItemBase):
 
 
 class OBJSPEC(DataItemBase):
-    """Specific object instance
+    """
+    Specific object instance.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2048,7 +2131,8 @@ class OBJSPEC(DataItemBase):
 
 
 class OBJTYPE(DataItemBase):
-    """Class of object identifier
+    """
+    Class of object identifier.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2075,7 +2159,8 @@ class OBJTYPE(DataItemBase):
 
 
 class OFLACK(DataItemBase):
-    """Acknowledge code for OFFLINE request
+    """
+    Acknowledge code for OFFLINE request.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2100,7 +2185,8 @@ class OFLACK(DataItemBase):
 
 
 class ONLACK(DataItemBase):
-    """Acknowledge code for ONLINE request
+    """
+    Acknowledge code for ONLINE request.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2131,7 +2217,8 @@ class ONLACK(DataItemBase):
 
 
 class ORLOC(DataItemBase):
-    """Origin location
+    """
+    Origin location.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2170,7 +2257,8 @@ class ORLOC(DataItemBase):
 
 
 class PPBODY(DataItemBase):
-    """Status variable ID
+    """
+    Status variable ID.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2199,7 +2287,8 @@ class PPBODY(DataItemBase):
 
 
 class PPGNT(DataItemBase):
-    """Process program grant status
+    """
+    Process program grant status.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2241,7 +2330,8 @@ class PPGNT(DataItemBase):
 
 
 class PPID(DataItemBase):
-    """Process program ID
+    """
+    Process program ID.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2277,7 +2367,8 @@ class PPID(DataItemBase):
 
 
 class PRAXI(DataItemBase):
-    """Process axis
+    """
+    Process axis.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2325,7 +2416,8 @@ class PRAXI(DataItemBase):
 
 
 class PRDCT(DataItemBase):
-    """Process die count
+    """
+    Process die count.
 
     :Types:
        - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
@@ -2344,7 +2436,8 @@ class PRDCT(DataItemBase):
 
 
 class RCMD(DataItemBase):
-    """Remote command
+    """
+    Remote command.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2362,7 +2455,8 @@ class RCMD(DataItemBase):
 
 
 class REFP(DataItemBase):
-    """Reference point
+    """
+    Reference point.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -2382,7 +2476,8 @@ class REFP(DataItemBase):
 
 
 class ROWCT(DataItemBase):
-    """Row count in dies
+    """
+    Row count in dies.
 
     :Types:
        - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
@@ -2401,7 +2496,8 @@ class ROWCT(DataItemBase):
 
 
 class RPSEL(DataItemBase):
-    """Reference point select
+    """
+    Reference point select.
 
        :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
 
@@ -2415,7 +2511,8 @@ class RPSEL(DataItemBase):
 
 
 class RPTID(DataItemBase):
-    """Report ID
+    """
+    Report ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2456,7 +2553,8 @@ class RPTID(DataItemBase):
 
 
 class RSINF(DataItemBase):
-    """Starting location
+    """
+    Starting location.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -2476,7 +2574,8 @@ class RSINF(DataItemBase):
 
 
 class SDACK(DataItemBase):
-    """Map setup acknowledge
+    """
+    Map setup acknowledge.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2502,7 +2601,8 @@ class SDACK(DataItemBase):
 
 
 class SDBIN(DataItemBase):
-    """Send bin information
+    """
+    Send bin information.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2530,7 +2630,8 @@ class SDBIN(DataItemBase):
 
 
 class SHEAD(DataItemBase):
-    """SECS message header
+    """
+    SECS message header.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 10
@@ -2545,7 +2646,8 @@ class SHEAD(DataItemBase):
 
 
 class SOFTREV(DataItemBase):
-    """Software revision
+    """
+    Software revision.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2568,7 +2670,8 @@ class SOFTREV(DataItemBase):
 
 
 class STRP(DataItemBase):
-    """Starting position
+    """
+    Starting position.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -2587,7 +2690,8 @@ class STRP(DataItemBase):
 
 
 class SV(DataItemBase):
-    """Status variable value
+    """
+    Status variable value.
 
     :Types:
        - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
@@ -2616,7 +2720,8 @@ class SV(DataItemBase):
 
 
 class SVID(DataItemBase):
-    """Status variable ID
+    """
+    Status variable ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2642,7 +2747,8 @@ class SVID(DataItemBase):
 
 
 class SVNAME(DataItemBase):
-    """Status variable name
+    """
+    Status variable name.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2655,7 +2761,8 @@ class SVNAME(DataItemBase):
 
 
 class TEXT(DataItemBase):
-    """Line of characters
+    """
+    Line of characters.
 
     :Types:
        - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
@@ -2683,7 +2790,8 @@ class TEXT(DataItemBase):
 
 
 class TID(DataItemBase):
-    """Terminal ID
+    """
+    Terminal ID.
 
        :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
        :Length: 1
@@ -2701,7 +2809,8 @@ class TID(DataItemBase):
 
 
 class TIME(DataItemBase):
-    """Time of day
+    """
+    Time of day.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2716,7 +2825,8 @@ class TIME(DataItemBase):
 
 
 class TIMESTAMP(DataItemBase):
-    """Timestamp
+    """
+    Timestamp.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2737,7 +2847,8 @@ class TIMESTAMP(DataItemBase):
 
 
 class UNITS(DataItemBase):
-    """Units identifier
+    """
+    Units identifier.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2753,7 +2864,8 @@ class UNITS(DataItemBase):
 
 
 class V(DataItemBase):
-    """Variable data
+    """
+    Variable data.
 
     :Types:
        - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
@@ -2786,7 +2898,8 @@ class V(DataItemBase):
 
 
 class VID(DataItemBase):
-    """Variable ID
+    """
+    Variable ID.
 
     :Types:
        - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
@@ -2818,7 +2931,8 @@ class VID(DataItemBase):
 
 
 class XDIES(DataItemBase):
-    """Die size/index X-axis
+    """
+    Die size/index X-axis.
 
     :Types:
        - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
@@ -2839,7 +2953,8 @@ class XDIES(DataItemBase):
 
 
 class XYPOS(DataItemBase):
-    """X/Y coordinate position
+    """
+    X/Y coordinate position.
 
     :Types:
        - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
@@ -2858,7 +2973,8 @@ class XYPOS(DataItemBase):
 
 
 class YDIES(DataItemBase):
-    """Die size/index Y-axis
+    """
+    Die size/index Y-axis.
 
     :Types:
        - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`

@@ -25,7 +25,8 @@ import threading
 from secsgem import HsmsPacket, HsmsStreamFunctionHeader
 
 class HsmsTestConnection(object):
-    """Connection class for single connection from hsmsMultiPassiveServer
+    """
+    Connection class for single connection from hsmsMultiPassiveServer.
 
     Handles connections incoming connection from hsmsMultiPassiveServer
 
@@ -116,7 +117,7 @@ class HsmsTestConnection(object):
 
 
 class HsmsTestServer(object):
-    """Server class for testing"""
+    """Server class for testing."""
 
     def __init__(self, _=-1):
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)

@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 # pylint: disable=locally-disabled, wildcard-import
-"""module imports"""
+"""module imports."""
 
 from .handler import *  # noqa
 from .equipmenthandler import *  # noqa

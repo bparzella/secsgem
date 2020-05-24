@@ -1,0 +1,29 @@
+strictness: medium
+test-warnings: false
+doc-warnings: true
+
+pep8:
+  options:
+    max-line-length: 120
+
+pep257:
+  disable:
+    - D203
+    - D212
+    - D207
+    - D301
+
+pylint:
+  disable:
+    - R0913
+    - R0916
+    - R0902
+    - R0914
+    - R0915
+    - R1702
+    - E0402
+  options:
+    max-line-length: 120
+
+mccabe:
+  run: false

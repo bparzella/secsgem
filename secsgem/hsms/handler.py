@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains class to create model for hsms endpoints."""
 
 import random
@@ -33,43 +32,47 @@ from .connectionstatemachine import ConnectionStateMachine
 
 
 class HsmsHandler:
-    """Baseclass for creating Host/Equipment models.
+    """
+    Baseclass for creating Host/Equipment models.
 
     This layer contains the HSMS functionality.
     Inherit from this class and override required functions.
-
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param name: Name of the underlying configuration
-    :type name: string
-    :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-
-    **Example**::
-
-        import secsgem
-
-        def onConnect(event, data):
-            print "Connected"
-
-        client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
-        client.events.hsms_connected += onConnect
-
-        client.enable()
-
-        time.sleep(3)
-
-        client.disable()
-
     """
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        """
+        Initialize hsms handler.
+
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param name: Name of the underlying configuration
+        :type name: string
+        :param custom_connection_handler: object for connection handling (ie multi server)
+        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+
+        **Example**::
+
+            import secsgem
+
+            def onConnect(event, data):
+                print "Connected"
+
+            client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
+            client.events.hsms_connected += onConnect
+
+            client.enable()
+
+            time.sleep(3)
+
+            client.disable()
+
+        """
         self._eventProducer = EventProducer()
         self._eventProducer.targets += self
 
@@ -121,16 +124,17 @@ class HsmsHandler:
 
     @property
     def events(self):
-        """Property for event handling"""
+        """Property for event handling."""
         return self._eventProducer
 
     @property
     def callbacks(self):
-        """Property for callback handling"""
+        """Property for callback handling."""
         return self._callback_handler
 
     def get_next_system_counter(self):
-        """Returns the next System.
+        """
+        Returns the next System.
 
         :returns: System for the next command
         :rtype: integer
@@ -154,7 +158,8 @@ class HsmsHandler:
         self.linktestTimer.start()
 
     def _on_state_connect(self):
-        """Connection state model got event connect
+        """
+        Connection state model got event connect.
 
         :param data: event attributes
         :type data: object
@@ -170,7 +175,8 @@ class HsmsHandler:
             self.selectReqThread.start()
 
     def _on_state_disconnect(self):
-        """Connection state model got event disconnect
+        """
+        Connection state model got event disconnect.
 
         :param data: event attributes
         :type data: object
@@ -182,7 +188,8 @@ class HsmsHandler:
         self.linktestTimer = None
 
     def _on_state_select(self):
-        """Connection state model got event select
+        """
+        Connection state model got event select.
 
         :param data: event attributes
         :type data: object
@@ -195,7 +202,7 @@ class HsmsHandler:
             self._on_hsms_select()
 
     def _on_linktest_timer(self):
-        """Linktest time timed out, so send linktest request"""
+        """Linktest time timed out, so send linktest request."""
         # send linktest request and wait for response
         self.send_linktest_req()
 
@@ -203,7 +210,7 @@ class HsmsHandler:
         self._start_linktest_timer()
 
     def on_connection_established(self, _):
-        """Connection was established"""
+        """Connection was established."""
         self.connected = True
 
         # update connection state
@@ -212,12 +219,12 @@ class HsmsHandler:
         self.events.fire("hsms_connected", {'connection': self})
 
     def on_connection_before_closed(self, _):
-        """Connection is about to be closed"""
+        """Connection is about to be closed."""
         # send separate request
         self.send_separate_req()
 
     def on_connection_closed(self, _):
-        """Connection was closed"""
+        """Connection was closed."""
         # update connection state
         self.connected = False
         self.connectionState.disconnect()
@@ -287,7 +294,8 @@ class HsmsHandler:
             # what to do if no sender for request waiting?
 
     def on_connection_packet_received(self, _, packet):
-        """Packet received by connection
+        """
+        Packet received by connection.
 
         :param packet: received data packet
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
@@ -323,7 +331,8 @@ class HsmsHandler:
                 self.logger.warning("packet unhandled")
 
     def _get_queue_for_system(self, system_id):
-        """Creates a new queue to receive responses for a certain system
+        """
+        Creates a new queue to receive responses for a certain system.
 
         :param system_id: system id to watch
         :type system_id: int
@@ -334,7 +343,8 @@ class HsmsHandler:
         return self._systemQueues[system_id]
 
     def _remove_queue(self, system_id):
-        """Remove queue for system id from list
+        """
+        Remove queue for system id from list.
 
         :param system_id: system id to remove
         :type system_id: int
@@ -342,11 +352,12 @@ class HsmsHandler:
         del self._systemQueues[system_id]
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
 
     def _serialize_data(self):
-        """Returns data for serialization
+        """
+        Returns data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -355,15 +366,16 @@ class HsmsHandler:
                 'name': self.name, 'connected': self.connected}
 
     def enable(self):
-        """Enables the connection"""
+        """Enables the connection."""
         self.connection.enable()
 
     def disable(self):
-        """Disables the connection"""
+        """Disables the connection."""
         self.connection.disable()
 
     def send_stream_function(self, packet):
-        """Send the packet and wait for the response
+        """
+        Send the packet and wait for the response.
 
         :param packet: packet to be sent
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
@@ -378,7 +390,8 @@ class HsmsHandler:
         return self.connection.send_packet(out_packet)
 
     def send_and_waitfor_response(self, packet):
-        """Send the packet and wait for the response
+        """
+        Send the packet and wait for the response.
 
         :param packet: packet to be sent
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
@@ -410,7 +423,8 @@ class HsmsHandler:
         return response
 
     def send_response(self, function, system):
-        """Send response function for system
+        """
+        Send response function for system.
 
         :param function: function to be sent
         :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
@@ -426,7 +440,8 @@ class HsmsHandler:
         return self.connection.send_packet(out_packet)
 
     def send_select_req(self):
-        """Send a Select Request to the remote host
+        """
+        Send a Select Request to the remote host.
 
         :returns: System of the sent request
         :rtype: integer
@@ -453,7 +468,8 @@ class HsmsHandler:
         return response
 
     def send_select_rsp(self, system_id):
-        """Send a Select Response to the remote host
+        """
+        Send a Select Response to the remote host.
 
         :param system_id: System of the request to reply for
         :type system_id: integer
@@ -464,7 +480,8 @@ class HsmsHandler:
         return self.connection.send_packet(packet)
 
     def send_linktest_req(self):
-        """Send a Linktest Request to the remote host
+        """
+        Send a Linktest Request to the remote host.
 
         :returns: System of the sent request
         :rtype: integer
@@ -491,7 +508,8 @@ class HsmsHandler:
         return response
 
     def send_linktest_rsp(self, system_id):
-        """Send a Linktest Response to the remote host
+        """
+        Send a Linktest Response to the remote host.
 
         :param system_id: System of the request to reply for
         :type system_id: integer
@@ -502,7 +520,8 @@ class HsmsHandler:
         return self.connection.send_packet(packet)
 
     def send_deselect_req(self):
-        """Send a Deselect Request to the remote host
+        """
+        Send a Deselect Request to the remote host.
 
         :returns: System of the sent request
         :rtype: integer
@@ -529,7 +548,8 @@ class HsmsHandler:
         return response
 
     def send_deselect_rsp(self, system_id):
-        """Send a Deselect Response to the remote host
+        """
+        Send a Deselect Response to the remote host.
 
         :param system_id: System of the request to reply for
         :type system_id: integer
@@ -540,7 +560,8 @@ class HsmsHandler:
         return self.connection.send_packet(packet)
 
     def send_reject_rsp(self, system_id, s_type, reason):
-        """Send a Reject Response to the remote host
+        """
+        Send a Reject Response to the remote host.
 
         :param system_id: System of the request to reply for
         :type system_id: integer
@@ -555,7 +576,7 @@ class HsmsHandler:
         return self.connection.send_packet(packet)
 
     def send_separate_req(self):
-        """Send a Separate Request to the remote host"""
+        """Send a Separate Request to the remote host."""
         system_id = self.get_next_system_counter()
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))

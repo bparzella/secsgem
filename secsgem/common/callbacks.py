@@ -16,7 +16,7 @@
 """Contains callback handling routines."""
 
 
-class CallbackCallWrapper:
+class _CallbackCallWrapper:
     def __init__(self, handler, name):
         self.name = name
         self.handler = handler
@@ -26,12 +26,25 @@ class CallbackCallWrapper:
 
 
 class CallbackHandler:
+    """
+    Handler for callbacks for HSMS/SECS/GEM events.
+
+    This handler manages callbacks for events that can happen on a handler for a connection.
+    """
+
     def __init__(self):
+        """Initialize the handler."""
         self._callbacks = {}
         self.target = None
         self._object_intitialized = True
 
     def __setattr__(self, name, value):
+        """
+        Set an item as object member.
+
+        :param name: Name of the callback
+        :param value: Callback
+        """
         if '_object_intitialized' not in self.__dict__ or name in self.__dict__:
             dict.__setattr__(self, name, value)
             return
@@ -43,9 +56,15 @@ class CallbackHandler:
             self._callbacks[name] = value
 
     def __getattr__(self, name):
-        return CallbackCallWrapper(self, name)
+        """
+        Get a callable function for an event.
 
-    class CallbacksIter:
+        :param name: Name of the event
+        :return: Callable representation of the callback
+        """
+        return _CallbackCallWrapper(self, name)
+
+    class _CallbacksIter:
         def __init__(self, keys):
             self._keys = list(keys)
             self._counter = 0
@@ -62,9 +81,20 @@ class CallbackHandler:
             raise StopIteration()
 
     def __iter__(self):
-        return self.CallbacksIter(self._callbacks.keys())
+        """
+        Get an iterator for the callbacks.
+
+        :return: Callback iterator.
+        """
+        return self._CallbacksIter(self._callbacks.keys())
 
     def __contains__(self, callback):
+        """
+        Check if a callback is present.
+
+        :param callback: Name of the event
+        :return: True if callback present
+        """
         if callback in self._callbacks:
             return True
 

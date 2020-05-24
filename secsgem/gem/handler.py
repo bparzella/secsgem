@@ -13,8 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
-"""Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
+"""Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
 
 import logging
 import threading
@@ -24,24 +23,27 @@ from ..secs.handler import SecsHandler
 
 
 class GemHandler(SecsHandler):
-    """Baseclass for creating Host/Equipment models. This layer contains GEM functionality.
-    Inherit from this class and override required functions.
-
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param name: Name of the underlying configuration
-    :type name: string
-    :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-    """
+    """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        """
+        Initialize a gem handler.
+
+        Inherit from this class and override required functions.
+
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param name: Name of the underlying configuration
+        :type name: string
+        :param custom_connection_handler: object for connection handling (ie multi server)
+        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        """
         SecsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "secsgem"  #: model number returned by S01E13/14
@@ -95,11 +97,12 @@ class GemHandler(SecsHandler):
         self.waitEventList = []
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
 
     def _serialize_data(self):
-        """Returns data for serialization
+        """
+        Returns data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -111,21 +114,22 @@ class GemHandler(SecsHandler):
         return data
 
     def enable(self):
-        """Enables the connection"""
+        """Enables the connection."""
         self.connection.enable()
         self.communicationState.enable()
 
         self.logger.info("Connection enabled")
 
     def disable(self):
-        """Disables the connection"""
+        """Disables the connection."""
         self.connection.disable()
         self.communicationState.disable()
 
         self.logger.info("Connection disabled")
 
     def _on_hsms_packet_received(self, packet):
-        """Packet received from hsms layer
+        """
+        Packet received from hsms layer.
 
         :param packet: received data packet
         :type packet: :class:`secsgem.HsmsPacket`
@@ -152,19 +156,20 @@ class GemHandler(SecsHandler):
                                                                               packet.header.function)).start()
 
     def _on_hsms_select(self):
-        """Selected received from hsms layer"""
+        """Selected received from hsms layer."""
         self.communicationState.select()
 
     def _on_wait_cra_timeout(self):
-        """Linktest time timed out, so send linktest request"""
+        """Linktest time timed out, so send linktest request."""
         self.communicationState.communicationreqfail()
 
     def _on_wait_comm_delay_timeout(self):
-        """Linktest time timed out, so send linktest request"""
+        """Linktest time timed out, so send linktest request."""
         self.communicationState.delayexpired()
 
     def _on_state_wait_cra(self, _):
-        """Connection state model changed to state WAIT_CRA
+        """
+        Connection state model changed to state WAIT_CRA.
 
         :param data: event attributes
         :type data: object
@@ -180,7 +185,8 @@ class GemHandler(SecsHandler):
             self.send_stream_function(self.stream_function(1, 13)([self.MDLN, self.SOFTREV]))
 
     def _on_state_wait_delay(self, _):
-        """Connection state model changed to state WAIT_DELAY
+        """
+        Connection state model changed to state WAIT_DELAY.
 
         :param data: event attributes
         :type data: object
@@ -191,7 +197,8 @@ class GemHandler(SecsHandler):
         self.commDelayTimer.start()
 
     def _on_state_leave_wait_cra(self, _):
-        """Connection state model changed to state WAIT_CRA
+        """
+        Connection state model changed to state WAIT_CRA.
 
         :param data: event attributes
         :type data: object
@@ -200,7 +207,8 @@ class GemHandler(SecsHandler):
             self.waitCRATimer.cancel()
 
     def _on_state_leave_wait_delay(self, _):
-        """Connection state model changed to state WAIT_DELAY
+        """
+        Connection state model changed to state WAIT_DELAY.
 
         :param data: event attributes
         :type data: object
@@ -209,7 +217,8 @@ class GemHandler(SecsHandler):
             self.commDelayTimer.cancel()
 
     def _on_state_communicating(self, _):
-        """Connection state model changed to state COMMUNICATING
+        """
+        Connection state model changed to state COMMUNICATING.
 
         :param data: event attributes
         :type data: object
@@ -222,7 +231,7 @@ class GemHandler(SecsHandler):
             event.set()
 
     def on_connection_closed(self, connection):
-        """Connection was closed"""
+        """Connection was closed."""
         self.logger.info("Connection was closed")
 
         # call parent handlers
@@ -233,7 +242,8 @@ class GemHandler(SecsHandler):
             self.communicationState.communicationfail()
 
     def on_commack_requested(self):
-        """Get the acknowledgement code for the connection request
+        """
+        Get the acknowledgement code for the connection request.
 
         override to accept or deny connection request
 
@@ -243,7 +253,8 @@ class GemHandler(SecsHandler):
         return 0
 
     def send_process_program(self, ppid, ppbody):
-        """Send a process program
+        """
+        Send a process program.
 
         :param ppid: Transferred process programs ID
         :type ppid: string
@@ -257,7 +268,8 @@ class GemHandler(SecsHandler):
             {"PPID": ppid, "PPBODY": ppbody}))).get()
 
     def request_process_program(self, ppid):
-        """Request a process program
+        """
+        Request a process program.
 
         :param ppid: Transferred process programs ID
         :type ppid: string
@@ -269,7 +281,8 @@ class GemHandler(SecsHandler):
         return s7f6.PPID.get(), s7f6.PPBODY.get()
 
     def waitfor_communicating(self, timeout=None):
-        """Wait until connection gets into communicating state. Returns immediately if state is communicating
+        """
+        Wait until connection gets into communicating state. Returns immediately if state is communicating.
 
         :param timeout: seconds to wait before aborting
         :type timeout: float
@@ -290,7 +303,8 @@ class GemHandler(SecsHandler):
         return result
 
     def _on_s01f01(self, handler, packet):
-        """Callback handler for Stream 1, Function 1, Are You There
+        """
+        Callback handler for Stream 1, Function 1, Are You There.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -305,7 +319,8 @@ class GemHandler(SecsHandler):
         return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
 
     def _on_s01f13(self, handler, packet):
-        """Callback handler for Stream 1, Function 13, Establish Communication Request
+        """
+        Callback handler for Stream 1, Function 13, Establish Communication Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`

@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments, too-many-nested-blocks
 """Handler for GEM equipment."""
 
 from datetime import datetime
@@ -47,27 +46,29 @@ RCMD_STOP = "STOP"
 
 
 class DataValue:
-    """Data value definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callback
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
-
-    If use_callbacks is disabled, you can set the value with the value property.
-
-    :param dvid: ID of the data value
-    :type dvid: various
-    :param name: long name of the data value
-    :type name: string
-    :param value_type: type of the data value
-    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
-    :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-    :type use_callback: boolean
-    """
+    """Data value definition."""
 
     def __init__(self, dvid, name, value_type, use_callback=True, **kwargs):
+        """
+        Initialize a data value.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        Custom parameters can be set with the keyword arguments,
+        they will be passed to the GemEquipmentHandlers callback
+        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
+
+        If use_callbacks is disabled, you can set the value with the value property.
+
+        :param dvid: ID of the data value
+        :type dvid: various
+        :param name: long name of the data value
+        :type name: string
+        :param value_type: type of the data value
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+        :type use_callback: boolean
+        """
         self.dvid = dvid
         self.name = name
         self.value_type = value_type
@@ -84,29 +85,31 @@ class DataValue:
 
 
 class StatusVariable:
-    """Status variable definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callback
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_sv_value_request`.
-
-    If use_callbacks is disabled, you can set the value with the value property.
-
-    :param svid: ID of the status variable
-    :type svid: various
-    :param name: long name of the status variable
-    :type name: string
-    :param unit: unit (see SEMI E5, Units of Measure)
-    :type unit: string
-    :param value_type: type of the status variable
-    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
-    :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-    :type use_callback: boolean
-    """
+    """Status variable definition."""
 
     def __init__(self, svid, name, unit, value_type, use_callback=True, **kwargs):
+        """
+        Initialize a status variable.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        Custom parameters can be set with the keyword arguments,
+        they will be passed to the GemEquipmentHandlers callback
+        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_sv_value_request`.
+
+        If use_callbacks is disabled, you can set the value with the value property.
+
+        :param svid: ID of the status variable
+        :type svid: various
+        :param name: long name of the status variable
+        :type name: string
+        :param unit: unit (see SEMI E5, Units of Measure)
+        :type unit: string
+        :param value_type: type of the status variable
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+        :type use_callback: boolean
+        """
         self.svid = svid
         self.name = name
         self.unit = unit
@@ -124,25 +127,27 @@ class StatusVariable:
 
 
 class CollectionEvent:
-    """Collection event definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callback
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
-
-    If use_callbacks is disabled, you can set the value with the value property.
-
-    :param ceid: ID of the collection event
-    :type ceid: various
-    :param name: long name of the collection event
-    :type name: string
-    :param data_values: data values available for this event
-    :type data_values: list of DVIDs
-    """
+    """Collection event definition."""
 
     def __init__(self, ceid, name, data_values, **kwargs):
+        """
+        Initialize a collection event.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        Custom parameters can be set with the keyword arguments,
+        they will be passed to the GemEquipmentHandlers callback
+        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
+
+        If use_callbacks is disabled, you can set the value with the value property.
+
+        :param ceid: ID of the collection event
+        :type ceid: various
+        :param name: long name of the collection event
+        :type name: string
+        :param data_values: data values available for this event
+        :type data_values: list of DVIDs
+        """
         self.ceid = ceid
         self.name = name
         self.data_values = data_values
@@ -157,15 +162,17 @@ class CollectionEvent:
 
 
 class CollectionEventLink:
-    """Representation for registered/linked collection event
-
-    :param ce: ID of the collection event
-    :type ce: :class:`secsgem.gem.equipmenthandler.CollectionEvent`
-    :param reports: list of the linked reports
-    :type reports: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
-    """
+    """Representation for registered/linked collection event."""
 
     def __init__(self, ce, reports, **kwargs):
+        """
+        Initialize a collection event link.
+
+        :param ce: ID of the collection event
+        :type ce: :class:`secsgem.gem.equipmenthandler.CollectionEvent`
+        :param reports: list of the linked reports
+        :type reports: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
+        """
         self.ce = ce
         self._reports = reports
         self.enabled = False
@@ -175,7 +182,8 @@ class CollectionEventLink:
 
     @property
     def reports(self):
-        """The list of the data values
+        """
+        The list of the data values.
 
         :returns: List of linked reports
         :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
@@ -184,17 +192,19 @@ class CollectionEventLink:
 
 
 class CollectionEventReport:
-    """Report definition for registered collection events
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    :param rptid: ID of the report
-    :type rptid: various
-    :param vars: long name of the collection event
-    :type vars: string
-    """
+    """Report definition for registered collection events."""
 
     def __init__(self, rptid, variables, **kwargs):
+        """
+        Initialize a collection event report.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        :param rptid: ID of the report
+        :type rptid: various
+        :param vars: long name of the collection event
+        :type vars: string
+        """
         self.rptid = rptid
         self.vars = variables
 
@@ -208,36 +218,38 @@ class CollectionEventReport:
 
 
 class EquipmentConstant:
-    """Equipment constant definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callbacks
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_request`
-    and :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_update` .
-
-    If use_callbacks is disabled, you can set the value with the value property.
-
-    :param ecid: ID of the equipment constant
-    :type ecid: various
-    :param name: long name
-    :type name: string
-    :param min_value: minimum value
-    :type min_value: various
-    :param max_value: maximum value
-    :type max_value: various
-    :param default_value: default value
-    :type default_value: various
-    :param unit: unit (see SEMI E5, Units of Measure)
-    :type unit: string
-    :param value_type: type of the status variable
-    :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
-    :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
-    :type use_callback: boolean
-    """
+    """Equipment constant definition."""
 
     def __init__(self, ecid, name, min_value, max_value, default_value, unit, value_type, use_callback=True, **kwargs):
+        """
+        Initialize an equipment constant.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        Custom parameters can be set with the keyword arguments,
+        they will be passed to the GemEquipmentHandlers callbacks
+        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_request`
+        and :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_update` .
+
+        If use_callbacks is disabled, you can set the value with the value property.
+
+        :param ecid: ID of the equipment constant
+        :type ecid: various
+        :param name: long name
+        :type name: string
+        :param min_value: minimum value
+        :type min_value: various
+        :param max_value: maximum value
+        :type max_value: various
+        :param default_value: default value
+        :type default_value: various
+        :param unit: unit (see SEMI E5, Units of Measure)
+        :type unit: string
+        :param value_type: type of the status variable
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
+        :type use_callback: boolean
+        """
         self.ecid = ecid
         self.name = name
         self.min_value = min_value
@@ -258,23 +270,25 @@ class EquipmentConstant:
 
 
 class Alarm:
-    """Alarm definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    :param alid: ID of the alarm
-    :type alid: various
-    :param name: long name of the alarm
-    :type name: string
-    :param text: alarm text
-    :type text: string
-    :param ce_on: collection event for alarm set
-    :type ce_on: types supported by data item CEID
-    :param ce_off: collection event for alarm cleared
-    :type ce_off: types supported by data item CEID
-    """
+    """Alarm definition."""
 
     def __init__(self, alid, name, text, code, ce_on, ce_off, **kwargs):
+        """
+        Initialize an alarm.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        :param alid: ID of the alarm
+        :type alid: various
+        :param name: long name of the alarm
+        :type name: string
+        :param text: alarm text
+        :type text: string
+        :param ce_on: collection event for alarm set
+        :type ce_on: types supported by data item CEID
+        :param ce_off: collection event for alarm cleared
+        :type ce_off: types supported by data item CEID
+        """
         self.alid = alid
         self.name = name
         self.text = text
@@ -294,25 +308,27 @@ class Alarm:
 
 
 class RemoteCommand:
-    """Remote command definition
-
-    You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-    Custom parameters can be set with the keyword arguments,
-    they will be passed to the GemEquipmentHandlers callback
-    :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler._on_rcmd_<remote_command>`.
-
-    :param rcmd: ID of the status variable
-    :type rcmd: various
-    :param name: long name of the status variable
-    :type name: string
-    :param params: array of available parameter names
-    :type params: list
-    :param ce_finished: collection event to trigger when remote command was finished
-    :type ce_finished: types supported by data item CEID
-    """
+    """Remote command definition."""
 
     def __init__(self, rcmd, name, params, ce_finished, **kwargs):
+        """
+        Initialize a remote command.
+
+        You can manually set the secs-type of the id with the 'id_type' keyword argument.
+
+        Custom parameters can be set with the keyword arguments,
+        they will be passed to the GemEquipmentHandlers callback
+        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler._on_rcmd_<remote_command>`.
+
+        :param rcmd: ID of the status variable
+        :type rcmd: various
+        :param name: long name of the status variable
+        :type name: string
+        :param params: array of available parameter names
+        :type params: list
+        :param ce_finished: collection event to trigger when remote command was finished
+        :type ce_finished: types supported by data item CEID
+        """
         self.rcmd = rcmd
         self.name = name
         self.params = params
@@ -328,27 +344,29 @@ class RemoteCommand:
 
 
 class GemEquipmentHandler(GemHandler):
-    """Baseclass for creating equipment models. Inherit from this class and override required functions.
-
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param name: Name of the underlying configuration
-    :type name: string
-    :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-    :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
-    "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-    :type initial_control_state: string
-    """
+    """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None,
                  initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
+        """
+        Initialize a gem equipment handler.
+
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param name: Name of the underlying configuration
+        :type name: string
+        :param custom_connection_handler: object for connection handling (ie multi server)
+        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
+        "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+        :type initial_control_state: string
+        """
         GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = False
@@ -487,26 +505,27 @@ class GemEquipmentHandler(GemHandler):
         self.trigger_collection_events([CEID_CONTROL_STATE_REMOTE])
 
     def control_switch_online(self):
-        """Operator switches to online control state"""
+        """Operator switches to online control state."""
         self.controlState.switch_online()
 
     def control_switch_offline(self):
-        """Operator switches to offline control state"""
+        """Operator switches to offline control state."""
         self.controlState.switch_offline()
         self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
     def control_switch_online_local(self):
-        """Operator switches to the local online control state"""
+        """Operator switches to the local online control state."""
         self.controlState.switch_online_local()
         self.onlineControlState = "LOCAL"
 
     def control_switch_online_remote(self):
-        """Operator switches to the local online control state"""
+        """Operator switches to the local online control state."""
         self.controlState.switch_online_remote()
         self.onlineControlState = "REMOTE"
 
     def _on_s01f15(self, handler, packet):
-        """Callback handler for Stream 1, Function 15, Request offline
+        """
+        Callback handler for Stream 1, Function 15, Request offline.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -524,7 +543,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(1, 16)(OFLACK)
 
     def _on_s01f17(self, handler, packet):
-        """Callback handler for Stream 1, Function 17, Request online
+        """
+        Callback handler for Stream 1, Function 17, Request online.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -547,7 +567,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def data_values(self):
-        """The list of the data values
+        """
+        The list of the data values.
 
         :returns: Data value list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.DataValue`
@@ -555,7 +576,8 @@ class GemEquipmentHandler(GemHandler):
         return self._data_values
 
     def on_dv_value_request(self, dvid, dv):
-        """Get the data value depending on its configuation.
+        """
+        Get the data value depending on its configuation.
 
         Override in inherited class to provide custom data value request handling.
 
@@ -571,7 +593,8 @@ class GemEquipmentHandler(GemHandler):
         return dv.value_type(dv.value)
 
     def _get_dv_value(self, dv):
-        """Get the data value depending on its configuation
+        """
+        Get the data value depending on its configuation.
 
         :param dv: The data value requested
         :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
@@ -587,7 +610,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def status_variables(self):
-        """The list of the status variables
+        """
+        The list of the status variables.
 
         :returns: Status variable list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.StatusVariables`
@@ -595,7 +619,8 @@ class GemEquipmentHandler(GemHandler):
         return self._status_variables
 
     def on_sv_value_request(self, svid, sv):
-        """Get the status variable value depending on its configuation.
+        """
+        Get the status variable value depending on its configuation.
 
         Override in inherited class to provide custom status variable request handling.
 
@@ -611,7 +636,8 @@ class GemEquipmentHandler(GemHandler):
         return sv.value_type(sv.value)
 
     def _get_sv_value(self, sv):
-        """Get the status variable value depending on its configuation
+        """
+        Get the status variable value depending on its configuation.
 
         :param sv: The status variable requested
         :type sv: :class:`secsgem.gem.equipmenthandler.StatusVariable`
@@ -638,7 +664,8 @@ class GemEquipmentHandler(GemHandler):
         return sv.value_type(sv.value)
 
     def _on_s01f03(self, handler, packet):
-        """Callback handler for Stream 1, Function 3, Equipment status request
+        """
+        Callback handler for Stream 1, Function 3, Equipment status request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -666,7 +693,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(1, 4)(responses)
 
     def _on_s01f11(self, handler, packet):
-        """Callback handler for Stream 1, Function 11, SV namelist request
+        """
+        Callback handler for Stream 1, Function 11, SV namelist request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -697,7 +725,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def collection_events(self):
-        """The list of the collection events
+        """
+        The list of the collection events.
 
         :returns: Collection event list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEvent`
@@ -706,7 +735,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def registered_reports(self):
-        """The list of the subscribed reports
+        """
+        The list of the subscribed reports.
 
         :returns: Collection event report list
         :rtype: dictionary of subscribed reports
@@ -715,7 +745,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def registered_collection_events(self):
-        """The list of the subscribed collection events
+        """
+        The list of the subscribed collection events.
 
         :returns: Collection event list
         :rtype: dictionary of :class:`secsgem.gem.equipmenthandler.CollectionEventLink`
@@ -724,7 +755,8 @@ class GemEquipmentHandler(GemHandler):
         return self._registered_collection_events
 
     def trigger_collection_events(self, ceids):
-        """Triggers the supplied collection events
+        """
+        Triggers the supplied collection events.
 
         :param ceids: List of collection events
         :type ceids: list of various
@@ -741,7 +773,8 @@ class GemEquipmentHandler(GemHandler):
                         {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
     def _on_s02f33(self, handler, packet):
-        """Callback handler for Stream 2, Function 33, Define Report
+        """
+        Callback handler for Stream 2, Function 33, Define Report.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -796,7 +829,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(2, 34)(DRACK)
 
     def _on_s02f35(self, handler, packet):
-        """Callback handler for Stream 2, Function 35, Link event report
+        """
+        Callback handler for Stream 2, Function 35, Link event report.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -847,7 +881,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(2, 36)(LRACK)
 
     def _on_s02f37(self, handler, packet):
-        """Callback handler for Stream 2, Function 37, En-/Disable Event Report
+        """
+        Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -868,7 +903,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(2, 38)(ERACK)
 
     def _on_s06f15(self, handler, packet):
-        """Callback handler for Stream 6, Function 15, event report request
+        """
+        Callback handler for Stream 6, Function 15, event report request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -890,7 +926,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
     def _set_ce_state(self, ceed, ceids):
-        """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list)
+        """
+        En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
 
         :param ceed: Enable (True) or disable (False) event reports
         :type ceed: bool
@@ -913,7 +950,8 @@ class GemEquipmentHandler(GemHandler):
         return result
 
     def _build_collection_event(self, ceid):
-        """Build reports for a collection event
+        """
+        Build reports for a collection event.
 
         :param ceid: collection event to build
         :type ceid: integer
@@ -941,7 +979,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def equipment_constants(self):
-        """The list of the equipments contstants
+        """
+        The list of the equipments contstants.
 
         :returns: Equipment constant list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
@@ -949,7 +988,8 @@ class GemEquipmentHandler(GemHandler):
         return self._equipment_constants
 
     def on_ec_value_request(self, ecid, ec):
-        """Get the equipment constant value depending on its configuation.
+        """
+        Get the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant request handling.
 
@@ -965,7 +1005,8 @@ class GemEquipmentHandler(GemHandler):
         return ec.value_type(ec.value)
 
     def on_ec_value_update(self, ecid, ec, value):
-        """Set the equipment constant value depending on its configuation.
+        """
+        Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
 
@@ -981,7 +1022,8 @@ class GemEquipmentHandler(GemHandler):
         ec.value = value
 
     def _get_ec_value(self, ec):
-        """Get the equipment constant value depending on its configuation
+        """
+        Get the equipment constant value depending on its configuation.
 
         :param ec: The equipment requested
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
@@ -998,7 +1040,8 @@ class GemEquipmentHandler(GemHandler):
         return ec.value_type(ec.value)
 
     def _set_ec_value(self, ec, value):
-        """Get the equipment constant value depending on its configuation
+        """
+        Get the equipment constant value depending on its configuation.
 
         :param ec: The equipment requested
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
@@ -1016,7 +1059,8 @@ class GemEquipmentHandler(GemHandler):
             ec.value = value
 
     def _on_s02f13(self, handler, packet):
-        """Callback handler for Stream 2, Function 13, Equipment constant request
+        """
+        Callback handler for Stream 2, Function 13, Equipment constant request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1044,7 +1088,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(2, 14)(responses)
 
     def _on_s02f15(self, handler, packet):
-        """Callback handler for Stream 2, Function 15, Equipment constant send
+        """
+        Callback handler for Stream 2, Function 15, Equipment constant send.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1078,7 +1123,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(2, 16)(eac)
 
     def _on_s02f29(self, handler, packet):
-        """Callback handler for Stream 2, Function 29, EC namelist request
+        """
+        Callback handler for Stream 2, Function 29, EC namelist request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1115,7 +1161,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def alarms(self):
-        """The list of the alarms
+        """
+        The list of the alarms.
 
         :returns: Alarms list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.Alarm`
@@ -1123,7 +1170,8 @@ class GemEquipmentHandler(GemHandler):
         return self._alarms
 
     def set_alarm(self, alid):
-        """The list of the alarms
+        """
+        The list of the alarms.
 
         :param alid: Alarm id
         :type alid: str/int
@@ -1143,7 +1191,8 @@ class GemEquipmentHandler(GemHandler):
         self.trigger_collection_events([self.alarms[alid].ce_on])
 
     def clear_alarm(self, alid):
-        """The list of the alarms
+        """
+        The list of the alarms.
 
         :param alid: Alarm id
         :type alid: str/int
@@ -1163,7 +1212,8 @@ class GemEquipmentHandler(GemHandler):
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
     def _on_s05f03(self, handler, packet):
-        """Callback handler for Stream 5, Function 3, Alarm en-/disabled
+        """
+        Callback handler for Stream 5, Function 3, Alarm en-/disabled.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1187,7 +1237,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(5, 4)(result)
 
     def _on_s05f05(self, handler, packet):
-        """Callback handler for Stream 5, Function 5, Alarm list
+        """
+        Callback handler for Stream 5, Function 5, Alarm list.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1212,7 +1263,8 @@ class GemEquipmentHandler(GemHandler):
         return self.stream_function(5, 6)(result)
 
     def _on_s05f07(self, handler, packet):
-        """Callback handler for Stream 5, Function 7, Enabled alarm list
+        """
+        Callback handler for Stream 5, Function 7, Enabled alarm list.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1234,7 +1286,8 @@ class GemEquipmentHandler(GemHandler):
 
     @property
     def remote_commands(self):
-        """The list of the remote commands
+        """
+        The list of the remote commands.
 
         :returns: Remote command list
         :rtype: list of :class:`secsgem.gem.equipmenthandler.RemoteCommand`
@@ -1242,7 +1295,8 @@ class GemEquipmentHandler(GemHandler):
         return self._remote_commands
 
     def _on_s02f41(self, handler, packet):
-        """Callback handler for Stream 2, Function 41, host command send
+        """
+        Callback handler for Stream 2, Function 41, host command send.
 
         The remote command handing differs from usual stream function handling, because we send the ack with later
         completion first.
@@ -1297,7 +1351,8 @@ class GemEquipmentHandler(GemHandler):
     # helpers
 
     def _get_clock(self):
-        """Returns the clock depending on configured time format
+        """
+        Returns the clock depending on configured time format.
 
         :returns: time code
         :rtype: string
@@ -1312,7 +1367,8 @@ class GemEquipmentHandler(GemHandler):
         return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
     def _get_control_state_id(self):
-        """The id of the control state for the current control state
+        """
+        The id of the control state for the current control state.
 
         :returns: control state
         :rtype: integer
@@ -1331,7 +1387,8 @@ class GemEquipmentHandler(GemHandler):
         return -1
 
     def _get_events_enabled(self):
-        """List of the enabled collection events
+        """
+        List of the enabled collection events.
 
         :returns: collection event
         :rtype: list of various
@@ -1345,7 +1402,8 @@ class GemEquipmentHandler(GemHandler):
         return enabled_ceid
 
     def _get_alarms_enabled(self):
-        """List of the enabled alarms
+        """
+        List of the enabled alarms.
 
         :returns: alarms
         :rtype: list of various
@@ -1359,7 +1417,8 @@ class GemEquipmentHandler(GemHandler):
         return enabled_alarms
 
     def _get_alarms_set(self):
-        """List of the set alarms
+        """
+        List of the set alarms.
 
         :returns: alarms
         :rtype: list of various
@@ -1373,7 +1432,7 @@ class GemEquipmentHandler(GemHandler):
         return set_alarms
 
     def on_connection_closed(self, connection):
-        """Connection was closed"""
+        """Connection was closed."""
         # call parent handlers
         GemHandler.on_connection_closed(self, connection)
 

@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Wrappers for SECS stream and functions"""
+"""Wrappers for SECS stream and functions."""
 
 from .functionbase import SecsStreamFunction
 from .dataitems import MDLN, SVID, SV, SVNAME, UNITS, COMMACK, OFLACK, ONLACK, ECID, ECV, EAC, TIME, ECNAME, ECMIN, \
@@ -26,7 +26,8 @@ from .dataitems import MDLN, SVID, SV, SVNAME, UNITS, COMMACK, OFLACK, ONLACK, E
 
 
 class SecsS00F00(SecsStreamFunction):
-    """Hsms communication
+    """
+    Hsms communication.
 
     **Structure**::
 
@@ -59,7 +60,8 @@ class SecsS00F00(SecsStreamFunction):
 
 
 class SecsS01F00(SecsStreamFunction):
-    """abort transaction stream 1
+    """
+    abort transaction stream 1.
 
     **Structure**::
 
@@ -92,7 +94,8 @@ class SecsS01F00(SecsStreamFunction):
 
 
 class SecsS01F01(SecsStreamFunction):
-    """are you online - request
+    """
+    are you online - request.
 
     **Structure**::
 
@@ -125,7 +128,8 @@ class SecsS01F01(SecsStreamFunction):
 
 
 class SecsS01F02(SecsStreamFunction):
-    """on line data
+    """
+    on line data.
 
     .. caution::
 
@@ -173,7 +177,8 @@ class SecsS01F02(SecsStreamFunction):
 
 
 class SecsS01F03(SecsStreamFunction):
-    """Selected equipment status - request
+    """
+    Selected equipment status - request.
 
     **Data Items**
 
@@ -218,7 +223,8 @@ class SecsS01F03(SecsStreamFunction):
 
 
 class SecsS01F04(SecsStreamFunction):
-    """selected equipment status - data
+    """
+    selected equipment status - data.
 
     **Data Items**
 
@@ -263,7 +269,8 @@ class SecsS01F04(SecsStreamFunction):
 
 
 class SecsS01F11(SecsStreamFunction):
-    """status variable namelist - request
+    """
+    status variable namelist - request.
 
     **Data Items**
 
@@ -309,7 +316,8 @@ class SecsS01F11(SecsStreamFunction):
 
 
 class SecsS01F12(SecsStreamFunction):
-    """status variable namelist - reply
+    """
+    status variable namelist - reply.
 
     **Data Items**
 
@@ -374,7 +382,8 @@ class SecsS01F12(SecsStreamFunction):
 
 
 class SecsS01F13(SecsStreamFunction):
-    """establish communication - request
+    """
+    establish communication - request.
 
     .. caution::
 
@@ -422,7 +431,8 @@ class SecsS01F13(SecsStreamFunction):
 
 
 class SecsS01F14(SecsStreamFunction):
-    """establish communication - acknowledge
+    """
+    establish communication - acknowledge.
 
     .. caution::
 
@@ -486,7 +496,8 @@ class SecsS01F14(SecsStreamFunction):
 
 
 class SecsS01F15(SecsStreamFunction):
-    """request offline
+    """
+    request offline.
 
     **Structure**::
 
@@ -519,7 +530,8 @@ class SecsS01F15(SecsStreamFunction):
 
 
 class SecsS01F16(SecsStreamFunction):
-    """offline acknowledge
+    """
+    offline acknowledge.
 
     **Data Items**
 
@@ -557,7 +569,8 @@ class SecsS01F16(SecsStreamFunction):
 
 
 class SecsS01F17(SecsStreamFunction):
-    """request online
+    """
+    request online.
 
     **Structure**::
 
@@ -590,7 +603,8 @@ class SecsS01F17(SecsStreamFunction):
 
 
 class SecsS01F18(SecsStreamFunction):
-    """online acknowledge
+    """
+    online acknowledge.
 
     **Data Items**
 
@@ -628,7 +642,8 @@ class SecsS01F18(SecsStreamFunction):
 
 
 class SecsS02F00(SecsStreamFunction):
-    """abort transaction stream 2
+    """
+    abort transaction stream 2.
 
     **Structure**::
 
@@ -661,7 +676,8 @@ class SecsS02F00(SecsStreamFunction):
 
 
 class SecsS02F13(SecsStreamFunction):
-    """equipment constant - request
+    """
+    equipment constant - request.
 
     **Data Items**
 
@@ -707,7 +723,8 @@ class SecsS02F13(SecsStreamFunction):
 
 
 class SecsS02F14(SecsStreamFunction):
-    """equipment constant - data
+    """
+    equipment constant - data.
 
     **Data Items**
 
@@ -751,7 +768,8 @@ class SecsS02F14(SecsStreamFunction):
 
 
 class SecsS02F15(SecsStreamFunction):
-    """new equipment constant - send
+    """
+    new equipment constant - send.
 
     **Data Items**
 
@@ -810,7 +828,8 @@ class SecsS02F15(SecsStreamFunction):
 
 
 class SecsS02F16(SecsStreamFunction):
-    """new equipment constant - acknowledge
+    """
+    new equipment constant - acknowledge.
 
     **Data Items**
 
@@ -848,7 +867,8 @@ class SecsS02F16(SecsStreamFunction):
 
 
 class SecsS02F17(SecsStreamFunction):
-    """date and time - request
+    """
+    date and time - request.
 
     **Structure**::
 
@@ -881,7 +901,8 @@ class SecsS02F17(SecsStreamFunction):
 
 
 class SecsS02F18(SecsStreamFunction):
-    """date and time - data
+    """
+    date and time - data.
 
     **Data Items**
 
@@ -919,7 +940,8 @@ class SecsS02F18(SecsStreamFunction):
 
 
 class SecsS02F29(SecsStreamFunction):
-    """equipment constant namelist - request
+    """
+    equipment constant namelist - request.
 
     **Data Items**
 
@@ -965,7 +987,8 @@ class SecsS02F29(SecsStreamFunction):
 
 
 class SecsS02F30(SecsStreamFunction):
-    """equipment constant namelist
+    """
+    equipment constant namelist.
 
     **Data Items**
 
@@ -1047,7 +1070,8 @@ class SecsS02F30(SecsStreamFunction):
 
 
 class SecsS02F33(SecsStreamFunction):
-    """define report
+    """
+    define report.
 
     **Data Items**
 
@@ -1126,7 +1150,8 @@ class SecsS02F33(SecsStreamFunction):
 
 
 class SecsS02F34(SecsStreamFunction):
-    """define report - acknowledge
+    """
+    define report - acknowledge.
 
     **Data Items**
 
@@ -1164,7 +1189,8 @@ class SecsS02F34(SecsStreamFunction):
 
 
 class SecsS02F35(SecsStreamFunction):
-    """link event report
+    """
+    link event report.
 
     **Data Items**
 
@@ -1235,7 +1261,8 @@ class SecsS02F35(SecsStreamFunction):
 
 
 class SecsS02F36(SecsStreamFunction):
-    """link event report - acknowledge
+    """
+    link event report - acknowledge.
 
     **Data Items**
 
@@ -1273,7 +1300,8 @@ class SecsS02F36(SecsStreamFunction):
 
 
 class SecsS02F37(SecsStreamFunction):
-    """en-/disable event report
+    """
+    en-/disable event report.
 
     **Data Items**
 
@@ -1326,7 +1354,8 @@ class SecsS02F37(SecsStreamFunction):
 
 
 class SecsS02F38(SecsStreamFunction):
-    """en-/disable event report - acknowledge
+    """
+    en-/disable event report - acknowledge.
 
     **Data Items**
 
@@ -1364,7 +1393,8 @@ class SecsS02F38(SecsStreamFunction):
 
 
 class SecsS02F41(SecsStreamFunction):
-    """host command - send
+    """
+    host command - send.
 
     **Data Items**
 
@@ -1435,7 +1465,8 @@ class SecsS02F41(SecsStreamFunction):
 
 
 class SecsS02F42(SecsStreamFunction):
-    """host command - acknowledge
+    """
+    host command - acknowledge.
 
     **Data Items**
 
@@ -1509,7 +1540,8 @@ class SecsS02F42(SecsStreamFunction):
 
 
 class SecsS05F00(SecsStreamFunction):
-    """abort transaction stream 5
+    """
+    abort transaction stream 5.
 
     **Structure**::
 
@@ -1542,7 +1574,8 @@ class SecsS05F00(SecsStreamFunction):
 
 
 class SecsS05F01(SecsStreamFunction):
-    """alarm report - send
+    """
+    alarm report - send.
 
     **Data Items**
 
@@ -1595,7 +1628,8 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})
 
 
 class SecsS05F02(SecsStreamFunction):
-    """alarm report - acknowledge
+    """
+    alarm report - acknowledge.
 
     **Data Items**
 
@@ -1633,7 +1667,8 @@ class SecsS05F02(SecsStreamFunction):
 
 
 class SecsS05F03(SecsStreamFunction):
-    """en-/disable alarm - send
+    """
+    en-/disable alarm - send.
 
     **Data Items**
 
@@ -1681,7 +1716,8 @@ class SecsS05F03(SecsStreamFunction):
 
 
 class SecsS05F04(SecsStreamFunction):
-    """en-/disable alarm - acknowledge
+    """
+    en-/disable alarm - acknowledge.
 
     **Data Items**
 
@@ -1719,7 +1755,8 @@ class SecsS05F04(SecsStreamFunction):
 
 
 class SecsS05F05(SecsStreamFunction):
-    """list alarms - request
+    """
+    list alarms - request.
 
     **Data Items**
 
@@ -1763,7 +1800,8 @@ class SecsS05F05(SecsStreamFunction):
 
 
 class SecsS05F06(SecsStreamFunction):
-    """list alarms - data
+    """
+    list alarms - data.
 
     **Data Items**
 
@@ -1821,7 +1859,8 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
 
 
 class SecsS05F07(SecsStreamFunction):
-    """list enabled alarms - request
+    """
+    list enabled alarms - request.
 
     **Structure**::
 
@@ -1854,7 +1893,8 @@ class SecsS05F07(SecsStreamFunction):
 
 
 class SecsS05F08(SecsStreamFunction):
-    """list enabled alarms - data
+    """
+    list enabled alarms - data.
 
     **Data Items**
 
@@ -1912,7 +1952,8 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
 
 
 class SecsS05F09(SecsStreamFunction):
-    """exception post - notify
+    """
+    exception post - notify.
 
     **Data Items**
 
@@ -1983,7 +2024,8 @@ class SecsS05F09(SecsStreamFunction):
 
 
 class SecsS05F10(SecsStreamFunction):
-    """exception post - confirm
+    """
+    exception post - confirm.
 
     **Structure**::
 
@@ -2016,7 +2058,8 @@ class SecsS05F10(SecsStreamFunction):
 
 
 class SecsS05F11(SecsStreamFunction):
-    """exception clear - notify
+    """
+    exception clear - notify.
 
     **Data Items**
 
@@ -2073,7 +2116,8 @@ class SecsS05F11(SecsStreamFunction):
 
 
 class SecsS05F12(SecsStreamFunction):
-    """exception clear - confirm
+    """
+    exception clear - confirm.
 
     **Structure**::
 
@@ -2106,7 +2150,8 @@ class SecsS05F12(SecsStreamFunction):
 
 
 class SecsS05F13(SecsStreamFunction):
-    """exception recover - request
+    """
+    exception recover - request.
 
     **Data Items**
 
@@ -2154,7 +2199,8 @@ class SecsS05F13(SecsStreamFunction):
 
 
 class SecsS05F14(SecsStreamFunction):
-    """exception recover - acknowledge
+    """
+    exception recover - acknowledge.
 
     **Data Items**
 
@@ -2221,7 +2267,8 @@ class SecsS05F14(SecsStreamFunction):
 
 
 class SecsS05F15(SecsStreamFunction):
-    """exception recover complete - notify
+    """
+    exception recover complete - notify.
 
     **Data Items**
 
@@ -2293,7 +2340,8 @@ class SecsS05F15(SecsStreamFunction):
 
 
 class SecsS05F16(SecsStreamFunction):
-    """exception recover complete - confirm
+    """
+    exception recover complete - confirm.
 
     **Structure**::
 
@@ -2326,7 +2374,8 @@ class SecsS05F16(SecsStreamFunction):
 
 
 class SecsS05F17(SecsStreamFunction):
-    """exception recover abort - request
+    """
+    exception recover abort - request.
 
     **Data Items**
 
@@ -2364,7 +2413,8 @@ class SecsS05F17(SecsStreamFunction):
 
 
 class SecsS05F18(SecsStreamFunction):
-    """exception recover abort - acknowledge
+    """
+    exception recover abort - acknowledge.
 
     **Data Items**
 
@@ -2431,7 +2481,8 @@ class SecsS05F18(SecsStreamFunction):
 
 
 class SecsS06F00(SecsStreamFunction):
-    """abort transaction stream 6
+    """
+    abort transaction stream 6.
 
     **Structure**::
 
@@ -2464,7 +2515,8 @@ class SecsS06F00(SecsStreamFunction):
 
 
 class SecsS06F05(SecsStreamFunction):
-    """multi block data inquiry
+    """
+    multi block data inquiry.
 
     **Data Items**
 
@@ -2512,7 +2564,8 @@ class SecsS06F05(SecsStreamFunction):
 
 
 class SecsS06F06(SecsStreamFunction):
-    """multi block data grant
+    """
+    multi block data grant.
 
     **Data Items**
 
@@ -2550,7 +2603,8 @@ class SecsS06F06(SecsStreamFunction):
 
 
 class SecsS06F07(SecsStreamFunction):
-    """data transfer request
+    """
+    data transfer request.
 
     **Data Items**
 
@@ -2588,7 +2642,8 @@ class SecsS06F07(SecsStreamFunction):
 
 
 class SecsS06F08(SecsStreamFunction):
-    """data transfer data
+    """
+    data transfer data.
 
     **Data Items**
 
@@ -2686,7 +2741,8 @@ class SecsS06F08(SecsStreamFunction):
 
 
 class SecsS06F11(SecsStreamFunction):
-    """event report
+    """
+    event report.
 
     **Data Items**
 
@@ -2763,7 +2819,8 @@ class SecsS06F11(SecsStreamFunction):
 
 
 class SecsS06F12(SecsStreamFunction):
-    """event report - acknowledge
+    """
+    event report - acknowledge.
 
     **Data Items**
 
@@ -2801,7 +2858,8 @@ class SecsS06F12(SecsStreamFunction):
 
 
 class SecsS06F15(SecsStreamFunction):
-    """event report request
+    """
+    event report request.
 
     **Data Items**
 
@@ -2839,7 +2897,8 @@ class SecsS06F15(SecsStreamFunction):
 
 
 class SecsS06F16(SecsStreamFunction):
-    """event report data
+    """
+    event report data.
 
     **Data Items**
 
@@ -2916,7 +2975,8 @@ class SecsS06F16(SecsStreamFunction):
 
 
 class SecsS06F19(SecsStreamFunction):
-    """individual report request
+    """
+    individual report request.
 
     **Data Items**
 
@@ -2954,7 +3014,8 @@ class SecsS06F19(SecsStreamFunction):
 
 
 class SecsS06F20(SecsStreamFunction):
-    """individual report data
+    """
+    individual report data.
 
     **Data Items**
 
@@ -2998,7 +3059,8 @@ class SecsS06F20(SecsStreamFunction):
 
 
 class SecsS06F21(SecsStreamFunction):
-    """annotated individual report request
+    """
+    annotated individual report request.
 
     **Data Items**
 
@@ -3036,7 +3098,8 @@ class SecsS06F21(SecsStreamFunction):
 
 
 class SecsS06F22(SecsStreamFunction):
-    """annotated individual report data
+    """
+    annotated individual report data.
 
     **Data Items**
 
@@ -3095,7 +3158,8 @@ class SecsS06F22(SecsStreamFunction):
 
 
 class SecsS07F00(SecsStreamFunction):
-    """abort transaction stream 7
+    """
+    abort transaction stream 7.
 
     **Structure**::
 
@@ -3128,7 +3192,8 @@ class SecsS07F00(SecsStreamFunction):
 
 
 class SecsS07F01(SecsStreamFunction):
-    """process program load - inquire
+    """
+    process program load - inquire.
 
     **Data Items**
 
@@ -3176,7 +3241,8 @@ class SecsS07F01(SecsStreamFunction):
 
 
 class SecsS07F02(SecsStreamFunction):
-    """process program load - grant
+    """
+    process program load - grant.
 
     **Data Items**
 
@@ -3214,7 +3280,8 @@ class SecsS07F02(SecsStreamFunction):
 
 
 class SecsS07F03(SecsStreamFunction):
-    """process program - send
+    """
+    process program - send.
 
     **Data Items**
 
@@ -3262,7 +3329,8 @@ class SecsS07F03(SecsStreamFunction):
 
 
 class SecsS07F04(SecsStreamFunction):
-    """process program - acknowledge
+    """
+    process program - acknowledge.
 
     **Data Items**
 
@@ -3300,7 +3368,8 @@ class SecsS07F04(SecsStreamFunction):
 
 
 class SecsS07F05(SecsStreamFunction):
-    """process program - request
+    """
+    process program - request.
 
     **Data Items**
 
@@ -3338,7 +3407,8 @@ class SecsS07F05(SecsStreamFunction):
 
 
 class SecsS07F06(SecsStreamFunction):
-    """process program - data
+    """
+    process program - data.
 
     **Data Items**
 
@@ -3386,7 +3456,8 @@ class SecsS07F06(SecsStreamFunction):
 
 
 class SecsS07F17(SecsStreamFunction):
-    """delete process program - send
+    """
+    delete process program - send.
 
     **Data Items**
 
@@ -3430,7 +3501,8 @@ class SecsS07F17(SecsStreamFunction):
 
 
 class SecsS07F18(SecsStreamFunction):
-    """delete process program - acknowledge
+    """
+    delete process program - acknowledge.
 
     **Data Items**
 
@@ -3468,7 +3540,8 @@ class SecsS07F18(SecsStreamFunction):
 
 
 class SecsS07F19(SecsStreamFunction):
-    """current equipment process program - request
+    """
+    current equipment process program - request.
 
     **Structure**::
 
@@ -3501,7 +3574,8 @@ class SecsS07F19(SecsStreamFunction):
 
 
 class SecsS07F20(SecsStreamFunction):
-    """current equipment process program - data
+    """
+    current equipment process program - data.
 
     **Data Items**
 
@@ -3545,7 +3619,8 @@ class SecsS07F20(SecsStreamFunction):
 
 
 class SecsS09F00(SecsStreamFunction):
-    """abort transaction stream 9
+    """
+    abort transaction stream 9.
 
     **Structure**::
 
@@ -3578,7 +3653,8 @@ class SecsS09F00(SecsStreamFunction):
 
 
 class SecsS09F01(SecsStreamFunction):
-    """unrecognized device id
+    """
+    unrecognized device id.
 
     **Data Items**
 
@@ -3616,7 +3692,8 @@ class SecsS09F01(SecsStreamFunction):
 
 
 class SecsS09F03(SecsStreamFunction):
-    """unrecognized stream type
+    """
+    unrecognized stream type.
 
     **Data Items**
 
@@ -3654,7 +3731,8 @@ class SecsS09F03(SecsStreamFunction):
 
 
 class SecsS09F05(SecsStreamFunction):
-    """unrecognized function type
+    """
+    unrecognized function type.
 
     **Data Items**
 
@@ -3692,7 +3770,8 @@ class SecsS09F05(SecsStreamFunction):
 
 
 class SecsS09F07(SecsStreamFunction):
-    """illegal data
+    """
+    illegal data.
 
     **Data Items**
 
@@ -3730,7 +3809,8 @@ class SecsS09F07(SecsStreamFunction):
 
 
 class SecsS09F09(SecsStreamFunction):
-    """transaction timer timeout
+    """
+    transaction timer timeout.
 
     **Data Items**
 
@@ -3768,7 +3848,8 @@ class SecsS09F09(SecsStreamFunction):
 
 
 class SecsS09F11(SecsStreamFunction):
-    """data too long
+    """
+    data too long.
 
     **Data Items**
 
@@ -3806,7 +3887,8 @@ class SecsS09F11(SecsStreamFunction):
 
 
 class SecsS09F13(SecsStreamFunction):
-    """conversation timeout
+    """
+    conversation timeout.
 
     **Data Items**
 
@@ -3854,7 +3936,8 @@ class SecsS09F13(SecsStreamFunction):
 
 
 class SecsS10F00(SecsStreamFunction):
-    """abort transaction stream 10
+    """
+    abort transaction stream 10.
 
     **Structure**::
 
@@ -3887,7 +3970,8 @@ class SecsS10F00(SecsStreamFunction):
 
 
 class SecsS10F01(SecsStreamFunction):
-    """terminal - request
+    """
+    terminal - request.
 
     **Data Items**
 
@@ -3935,7 +4019,8 @@ class SecsS10F01(SecsStreamFunction):
 
 
 class SecsS10F02(SecsStreamFunction):
-    """terminal - acknowledge
+    """
+    terminal - acknowledge.
 
     **Data Items**
 
@@ -3973,7 +4058,8 @@ class SecsS10F02(SecsStreamFunction):
 
 
 class SecsS10F03(SecsStreamFunction):
-    """terminal single - display
+    """
+    terminal single - display.
 
     **Data Items**
 
@@ -4021,7 +4107,8 @@ class SecsS10F03(SecsStreamFunction):
 
 
 class SecsS10F04(SecsStreamFunction):
-    """terminal single - acknowledge
+    """
+    terminal single - acknowledge.
 
     **Data Items**
 
@@ -4059,7 +4146,8 @@ class SecsS10F04(SecsStreamFunction):
 
 
 class SecsS12F00(SecsStreamFunction):
-    """abort transaction stream 12
+    """
+    abort transaction stream 12.
 
     **Structure**::
 
@@ -4092,7 +4180,8 @@ class SecsS12F00(SecsStreamFunction):
 
 
 class SecsS12F01(SecsStreamFunction):
-    """map setup data - send
+    """
+    map setup data - send.
 
     **Data Items**
 
@@ -4213,7 +4302,8 @@ class SecsS12F01(SecsStreamFunction):
 
 
 class SecsS12F02(SecsStreamFunction):
-    """map setup data - acknowledge
+    """
+    map setup data - acknowledge.
 
     **Data Items**
 
@@ -4251,7 +4341,8 @@ class SecsS12F02(SecsStreamFunction):
 
 
 class SecsS12F03(SecsStreamFunction):
-    """map setup data - request
+    """
+    map setup data - request.
 
     **Data Items**
 
@@ -4336,7 +4427,8 @@ class SecsS12F03(SecsStreamFunction):
 
 
 class SecsS12F04(SecsStreamFunction):
-    """map setup data
+    """
+    map setup data.
 
     **Data Items**
 
@@ -4457,7 +4549,8 @@ class SecsS12F04(SecsStreamFunction):
 
 
 class SecsS12F05(SecsStreamFunction):
-    """map transmit inquire
+    """
+    map transmit inquire.
 
     **Data Items**
 
@@ -4514,7 +4607,8 @@ class SecsS12F05(SecsStreamFunction):
 
 
 class SecsS12F06(SecsStreamFunction):
-    """map transmit - grant
+    """
+    map transmit - grant.
 
     **Data Items**
 
@@ -4552,7 +4646,8 @@ class SecsS12F06(SecsStreamFunction):
 
 
 class SecsS12F07(SecsStreamFunction):
-    """map data type 1 - send
+    """
+    map data type 1 - send.
 
     **Data Items**
 
@@ -4630,7 +4725,8 @@ class SecsS12F07(SecsStreamFunction):
 
 
 class SecsS12F08(SecsStreamFunction):
-    """map data type 1 - acknowledge
+    """
+    map data type 1 - acknowledge.
 
     **Data Items**
 
@@ -4668,7 +4764,8 @@ class SecsS12F08(SecsStreamFunction):
 
 
 class SecsS12F09(SecsStreamFunction):
-    """map data type 2 - send
+    """
+    map data type 2 - send.
 
     **Data Items**
 
@@ -4725,7 +4822,8 @@ class SecsS12F09(SecsStreamFunction):
 
 
 class SecsS12F10(SecsStreamFunction):
-    """map data type 2 - acknowledge
+    """
+    map data type 2 - acknowledge.
 
     **Data Items**
 
@@ -4763,7 +4861,8 @@ class SecsS12F10(SecsStreamFunction):
 
 
 class SecsS12F11(SecsStreamFunction):
-    """map data type 3 - send
+    """
+    map data type 3 - send.
 
     **Data Items**
 
@@ -4841,7 +4940,8 @@ class SecsS12F11(SecsStreamFunction):
 
 
 class SecsS12F12(SecsStreamFunction):
-    """map data type 3 - acknowledge
+    """
+    map data type 3 - acknowledge.
 
     **Data Items**
 
@@ -4879,7 +4979,8 @@ class SecsS12F12(SecsStreamFunction):
 
 
 class SecsS12F13(SecsStreamFunction):
-    """map data type 1 - request
+    """
+    map data type 1 - request.
 
     **Data Items**
 
@@ -4927,7 +5028,8 @@ class SecsS12F13(SecsStreamFunction):
 
 
 class SecsS12F14(SecsStreamFunction):
-    """map data type 1
+    """
+    map data type 1.
 
     **Data Items**
 
@@ -5005,7 +5107,8 @@ class SecsS12F14(SecsStreamFunction):
 
 
 class SecsS12F15(SecsStreamFunction):
-    """map data type 2 - request
+    """
+    map data type 2 - request.
 
     **Data Items**
 
@@ -5053,7 +5156,8 @@ class SecsS12F15(SecsStreamFunction):
 
 
 class SecsS12F16(SecsStreamFunction):
-    """map data type 2
+    """
+    map data type 2.
 
     **Data Items**
 
@@ -5110,7 +5214,8 @@ class SecsS12F16(SecsStreamFunction):
 
 
 class SecsS12F17(SecsStreamFunction):
-    """map data type 3 - request
+    """
+    map data type 3 - request.
 
     **Data Items**
 
@@ -5162,7 +5267,8 @@ class SecsS12F17(SecsStreamFunction):
 
 
 class SecsS12F18(SecsStreamFunction):
-    """map data type 3
+    """
+    map data type 3.
 
     **Data Items**
 
@@ -5240,7 +5346,8 @@ class SecsS12F18(SecsStreamFunction):
 
 
 class SecsS12F19(SecsStreamFunction):
-    """map error report - send
+    """
+    map error report - send.
 
     **Data Items**
 
@@ -5288,7 +5395,8 @@ class SecsS12F19(SecsStreamFunction):
 
 
 class SecsS14F00(SecsStreamFunction):
-    """abort transaction stream 14
+    """
+    abort transaction stream 14.
 
     **Structure**::
 
@@ -5321,7 +5429,8 @@ class SecsS14F00(SecsStreamFunction):
 
 
 class SecsS14F01(SecsStreamFunction):
-    """GetAttr request
+    """
+    GetAttr request.
 
     **Data Items**
 
@@ -5426,7 +5535,8 @@ class SecsS14F01(SecsStreamFunction):
 
 
 class SecsS14F02(SecsStreamFunction):
-    """GetAttr data
+    """
+    GetAttr data.
 
     **Data Items**
 
@@ -5558,7 +5668,8 @@ class SecsS14F02(SecsStreamFunction):
 
 
 class SecsS14F03(SecsStreamFunction):
-    """SetAttr request
+    """
+    SetAttr request.
 
     **Data Items**
 
@@ -5638,7 +5749,8 @@ class SecsS14F03(SecsStreamFunction):
 
 
 class SecsS14F04(SecsStreamFunction):
-    """SetAttr data
+    """
+    SetAttr data.
 
     **Data Items**
 

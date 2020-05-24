@@ -27,7 +27,8 @@
 #
 
 """
-USAGE
+USAGE.
+
 from fysom import Fysom
 fsm = Fysom({
   'initial': 'green',
@@ -206,21 +207,27 @@ __email__ = 'mansour@oxplot.com'
 
 
 class FysomError(Exception):  # pragma: no cover
-    pass
+    """Fysom Error."""
 
 
 class Fysom:  # pragma: no cover
+    """Fysom state machine."""
+
     def __init__(self, cfg):
+        """Initialize state machine."""
         self._apply(cfg)
 
     def isstate(self, state):
+        """Get state."""
         return self.current == state
 
     def can(self, event):
+        """Check if transition possible."""
         return event in self._map and self.current in self._map[event] \
             and not hasattr(self, 'transition')
 
     def cannot(self, event):
+        """Check if transition is not possible."""
         return not self.can(event)
 
     def _apply(self, cfg):

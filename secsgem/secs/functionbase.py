@@ -13,55 +13,27 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level
-"""Base class for for SECS stream and functions"""
+"""Base class for for SECS stream and functions."""
 
 from .variables import SecsVar
 from ..common import indent_block
 
 
 class StructureDisplayingMeta(type):
-    """Meta class overriding the default __repr__ of a class"""
+    """Meta class overriding the default __repr__ of a class."""
 
     def __repr__(cls):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return cls.get_format()
 
 
 class SecsStreamFunction(metaclass=StructureDisplayingMeta):
-    """Secs stream and function base class
+    """
+    Secs stream and function base class.
 
     This class is inherited to create a stream/function class.
     To create a function specific content the class variables :attr:`_stream`, :attr:`_function`
     and :attr:`_dataFormat` must be overridden.
-
-    **Example**::
-
-        class SecsS02F30(SecsStreamFunction):
-            _stream = 2
-            _function = 30
-
-            _toHost = True
-            _toEquipment = False
-
-            _hasReply = False
-            _isReplyRequired = False
-
-            _isMultiBlock = True
-
-            _dataFormat = [
-                [
-                    ECID,
-                    ECNAME,
-                    ECMIN,
-                    ECMAX,
-                    ECDEF,
-                    UNITS
-                ]
-            ]
-
-    :param value: set the value of stream/function parameters
-    :type value: various
     """
 
     _stream = 0
@@ -78,6 +50,37 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
     _isMultiBlock = False
 
     def __init__(self, value=None):
+        """
+        Initialize a stream function object.
+
+        **Example**::
+
+            class SecsS02F30(SecsStreamFunction):
+                _stream = 2
+                _function = 30
+
+                _toHost = True
+                _toEquipment = False
+
+                _hasReply = False
+                _isReplyRequired = False
+
+                _isMultiBlock = True
+
+                _dataFormat = [
+                    [
+                        ECID,
+                        ECNAME,
+                        ECMIN,
+                        ECMAX,
+                        ECDEF,
+                        UNITS
+                    ]
+                ]
+
+        :param value: set the value of stream/function parameters
+        :type value: various
+        """
         self.data = SecsVar.generate(self._dataFormat)
 
         # copy public members from private ones
@@ -99,7 +102,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         self._object_intitialized = True
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
             return "{}{} .".format(function, " W" if self._isReplyRequired else "")
@@ -111,23 +114,23 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
             indent_block(data))
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         return self.data[key]
 
     def __setitem__(self, key, item):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         self.data[key] = item
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the lenth."""
         return len(self.data)
 
     def __getattr__(self, item):
-        """Get an item as object member"""
+        """Get an item as object member."""
         return self.data.__getattr__(item)
 
     def __setattr__(self, item, value):
-        """Set an item as object member"""
+        """Set an item as object member."""
         if '_object_intitialized' not in self.__dict__:
             return dict.__setattr__(self, item, value)
 
@@ -137,7 +140,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         return None
 
     def append(self, data):
-        """Append data to list, if stream/function parameter is a list
+        """
+        Append data to list, if stream/function parameter is a list.
 
         :param data: list item to add
         :type data: various
@@ -149,7 +153,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
                 "class {} has no attribute 'append'".format(self.__class__.__name__))
 
     def encode(self):
-        """Generates the encoded hsms data of the stream/function parameter
+        """
+        Generates the encoded hsms data of the stream/function parameter.
 
         :returns: encoded data
         :rtype: string
@@ -160,7 +165,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         return self.data.encode()
 
     def decode(self, data):
-        """Updates stream/function parameter data from the passed data
+        """
+        Updates stream/function parameter data from the passed data.
 
         :param data: encoded data
         :type data: string
@@ -169,7 +175,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
             self.data.decode(data)
 
     def set(self, value):
-        """Updates the value of the stream/function parameter
+        """
+        Updates the value of the stream/function parameter.
 
         :param value: new value for the parameter
         :type value: various
@@ -177,7 +184,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         self.data.set(value)
 
     def get(self):
-        """Gets the current value of the stream/function parameter
+        """
+        Gets the current value of the stream/function parameter.
 
         :returns: current parameter value
         :rtype: various
@@ -186,7 +194,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     @classmethod
     def get_format(cls):
-        """Gets the format of the function
+        """
+        Gets the format of the function.
 
         :returns: returns the string representation of the function
         :rtype: string

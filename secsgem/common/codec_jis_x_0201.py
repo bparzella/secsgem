@@ -30,20 +30,20 @@ for i in range(0x00A1, 0x00E0):
 jis8_encoding_map = codecs.make_encoding_map(jis8_decoding_map)
 
 
-def jis_x_0201_encode(data, errors='strict'):
+def _jis_x_0201_encode(data, errors='strict'):
     return codecs.charmap_encode(data, errors, jis8_encoding_map)
 
 
-def jis_x_0201_decode(data, errors='strict'):
+def _jis_x_0201_decode(data, errors='strict'):
     return codecs.charmap_decode(data, errors, jis8_decoding_map)
 
 
-def jis_x_0201_search(name):
+def _jis_x_0201_search(name):
     if name == "jis-8":
-        return codecs.CodecInfo(encode=jis_x_0201_encode, decode=jis_x_0201_decode, name="jis-8")
+        return codecs.CodecInfo(encode=_jis_x_0201_encode, decode=_jis_x_0201_decode, name="jis-8")
 
     return None
 
 
 # register the codec
-codecs.register(jis_x_0201_search)
+codecs.register(_jis_x_0201_search)

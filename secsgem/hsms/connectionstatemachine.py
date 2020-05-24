@@ -28,8 +28,14 @@ STATE_CONNECTED_SELECTED = "{}{}{}".format(STATE_CONNECTED, NestedState.separato
 
 
 class ConnectionStateMachine:
+    """HSMS Connection state machine."""
 
     def __init__(self, callbacks=None):
+        """
+        Initialize the hsms connection state machine.
+
+        :param callbacks: callbacks for the state machine
+        """
         self.callbacks = {}
 
         self.states = [STATE_NOT_CONNECTED,

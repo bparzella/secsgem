@@ -13,33 +13,35 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=too-many-arguments
-"""Contains objects that encapsulate hsms messages"""
+"""Contains objects that encapsulate hsms messages."""
 
 import struct
 
 
 class HsmsHeader:
-    """Generic HSMS header
+    """
+    Generic HSMS header.
 
     Base for different specific headers
-
-    :param system: message ID
-    :type system: integer
-    :param session_id: device / session ID
-    :type session_id: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsHeader(3, 100)
-        HsmsHeader({sessionID:0x0064, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, \
-requireResponse:False})
-
     """
 
     def __init__(self, system, session_id):
+        """
+        Initialize a hsms header.
+
+        :param system: message ID
+        :type system: integer
+        :param session_id: device / session ID
+        :type session_id: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsHeader(3, 100)
+            HsmsHeader({sessionID:0x0064, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, \
+requireResponse:False})
+        """
         self.sessionID = session_id
         self.requireResponse = False
         self.stream = 0x00
@@ -49,17 +51,18 @@ requireResponse:False})
         self.system = system
 
     def __str__(self):
-        """Generate string representation for an object of this class"""
+        """Generate string representation for an object of this class."""
         return '{sessionID:0x%04x, stream:%02d, function:%02d, pType:0x%02x, sType:0x%02x, system:0x%08x, ' \
                'requireResponse:%r}' % \
             (self.sessionID, self.stream, self.function, self.pType, self.sType, self.system, self.requireResponse)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return "%s(%s)" % (self.__class__.__name__, self.__str__())
 
     def encode(self):
-        """Encode header to hsms packet
+        """
+        Encode header to hsms packet.
 
         :returns: encoded header
         :rtype: string
@@ -81,24 +84,27 @@ requireResponse:False})
 
 
 class HsmsSelectReqHeader(HsmsHeader):
-    """Header for Select Request
+    """
+    Header for Select Request.
 
     Header for message with SType 1.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsSelectReqHeader(14)
-        HsmsSelectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x01, system:0x0000000e, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms select request.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsSelectReqHeader(14)
+            HsmsSelectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x01, system:0x0000000e, \
+requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -108,24 +114,27 @@ requireResponse:False})
 
 
 class HsmsSelectRspHeader(HsmsHeader):
-    """Header for Select Response
+    """
+    Header for Select Response.
 
     Header for message with SType 2.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsSelectRspHeader(24)
-        HsmsSelectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x02, system:0x00000018, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms select response.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsSelectRspHeader(24)
+            HsmsSelectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x02, system:0x00000018, \
+requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -135,24 +144,27 @@ requireResponse:False})
 
 
 class HsmsDeselectReqHeader(HsmsHeader):
-    """Header for Deselect Request
+    """
+    Header for Deselect Request.
 
     Header for message with SType 3.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsDeselectReqHeader(1)
-        HsmsDeselectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x03, system:0x00000001, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms deselect request.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsDeselectReqHeader(1)
+            HsmsDeselectReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x03, \
+system:0x00000001, requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -162,24 +174,27 @@ requireResponse:False})
 
 
 class HsmsDeselectRspHeader(HsmsHeader):
-    """Header for Deselect Response
+    """
+    Header for Deselect Response.
 
     Header for message with SType 4.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsDeselectRspHeader(1)
-        HsmsDeselectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x04, system:0x00000001, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms deslelct response.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsDeselectRspHeader(1)
+            HsmsDeselectRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x04, \
+system:0x00000001, requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -189,24 +204,27 @@ requireResponse:False})
 
 
 class HsmsLinktestReqHeader(HsmsHeader):
-    """Header for Linktest Request
+    """
+    Header for Linktest Request.
 
     Header for message with SType 5.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsLinktestReqHeader(2)
-        HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms linktest request.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsLinktestReqHeader(2)
+            HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, \
+system:0x00000002, requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -216,24 +234,27 @@ requireResponse:False})
 
 
 class HsmsLinktestRspHeader(HsmsHeader):
-    """Header for Linktest Response
+    """
+    Header for Linktest Response.
 
     Header for message with SType 6.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsLinktestRspHeader(10)
-        HsmsLinktestRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x06, system:0x0000000a, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms linktest response.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsLinktestRspHeader(10)
+            HsmsLinktestRspHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x06, \
+system:0x0000000a, requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -243,28 +264,31 @@ requireResponse:False})
 
 
 class HsmsRejectReqHeader(HsmsHeader):
-    """Header for Reject Request
+    """
+    Header for Reject Request.
 
     Header for message with SType 7.
-
-    :param system: message ID
-    :type system: integer
-    :param s_type: sType of rejected message
-    :type s_type: integer
-    :param reason: reason for rejection
-    :type reason: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsRejectReqHeader(17, 3, 4)
-        HsmsRejectReqHeader({sessionID:0xffff, stream:03, function:04, pType:0x00, sType:0x07, system:0x00000011, \
-requireResponse:False})
-
     """
 
     def __init__(self, system, s_type, reason):
+        """
+        Initialize a hsms reject request.
+
+        :param system: message ID
+        :type system: integer
+        :param s_type: sType of rejected message
+        :type s_type: integer
+        :param reason: reason for rejection
+        :type reason: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsRejectReqHeader(17, 3, 4)
+            HsmsRejectReqHeader({sessionID:0xffff, stream:03, function:04, pType:0x00, sType:0x07, system:0x00000011, \
+requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = s_type
@@ -274,24 +298,27 @@ requireResponse:False})
 
 
 class HsmsSeparateReqHeader(HsmsHeader):
-    """Header for Separate Request
+    """
+    Header for Separate Request.
 
     Header for message with SType 9.
-
-    :param system: message ID
-    :type system: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsSeparateReqHeader(17)
-        HsmsSeparateReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x09, system:0x00000011, \
-requireResponse:False})
-
     """
 
     def __init__(self, system):
+        """
+        Initialize a hsms separate request header.
+
+        :param system: message ID
+        :type system: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsSeparateReqHeader(17)
+            HsmsSeparateReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x09, \
+system:0x00000011, requireResponse:False})
+        """
         HsmsHeader.__init__(self, system, 0xFFFF)
         self.requireResponse = False
         self.stream = 0x00
@@ -301,32 +328,35 @@ requireResponse:False})
 
 
 class HsmsStreamFunctionHeader(HsmsHeader):
-    """Header for SECS message
+    """
+    Header for SECS message.
 
     Header for message with SType 0.
-
-    :param system: message ID
-    :type system: integer
-    :param stream: messages stream
-    :type stream: integer
-    :param function: messages function
-    :type function: integer
-    :param require_response: is response expected from remote
-    :type require_response: boolean
-    :param session_id: device / session ID
-    :type session_id: integer
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
-        HsmsStreamFunctionHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x00000016, \
-requireResponse:True})
-
     """
 
     def __init__(self, system, stream, function, require_response, session_id):
+        """
+        Initialize a stream function secs header.
+
+        :param system: message ID
+        :type system: integer
+        :param stream: messages stream
+        :type stream: integer
+        :param function: messages function
+        :type function: integer
+        :param require_response: is response expected from remote
+        :type require_response: boolean
+        :param session_id: device / session ID
+        :type session_id: integer
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
+            HsmsStreamFunctionHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, \
+system:0x00000016, requireResponse:True})
+        """
         HsmsHeader.__init__(self, system, session_id)
         self.sessionID = session_id
         self.requireResponse = require_response
@@ -338,26 +368,29 @@ requireResponse:True})
 
 
 class HsmsPacket:
-    """Class for hsms packet.
+    """
+    Class for hsms packet.
 
     Contains all required data and functions.
-
-    :param header: header used for this packet
-    :type header: :class:`secsgem.hsms.packets.HsmsHeader` and derived
-    :param data: data part used for streams and functions (SType 0)
-    :type data: string
-
-    **Example**::
-
-        >>> import secsgem
-        >>>
-        >>> secsgem.hsms.packets.HsmsPacket(secsgem.hsms.packets.HsmsLinktestReqHeader(2))
-        HsmsPacket({'header': HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, \
-system:0x00000002, requireResponse:False}), 'data': ''})
-
     """
 
     def __init__(self, header=None, data=b""):
+        """
+        Initialize a hsms packet.
+
+        :param header: header used for this packet
+        :type header: :class:`secsgem.hsms.packets.HsmsHeader` and derived
+        :param data: data part used for streams and functions (SType 0)
+        :type data: string
+
+        **Example**::
+
+            >>> import secsgem
+            >>>
+            >>> secsgem.hsms.packets.HsmsPacket(secsgem.hsms.packets.HsmsLinktestReqHeader(2))
+            HsmsPacket({'header': HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, \
+sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
+        """
         if header is None:
             self.header = HsmsHeader(0, 0)
         else:
@@ -366,17 +399,18 @@ system:0x00000002, requireResponse:False}), 'data': ''})
         self.data = data
 
     def __str__(self):
-        """Generate string representation for an object of this class"""
+        """Generate string representation for an object of this class."""
         data = "'header': " + self.header.__str__()
         return data
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return "%s({'header': %s, 'data': '%s'})" % (self.__class__.__name__, self.header.__repr__(),
                                                      self.data.decode("utf-8"))
 
     def encode(self):
-        """Encode packet data to hsms packet
+        """
+        Encode packet data to hsms packet.
 
         :returns: encoded packet
         :rtype: string
@@ -398,7 +432,8 @@ system:0x00000002, requireResponse:False}), 'data': ''})
 
     @staticmethod
     def decode(text):
-        """Decode byte array hsms packet to HsmsPacket object
+        """
+        Decode byte array hsms packet to HsmsPacket object.
 
         :returns: received packet object
         :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
@@ -415,8 +450,6 @@ system:0x00000002, requireResponse:False}), 'data': ''})
             >>> secsgem.hsms.packets.HsmsPacket.decode(packetData)
             HsmsPacket({'header': HsmsHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, \
 system:0x00000002, requireResponse:False}), 'data': ''})
-
-
         """
         data_length = len(text) - 14
         data_length_text = str(data_length) + "s"

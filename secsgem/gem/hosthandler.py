@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Handler for GEM host."""
 
 from ..secs.dataitems import ALED, ACKC5, ACKC10
@@ -22,23 +21,25 @@ from collections import OrderedDict
 
 
 class GemHostHandler(GemHandler):
-    """Baseclass for creating host models. Inherit from this class and override required functions.
-
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param name: Name of the underlying configuration
-    :type name: string
-    :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
-    """
+    """Baseclass for creating host models. Inherit from this class and override required functions."""
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        """
+        Initialize a gem host handler.
+
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param name: Name of the underlying configuration
+        :type name: string
+        :param custom_connection_handler: object for connection handling (ie multi server)
+        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        """
         GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = True
@@ -46,7 +47,7 @@ class GemHostHandler(GemHandler):
         self.reportSubscriptions = {}
 
     def clear_collection_events(self):
-        """Clear all collection events"""
+        """Clear all collection events."""
         self.logger.info("Clearing collection events")
 
         # clear subscribed reports
@@ -59,7 +60,8 @@ class GemHostHandler(GemHandler):
         self.disable_ceid_reports()
 
     def subscribe_collection_event(self, ceid, dvs, report_id=None):
-        """Subscribe to a collection event
+        """
+        Subscribe to a collection event.
 
         :param ceid: ID of the collection event
         :type ceid: integer
@@ -89,7 +91,8 @@ class GemHostHandler(GemHandler):
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
     def send_remote_command(self, rcmd, params):
-        """Send a remote command
+        """
+        Send a remote command.
 
         :param rcmd: Name of command
         :type rcmd: string
@@ -111,7 +114,8 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(s2f41))
 
     def delete_process_programs(self, ppids):
-        """Delete a list of process program
+        """
+        Delete a list of process program.
 
         :param ppids: Process programs to delete
         :type ppids: list of strings
@@ -122,28 +126,29 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
 
     def get_process_program_list(self):
-        """Get process program list"""
+        """Get process program list."""
         self.logger.info("Get process program list")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
     def go_online(self):
-        """Set control state to online"""
+        """Set control state to online."""
         self.logger.info("Go online")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)())).get()
 
     def go_offline(self):
-        """Set control state to offline"""
+        """Set control state to offline."""
         self.logger.info("Go offline")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
     def enable_alarm(self, alid):
-        """Enable alarm
+        """
+        Enable alarm.
 
         :param alid: alarm id to enable
         :type alid: :class:`secsgem.secs.dataitems.ALID`
@@ -154,7 +159,8 @@ class GemHostHandler(GemHandler):
             {"ALED": ALED.ENABLE, "ALID": alid}))).get()
 
     def disable_alarm(self, alid):
-        """Disable alarm
+        """
+        Disable alarm.
 
         :param alid: alarm id to disable
         :type alid: :class:`secsgem.secs.dataitems.ALID`
@@ -165,7 +171,8 @@ class GemHostHandler(GemHandler):
             {"ALED": ALED.DISABLE, "ALID": alid}))).get()
 
     def list_alarms(self, alids=None):
-        """List alarms
+        """
+        List alarms.
 
         :param alids: alarms to list details for
         :type alids: array of int/str
@@ -179,7 +186,7 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
 
     def list_enabled_alarms(self):
-        """List enabled alarms"""
+        """List enabled alarms."""
         self.logger.info("List all enabled alarms")
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
@@ -189,7 +196,8 @@ class GemHostHandler(GemHandler):
         return ACKC5.ACCEPTED
 
     def _on_s05f01(self, handler, packet):
-        """Callback handler for Stream 5, Function 1, Alarm request
+        """
+        Callback handler for Stream 5, Function 1, Alarm request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -206,7 +214,8 @@ class GemHostHandler(GemHandler):
         return self.stream_function(5, 2)(result)
 
     def _on_s06f11(self, handler, packet):
-        """Callback handler for Stream 6, Function 11, Establish Communication Request
+        """
+        Callback handler for Stream 6, Function 11, Establish Communication Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -237,7 +246,8 @@ class GemHostHandler(GemHandler):
         return ACKC10.ACCEPTED
 
     def _on_s10f01(self, handler, packet):
-        """Callback handler for Stream 10, Function 1, Terminal Request
+        """
+        Callback handler for Stream 10, Function 1, Terminal Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`

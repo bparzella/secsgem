@@ -13,8 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level
-"""SECS variable types"""
+"""SECS variable types."""
 
 from builtins import chr  # noqa
 
@@ -29,7 +28,8 @@ from ..common.codec_jis_x_0201 import *  # noqa
 
 
 class SecsVar:
-    """Base class for SECS variables.
+    """
+    Base class for SECS variables.
 
     Due to the python types, wrapper classes for variables are required.
     If constructor is called with SecsVar or subclass only the value is copied.
@@ -38,11 +38,13 @@ class SecsVar:
     formatCode = -1
 
     def __init__(self):
+        """Initialize a secs variable."""
         self.value = None
 
     @staticmethod
     def generate(dataformat):
-        """Generate actual variable from data format
+        """
+        Generate actual variable from data format.
 
         :param dataformat: dataformat to create variable for
         :type dataformat: list/SecsVar based class
@@ -64,7 +66,8 @@ class SecsVar:
 
     @staticmethod
     def get_format(dataformat, showname=False):
-        """Gets the format of the function
+        """
+        Gets the format of the function.
 
         :returns: returns the string representation of the function
         :rtype: string
@@ -86,7 +89,8 @@ class SecsVar:
         raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: various
@@ -94,7 +98,8 @@ class SecsVar:
         raise NotImplementedError("Function set not implemented on " + self.__class__.__name__)
 
     def encode_item_header(self, length):
-        """Encode item header depending on the number of length bytes required.
+        """
+        Encode item header depending on the number of length bytes required.
 
         :param length: number of bytes in data
         :type length: integer
@@ -123,7 +128,8 @@ class SecsVar:
         return bytes(bytearray((format_byte, (length & 0x0000FF))))
 
     def decode_item_header(self, data, text_pos=0):
-        """Encode item header depending on the number of length bytes required.
+        """
+        Encode item header depending on the number of length bytes required.
 
         :param data: encoded data
         :type data: string
@@ -159,17 +165,19 @@ class SecsVar:
 
 
 class SecsVarDynamic(SecsVar):
-    """Variable with interchangable type.
-
-    :param types: list of supported types, default first. empty list means all types are support, SecsVarString default
-    :type types: list of :class:`secsgem.secs.variables.SecsVar` classes
-    :param value: initial value
-    :type value: various
-    :param count: max number of items in type
-    :type count: integer
-    """
+    """Variable with interchangable type."""
 
     def __init__(self, types, value=None, count=-1):
+        """
+        Initialize a dynamic secs variable.
+
+        :param types: list of supported types, default first. empty means all types are support, SecsVarString default
+        :type types: list of :class:`secsgem.secs.variables.SecsVar` classes
+        :param value: initial value
+        :type value: various
+        :param count: max number of items in type
+        :type count: integer
+        """
         super(SecsVarDynamic, self).__init__()
 
         self.value = None
@@ -180,23 +188,23 @@ class SecsVarDynamic(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         return self.value.__repr__()
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return self.value.__len__()
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         return self.value.__getitem__(key)
 
     def __setitem__(self, key, item):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         self.value.__setitem__(key, item)
 
     def __eq__(self, other):
-        """Check equality with other object"""
+        """Check equality with other object."""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value.value
         if isinstance(other, SecsVar):
@@ -209,7 +217,7 @@ class SecsVarDynamic(SecsVar):
         return [other] == self.value.value
 
     def __hash__(self):
-        """Get data item for hashing"""
+        """Get data item for hashing."""
         if isinstance(self.value.value, list):
             return hash(self.value.value[0])
         return hash(self.value.value)
@@ -224,7 +232,8 @@ class SecsVarDynamic(SecsVar):
         return False
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.SecsVar` class,
         to avoid confusion.
@@ -267,7 +276,8 @@ class SecsVarDynamic(SecsVar):
             self.value.set(value)
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: various
@@ -278,7 +288,8 @@ class SecsVarDynamic(SecsVar):
         return None
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -286,7 +297,8 @@ class SecsVarDynamic(SecsVar):
         return self.value.encode()
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -355,7 +367,8 @@ class SecsVarDynamic(SecsVar):
 
 
 class ANYVALUE(SecsVarDynamic):
-    """Dummy data item for generation of unknown types
+    """
+    Dummy data item for generation of unknown types.
 
     :Types:
        - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
@@ -376,6 +389,11 @@ class ANYVALUE(SecsVarDynamic):
     """
 
     def __init__(self, value=None):
+        """
+        Initialize an ANYVALUE variable.
+
+        :param value: value of the variable
+        """
         self.name = self.__class__.__name__
 
         super(ANYVALUE, self).__init__([SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8,
@@ -384,31 +402,23 @@ class ANYVALUE(SecsVarDynamic):
 
 
 class SecsVarList(SecsVar):
-    """List variable type. List with items of different types
-
-    :param dataformat: internal data values
-    :type dataformat: OrderedDict
-    :param value: initial value
-    :type value: dict/list
-    :param count: number of fields in the list
-    :type count: integer
-    """
+    """List variable type. List with items of different types."""
 
     formatCode = 0
     textCode = 'L'
     preferredTypes = [dict]
 
-    class SecsVarListIter:
+    class _SecsVarListIter:
         def __init__(self, keys):
             self._keys = list(keys)
             self._counter = 0
 
         def __iter__(self):
-            """Get an iterator"""
+            """Get an iterator."""
             return self
 
         def __next__(self):
-            """Get the next item or raise StopIteration if at end of list"""
+            """Get the next item or raise StopIteration if at end of list."""
             if self._counter < len(self._keys):
                 i = self._counter
                 self._counter += 1
@@ -417,6 +427,16 @@ class SecsVarList(SecsVar):
             raise StopIteration()
 
     def __init__(self, dataformat, value=None):
+        """
+        Initialize a secs list variable.
+
+        :param dataformat: internal data values
+        :type dataformat: OrderedDict
+        :param value: initial value
+        :type value: dict/list
+        :param count: number of fields in the list
+        :type count: integer
+        """
         super(SecsVarList, self).__init__()
 
         self.name = "DATA"
@@ -430,7 +450,8 @@ class SecsVarList(SecsVar):
 
     @staticmethod
     def get_format(dataformat, showname=False):
-        """Gets the format of the variable
+        """
+        Gets the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
@@ -456,7 +477,7 @@ class SecsVarList(SecsVar):
         return None
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
             return "<{}>".format(self.textCode)
 
@@ -468,21 +489,21 @@ class SecsVarList(SecsVar):
         return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.data)
 
     def __getitem__(self, index):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         if isinstance(index, int):
             return self.data[list(self.data.keys())[index]]
         return self.data[index]
 
     def __iter__(self):
-        """Get an iterator"""
-        return SecsVarList.SecsVarListIter(self.data.keys())
+        """Get an iterator."""
+        return SecsVarList._SecsVarListIter(self.data.keys())
 
     def __setitem__(self, index, value):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         if isinstance(index, int):
             index = list(self.data.keys())[index]
 
@@ -517,14 +538,14 @@ class SecsVarList(SecsVar):
         return result_data
 
     def __getattr__(self, item):
-        """Get an item as member of the object"""
+        """Get an item as member of the object."""
         try:
             return self.data.__getitem__(item)
         except KeyError:
             raise AttributeError(item)
 
     def __setattr__(self, item, value):
-        """Set an item as member of the object"""
+        """Set an item as member of the object."""
         if '_object_intitialized' not in self.__dict__:
             dict.__setattr__(self, item, value)
             return
@@ -542,7 +563,8 @@ class SecsVarList(SecsVar):
 
     @staticmethod
     def get_name_from_format(dataformat):
-        """Generates a name for the passed dataformat
+        """
+        Generates a name for the passed dataformat.
 
         :param dataformat: dataformat to get name for
         :type dataformat: list/SecsVar based class
@@ -558,7 +580,8 @@ class SecsVarList(SecsVar):
         return "DATA"
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: dict/list
@@ -579,7 +602,8 @@ class SecsVarList(SecsVar):
             raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: list
@@ -591,7 +615,8 @@ class SecsVarList(SecsVar):
         return data
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -604,7 +629,8 @@ class SecsVarList(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -624,31 +650,23 @@ class SecsVarList(SecsVar):
 
 
 class SecsVarArray(SecsVar):
-    """List variable type. List with items of same type
-
-    :param dataFormat: internal data definition/sample
-    :type dataFormat: :class:`secsgem.secs.variables.SecsVar`
-    :param value: initial value
-    :type value: list
-    :param count: number of fields in the list
-    :type count: integer
-    """
+    """List variable type. List with items of same type."""
 
     formatCode = 0
     textCode = 'L'
     preferredTypes = [list]
 
-    class SecsVarArrayIter:
+    class _SecsVarArrayIter:
         def __init__(self, values):
             self._values = values
             self._counter = 0
 
         def __iter__(self):
-            """Get an iterator"""
+            """Get an iterator."""
             return self
 
         def __next__(self):
-            """Get the next item or raise StopIteration if at end of list"""
+            """Get the next item or raise StopIteration if at end of list."""
             if self._counter < len(self._values):
                 i = self._counter
                 self._counter += 1
@@ -657,6 +675,16 @@ class SecsVarArray(SecsVar):
             raise StopIteration()
 
     def __init__(self, dataFormat, value=None, count=-1):
+        """
+        Initialize a secs array variable.
+
+        :param dataFormat: internal data definition/sample
+        :type dataFormat: :class:`secsgem.secs.variables.SecsVar`
+        :param value: initial value
+        :type value: list
+        :param count: number of fields in the list
+        :type count: integer
+        """
         super(SecsVarArray, self).__init__()
 
         self.item_decriptor = dataFormat
@@ -674,7 +702,8 @@ class SecsVarArray(SecsVar):
 
     @staticmethod
     def get_format(dataformat, showname=False):
-        """Gets the format of the variable
+        """
+        Gets the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
@@ -694,7 +723,7 @@ class SecsVarArray(SecsVar):
         return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.get_format(not showname), 4))
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
             return "<{}>".format(self.textCode)
 
@@ -706,19 +735,19 @@ class SecsVarArray(SecsVar):
         return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.data)
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         return self.data[key]
 
     def __iter__(self):
-        """Get an iterator"""
-        return SecsVarArray.SecsVarArrayIter(self.data)
+        """Get an iterator."""
+        return SecsVarArray._SecsVarArrayIter(self.data)
 
     def __setitem__(self, key, value):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         if isinstance(value, (type(self.data[key]), self.data[key].__class__.__bases__)):
             self.data[key] = value
         elif isinstance(value, SecsVar):
@@ -728,7 +757,8 @@ class SecsVarArray(SecsVar):
             self.data[key].set(value)
 
     def append(self, data):
-        """Append data to the internal list
+        """
+        Append data to the internal list.
 
         :param value: new value
         :type value: various
@@ -738,7 +768,8 @@ class SecsVarArray(SecsVar):
         self.data.append(new_object)
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: list
@@ -759,7 +790,8 @@ class SecsVarArray(SecsVar):
             self.data.append(new_object)
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: list
@@ -771,7 +803,8 @@ class SecsVarArray(SecsVar):
         return data
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -784,7 +817,8 @@ class SecsVarArray(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -807,19 +841,21 @@ class SecsVarArray(SecsVar):
 
 
 class SecsVarBinary(SecsVar):
-    """Secs type for binary data
-
-    :param value: initial value
-    :type value: string/integer
-    :param count: number of items this value
-    :type count: integer
-    """
+    """Secs type for binary data."""
 
     formatCode = 0o10
     textCode = "B"
     preferredTypes = [bytes, bytearray]
 
     def __init__(self, value=None, count=-1):
+        """
+        Initialize a binary secs variable.
+
+        :param value: initial value
+        :type value: string/integer
+        :param count: number of items this value
+        :type count: integer
+        """
         super(SecsVarBinary, self).__init__()
 
         self.value = bytearray()
@@ -828,7 +864,7 @@ class SecsVarBinary(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -837,11 +873,11 @@ class SecsVarBinary(SecsVar):
         return "<{} {}>".format(self.textCode, data.strip())
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.value)
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         if key >= self.count:
             raise IndexError("Index {} out of bounds ({})".format(key, self.count))
 
@@ -851,7 +887,7 @@ class SecsVarBinary(SecsVar):
         return self.value[key]
 
     def __setitem__(self, key, item):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         if key >= self.count:
             raise IndexError("Index {} out of bounds ({})".format(key, self.count))
 
@@ -862,7 +898,7 @@ class SecsVarBinary(SecsVar):
         self.value[key] = item
 
     def __eq__(self, other):
-        """Check equality with other object"""
+        """Check equality with other object."""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
 
@@ -872,7 +908,7 @@ class SecsVarBinary(SecsVar):
         return other == self.value
 
     def __hash__(self):
-        """Get data item for hashing"""
+        """Get data item for hashing."""
         return hash(bytes(self.value))
 
     def __check_single_item_support(self, value):
@@ -887,7 +923,8 @@ class SecsVarBinary(SecsVar):
         return False
 
     def supports_value(self, value):
-        """Check if the current instance supports the provided value
+        """
+        Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -924,7 +961,8 @@ class SecsVarBinary(SecsVar):
         return self.__check_single_item_support(value)
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: string/integer
@@ -955,7 +993,8 @@ class SecsVarBinary(SecsVar):
         self.value = value
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: list/integer
@@ -966,7 +1005,8 @@ class SecsVarBinary(SecsVar):
         return bytes(self.value)
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -979,7 +1019,8 @@ class SecsVarBinary(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -1002,13 +1043,7 @@ class SecsVarBinary(SecsVar):
 
 
 class SecsVarBoolean(SecsVar):
-    """Secs type for boolean data
-
-    :param value: initial value
-    :type value: list/boolean
-    :param count: number of items this value
-    :type count: integer
-    """
+    """Secs type for boolean data."""
 
     formatCode = 0o11
     textCode = "BOOLEAN"
@@ -1018,6 +1053,14 @@ class SecsVarBoolean(SecsVar):
     _falseStrings = ["FALSE", "NO"]
 
     def __init__(self, value=None, count=-1):
+        """
+        Initialize a boolean secs variable.
+
+        :param value: initial value
+        :type value: list/boolean
+        :param count: number of items this value
+        :type count: integer
+        """
         super(SecsVarBoolean, self).__init__()
 
         self.value = []
@@ -1026,7 +1069,7 @@ class SecsVarBoolean(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -1038,19 +1081,19 @@ class SecsVarBoolean(SecsVar):
         return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.value)
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         return self.value[key]
 
     def __setitem__(self, key, item):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         self.value[key] = item
 
     def __eq__(self, other):
-        """Check equality with other object"""
+        """Check equality with other object."""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         if isinstance(other, SecsVar):
@@ -1060,7 +1103,7 @@ class SecsVarBoolean(SecsVar):
         return [other] == self.value
 
     def __hash__(self):
-        """Get data item for hashing"""
+        """Get data item for hashing."""
         return hash(str(self.value))
 
     def __check_single_item_support(self, value):
@@ -1081,7 +1124,8 @@ class SecsVarBoolean(SecsVar):
         return False
 
     def supports_value(self, value):
-        """Check if the current instance supports the provided value
+        """
+        Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -1127,7 +1171,8 @@ class SecsVarBoolean(SecsVar):
         raise ValueError("Can't convert value {}".format(value))
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: list/boolean
@@ -1157,7 +1202,8 @@ class SecsVarBoolean(SecsVar):
             self.value = [self.__convert_single_item(value)]
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: list/boolean
@@ -1168,7 +1214,8 @@ class SecsVarBoolean(SecsVar):
         return self.value
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -1185,7 +1232,8 @@ class SecsVarBoolean(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -1212,13 +1260,7 @@ class SecsVarBoolean(SecsVar):
 
 
 class SecsVarText(SecsVar):
-    """Secs type base for any text data
-
-    :param value: initial value
-    :type value: string
-    :param count: number of items this value
-    :type count: integer
-    """
+    """Secs type base for any text data."""
 
     formatCode = -1
     textCode = u""
@@ -1226,6 +1268,14 @@ class SecsVarText(SecsVar):
     coding = ""
 
     def __init__(self, value="", count=-1):
+        """
+        Initialize a secs text variable.
+
+        :param value: initial value
+        :type value: string
+        :param count: number of items this value
+        :type count: integer
+        """
         super(SecsVarText, self).__init__()
 
         self.value = u""
@@ -1235,7 +1285,7 @@ class SecsVarText(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
             return u"<{}>".format(self.textCode)
 
@@ -1264,11 +1314,11 @@ class SecsVarText(SecsVar):
         return u"<{}{}>".format(self.textCode, data)
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.value)
 
     def __eq__(self, other):
-        """Check equality with other object"""
+        """Check equality with other object."""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
 
@@ -1278,7 +1328,7 @@ class SecsVarText(SecsVar):
         return other == self.value
 
     def __hash__(self):
-        """Get data item for hashing"""
+        """Get data item for hashing."""
         return hash(self.value)
 
     def __check_single_item_support(self, value):
@@ -1302,7 +1352,8 @@ class SecsVarText(SecsVar):
         return True
 
     def supports_value(self, value):
-        """Check if the current instance supports the provided value
+        """
+        Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -1333,7 +1384,8 @@ class SecsVarText(SecsVar):
         return None
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: string/integer
@@ -1360,7 +1412,8 @@ class SecsVarText(SecsVar):
         self.value = str(value)
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: string
@@ -1368,7 +1421,8 @@ class SecsVarText(SecsVar):
         return self.value
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -1380,7 +1434,8 @@ class SecsVarText(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -1403,7 +1458,8 @@ class SecsVarText(SecsVar):
 
 
 class SecsVarString(SecsVarText):
-    """Secs type for string data
+    """
+    Secs type for string data.
 
     :param value: initial value
     :type value: string
@@ -1419,7 +1475,8 @@ class SecsVarString(SecsVarText):
 
 
 class SecsVarJIS8(SecsVarText):
-    """Secs type for string data
+    """
+    Secs type for string data.
 
     :param value: initial value
     :type value: string
@@ -1435,13 +1492,7 @@ class SecsVarJIS8(SecsVarText):
 
 
 class SecsVarNumber(SecsVar):
-    """Secs base type for numeric data
-
-    :param value: initial value
-    :type value: list/integer/float
-    :param count: number of items this value
-    :type count: integer
-    """
+    """Secs base type for numeric data."""
 
     formatCode = 0
     textCode = ""
@@ -1452,6 +1503,14 @@ class SecsVarNumber(SecsVar):
     _structCode = ""
 
     def __init__(self, value=None, count=-1):
+        """
+        Initialize a numeric secs variable.
+
+        :param value: initial value
+        :type value: list/integer/float
+        :param count: number of items this value
+        :type count: integer
+        """
         super(SecsVarNumber, self).__init__()
 
         self.value = []
@@ -1460,7 +1519,7 @@ class SecsVarNumber(SecsVar):
             self.set(value)
 
     def __repr__(self):
-        """Generate textual representation for an object of this class"""
+        """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
             return "<{}>".format(self.textCode)
 
@@ -1472,19 +1531,19 @@ class SecsVarNumber(SecsVar):
         return "<{} {}>".format(self.textCode, data)
 
     def __len__(self):
-        """Get the lenth"""
+        """Get the length."""
         return len(self.value)
 
     def __getitem__(self, key):
-        """Get an item using the indexer operator"""
+        """Get an item using the indexer operator."""
         return self.value[key]
 
     def __setitem__(self, key, item):
-        """Set an item using the indexer operator"""
+        """Set an item using the indexer operator."""
         self.value[key] = item
 
     def __eq__(self, other):
-        """Check equality with other object"""
+        """Check equality with other object."""
         if isinstance(other, SecsVarDynamic):
             return other.value.value == self.value
         if isinstance(other, SecsVar):
@@ -1494,7 +1553,7 @@ class SecsVarNumber(SecsVar):
         return [other] == self.value
 
     def __hash__(self):
-        """Get data item for hashing"""
+        """Get data item for hashing."""
         return hash(str(self.value))
 
     def __check_single_item_support(self, value):
@@ -1520,7 +1579,8 @@ class SecsVarNumber(SecsVar):
         return False
 
     def supports_value(self, value):
-        """Check if the current instance supports the provided value
+        """
+        Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -1542,7 +1602,8 @@ class SecsVarNumber(SecsVar):
         return self.__check_single_item_support(value)
 
     def set(self, value):
-        """Set the internal value to the provided value
+        """
+        Set the internal value to the provided value.
 
         :param value: new value
         :type value: list/integer/float
@@ -1581,7 +1642,8 @@ class SecsVarNumber(SecsVar):
             self.value = [new_value]
 
     def get(self):
-        """Return the internal value
+        """
+        Return the internal value.
 
         :returns: internal value
         :rtype: list/integer/float
@@ -1592,7 +1654,8 @@ class SecsVarNumber(SecsVar):
         return self.value
 
     def encode(self):
-        """Encode the value to secs data
+        """
+        Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -1606,7 +1669,8 @@ class SecsVarNumber(SecsVar):
         return result
 
     def decode(self, data, start=0):
-        """Decode the secs byte data to the value
+        """
+        Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -1639,7 +1703,8 @@ class SecsVarNumber(SecsVar):
 
 
 class SecsVarI8(SecsVarNumber):
-    """Secs type for 8 byte signed data
+    """
+    Secs type for 8 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -1658,7 +1723,8 @@ class SecsVarI8(SecsVarNumber):
 
 
 class SecsVarI1(SecsVarNumber):
-    """Secs type for 1 byte signed data
+    """
+    Secs type for 1 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -1677,7 +1743,8 @@ class SecsVarI1(SecsVarNumber):
 
 
 class SecsVarI2(SecsVarNumber):
-    """Secs type for 2 byte signed data
+    """
+    Secs type for 2 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -1696,7 +1763,8 @@ class SecsVarI2(SecsVarNumber):
 
 
 class SecsVarI4(SecsVarNumber):
-    """Secs type for 4 byte signed data
+    """
+    Secs type for 4 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -1715,7 +1783,8 @@ class SecsVarI4(SecsVarNumber):
 
 
 class SecsVarF8(SecsVarNumber):
-    """Secs type for 8 byte float data
+    """
+    Secs type for 8 byte float data.
 
     :param value: initial value
     :type value: list/float
@@ -1734,7 +1803,8 @@ class SecsVarF8(SecsVarNumber):
 
 
 class SecsVarF4(SecsVarNumber):
-    """Secs type for 4 byte float data
+    """
+    Secs type for 4 byte float data.
 
     :param value: initial value
     :type value: list/float
@@ -1753,7 +1823,8 @@ class SecsVarF4(SecsVarNumber):
 
 
 class SecsVarU8(SecsVarNumber):
-    """Secs type for 8 byte unsigned data
+    """
+    Secs type for 8 byte unsigned data.
 
     :param value: initial value
     :type value: list/integer
@@ -1772,7 +1843,8 @@ class SecsVarU8(SecsVarNumber):
 
 
 class SecsVarU1(SecsVarNumber):
-    """Secs type for 1 byte unsigned data
+    """
+    Secs type for 1 byte unsigned data.
 
     :param value: initial value
     :type value: list/integer
@@ -1791,7 +1863,8 @@ class SecsVarU1(SecsVarNumber):
 
 
 class SecsVarU2(SecsVarNumber):
-    """Secs type for 2 byte unsigned data
+    """
+    Secs type for 2 byte unsigned data.
 
     :param value: initial value
     :type value: list/integer
@@ -1810,7 +1883,8 @@ class SecsVarU2(SecsVarNumber):
 
 
 class SecsVarU4(SecsVarNumber):
-    """Secs type for 4 byte unsigned data
+    """
+    Secs type for 4 byte unsigned data.
 
     :param value: initial value
     :type value: list/integer

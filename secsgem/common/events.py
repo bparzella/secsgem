@@ -17,64 +17,64 @@
 
 
 class Event:
-    """Class to handle the callbacks for a single event"""
+    """Class to handle the callbacks for a single event."""
 
     def __init__(self):
-        """Initialize the event class"""
+        """Initialize the event class."""
         self._callbacks = []
 
     def __iadd__(self, other):
-        """Add a new callback to event"""
+        """Add a new callback to event."""
         self._callbacks.append(other)
         return self
 
     def __isub__(self, other):
-        """Remove a callback from event"""
+        """Remove a callback from event."""
         self._callbacks.remove(other)
         return self
 
     def __call__(self, data):
-        """Raise the event and call all callbacks"""
+        """Raise the event and call all callbacks."""
         for callback in self._callbacks:
             callback(data)
 
     def __len__(self):
-        """Return the number of callbacks"""
+        """Return the number of callbacks."""
         return len(self._callbacks)
 
     def __repr__(self):
-        """Generate representation for an object"""
+        """Generate representation for an object."""
         return "{}: {}".format(self.__class__.__name__, self._callbacks)
 
 
 class Targets:
-    """Class to handle a list of objects as target for events"""
+    """Class to handle a list of objects as target for events."""
 
     def __init__(self):
-        """Initialize the target class"""
+        """Initialize the target class."""
         self._targets = []
 
     def __iadd__(self, other):
-        """Add a targets"""
+        """Add a targets."""
         self._targets.append(other)
         return self
 
     def __isub__(self, other):
-        """Remove a target"""
+        """Remove a target."""
         self._targets.remove(other)
         return self
 
-    class TargetsIter():
+    class _TargetsIter:
         def __init__(self, values):
             self._values = values
             self._counter = 0
 
         def __iter__(self):  # pragma: no cover
-            """Return the iterator"""
+            """Return the iterator."""
             return self
 
         def __next__(self):
-            """Get the next item or raise StopIteration if at end of list"""
+            """Get the next item or raise StopIteration if at end of list."""
             if self._counter < len(self._values):
                 i = self._counter
                 self._counter += 1
@@ -83,27 +83,27 @@ class Targets:
             raise StopIteration()
 
     def __iter__(self):
-        """Return the iterator"""
-        return self.TargetsIter(self._targets)
+        """Return the iterator."""
+        return self._TargetsIter(self._targets)
 
 
 class EventProducer:
-    """Manages the consumers for the events and handles firing events"""
+    """Manages the consumers for the events and handles firing events."""
 
     def __init__(self):
-        """Initialize the event producer class"""
+        """Initialize the event producer class."""
         self._targets = Targets()
         self._events = {}
 
     def __getattr__(self, name):
-        """Get an event as member of the EventProducer object"""
+        """Get an event as member of the EventProducer object."""
         if name not in self._events:
             self._events[name] = Event()
 
         return self._events[name]
 
     def __iadd__(self, other):
-        """Add a the callbacks and targets of another EventProducer to this one"""
+        """Add a the callbacks and targets of another EventProducer to this one."""
         for event_name in other._events:  # noqa
             if event_name not in self._events:
                 self._events[event_name] = Event()
@@ -116,7 +116,8 @@ class EventProducer:
         return self
 
     def fire(self, event, data):
-        """Fire a event
+        """
+        Fire a event.
 
         calls all the available handlers for a specific event
 
@@ -138,20 +139,20 @@ class EventProducer:
             self._events[event](data)
 
     def __repr__(self):
-        """Generate representation for an object"""
+        """Generate representation for an object."""
         return "{}: {}".format(self.__class__.__name__, self._events)
 
-    class EventsIter:
+    class _EventsIter:
         def __init__(self, keys):
             self._keys = list(keys)
             self._counter = 0
 
         def __iter__(self):  # pragma: no cover
-            """Return the iterator"""
+            """Return the iterator."""
             return self
 
         def __next__(self):
-            """Get the next item or raise StopIteration if at end of list"""
+            """Get the next item or raise StopIteration if at end of list."""
             if self._counter < len(self._keys):
                 i = self._counter
                 self._counter += 1
@@ -160,12 +161,12 @@ class EventProducer:
             raise StopIteration()
 
     def __iter__(self):
-        """Return the iterator"""
-        return self.EventsIter([event for event in self._events if len(self._events[event]) > 0])
+        """Return the iterator."""
+        return self._EventsIter([event for event in self._events if len(self._events[event]) > 0])
 
     @property
     def targets(self):
-        """Targets used as consumer for this producer"""
+        """Targets used as consumer for this producer."""
         return self._targets
 
     @targets.setter

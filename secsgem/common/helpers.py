@@ -13,14 +13,15 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains helper functions"""
+"""Contains helper functions."""
 
 import sys
 import types
 
 
 def format_hex(text):
-    """Returns byte arrays (string) formated as hex numbers.
+    """
+    Returns byte arrays (string) formated as hex numbers.
 
     **Example**::
 
@@ -40,7 +41,8 @@ def format_hex(text):
 
 
 def is_windows():
-    """Returns True if running on windows
+    """
+    Returns True if running on windows.
 
     :returns: Is windows system
     :rtype: bool
@@ -52,7 +54,8 @@ def is_windows():
 
 
 def function_name(function):
-    """Gets name of function or method
+    """
+    Gets name of function or method.
 
     :returns: function/method name
     :rtype: string
@@ -64,7 +67,8 @@ def function_name(function):
 
 
 def indent_line(line, spaces=2):
-    """Indent line by a number of spaces
+    """
+    Indent line by a number of spaces.
 
     :param line: input text
     :type line: string
@@ -77,7 +81,8 @@ def indent_line(line, spaces=2):
 
 
 def indent_block(block, spaces=2):
-    """Indent a multiline string by a number of spaces
+    """
+    Indent a multiline string by a number of spaces.
 
     :param block: input text
     :type block: string

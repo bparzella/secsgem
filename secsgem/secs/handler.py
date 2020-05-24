@@ -13,8 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
-"""Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`"""
+"""Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
 
 import logging
 import threading
@@ -25,24 +24,29 @@ from . import functions
 
 
 class SecsHandler(HsmsHandler):
-    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
-    Inherit from this class and override required functions.
+    """
+    Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
-    :param address: IP address of remote host
-    :type address: string
-    :param port: TCP port of remote host
-    :type port: integer
-    :param active: Is the connection active (*True*) or passive (*False*)
-    :type active: boolean
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param name: Name of the underlying configuration
-    :type name: string
-    :param custom_connection_handler: object for connection handling (ie multi server)
-    :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+    Inherit from this class and override required functions.
     """
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+        """
+        Initialize a secs handler.
+
+        :param address: IP address of remote host
+        :type address: string
+        :param port: TCP port of remote host
+        :type port: integer
+        :param active: Is the connection active (*True*) or passive (*False*)
+        :type active: boolean
+        :param session_id: session / device ID to use for connection
+        :type session_id: integer
+        :param name: Name of the underlying configuration
+        :type name: string
+        :param custom_connection_handler: object for connection handling (ie multi server)
+        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        """
         HsmsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
@@ -58,7 +62,8 @@ class SecsHandler(HsmsHandler):
         return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
 
     def register_stream_function(self, stream, function, callback):
-        """Register the function callback for stream and function.
+        """
+        Register the function callback for stream and function.
 
         :param stream: stream to register callback for
         :type stream: integer
@@ -71,7 +76,8 @@ class SecsHandler(HsmsHandler):
         setattr(self._callback_handler, name, callback)
 
     def unregister_stream_function(self, stream, function):
-        """Unregister the function callback for stream and function.
+        """
+        Unregister the function callback for stream and function.
 
         :param stream: stream to unregister callback for
         :type stream: integer
@@ -83,7 +89,8 @@ class SecsHandler(HsmsHandler):
 
     @property
     def collection_events(self):
-        """Dictionary of available collection events
+        """
+        Dictionary of available collection events.
 
         *Example*::
 
@@ -109,7 +116,8 @@ class SecsHandler(HsmsHandler):
 
     @property
     def data_values(self):
-        """Dictionary of available data values
+        """
+        Dictionary of available data values.
 
         *Example*::
 
@@ -135,7 +143,8 @@ class SecsHandler(HsmsHandler):
 
     @property
     def alarms(self):
-        """Dictionary of available alarms
+        """
+        Dictionary of available alarms.
 
         *Example*::
 
@@ -161,7 +170,8 @@ class SecsHandler(HsmsHandler):
 
     @property
     def remote_commands(self):
-        """Dictionary of available remote commands
+        """
+        Dictionary of available remote commands.
 
         *Example*::
 
@@ -217,7 +227,8 @@ class SecsHandler(HsmsHandler):
             self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
 
     def _on_hsms_packet_received(self, packet):
-        """Packet received from hsms layer
+        """
+        Packet received from hsms layer.
 
         :param packet: received data packet
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
@@ -240,7 +251,8 @@ class SecsHandler(HsmsHandler):
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
     def list_svs(self, svs=None):
-        """Get list of available Service Variables.
+        """
+        Get list of available Service Variables.
 
         :returns: available Service Variables
         :rtype: list
@@ -255,7 +267,8 @@ class SecsHandler(HsmsHandler):
         return self.secs_decode(packet)
 
     def request_svs(self, svs):
-        """Request contents of supplied Service Variables.
+        """
+        Request contents of supplied Service Variables.
 
         :param svs: Service Variables to request
         :type svs: list
@@ -269,7 +282,8 @@ class SecsHandler(HsmsHandler):
         return self.secs_decode(packet)
 
     def request_sv(self, sv):
-        """Request contents of one Service Variable.
+        """
+        Request contents of one Service Variable.
 
         :param sv: id of Service Variable
         :type sv: int
@@ -281,7 +295,8 @@ class SecsHandler(HsmsHandler):
         return self.request_svs([sv])[0]
 
     def list_ecs(self, ecs=None):
-        """Get list of available Equipment Constants.
+        """
+        Get list of available Equipment Constants.
 
         :returns: available Equipment Constants
         :rtype: list
@@ -295,7 +310,8 @@ class SecsHandler(HsmsHandler):
         return self.secs_decode(packet)
 
     def request_ecs(self, ecs):
-        """Request contents of supplied Equipment Constants.
+        """
+        Request contents of supplied Equipment Constants.
 
         :param ecs: Equipment Constants to request
         :type ecs: list
@@ -309,7 +325,8 @@ class SecsHandler(HsmsHandler):
         return self.secs_decode(packet)
 
     def request_ec(self, ec):
-        """Request contents of one Equipment Constant.
+        """
+        Request contents of one Equipment Constant.
 
         :param ec: id of Equipment Constant
         :type ec: int
@@ -321,7 +338,8 @@ class SecsHandler(HsmsHandler):
         return self.request_ecs([ec])
 
     def set_ecs(self, ecs):
-        """Set contents of supplied Equipment Constants.
+        """
+        Set contents of supplied Equipment Constants.
 
         :param ecs: list containing list of id / value pairs
         :type ecs: list
@@ -333,7 +351,8 @@ class SecsHandler(HsmsHandler):
         return self.secs_decode(packet).get()
 
     def set_ec(self, ec, value):
-        """Set contents of one Equipment Constant.
+        """
+        Set contents of one Equipment Constant.
 
         :param ec: id of Equipment Constant
         :type ec: int
@@ -345,7 +364,8 @@ class SecsHandler(HsmsHandler):
         return self.set_ecs([[ec, value]])
 
     def send_equipment_terminal(self, terminal_id, text):
-        """Set text to equipment terminal
+        """
+        Set text to equipment terminal.
 
         :param terminal_id: ID of terminal
         :type terminal_id: int
@@ -357,7 +377,8 @@ class SecsHandler(HsmsHandler):
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
     def get_ceid_name(self, ceid):
-        """Get the name of a collection event
+        """
+        Get the name of a collection event.
 
         :param ceid: ID of collection event
         :type ceid: integer
@@ -371,7 +392,8 @@ class SecsHandler(HsmsHandler):
         return ""
 
     def get_dvid_name(self, dvid):
-        """Get the name of a data value
+        """
+        Get the name of a data value.
 
         :param dvid: ID of data value
         :type dvid: integer
@@ -385,13 +407,14 @@ class SecsHandler(HsmsHandler):
         return ""
 
     def are_you_there(self):
-        """Check if remote is still replying"""
+        """Check if remote is still replying."""
         self.logger.info("Requesting 'are you there'")
 
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
     def stream_function(self, stream, function):
-        """Get class for stream and function
+        """
+        Get class for stream and function.
 
         :param stream: stream to get function for
         :type stream: int
@@ -411,7 +434,8 @@ class SecsHandler(HsmsHandler):
         return self.secsStreamsFunctions[stream][function]
 
     def secs_decode(self, packet):
-        """Get object of decoded stream and function class, or None if no class is available.
+        """
+        Get object of decoded stream and function class, or None if no class is available.
 
         :param packet: packet to get object for
         :type packet: :class:`secsgem.hsms.packets.HsmsPacket`

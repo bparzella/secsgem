@@ -13,7 +13,6 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=relative-beyond-top-level, too-many-arguments
 """Contains class for handling multiple connections."""
 
 import logging
@@ -28,6 +27,7 @@ class HsmsConnectionManager:
     """High level class that handles multiple active and passive connections and the model for them."""
 
     def __init__(self):
+        """Initialize a hsms connection manager."""
         self._eventProducer = EventProducer()
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
@@ -42,11 +42,12 @@ class HsmsConnectionManager:
 
     @property
     def events(self):
-        """Property for event handling"""
+        """Property for event handling."""
         return self._eventProducer
 
     def has_connection_to(self, index):
-        """Check if connection to certain peer exists.
+        """
+        Check if connection to certain peer exists.
 
         :param index: Name of the reqested handler.
         :type index: string
@@ -61,12 +62,13 @@ class HsmsConnectionManager:
         return None
 
     def __getitem__(self, index):
-        """Get a connection by using [] on the object"""
+        """Get a connection by using [] on the object."""
         return self.has_connection_to(index)
 
     @staticmethod
     def get_connection_id(address):
-        """Generates connection ids used for internal indexing.
+        """
+        Generates connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
         :type address: string
@@ -74,7 +76,8 @@ class HsmsConnectionManager:
         return "%s" % address
 
     def _update_required_servers(self, additional_port=-1):  # pragma: no cover
-        """Starts server if any active handler is found
+        """
+        Starts server if any active handler is found.
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -105,7 +108,8 @@ class HsmsConnectionManager:
                 self.servers[requiredPort].start()
 
     def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsHandler):
-        """Add a new connection
+        """
+        Add a new connection.
 
         :param name: Name of the peers configuration
         :type name: string
@@ -145,7 +149,8 @@ class HsmsConnectionManager:
         return handler
 
     def remove_peer(self, name, address, port):
-        """Remove a previously added connection
+        """
+        Remove a previously added connection.
 
         :param name: Name of the peers configuration
         :type name: string
@@ -169,7 +174,7 @@ class HsmsConnectionManager:
             self._update_required_servers()
 
     def stop(self):
-        """Stop all servers and terminate the connections"""
+        """Stop all servers and terminate the connections."""
         self.stopping = True
 
         for handlerID in self.handlers:
