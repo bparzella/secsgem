@@ -18,4 +18,4 @@ deploy:
   on:
     tags: true
   distributions: sdist bdist_wheel
-  repo: bparzella/secsgem
+  skip_existing: true
