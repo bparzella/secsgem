@@ -26,5 +26,6 @@ class CommunicationLogFileHandler(logging.Handler):
 
     def emit(self, record):
         filename = os.path.join(self.path, "{}com_{}.log".format(self.prefix, record.remoteName))
+        os.makedirs(os.path.dirname(filename), exist_ok=True)        
         with open(filename, 'a') as f:
             f.write(self.format(record) + "\n")
