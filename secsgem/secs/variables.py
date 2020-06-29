@@ -1450,7 +1450,7 @@ class SecsVarText(SecsVar):
         result = u""
 
         if length > 0:
-            result = data[text_pos:text_pos + length].decode(self.coding)
+            result = data[text_pos:text_pos + length].decode(self.coding,errors="ignore")
 
         self.set(result)
 
