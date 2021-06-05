@@ -14,11 +14,10 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import unittest
-
-from mock import Mock
+import unittest.mock
 
 import secsgem
+
 
 class TestEventProducer(unittest.TestCase):
     def testConstructor(self):
@@ -27,7 +26,7 @@ class TestEventProducer(unittest.TestCase):
         self.assertEqual(producer._events, {})
 
     def testAddEvent(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 
@@ -36,7 +35,7 @@ class TestEventProducer(unittest.TestCase):
         self.assertIn("test", producer)
 
     def testRemoveEvent(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 
@@ -49,7 +48,7 @@ class TestEventProducer(unittest.TestCase):
         self.assertNotIn("test", producer)
 
     def testEventRepr(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 
@@ -59,8 +58,8 @@ class TestEventProducer(unittest.TestCase):
         print(producer)
 
     def testJoinProducers(self):
-        f1 = Mock()
-        f2 = Mock()
+        f1 = unittest.mock.Mock()
+        f2 = unittest.mock.Mock()
 
         producer1 = secsgem.EventProducer()
         producer2 = secsgem.EventProducer()
@@ -73,7 +72,7 @@ class TestEventProducer(unittest.TestCase):
         self.assertIn("test2", producer1)
 
     def testAddTarget(self):
-        c = Mock()
+        c = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 
@@ -82,7 +81,7 @@ class TestEventProducer(unittest.TestCase):
         self.assertIn(c, producer.targets)
 
     def testRemoveTarget(self):
-        c = Mock()
+        c = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 
@@ -95,8 +94,8 @@ class TestEventProducer(unittest.TestCase):
         self.assertNotIn(c, producer.targets)
 
     def testJoinProducersTargets(self):
-        c1 = Mock()
-        c2 = Mock()
+        c1 = unittest.mock.Mock()
+        c2 = unittest.mock.Mock()
 
         producer1 = secsgem.EventProducer()
         producer2 = secsgem.EventProducer()
@@ -109,10 +108,10 @@ class TestEventProducer(unittest.TestCase):
         self.assertIn(c2, producer1.targets)
 
     def testFire(self):
-        f1 = Mock()
-        f2 = Mock()
-        c1 = Mock()
-        c2 = Mock()
+        f1 = unittest.mock.Mock()
+        f2 = unittest.mock.Mock()
+        c1 = unittest.mock.Mock()
+        c2 = unittest.mock.Mock()
 
         producer = secsgem.EventProducer()
 

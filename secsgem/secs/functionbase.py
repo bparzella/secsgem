@@ -33,21 +33,21 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     This class is inherited to create a stream/function class.
     To create a function specific content the class variables :attr:`_stream`, :attr:`_function`
-    and :attr:`_dataFormat` must be overridden.
+    and :attr:`_data_format` must be overridden.
     """
 
     _stream = 0
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
     def __init__(self, value=None):
         """
@@ -59,15 +59,15 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
                 _stream = 2
                 _function = 30
 
-                _toHost = True
-                _toEquipment = False
+                _to_host = True
+                _to_equipment = False
 
-                _hasReply = False
-                _isReplyRequired = False
+                _has_reply = False
+                _is_reply_required = False
 
-                _isMultiBlock = True
+                _is_multi_block = True
 
-                _dataFormat = [
+                _data_format = [
                     [
                         ECID,
                         ECNAME,
@@ -81,20 +81,20 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         :param value: set the value of stream/function parameters
         :type value: various
         """
-        self.data = SecsVar.generate(self._dataFormat)
+        self.data = SecsVar.generate(self._data_format)
 
         # copy public members from private ones
         self.stream = self._stream
         self.function = self._function
 
-        self.data_format = self._dataFormat
-        self.to_host = self._toHost
-        self.to_equipment = self._toEquipment
+        self.data_format = self._data_format
+        self.to_host = self._to_host
+        self.to_equipment = self._to_equipment
 
-        self.has_reply = self._hasReply
-        self.is_reply_required = self._isReplyRequired
+        self.has_reply = self._has_reply
+        self.is_reply_required = self._is_reply_required
 
-        self.is_multi_block = self._isMultiBlock
+        self.is_multi_block = self._is_multi_block
 
         if value is not None and self.data is not None:
             self.data.set(value)
@@ -105,12 +105,12 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         """Generate textual representation for an object of this class."""
         function = "S{0}F{1}".format(self.stream, self.function)
         if self.data is None:
-            return "{}{} .".format(function, " W" if self._isReplyRequired else "")
+            return "{}{} .".format(function, " W" if self._is_reply_required else "")
         data = "{}".format(self.data.__repr__())
 
         return "{}{}\n{} .".format(
             function,
-            " W" if self._isReplyRequired else "",
+            " W" if self._is_reply_required else "",
             indent_block(data))
 
     def __getitem__(self, key):
@@ -200,7 +200,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         :returns: returns the string representation of the function
         :rtype: string
         """
-        if cls._dataFormat is not None:
-            return SecsVar.get_format(cls._dataFormat)
+        if cls._data_format is not None:
+            return SecsVar.get_format(cls._data_format)
 
         return "Header only"

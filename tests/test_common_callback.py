@@ -14,15 +14,14 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 
-import unittest
-
-from mock import Mock
+import unittest.mock
 
 import secsgem
 
+
 class TestCallbackHandler(unittest.TestCase):
     def testRegisterCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         callbackHandler = secsgem.CallbackHandler()
 
@@ -32,8 +31,8 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertEqual(callbackHandler._callbacks["test"], f)
 
     def testDoubleRegisterCallback(self):
-        f1 = Mock()
-        f2 = Mock()
+        f1 = unittest.mock.Mock()
+        f2 = unittest.mock.Mock()
 
         callbackHandler = secsgem.CallbackHandler()
 
@@ -44,7 +43,7 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertEqual(callbackHandler._callbacks["test"], f2)
 
     def testUnregisterCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         callbackHandler = secsgem.CallbackHandler()
 
@@ -65,7 +64,7 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertNotIn("test", callbackHandler._callbacks)
 
     def testInWithCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         callbackHandler = secsgem.CallbackHandler()
 
@@ -74,7 +73,7 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertIn("test", callbackHandler)
 
     def testInWithDelegate(self):
-        c = Mock()
+        c = unittest.mock.Mock()
 
         callbackHandler = secsgem.CallbackHandler()
         callbackHandler.target = c
@@ -87,7 +86,7 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertNotIn("test", callbackHandler)
 
     def testCallWithCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
         f.return_value = "testvalue"
 
         callbackHandler = secsgem.CallbackHandler()
@@ -99,7 +98,7 @@ class TestCallbackHandler(unittest.TestCase):
         f.assert_called_once_with(self, "data")
 
     def testCallWithDelegate(self):
-        c = Mock()
+        c = unittest.mock.Mock()
         c._on_test.return_value = "testvalue"
 
         callbackHandler = secsgem.CallbackHandler()
@@ -115,7 +114,7 @@ class TestCallbackHandler(unittest.TestCase):
         self.assertIsNone(callbackHandler.test(self, "data"))
 
     def testIteration(self):
-        f = Mock()
+        f = unittest.mock.Mock()
         f.return_value = "testvalue"
 
         callbackHandler = secsgem.CallbackHandler()

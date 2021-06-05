@@ -300,18 +300,18 @@ class testFunctionBase(unittest.TestCase):
 
 def generate_stream_list():
     streams = []
-    for stream in secsStreamsFunctions:
-        for function in secsStreamsFunctions[stream]:
-            streams.append((stream, secsStreamsFunctions[stream][function]))
+    for stream in secs_streams_functions:
+        for function in secs_streams_functions[stream]:
+            streams.append((stream, secs_streams_functions[stream][function]))
 
     return streams
 
 
 def generate_function_list():
     streams = []
-    for stream in secsStreamsFunctions:
-        for function in secsStreamsFunctions[stream]:
-            streams.append((function, secsStreamsFunctions[stream][function]))
+    for stream in secs_streams_functions:
+        for function in secs_streams_functions[stream]:
+            streams.append((function, secs_streams_functions[stream][function]))
 
     return streams
 

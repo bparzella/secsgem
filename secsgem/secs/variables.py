@@ -35,37 +35,37 @@ class SecsVar:
     If constructor is called with SecsVar or subclass only the value is copied.
     """
 
-    formatCode = -1
+    format_code = -1
 
     def __init__(self):
         """Initialize a secs variable."""
         self.value = None
 
     @staticmethod
-    def generate(dataformat):
+    def generate(data_format):
         """
         Generate actual variable from data format.
 
-        :param dataformat: dataformat to create variable for
-        :type dataformat: list/SecsVar based class
+        :param data_format: data format to create variable for
+        :type data_format: list/SecsVar based class
         :returns: created variable
         :rtype: SecsVar based class
         """
-        if dataformat is None:
+        if data_format is None:
             return None
 
-        if isinstance(dataformat, list):
-            if len(dataformat) == 1:
-                return SecsVarArray(dataformat[0])
-            return SecsVarList(dataformat)
-        if inspect.isclass(dataformat):
-            if issubclass(dataformat, SecsVar):
-                return dataformat()
-            raise TypeError("Can't generate item of class {}".format(dataformat.__name__))
-        raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
+        if isinstance(data_format, list):
+            if len(data_format) == 1:
+                return SecsVarArray(data_format[0])
+            return SecsVarList(data_format)
+        if inspect.isclass(data_format):
+            if issubclass(data_format, SecsVar):
+                return data_format()
+            raise TypeError("Can't generate item of class {}".format(data_format.__name__))
+        raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
 
     @staticmethod
-    def get_format(dataformat, showname=False):
+    def get_format(data_format, showname=False):
         """
         Gets the format of the function.
 
@@ -73,20 +73,20 @@ class SecsVar:
         :rtype: string
         """
         del showname  # unused variable
-        if dataformat is None:
+        if data_format is None:
             return None
 
-        if isinstance(dataformat, list):
-            if len(dataformat) == 1:
-                return SecsVarArray.get_format(dataformat[0])
-            return SecsVarList.get_format(dataformat)
+        if isinstance(data_format, list):
+            if len(data_format) == 1:
+                return SecsVarArray.get_format(data_format[0])
+            return SecsVarList.get_format(data_format)
 
-        if inspect.isclass(dataformat):
-            if issubclass(dataformat, SecsVar):
-                return dataformat.get_format()
-            raise TypeError("Can't generate dataformat for class {}".format(dataformat.__name__))
+        if inspect.isclass(data_format):
+            if issubclass(data_format, SecsVar):
+                return data_format.get_format()
+            raise TypeError("Can't generate data_format for class {}".format(data_format.__name__))
 
-        raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
+        raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
 
     def set(self, value):
         """
@@ -115,16 +115,16 @@ class SecsVar:
 
         if length > 0xFFFF:
             length_bytes = 3
-            format_byte = (self.formatCode << 2) | length_bytes
+            format_byte = (self.format_code << 2) | length_bytes
             return bytes(bytearray((format_byte, (length & 0xFF0000) >> 16, (length & 0x00FF00) >> 8,
                                     (length & 0x0000FF))))
         if length > 0xFF:
             length_bytes = 2
-            format_byte = (self.formatCode << 2) | length_bytes
+            format_byte = (self.format_code << 2) | length_bytes
             return bytes(bytearray((format_byte, (length & 0x00FF00) >> 8, (length & 0x0000FF))))
 
         length_bytes = 1
-        format_byte = (self.formatCode << 2) | length_bytes
+        format_byte = (self.format_code << 2) | length_bytes
         return bytes(bytearray((format_byte, (length & 0x0000FF))))
 
     def decode_item_header(self, data, text_pos=0):
@@ -157,9 +157,9 @@ class SecsVar:
 
             text_pos += 1
 
-        if 0 <= self.formatCode != format_code:
+        if 0 <= self.format_code != format_code:
             raise ValueError("Decoding data for {} ({}) has invalid format {}"
-                             .format(self.__class__.__name__, self.formatCode, format_code))
+                             .format(self.__class__.__name__, self.format_code, format_code))
 
         return text_pos, format_code, length
 
@@ -309,33 +309,33 @@ class SecsVarDynamic(SecsVar):
         """
         (_, format_code, _) = self.decode_item_header(data, start)
 
-        if format_code == SecsVarArray.formatCode and self.__type_supported(SecsVarArray):
+        if format_code == SecsVarArray.format_code and self.__type_supported(SecsVarArray):
             self.value = SecsVarArray(ANYVALUE)
-        elif format_code == SecsVarBinary.formatCode and self.__type_supported(SecsVarBinary):
+        elif format_code == SecsVarBinary.format_code and self.__type_supported(SecsVarBinary):
             self.value = SecsVarBinary(count=self.count)
-        elif format_code == SecsVarBoolean.formatCode and self.__type_supported(SecsVarBoolean):
+        elif format_code == SecsVarBoolean.format_code and self.__type_supported(SecsVarBoolean):
             self.value = SecsVarBoolean(count=self.count)
-        elif format_code == SecsVarString.formatCode and self.__type_supported(SecsVarString):
+        elif format_code == SecsVarString.format_code and self.__type_supported(SecsVarString):
             self.value = SecsVarString(count=self.count)
-        elif format_code == SecsVarI8.formatCode and self.__type_supported(SecsVarI8):
+        elif format_code == SecsVarI8.format_code and self.__type_supported(SecsVarI8):
             self.value = SecsVarI8(count=self.count)
-        elif format_code == SecsVarI1.formatCode and self.__type_supported(SecsVarI1):
+        elif format_code == SecsVarI1.format_code and self.__type_supported(SecsVarI1):
             self.value = SecsVarI1(count=self.count)
-        elif format_code == SecsVarI2.formatCode and self.__type_supported(SecsVarI2):
+        elif format_code == SecsVarI2.format_code and self.__type_supported(SecsVarI2):
             self.value = SecsVarI2(count=self.count)
-        elif format_code == SecsVarI4.formatCode and self.__type_supported(SecsVarI4):
+        elif format_code == SecsVarI4.format_code and self.__type_supported(SecsVarI4):
             self.value = SecsVarI4(count=self.count)
-        elif format_code == SecsVarF8.formatCode and self.__type_supported(SecsVarF8):
+        elif format_code == SecsVarF8.format_code and self.__type_supported(SecsVarF8):
             self.value = SecsVarF8(count=self.count)
-        elif format_code == SecsVarF4.formatCode and self.__type_supported(SecsVarF4):
+        elif format_code == SecsVarF4.format_code and self.__type_supported(SecsVarF4):
             self.value = SecsVarF4(count=self.count)
-        elif format_code == SecsVarU8.formatCode and self.__type_supported(SecsVarU8):
+        elif format_code == SecsVarU8.format_code and self.__type_supported(SecsVarU8):
             self.value = SecsVarU8(count=self.count)
-        elif format_code == SecsVarU1.formatCode and self.__type_supported(SecsVarU1):
+        elif format_code == SecsVarU1.format_code and self.__type_supported(SecsVarU1):
             self.value = SecsVarU1(count=self.count)
-        elif format_code == SecsVarU2.formatCode and self.__type_supported(SecsVarU2):
+        elif format_code == SecsVarU2.format_code and self.__type_supported(SecsVarU2):
             self.value = SecsVarU2(count=self.count)
-        elif format_code == SecsVarU4.formatCode and self.__type_supported(SecsVarU4):
+        elif format_code == SecsVarU4.format_code and self.__type_supported(SecsVarU4):
             self.value = SecsVarU4(count=self.count)
         else:
             raise ValueError(
@@ -354,7 +354,7 @@ class SecsVarDynamic(SecsVar):
 
         # first try to find the preferred type for the kind of value
         for var_type in var_types:
-            if isinstance(value, tuple(var_type.preferredTypes)):
+            if isinstance(value, tuple(var_type.preferred_types)):
                 if var_type(count=self.count).supports_value(value):
                     return var_type
 
@@ -404,9 +404,9 @@ class ANYVALUE(SecsVarDynamic):
 class SecsVarList(SecsVar):
     """List variable type. List with items of different types."""
 
-    formatCode = 0
-    textCode = 'L'
-    preferredTypes = [dict]
+    format_code = 0
+    text_code = 'L'
+    preferred_types = [dict]
 
     class _SecsVarListIter:
         def __init__(self, keys):
@@ -426,12 +426,12 @@ class SecsVarList(SecsVar):
 
             raise StopIteration()
 
-    def __init__(self, dataformat, value=None):
+    def __init__(self, data_format, value=None):
         """
         Initialize a secs list variable.
 
-        :param dataformat: internal data values
-        :type dataformat: OrderedDict
+        :param data_format: internal data values
+        :type data_format: OrderedDict
         :param value: initial value
         :type value: dict/list
         :param count: number of fields in the list
@@ -441,7 +441,7 @@ class SecsVarList(SecsVar):
 
         self.name = "DATA"
 
-        self.data = self._generate(dataformat)
+        self.data = self._generate(data_format)
 
         if value is not None:
             self.set(value)
@@ -449,7 +449,7 @@ class SecsVarList(SecsVar):
         self._object_intitialized = True
 
     @staticmethod
-    def get_format(dataformat, showname=False):
+    def get_format(data_format, showname=False):
         """
         Gets the format of the variable.
 
@@ -457,13 +457,13 @@ class SecsVarList(SecsVar):
         :rtype: string
         """
         if showname:
-            arrayName = "{}: ".format(SecsVarList.get_name_from_format(dataformat))
+            arrayName = "{}: ".format(SecsVarList.get_name_from_format(data_format))
         else:
             arrayName = ""
 
-        if isinstance(dataformat, list):
+        if isinstance(data_format, list):
             items = []
-            for item in dataformat:
+            for item in data_format:
                 if isinstance(item, str):
                     continue
                 if isinstance(item, list):
@@ -479,14 +479,14 @@ class SecsVarList(SecsVar):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
-            return "<{}>".format(self.textCode)
+            return "<{}>".format(self.text_code)
 
         data = ""
 
         for field_name in self.data:
             data += "{}\n".format(indent_block(self.data[field_name].__repr__()))
 
-        return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
+        return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
 
     def __len__(self):
         """Get the length."""
@@ -515,25 +515,25 @@ class SecsVarList(SecsVar):
         else:
             self.data[index].set(value)
 
-    def _generate(self, dataformat):
-        if dataformat is None:
+    def _generate(self, data_format):
+        if data_format is None:
             return None
 
         result_data = OrderedDict()
-        for item in dataformat:
+        for item in data_format:
             if isinstance(item, str):
                 self.name = item
                 continue
 
-            itemvalue = SecsVar.generate(item)
-            if isinstance(itemvalue, SecsVarArray):
-                result_data[itemvalue.name] = itemvalue
-            elif isinstance(itemvalue, SecsVarList):
-                result_data[SecsVarList.get_name_from_format(item)] = itemvalue
-            elif isinstance(itemvalue, SecsVar):
-                result_data[itemvalue.name] = itemvalue
+            item_value = SecsVar.generate(item)
+            if isinstance(item_value, SecsVarArray):
+                result_data[item_value.name] = item_value
+            elif isinstance(item_value, SecsVarList):
+                result_data[SecsVarList.get_name_from_format(item)] = item_value
+            elif isinstance(item_value, SecsVar):
+                result_data[item_value.name] = item_value
             else:
-                raise TypeError("Can't handle item of class {}".format(dataformat.__class__.__name__))
+                raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
 
         return result_data
 
@@ -562,20 +562,20 @@ class SecsVarList(SecsVar):
             self.__dict__.__setattr__(item, value)
 
     @staticmethod
-    def get_name_from_format(dataformat):
+    def get_name_from_format(data_format):
         """
-        Generates a name for the passed dataformat.
+        Generates a name for the passed data_format.
 
-        :param dataformat: dataformat to get name for
-        :type dataformat: list/SecsVar based class
-        :returns: name for dataformat
+        :param data_format: data_format to get name for
+        :type data_format: list/SecsVar based class
+        :returns: name for data_format
         :rtype: str
         """
-        if not isinstance(dataformat, list):
-            raise TypeError("Can't generate item name of class {}".format(dataformat.__class__.__name__))
+        if not isinstance(data_format, list):
+            raise TypeError("Can't generate item name of class {}".format(data_format.__class__.__name__))
 
-        if isinstance(dataformat[0], str):
-            return dataformat[0]
+        if isinstance(data_format[0], str):
+            return data_format[0]
 
         return "DATA"
 
@@ -652,9 +652,9 @@ class SecsVarList(SecsVar):
 class SecsVarArray(SecsVar):
     """List variable type. List with items of same type."""
 
-    formatCode = 0
-    textCode = 'L'
-    preferredTypes = [list]
+    format_code = 0
+    text_code = 'L'
+    preferred_types = [list]
 
     class _SecsVarArrayIter:
         def __init__(self, values):
@@ -674,12 +674,12 @@ class SecsVarArray(SecsVar):
 
             raise StopIteration()
 
-    def __init__(self, dataFormat, value=None, count=-1):
+    def __init__(self, data_format, value=None, count=-1):
         """
         Initialize a secs array variable.
 
-        :param dataFormat: internal data definition/sample
-        :type dataFormat: :class:`secsgem.secs.variables.SecsVar`
+        :param data_format: internal data definition/sample
+        :type data_format: :class:`secsgem.secs.variables.SecsVar`
         :param value: initial value
         :type value: list
         :param count: number of fields in the list
@@ -687,13 +687,13 @@ class SecsVarArray(SecsVar):
         """
         super(SecsVarArray, self).__init__()
 
-        self.item_decriptor = dataFormat
+        self.item_decriptor = data_format
         self.count = count
         self.data = []
-        if isinstance(dataFormat, list):
-            self.name = SecsVarList.get_name_from_format(dataFormat)
-        elif hasattr(dataFormat, "__name__"):
-            self.name = dataFormat.__name__
+        if isinstance(data_format, list):
+            self.name = SecsVarList.get_name_from_format(data_format)
+        elif hasattr(data_format, "__name__"):
+            self.name = data_format.__name__
         else:
             self.name = "UNKNOWN"
 
@@ -701,7 +701,7 @@ class SecsVarArray(SecsVar):
             self.set(value)
 
     @staticmethod
-    def get_format(dataformat, showname=False):
+    def get_format(data_format, showname=False):
         """
         Gets the format of the variable.
 
@@ -710,29 +710,29 @@ class SecsVarArray(SecsVar):
         """
         if showname:
             arrayName = "{}: "
-            if isinstance(dataformat, list):
-                arrayName = arrayName.format(SecsVarList.get_name_from_format(dataformat))
+            if isinstance(data_format, list):
+                arrayName = arrayName.format(SecsVarList.get_name_from_format(data_format))
             else:
-                arrayName = arrayName.format(dataformat.__name__)
+                arrayName = arrayName.format(data_format.__name__)
         else:
             arrayName = ""
 
-        if isinstance(dataformat, list):
-            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(SecsVarList.get_format(dataformat), 4))
+        if isinstance(data_format, list):
+            return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(SecsVarList.get_format(data_format), 4))
 
-        return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(dataformat.get_format(not showname), 4))
+        return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(data_format.get_format(not showname), 4))
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
-            return "<{}>".format(self.textCode)
+            return "<{}>".format(self.text_code)
 
         data = ""
 
         for value in self.data:
             data += "{}\n".format(indent_block(value.__repr__()))
 
-        return "<{} [{}]\n{}\n>".format(self.textCode, len(self.data), data)
+        return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
 
     def __len__(self):
         """Get the length."""
@@ -843,9 +843,9 @@ class SecsVarArray(SecsVar):
 class SecsVarBinary(SecsVar):
     """Secs type for binary data."""
 
-    formatCode = 0o10
-    textCode = "B"
-    preferredTypes = [bytes, bytearray]
+    format_code = 0o10
+    text_code = "B"
+    preferred_types = [bytes, bytearray]
 
     def __init__(self, value=None, count=-1):
         """
@@ -866,11 +866,11 @@ class SecsVarBinary(SecsVar):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.textCode)
+            return "<{}>".format(self.text_code)
 
         data = " ".join("0x{:x}".format(c) for c in self.value)
 
-        return "<{} {}>".format(self.textCode, data.strip())
+        return "<{} {}>".format(self.text_code, data.strip())
 
     def __len__(self):
         """Get the length."""
@@ -1045,12 +1045,12 @@ class SecsVarBinary(SecsVar):
 class SecsVarBoolean(SecsVar):
     """Secs type for boolean data."""
 
-    formatCode = 0o11
-    textCode = "BOOLEAN"
-    preferredTypes = [bool]
+    format_code = 0o11
+    text_code = "BOOLEAN"
+    preferred_types = [bool]
 
-    _trueStrings = ["TRUE", "YES"]
-    _falseStrings = ["FALSE", "NO"]
+    _true_strings = ["TRUE", "YES"]
+    _false_strings = ["FALSE", "NO"]
 
     def __init__(self, value=None, count=-1):
         """
@@ -1071,14 +1071,14 @@ class SecsVarBoolean(SecsVar):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.textCode)
+            return "<{}>".format(self.text_code)
 
         data = ""
 
         for boolean in self.value:
             data += "{} ".format(boolean)
 
-        return "<{} {}>".format(self.textCode, data)
+        return "<{} {}>".format(self.text_code, data)
 
     def __len__(self):
         """Get the length."""
@@ -1116,7 +1116,7 @@ class SecsVarBoolean(SecsVar):
             return False
 
         if isinstance(value, str):
-            if value.upper() in self._trueStrings or value.upper() in self._falseStrings:
+            if value.upper() in self._true_strings or value.upper() in self._false_strings:
                 return True
 
             return False
@@ -1160,10 +1160,10 @@ class SecsVarBoolean(SecsVar):
             return bool(value)
 
         if isinstance(value, str):
-            if value.upper() in self._trueStrings:
+            if value.upper() in self._true_strings:
                 return True
 
-            if value.upper() in self._falseStrings:
+            if value.upper() in self._false_strings:
                 return False
 
             raise ValueError("Value {} out of bounds".format(value))
@@ -1262,9 +1262,9 @@ class SecsVarBoolean(SecsVar):
 class SecsVarText(SecsVar):
     """Secs type base for any text data."""
 
-    formatCode = -1
-    textCode = u""
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
+    format_code = -1
+    text_code = u""
+    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
     coding = ""
 
     def __init__(self, value="", count=-1):
@@ -1287,7 +1287,7 @@ class SecsVarText(SecsVar):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return u"<{}>".format(self.textCode)
+            return u"<{}>".format(self.text_code)
 
         data = u""
         last_char_printable = False
@@ -1295,7 +1295,7 @@ class SecsVarText(SecsVar):
         for char in self.value:
             output = char
 
-            if char not in self.controlChars:
+            if char not in self.control_chars:
                 if last_char_printable:
                     data += output
                 else:
@@ -1311,7 +1311,7 @@ class SecsVarText(SecsVar):
         if last_char_printable:
             data += '"'
 
-        return u"<{}{}>".format(self.textCode, data)
+        return u"<{}{}>".format(self.text_code, data)
 
     def __len__(self):
         """Get the length."""
@@ -1467,10 +1467,10 @@ class SecsVarString(SecsVarText):
     :type count: integer
     """
 
-    formatCode = 0o20
-    textCode = u"A"
-    preferredTypes = [bytes, str]
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C" or ch > 127)
+    format_code = 0o20
+    text_code = u"A"
+    preferred_types = [bytes, str]
+    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C" or ch > 127)
     coding = "latin-1"
 
 
@@ -1484,23 +1484,23 @@ class SecsVarJIS8(SecsVarText):
     :type count: integer
     """
 
-    formatCode = 0o21
-    textCode = u"J"
-    preferredTypes = [bytes, str]
-    controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
-    coding = "jis-8"
+    format_code = 0o21
+    text_code = u"J"
+    preferred_types = [bytes, str]
+    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
+    coding = "jis_8"
 
 
 class SecsVarNumber(SecsVar):
     """Secs base type for numeric data."""
 
-    formatCode = 0
-    textCode = ""
-    _basetype = int
+    format_code = 0
+    text_code = ""
+    _base_type = int
     _min = 0
     _max = 0
     _bytes = 0
-    _structCode = ""
+    _struct_code = ""
 
     def __init__(self, value=None, count=-1):
         """
@@ -1521,14 +1521,14 @@ class SecsVarNumber(SecsVar):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.textCode)
+            return "<{}>".format(self.text_code)
 
         data = ""
 
         for item in self.value:
             data += "{} ".format(item)
 
-        return "<{} {}>".format(self.textCode, data)
+        return "<{} {}>".format(self.text_code, data)
 
     def __len__(self):
         """Get the length."""
@@ -1557,7 +1557,7 @@ class SecsVarNumber(SecsVar):
         return hash(str(self.value))
 
     def __check_single_item_support(self, value):
-        if isinstance(value, float) and self._basetype == int:
+        if isinstance(value, float) and self._base_type == int:
             return False
 
         if isinstance(value, bool):
@@ -1570,7 +1570,7 @@ class SecsVarNumber(SecsVar):
 
         if isinstance(value, (bytes, str)):
             try:
-                val = self._basetype(value)
+                val = self._base_type(value)
             except ValueError:
                 return False
             if val < self._min or val > self._max:
@@ -1608,7 +1608,7 @@ class SecsVarNumber(SecsVar):
         :param value: new value
         :type value: list/integer/float
         """
-        if isinstance(value, float) and self._basetype == int:
+        if isinstance(value, float) and self._base_type == int:
             raise ValueError("Invalid value {}".format(value))
 
         if isinstance(value, (list, tuple)):
@@ -1617,7 +1617,7 @@ class SecsVarNumber(SecsVar):
 
             new_list = []
             for item in value:
-                item = self._basetype(item)
+                item = self._base_type(item)
                 if item < self._min or item > self._max:
                     raise ValueError("Invalid value {}".format(item))
 
@@ -1634,7 +1634,7 @@ class SecsVarNumber(SecsVar):
                 new_list.append(item)
             self.value = new_list
         else:
-            new_value = self._basetype(value)
+            new_value = self._base_type(value)
 
             if new_value < self._min or new_value > self._max:
                 raise ValueError("Invalid value {}".format(value))
@@ -1664,7 +1664,7 @@ class SecsVarNumber(SecsVar):
 
         for counter in range(len(self.value)):
             value = self.value[counter]
-            result += struct.pack(">{}".format(self._structCode), value)
+            result += struct.pack(">{}".format(self._struct_code), value)
 
         return result
 
@@ -1693,7 +1693,7 @@ class SecsVarNumber(SecsVar):
                         length,
                         start))
 
-            result.append(struct.unpack(">{}".format(self._structCode), result_text)[0])
+            result.append(struct.unpack(">{}".format(self._struct_code), result_text)[0])
 
             text_pos += self._bytes
 
@@ -1712,14 +1712,14 @@ class SecsVarI8(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o30
-    textCode = "I8"
-    _basetype = int
+    format_code = 0o30
+    text_code = "I8"
+    _base_type = int
     _min = -9223372036854775808
     _max = 9223372036854775807
     _bytes = 8
-    _structCode = "q"
-    preferredTypes = [int]
+    _struct_code = "q"
+    preferred_types = [int]
 
 
 class SecsVarI1(SecsVarNumber):
@@ -1732,14 +1732,14 @@ class SecsVarI1(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o31
-    textCode = "I1"
-    _basetype = int
+    format_code = 0o31
+    text_code = "I1"
+    _base_type = int
     _min = -128
     _max = 127
     _bytes = 1
-    _structCode = "b"
-    preferredTypes = [int]
+    _struct_code = "b"
+    preferred_types = [int]
 
 
 class SecsVarI2(SecsVarNumber):
@@ -1752,14 +1752,14 @@ class SecsVarI2(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o32
-    textCode = "I2"
-    _basetype = int
+    format_code = 0o32
+    text_code = "I2"
+    _base_type = int
     _min = -32768
     _max = 32767
     _bytes = 2
-    _structCode = "h"
-    preferredTypes = [int]
+    _struct_code = "h"
+    preferred_types = [int]
 
 
 class SecsVarI4(SecsVarNumber):
@@ -1772,14 +1772,14 @@ class SecsVarI4(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o34
-    textCode = "I4"
-    _basetype = int
+    format_code = 0o34
+    text_code = "I4"
+    _base_type = int
     _min = -2147483648
     _max = 2147483647
     _bytes = 4
-    _structCode = "l"
-    preferredTypes = [int]
+    _struct_code = "l"
+    preferred_types = [int]
 
 
 class SecsVarF8(SecsVarNumber):
@@ -1792,14 +1792,14 @@ class SecsVarF8(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o40
-    textCode = "F8"
-    _basetype = float
+    format_code = 0o40
+    text_code = "F8"
+    _base_type = float
     _min = -1.79769e+308
     _max = 1.79769e+308
     _bytes = 8
-    _structCode = "d"
-    preferredTypes = [float]
+    _struct_code = "d"
+    preferred_types = [float]
 
 
 class SecsVarF4(SecsVarNumber):
@@ -1812,14 +1812,14 @@ class SecsVarF4(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o44
-    textCode = "F4"
-    _basetype = float
+    format_code = 0o44
+    text_code = "F4"
+    _base_type = float
     _min = -3.40282e+38
     _max = 3.40282e+38
     _bytes = 4
-    _structCode = "f"
-    preferredTypes = [float]
+    _struct_code = "f"
+    preferred_types = [float]
 
 
 class SecsVarU8(SecsVarNumber):
@@ -1832,14 +1832,14 @@ class SecsVarU8(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o50
-    textCode = "U8"
-    _basetype = int
+    format_code = 0o50
+    text_code = "U8"
+    _base_type = int
     _min = 0
     _max = 18446744073709551615
     _bytes = 8
-    _structCode = "Q"
-    preferredTypes = [int]
+    _struct_code = "Q"
+    preferred_types = [int]
 
 
 class SecsVarU1(SecsVarNumber):
@@ -1852,14 +1852,14 @@ class SecsVarU1(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o51
-    textCode = "U1"
-    _basetype = int
+    format_code = 0o51
+    text_code = "U1"
+    _base_type = int
     _min = 0
     _max = 255
     _bytes = 1
-    _structCode = "B"
-    preferredTypes = [int]
+    _struct_code = "B"
+    preferred_types = [int]
 
 
 class SecsVarU2(SecsVarNumber):
@@ -1872,14 +1872,14 @@ class SecsVarU2(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o52
-    textCode = "U2"
-    _basetype = int
+    format_code = 0o52
+    text_code = "U2"
+    _base_type = int
     _min = 0
     _max = 65535
     _bytes = 2
-    _structCode = "H"
-    preferredTypes = [int]
+    _struct_code = "H"
+    preferred_types = [int]
 
 
 class SecsVarU4(SecsVarNumber):
@@ -1892,11 +1892,11 @@ class SecsVarU4(SecsVarNumber):
     :type count: integer
     """
 
-    formatCode = 0o54
-    textCode = "U4"
-    _basetype = int
+    format_code = 0o54
+    text_code = "U4"
+    _base_type = int
     _min = 0
     _max = 4294967295
     _bytes = 4
-    _structCode = "L"
-    preferredTypes = [int]
+    _struct_code = "L"
+    preferred_types = [int]

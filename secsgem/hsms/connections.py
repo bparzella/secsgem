@@ -29,7 +29,7 @@ from .packets import HsmsPacket
 
 # TODO: timeouts (T7, T8)
 
-hsmsSTypes = {
+HSMS_STYPES = {
     1: "Select.req",
     2: "Select.rsp",
     3: "Deselect.req",
@@ -58,10 +58,10 @@ def is_errorcode_ewouldblock(errorcode):
 class HsmsConnection:  # pragma: no cover
     """Connection class used for active and passive hsms connections."""
 
-    selectTimeout = 0.5
+    select_timeout = 0.5
     """ Timeout for select calls ."""
 
-    sendBlockSize = 1024 * 1024
+    send_block_size = 1024 * 1024
     """ Block size for outbound data ."""
 
     T3 = 45.0
@@ -197,7 +197,7 @@ class HsmsConnection:  # pragma: no cover
         data = packet.encode()
 
         # split data into blocks
-        blocks = [data[i: i + self.sendBlockSize] for i in range(0, len(data), self.sendBlockSize)]
+        blocks = [data[i: i + self.send_block_size] for i in range(0, len(data), self.send_block_size)]
 
         for block in blocks:
             retry = True
@@ -205,7 +205,7 @@ class HsmsConnection:  # pragma: no cover
             # not sent yet, retry
             while retry:
                 # wait until socket is writable
-                while not select.select([], [self.sock], [], self.selectTimeout)[1]:
+                while not select.select([], [self.sock], [], self.select_timeout)[1]:
                     pass
 
                 try:
@@ -265,7 +265,7 @@ class HsmsConnection:  # pragma: no cover
         # check if shutdown requested
         while not self.stopThread:
             # check if data available
-            select_result = select.select([self.sock], [], [self.sock], self.selectTimeout)
+            select_result = select.select([self.sock], [], [self.sock], self.select_timeout)
 
             # check if disconnection was started
             if self.disconnecting:
@@ -445,7 +445,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
         while not self.stopServerThread:
             try:
-                select_result = select.select([self.serverSock], [], [], self.selectTimeout)
+                select_result = select.select([self.serverSock], [], [], self.select_timeout)
             except Exception:
                 continue
 
@@ -553,7 +553,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
     The server creates a listening socket and waits for incoming connections on this socket.
     """
 
-    selectTimeout = 0.5
+    select_timeout = 0.5
     """ Timeout for select calls ."""
 
     def __init__(self, port=5000):
@@ -697,7 +697,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         try:
             while not self.stopThread:
                 # check for data in the input buffer
-                select_result = select.select([self.listenSock], [], [self.listenSock], self.selectTimeout)
+                select_result = select.select([self.listenSock], [], [self.listenSock], self.select_timeout)
 
                 if select_result[0]:
                     accept_result = None

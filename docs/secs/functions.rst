@@ -9,7 +9,7 @@ A function is inherited from :class:`secsgem.secs.functionbase.SecsStreamFunctio
         _stream = 2
         _function = 33
 
-        _dataFormat = [
+        _data_format = [
             DATAID,
             [
                 [
@@ -19,13 +19,13 @@ A function is inherited from :class:`secsgem.secs.functionbase.SecsStreamFunctio
             ]
         ]
 
-        _toHost = False
-        _toEquipment = True
+        _to_host = False
+        _to_equipment = True
 
-        _hasReply = True
-        _isReplyRequired = True
+        _has_reply = True
+        _is_reply_required = True
 
-        _isMultiBlock = True
+        _is_multi_block = True
 
 The data of a function can be read and manipulated with the same functionality as the variables.
 :func:`secsgem.secs.functionbase.SecsStreamFunction.set`, :func:`secsgem.secs.functionbase.SecsStreamFunction.get`, :func:`secsgem.secs.functionbase.SecsStreamFunction.append`, the index operator and object properties.

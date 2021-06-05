@@ -56,7 +56,7 @@ class SecsHandler(HsmsHandler):
         self._alarms = {}
         self._remoteCommands = {}
 
-        self.secsStreamsFunctions = copy.deepcopy(functions.secsStreamsFunctions)
+        self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
 
     def _generate_sf_callback_name(self, stream, function):
         return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
@@ -423,15 +423,15 @@ class SecsHandler(HsmsHandler):
         :return: matching stream and function class
         :rtype: secsSxFx class
         """
-        if stream not in self.secsStreamsFunctions:
+        if stream not in self.secs_streams_functions:
             self.logger.warning("unknown function S%02dF%02d", stream, function)
             return None
 
-        if function not in self.secsStreamsFunctions[stream]:
+        if function not in self.secs_streams_functions[stream]:
             self.logger.warning("unknown function S%02dF%02d", stream, function)
             return None
 
-        return self.secsStreamsFunctions[stream][function]
+        return self.secs_streams_functions[stream][function]
 
     def secs_decode(self, packet):
         """
@@ -445,15 +445,15 @@ class SecsHandler(HsmsHandler):
         if packet is None:
             return None
 
-        if packet.header.stream not in self.secsStreamsFunctions:
+        if packet.header.stream not in self.secs_streams_functions:
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        if packet.header.function not in self.secsStreamsFunctions[packet.header.stream]:
+        if packet.header.function not in self.secs_streams_functions[packet.header.stream]:
             self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
             return None
 
-        function = self.secsStreamsFunctions[packet.header.stream][packet.header.function]()
+        function = self.secs_streams_functions[packet.header.stream][packet.header.function]()
         function.decode(packet.data)
 
         return function

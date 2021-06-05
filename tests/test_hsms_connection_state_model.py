@@ -13,10 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-import unittest
-import time
-
-from mock import Mock
+import unittest.mock
 
 from transitions import MachineError
 
@@ -231,7 +228,7 @@ class TestConnectionStateMachine(unittest.TestCase):
 
     # tests for callbacks
     def testOnEnterConnectedCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.stateMachine2 = secsgem.hsms.connectionstatemachine.ConnectionStateMachine({'on_enter_CONNECTED': f})
         self.stateMachine2.connect()
@@ -239,7 +236,7 @@ class TestConnectionStateMachine(unittest.TestCase):
         f.assert_called()
 
     def testOnExitConnectedCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.stateMachine2 = secsgem.hsms.connectionstatemachine.ConnectionStateMachine({'on_exit_CONNECTED': f})
         self.stateMachine2.connect()
@@ -248,7 +245,7 @@ class TestConnectionStateMachine(unittest.TestCase):
         f.assert_called()
 
     def testOnEnterConnectedSelectedCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.stateMachine2 = secsgem.hsms.connectionstatemachine.ConnectionStateMachine({'on_enter_CONNECTED_SELECTED': f})
         self.stateMachine2.connect()

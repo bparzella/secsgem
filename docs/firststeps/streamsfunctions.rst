@@ -22,7 +22,7 @@ To integrate this new data item in a stream function then you need to inherit :c
         _stream = 1
         _function = 12
 
-        _dataFormat = [
+        _data_format = [
             [
                 SVID,
                 SVNAME,
@@ -30,13 +30,13 @@ To integrate this new data item in a stream function then you need to inherit :c
             ]
         ]
 
-        _toHost = True
-        _toEquipment = False
+        _to_host = True
+        _to_equipment = False
 
-        _hasReply = False
-        _isReplyRequired = False
+        _has_reply = False
+        _is_reply_required = False
 
-        _isMultiBlock = True
+        _is_multi_block = True
 
 
 Integrate a stream function
@@ -49,7 +49,7 @@ You create a new class inherited from it and update the function list of that cl
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
             secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
-            self.secsStreamsFunctions[1].update({
+            self.secs_streams_functions[1].update({
                 12: SecsS01F12_New,
             })
 

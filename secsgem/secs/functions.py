@@ -48,15 +48,15 @@ class SecsS00F00(SecsStreamFunction):
     _stream = 0
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F00(SecsStreamFunction):
@@ -82,15 +82,15 @@ class SecsS01F00(SecsStreamFunction):
     _stream = 1
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F01(SecsStreamFunction):
@@ -116,15 +116,15 @@ class SecsS01F01(SecsStreamFunction):
     _stream = 1
     _function = 1
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F02(SecsStreamFunction):
@@ -165,15 +165,15 @@ class SecsS01F02(SecsStreamFunction):
     _stream = 1
     _function = 2
 
-    _dataFormat = [MDLN]
+    _data_format = [MDLN]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F03(SecsStreamFunction):
@@ -211,15 +211,15 @@ class SecsS01F03(SecsStreamFunction):
     _stream = 1
     _function = 3
 
-    _dataFormat = [SVID]
+    _data_format = [SVID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F04(SecsStreamFunction):
@@ -257,15 +257,15 @@ class SecsS01F04(SecsStreamFunction):
     _stream = 1
     _function = 4
 
-    _dataFormat = [SV]
+    _data_format = [SV]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS01F11(SecsStreamFunction):
@@ -304,15 +304,15 @@ class SecsS01F11(SecsStreamFunction):
     _stream = 1
     _function = 11
 
-    _dataFormat = [SVID]
+    _data_format = [SVID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F12(SecsStreamFunction):
@@ -364,7 +364,7 @@ class SecsS01F12(SecsStreamFunction):
     _stream = 1
     _function = 12
 
-    _dataFormat = [
+    _data_format = [
         [
             SVID,
             SVNAME,
@@ -372,13 +372,13 @@ class SecsS01F12(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS01F13(SecsStreamFunction):
@@ -419,15 +419,15 @@ class SecsS01F13(SecsStreamFunction):
     _stream = 1
     _function = 13
 
-    _dataFormat = [MDLN]
+    _data_format = [MDLN]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F14(SecsStreamFunction):
@@ -481,18 +481,18 @@ class SecsS01F14(SecsStreamFunction):
     _stream = 1
     _function = 14
 
-    _dataFormat = [
+    _data_format = [
         COMMACK,
         [MDLN]
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F15(SecsStreamFunction):
@@ -518,15 +518,15 @@ class SecsS01F15(SecsStreamFunction):
     _stream = 1
     _function = 15
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F16(SecsStreamFunction):
@@ -557,15 +557,15 @@ class SecsS01F16(SecsStreamFunction):
     _stream = 1
     _function = 16
 
-    _dataFormat = OFLACK
+    _data_format = OFLACK
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F17(SecsStreamFunction):
@@ -591,15 +591,15 @@ class SecsS01F17(SecsStreamFunction):
     _stream = 1
     _function = 17
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS01F18(SecsStreamFunction):
@@ -630,15 +630,15 @@ class SecsS01F18(SecsStreamFunction):
     _stream = 1
     _function = 18
 
-    _dataFormat = ONLACK
+    _data_format = ONLACK
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F00(SecsStreamFunction):
@@ -664,15 +664,15 @@ class SecsS02F00(SecsStreamFunction):
     _stream = 2
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F13(SecsStreamFunction):
@@ -711,15 +711,15 @@ class SecsS02F13(SecsStreamFunction):
     _stream = 2
     _function = 13
 
-    _dataFormat = [ECID]
+    _data_format = [ECID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F14(SecsStreamFunction):
@@ -756,15 +756,15 @@ class SecsS02F14(SecsStreamFunction):
     _stream = 2
     _function = 14
 
-    _dataFormat = [ECV]
+    _data_format = [ECV]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS02F15(SecsStreamFunction):
@@ -811,20 +811,20 @@ class SecsS02F15(SecsStreamFunction):
     _stream = 2
     _function = 15
 
-    _dataFormat = [
+    _data_format = [
         [
             ECID,
             ECV
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F16(SecsStreamFunction):
@@ -855,15 +855,15 @@ class SecsS02F16(SecsStreamFunction):
     _stream = 2
     _function = 16
 
-    _dataFormat = EAC
+    _data_format = EAC
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F17(SecsStreamFunction):
@@ -889,15 +889,15 @@ class SecsS02F17(SecsStreamFunction):
     _stream = 2
     _function = 17
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F18(SecsStreamFunction):
@@ -928,15 +928,15 @@ class SecsS02F18(SecsStreamFunction):
     _stream = 2
     _function = 18
 
-    _dataFormat = TIME
+    _data_format = TIME
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F29(SecsStreamFunction):
@@ -975,15 +975,15 @@ class SecsS02F29(SecsStreamFunction):
     _stream = 2
     _function = 29
 
-    _dataFormat = [ECID]
+    _data_format = [ECID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F30(SecsStreamFunction):
@@ -1049,7 +1049,7 @@ class SecsS02F30(SecsStreamFunction):
     _stream = 2
     _function = 30
 
-    _dataFormat = [
+    _data_format = [
         [
             ECID,
             ECNAME,
@@ -1060,13 +1060,13 @@ class SecsS02F30(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS02F33(SecsStreamFunction):
@@ -1130,7 +1130,7 @@ class SecsS02F33(SecsStreamFunction):
     _stream = 2
     _function = 33
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         [
             [
@@ -1140,13 +1140,13 @@ class SecsS02F33(SecsStreamFunction):
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS02F34(SecsStreamFunction):
@@ -1177,15 +1177,15 @@ class SecsS02F34(SecsStreamFunction):
     _stream = 2
     _function = 34
 
-    _dataFormat = DRACK
+    _data_format = DRACK
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F35(SecsStreamFunction):
@@ -1241,7 +1241,7 @@ class SecsS02F35(SecsStreamFunction):
     _stream = 2
     _function = 35
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         [
             [
@@ -1251,13 +1251,13 @@ class SecsS02F35(SecsStreamFunction):
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS02F36(SecsStreamFunction):
@@ -1288,15 +1288,15 @@ class SecsS02F36(SecsStreamFunction):
     _stream = 2
     _function = 36
 
-    _dataFormat = LRACK
+    _data_format = LRACK
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F37(SecsStreamFunction):
@@ -1339,18 +1339,18 @@ class SecsS02F37(SecsStreamFunction):
     _stream = 2
     _function = 37
 
-    _dataFormat = [
+    _data_format = [
         CEED,
         [CEID]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F38(SecsStreamFunction):
@@ -1381,15 +1381,15 @@ class SecsS02F38(SecsStreamFunction):
     _stream = 2
     _function = 38
 
-    _dataFormat = ERACK
+    _data_format = ERACK
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F41(SecsStreamFunction):
@@ -1444,7 +1444,7 @@ class SecsS02F41(SecsStreamFunction):
     _stream = 2
     _function = 41
 
-    _dataFormat = [
+    _data_format = [
         RCMD,
         [
             [
@@ -1455,13 +1455,13 @@ class SecsS02F41(SecsStreamFunction):
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS02F42(SecsStreamFunction):
@@ -1519,7 +1519,7 @@ class SecsS02F42(SecsStreamFunction):
     _stream = 2
     _function = 42
 
-    _dataFormat = [
+    _data_format = [
         HCACK,
         [
             [
@@ -1530,13 +1530,13 @@ class SecsS02F42(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F00(SecsStreamFunction):
@@ -1562,15 +1562,15 @@ class SecsS05F00(SecsStreamFunction):
     _stream = 5
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F01(SecsStreamFunction):
@@ -1612,19 +1612,19 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})
     _stream = 5
     _function = 1
 
-    _dataFormat = [
+    _data_format = [
         ALCD,
         ALID,
         ALTX
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F02(SecsStreamFunction):
@@ -1655,15 +1655,15 @@ class SecsS05F02(SecsStreamFunction):
     _stream = 5
     _function = 2
 
-    _dataFormat = ACKC5
+    _data_format = ACKC5
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F03(SecsStreamFunction):
@@ -1701,18 +1701,18 @@ class SecsS05F03(SecsStreamFunction):
     _stream = 5
     _function = 3
 
-    _dataFormat = [
+    _data_format = [
         ALED,
         ALID
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F04(SecsStreamFunction):
@@ -1743,15 +1743,15 @@ class SecsS05F04(SecsStreamFunction):
     _stream = 5
     _function = 4
 
-    _dataFormat = ACKC5
+    _data_format = ACKC5
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F05(SecsStreamFunction):
@@ -1788,15 +1788,15 @@ class SecsS05F05(SecsStreamFunction):
     _stream = 5
     _function = 5
 
-    _dataFormat = [ALID]
+    _data_format = [ALID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F06(SecsStreamFunction):
@@ -1843,19 +1843,19 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
     _stream = 5
     _function = 6
 
-    _dataFormat = [[
+    _data_format = [[
         ALCD,
         ALID,
         ALTX
     ]]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS05F07(SecsStreamFunction):
@@ -1881,15 +1881,15 @@ class SecsS05F07(SecsStreamFunction):
     _stream = 5
     _function = 7
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F08(SecsStreamFunction):
@@ -1936,19 +1936,19 @@ secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
     _stream = 5
     _function = 8
 
-    _dataFormat = [[
+    _data_format = [[
         ALCD,
         ALID,
         ALTX
     ]]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS05F09(SecsStreamFunction):
@@ -2006,7 +2006,7 @@ class SecsS05F09(SecsStreamFunction):
     _stream = 5
     _function = 9
 
-    _dataFormat = [
+    _data_format = [
         TIMESTAMP,
         EXID,
         EXTYPE,
@@ -2014,13 +2014,13 @@ class SecsS05F09(SecsStreamFunction):
         [EXRECVRA]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F10(SecsStreamFunction):
@@ -2046,15 +2046,15 @@ class SecsS05F10(SecsStreamFunction):
     _stream = 5
     _function = 10
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F11(SecsStreamFunction):
@@ -2099,20 +2099,20 @@ class SecsS05F11(SecsStreamFunction):
     _stream = 5
     _function = 11
 
-    _dataFormat = [
+    _data_format = [
         TIMESTAMP,
         EXID,
         EXTYPE,
         EXMESSAGE,
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F12(SecsStreamFunction):
@@ -2138,15 +2138,15 @@ class SecsS05F12(SecsStreamFunction):
     _stream = 5
     _function = 12
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F13(SecsStreamFunction):
@@ -2184,18 +2184,18 @@ class SecsS05F13(SecsStreamFunction):
     _stream = 5
     _function = 13
 
-    _dataFormat = [
+    _data_format = [
         EXID,
         EXRECVRA
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F14(SecsStreamFunction):
@@ -2246,7 +2246,7 @@ class SecsS05F14(SecsStreamFunction):
     _stream = 5
     _function = 14
 
-    _dataFormat = [
+    _data_format = [
         EXID,
         [
             ACKA,
@@ -2257,13 +2257,13 @@ class SecsS05F14(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F15(SecsStreamFunction):
@@ -2318,7 +2318,7 @@ class SecsS05F15(SecsStreamFunction):
     _stream = 5
     _function = 15
 
-    _dataFormat = [
+    _data_format = [
         TIMESTAMP,
         EXID,
         [
@@ -2330,13 +2330,13 @@ class SecsS05F15(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F16(SecsStreamFunction):
@@ -2362,15 +2362,15 @@ class SecsS05F16(SecsStreamFunction):
     _stream = 5
     _function = 16
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F17(SecsStreamFunction):
@@ -2401,15 +2401,15 @@ class SecsS05F17(SecsStreamFunction):
     _stream = 5
     _function = 17
 
-    _dataFormat = EXID
+    _data_format = EXID
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS05F18(SecsStreamFunction):
@@ -2460,7 +2460,7 @@ class SecsS05F18(SecsStreamFunction):
     _stream = 5
     _function = 18
 
-    _dataFormat = [
+    _data_format = [
         EXID,
         [
             ACKA,
@@ -2471,13 +2471,13 @@ class SecsS05F18(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F00(SecsStreamFunction):
@@ -2503,15 +2503,15 @@ class SecsS06F00(SecsStreamFunction):
     _stream = 6
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F05(SecsStreamFunction):
@@ -2549,18 +2549,18 @@ class SecsS06F05(SecsStreamFunction):
     _stream = 6
     _function = 5
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         DATALENGTH
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F06(SecsStreamFunction):
@@ -2591,15 +2591,15 @@ class SecsS06F06(SecsStreamFunction):
     _stream = 6
     _function = 6
 
-    _dataFormat = GRANT6
+    _data_format = GRANT6
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F07(SecsStreamFunction):
@@ -2630,15 +2630,15 @@ class SecsS06F07(SecsStreamFunction):
     _stream = 6
     _function = 7
 
-    _dataFormat = DATAID
+    _data_format = DATAID
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F08(SecsStreamFunction):
@@ -2713,7 +2713,7 @@ class SecsS06F08(SecsStreamFunction):
     _stream = 6
     _function = 8
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         CEID,
         [
@@ -2731,13 +2731,13 @@ class SecsS06F08(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS06F11(SecsStreamFunction):
@@ -2797,7 +2797,7 @@ class SecsS06F11(SecsStreamFunction):
     _stream = 6
     _function = 11
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         CEID,
         [
@@ -2809,13 +2809,13 @@ class SecsS06F11(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS06F12(SecsStreamFunction):
@@ -2846,15 +2846,15 @@ class SecsS06F12(SecsStreamFunction):
     _stream = 6
     _function = 12
 
-    _dataFormat = ACKC6
+    _data_format = ACKC6
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F15(SecsStreamFunction):
@@ -2885,15 +2885,15 @@ class SecsS06F15(SecsStreamFunction):
     _stream = 6
     _function = 15
 
-    _dataFormat = CEID
+    _data_format = CEID
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F16(SecsStreamFunction):
@@ -2953,7 +2953,7 @@ class SecsS06F16(SecsStreamFunction):
     _stream = 6
     _function = 16
 
-    _dataFormat = [
+    _data_format = [
         DATAID,
         CEID,
         [
@@ -2965,13 +2965,13 @@ class SecsS06F16(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS06F19(SecsStreamFunction):
@@ -3002,15 +3002,15 @@ class SecsS06F19(SecsStreamFunction):
     _stream = 6
     _function = 19
 
-    _dataFormat = RPTID
+    _data_format = RPTID
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F20(SecsStreamFunction):
@@ -3047,15 +3047,15 @@ class SecsS06F20(SecsStreamFunction):
     _stream = 6
     _function = 20
 
-    _dataFormat = [V]
+    _data_format = [V]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS06F21(SecsStreamFunction):
@@ -3086,15 +3086,15 @@ class SecsS06F21(SecsStreamFunction):
     _stream = 6
     _function = 21
 
-    _dataFormat = RPTID
+    _data_format = RPTID
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS06F22(SecsStreamFunction):
@@ -3141,20 +3141,20 @@ class SecsS06F22(SecsStreamFunction):
     _stream = 6
     _function = 22
 
-    _dataFormat = [
+    _data_format = [
         [
             VID,
             V
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS07F00(SecsStreamFunction):
@@ -3180,15 +3180,15 @@ class SecsS07F00(SecsStreamFunction):
     _stream = 7
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F01(SecsStreamFunction):
@@ -3226,18 +3226,18 @@ class SecsS07F01(SecsStreamFunction):
     _stream = 7
     _function = 1
 
-    _dataFormat = [
+    _data_format = [
         PPID,
         LENGTH
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F02(SecsStreamFunction):
@@ -3268,15 +3268,15 @@ class SecsS07F02(SecsStreamFunction):
     _stream = 7
     _function = 2
 
-    _dataFormat = PPGNT
+    _data_format = PPGNT
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F03(SecsStreamFunction):
@@ -3314,18 +3314,18 @@ class SecsS07F03(SecsStreamFunction):
     _stream = 7
     _function = 3
 
-    _dataFormat = [
+    _data_format = [
         PPID,
         PPBODY
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS07F04(SecsStreamFunction):
@@ -3356,15 +3356,15 @@ class SecsS07F04(SecsStreamFunction):
     _stream = 7
     _function = 4
 
-    _dataFormat = ACKC7
+    _data_format = ACKC7
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F05(SecsStreamFunction):
@@ -3395,15 +3395,15 @@ class SecsS07F05(SecsStreamFunction):
     _stream = 7
     _function = 5
 
-    _dataFormat = PPID
+    _data_format = PPID
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F06(SecsStreamFunction):
@@ -3441,18 +3441,18 @@ class SecsS07F06(SecsStreamFunction):
     _stream = 7
     _function = 6
 
-    _dataFormat = [
+    _data_format = [
         PPID,
         PPBODY
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS07F17(SecsStreamFunction):
@@ -3489,15 +3489,15 @@ class SecsS07F17(SecsStreamFunction):
     _stream = 7
     _function = 17
 
-    _dataFormat = [PPID]
+    _data_format = [PPID]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F18(SecsStreamFunction):
@@ -3528,15 +3528,15 @@ class SecsS07F18(SecsStreamFunction):
     _stream = 7
     _function = 18
 
-    _dataFormat = ACKC7
+    _data_format = ACKC7
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F19(SecsStreamFunction):
@@ -3562,15 +3562,15 @@ class SecsS07F19(SecsStreamFunction):
     _stream = 7
     _function = 19
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS07F20(SecsStreamFunction):
@@ -3607,15 +3607,15 @@ class SecsS07F20(SecsStreamFunction):
     _stream = 7
     _function = 20
 
-    _dataFormat = [PPID]
+    _data_format = [PPID]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS09F00(SecsStreamFunction):
@@ -3641,15 +3641,15 @@ class SecsS09F00(SecsStreamFunction):
     _stream = 9
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F01(SecsStreamFunction):
@@ -3680,15 +3680,15 @@ class SecsS09F01(SecsStreamFunction):
     _stream = 9
     _function = 1
 
-    _dataFormat = MHEAD
+    _data_format = MHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F03(SecsStreamFunction):
@@ -3719,15 +3719,15 @@ class SecsS09F03(SecsStreamFunction):
     _stream = 9
     _function = 3
 
-    _dataFormat = MHEAD
+    _data_format = MHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F05(SecsStreamFunction):
@@ -3758,15 +3758,15 @@ class SecsS09F05(SecsStreamFunction):
     _stream = 9
     _function = 5
 
-    _dataFormat = MHEAD
+    _data_format = MHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F07(SecsStreamFunction):
@@ -3797,15 +3797,15 @@ class SecsS09F07(SecsStreamFunction):
     _stream = 9
     _function = 7
 
-    _dataFormat = MHEAD
+    _data_format = MHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F09(SecsStreamFunction):
@@ -3836,15 +3836,15 @@ class SecsS09F09(SecsStreamFunction):
     _stream = 9
     _function = 9
 
-    _dataFormat = SHEAD
+    _data_format = SHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F11(SecsStreamFunction):
@@ -3875,15 +3875,15 @@ class SecsS09F11(SecsStreamFunction):
     _stream = 9
     _function = 11
 
-    _dataFormat = MHEAD
+    _data_format = MHEAD
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS09F13(SecsStreamFunction):
@@ -3921,18 +3921,18 @@ class SecsS09F13(SecsStreamFunction):
     _stream = 9
     _function = 13
 
-    _dataFormat = [
+    _data_format = [
         MEXP,
         EDID
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS10F00(SecsStreamFunction):
@@ -3958,15 +3958,15 @@ class SecsS10F00(SecsStreamFunction):
     _stream = 10
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS10F01(SecsStreamFunction):
@@ -4004,18 +4004,18 @@ class SecsS10F01(SecsStreamFunction):
     _stream = 10
     _function = 1
 
-    _dataFormat = [
+    _data_format = [
         TID,
         TEXT
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS10F02(SecsStreamFunction):
@@ -4046,15 +4046,15 @@ class SecsS10F02(SecsStreamFunction):
     _stream = 10
     _function = 2
 
-    _dataFormat = ACKC10
+    _data_format = ACKC10
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS10F03(SecsStreamFunction):
@@ -4092,18 +4092,18 @@ class SecsS10F03(SecsStreamFunction):
     _stream = 10
     _function = 3
 
-    _dataFormat = [
+    _data_format = [
         TID,
         TEXT
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = False
+    _has_reply = True
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS10F04(SecsStreamFunction):
@@ -4134,15 +4134,15 @@ class SecsS10F04(SecsStreamFunction):
     _stream = 10
     _function = 4
 
-    _dataFormat = ACKC10
+    _data_format = ACKC10
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F00(SecsStreamFunction):
@@ -4168,15 +4168,15 @@ class SecsS12F00(SecsStreamFunction):
     _stream = 12
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F01(SecsStreamFunction):
@@ -4274,7 +4274,7 @@ class SecsS12F01(SecsStreamFunction):
     _stream = 12
     _function = 1
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         FNLOC,
@@ -4292,13 +4292,13 @@ class SecsS12F01(SecsStreamFunction):
         PRAXI
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F02(SecsStreamFunction):
@@ -4329,15 +4329,15 @@ class SecsS12F02(SecsStreamFunction):
     _stream = 12
     _function = 2
 
-    _dataFormat = SDACK
+    _data_format = SDACK
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F03(SecsStreamFunction):
@@ -4405,7 +4405,7 @@ class SecsS12F03(SecsStreamFunction):
     _stream = 12
     _function = 3
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         MAPFT,
@@ -4417,13 +4417,13 @@ class SecsS12F03(SecsStreamFunction):
         NULBC
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F04(SecsStreamFunction):
@@ -4521,7 +4521,7 @@ class SecsS12F04(SecsStreamFunction):
     _stream = 12
     _function = 4
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         FNLOC,
@@ -4539,13 +4539,13 @@ class SecsS12F04(SecsStreamFunction):
         MLCL
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F05(SecsStreamFunction):
@@ -4590,20 +4590,20 @@ class SecsS12F05(SecsStreamFunction):
     _stream = 12
     _function = 5
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         MAPFT,
         MLCL
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F06(SecsStreamFunction):
@@ -4634,15 +4634,15 @@ class SecsS12F06(SecsStreamFunction):
     _stream = 12
     _function = 6
 
-    _dataFormat = GRNT1
+    _data_format = GRNT1
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F07(SecsStreamFunction):
@@ -4704,7 +4704,7 @@ class SecsS12F07(SecsStreamFunction):
     _stream = 12
     _function = 7
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         [
@@ -4715,13 +4715,13 @@ class SecsS12F07(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F08(SecsStreamFunction):
@@ -4752,15 +4752,15 @@ class SecsS12F08(SecsStreamFunction):
     _stream = 12
     _function = 8
 
-    _dataFormat = MDACK
+    _data_format = MDACK
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F09(SecsStreamFunction):
@@ -4805,20 +4805,20 @@ class SecsS12F09(SecsStreamFunction):
     _stream = 12
     _function = 9
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         STRP,
         BINLT
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F10(SecsStreamFunction):
@@ -4849,15 +4849,15 @@ class SecsS12F10(SecsStreamFunction):
     _stream = 12
     _function = 10
 
-    _dataFormat = MDACK
+    _data_format = MDACK
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F11(SecsStreamFunction):
@@ -4919,7 +4919,7 @@ class SecsS12F11(SecsStreamFunction):
     _stream = 12
     _function = 11
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         [
@@ -4930,13 +4930,13 @@ class SecsS12F11(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F12(SecsStreamFunction):
@@ -4967,15 +4967,15 @@ class SecsS12F12(SecsStreamFunction):
     _stream = 12
     _function = 12
 
-    _dataFormat = MDACK
+    _data_format = MDACK
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F13(SecsStreamFunction):
@@ -5013,18 +5013,18 @@ class SecsS12F13(SecsStreamFunction):
     _stream = 12
     _function = 13
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F14(SecsStreamFunction):
@@ -5086,7 +5086,7 @@ class SecsS12F14(SecsStreamFunction):
     _stream = 12
     _function = 14
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         [
@@ -5097,13 +5097,13 @@ class SecsS12F14(SecsStreamFunction):
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F15(SecsStreamFunction):
@@ -5141,18 +5141,18 @@ class SecsS12F15(SecsStreamFunction):
     _stream = 12
     _function = 15
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F16(SecsStreamFunction):
@@ -5197,20 +5197,20 @@ class SecsS12F16(SecsStreamFunction):
     _stream = 12
     _function = 16
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         STRP,
         BINLT
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F17(SecsStreamFunction):
@@ -5251,19 +5251,19 @@ class SecsS12F17(SecsStreamFunction):
     _stream = 12
     _function = 17
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         SDBIN
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS12F18(SecsStreamFunction):
@@ -5325,7 +5325,7 @@ class SecsS12F18(SecsStreamFunction):
     _stream = 12
     _function = 18
 
-    _dataFormat = [
+    _data_format = [
         MID,
         IDTYP,
         [
@@ -5336,13 +5336,13 @@ class SecsS12F18(SecsStreamFunction):
         ]
     ]
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS12F19(SecsStreamFunction):
@@ -5380,18 +5380,18 @@ class SecsS12F19(SecsStreamFunction):
     _stream = 12
     _function = 19
 
-    _dataFormat = [
+    _data_format = [
         MAPER,
         DATLC
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS14F00(SecsStreamFunction):
@@ -5417,15 +5417,15 @@ class SecsS14F00(SecsStreamFunction):
     _stream = 14
     _function = 0
 
-    _dataFormat = None
+    _data_format = None
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS14F01(SecsStreamFunction):
@@ -5499,7 +5499,7 @@ class SecsS14F01(SecsStreamFunction):
     _stream = 14
     _function = 1
 
-    _dataFormat = [
+    _data_format = [
         OBJSPEC,
         OBJTYPE,
         [OBJID],
@@ -5514,13 +5514,13 @@ class SecsS14F01(SecsStreamFunction):
         [ATTRID]
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
     RELATION = {
         "EQUAL": 0,
@@ -5632,7 +5632,7 @@ class SecsS14F02(SecsStreamFunction):
     _stream = 14
     _function = 2
 
-    _dataFormat = [
+    _data_format = [
         [
             [
                 OBJID,
@@ -5658,13 +5658,13 @@ class SecsS14F02(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
 class SecsS14F03(SecsStreamFunction):
@@ -5726,7 +5726,7 @@ class SecsS14F03(SecsStreamFunction):
     _stream = 14
     _function = 3
 
-    _dataFormat = [
+    _data_format = [
         OBJSPEC,
         OBJTYPE,
         [OBJID],
@@ -5739,13 +5739,13 @@ class SecsS14F03(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
 
 
 class SecsS14F04(SecsStreamFunction):
@@ -5846,7 +5846,7 @@ class SecsS14F04(SecsStreamFunction):
     _stream = 14
     _function = 4
 
-    _dataFormat = [
+    _data_format = [
         [
             [
                 OBJID,
@@ -5872,16 +5872,16 @@ class SecsS14F04(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = True
+    _to_host = True
+    _to_equipment = True
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = True
+    _is_multi_block = True
 
 
-secsStreamsFunctions = {
+secs_streams_functions = {
     0: {
         0: SecsS00F00,
     },

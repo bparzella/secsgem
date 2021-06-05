@@ -71,14 +71,16 @@ class DataItemBase(metaclass=DataItemMeta):
 
         if cls.__type__ is SecsVarDynamic:
             if cls.__count__ > 0:
-                return "{}: {}[{}]".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]), cls.__count__)
+                return "{}: {}[{}]".format(clsname,
+                                           "/".join([x.text_code for x in cls.__allowedtypes__]),
+                                           cls.__count__)
 
-            return "{}: {}".format(clsname, "/".join([x.textCode for x in cls.__allowedtypes__]))
+            return "{}: {}".format(clsname, "/".join([x.text_code for x in cls.__allowedtypes__]))
 
         if cls.__count__ > 0:
-            return "{}: {}[{}]".format(clsname, cls.textCode, cls.__count__)
+            return "{}: {}[{}]".format(clsname, cls.text_code, cls.__count__)
 
-        return "{}: {}".format(clsname, cls.textCode)
+        return "{}: {}".format(clsname, cls.text_code)
 
 
 class ACKC5(DataItemBase):

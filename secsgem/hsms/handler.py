@@ -23,7 +23,7 @@ import queue
 from ..common.callbacks import CallbackHandler
 from ..common.events import EventProducer
 
-from .connections import HsmsActiveConnection, HsmsPassiveConnection, hsmsSTypes
+from .connections import HsmsActiveConnection, HsmsPassiveConnection, HSMS_STYPES
 from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
     HsmsSelectReqHeader, HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, \
     HsmsDeselectReqHeader, HsmsDeselectRspHeader, HsmsSeparateReqHeader
@@ -232,7 +232,7 @@ class HsmsHandler:
         self.events.fire("hsms_disconnected", {'connection': self})
 
     def __handle_hsms_requests(self, packet):
-        self.communicationLogger.info("< %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
 
         # check if it is a select request
@@ -313,7 +313,7 @@ class HsmsHandler:
                 self.logger.warning("received message when not selected")
 
                 out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4))
-                self.communicationLogger.info("> %s\n  %s", out_packet, hsmsSTypes[out_packet.header.sType],
+                self.communicationLogger.info("> %s\n  %s", out_packet, HSMS_STYPES[out_packet.header.sType],
                                               extra=self._get_log_extra())
                 self.connection.send_packet(out_packet)
 
@@ -451,7 +451,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsSelectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -475,7 +475,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsSelectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -491,7 +491,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -515,7 +515,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -531,7 +531,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -555,7 +555,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -571,7 +571,7 @@ class HsmsHandler:
         :type reason: integer
         """
         packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -580,7 +580,7 @@ class HsmsHandler:
         system_id = self.get_next_system_counter()
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, hsmsSTypes[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
