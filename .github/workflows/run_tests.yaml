@@ -1,0 +1,32 @@
+name: Run tests
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest coverage flake8 prospector[with_pyroma]
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Run pytest and coverage
+        run: |
+          coverage run --source=secsgem -m pytest tests secsgem
+      - name: Lint with flake8
+        run: |
+          flake8 secsgem
+      - name: Lint with prospector
+        run: |
+          prospector --no-autodetect --output-format=pylint --with-tool pyroma secsgem

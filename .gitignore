@@ -61,3 +61,6 @@ target/
 
 # samples logging
 samples/log/*.log
+
+# OS
+.DS_Store
