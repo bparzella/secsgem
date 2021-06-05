@@ -1,7 +1,8 @@
 [tool.poetry]
 name = "secsgem"
-version = "0.2.0-alpha.0"
+version = "0.2.0-alpha.1"
 description = "Python SECS/GEM implementation"
+readme = "README.md"
 
 authors = ["Benjamin Parzella <bparzella@gmail.com>"]
 
