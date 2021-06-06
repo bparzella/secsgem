@@ -22,24 +22,18 @@ import unittest
 import pytest
 
 from secsgem.secs.variables import *
-from secsgem.secs.variables.secs_var_list import generate, get_format
+from secsgem.secs.variables.functions import generate, get_format
 from secsgem.secs.data_items import MDLN, OBJACK, SOFTREV, SVID
 
+
 def printable_value(value):
-    if sys.version_info < (3, ):
-        if isinstance(value, str):
-            return value.encode('string_escape')
-        elif isinstance(value, unicode):
-            return value
-        else:
-            return str(value).encode('string_escape')
+    if isinstance(value, bytes):
+        return value.decode('unicode_escape')
+    elif isinstance(value, str):
+        return value
     else:
-        if isinstance(value, bytes):
-            return value.decode('unicode_escape')
-        elif isinstance(value, str):
-            return value
-        else:
-            return value
+        return value
+
 
 class TestSecsVar(unittest.TestCase):
     def testEncodeItemHeader(self):

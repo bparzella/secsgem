@@ -15,7 +15,7 @@
 #####################################################################
 """Base class for for SECS stream and functions."""
 
-from .variables.secs_var_list import generate, get_format
+from .variables import functions
 from ..common import indent_block
 
 
@@ -81,7 +81,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         :param value: set the value of stream/function parameters
         :type value: various
         """
-        self.data = generate(self._data_format)
+        self.data = functions.generate(self._data_format)
 
         # copy public members from private ones
         self.stream = self._stream
@@ -201,6 +201,6 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         :rtype: string
         """
         if cls._data_format is not None:
-            return get_format(cls._data_format)
+            return functions.get_format(cls._data_format)
 
         return "Header only"

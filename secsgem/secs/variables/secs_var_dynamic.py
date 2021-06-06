@@ -16,7 +16,7 @@
 """SECS dynamic variable type."""
 
 from .secs_var import SecsVar
-from .secs_var_list import SecsVarArray
+from .secs_var_array import SecsVarArray
 from .secs_var_binary import SecsVarBinary
 from .secs_var_boolean import SecsVarBoolean
 from .secs_var_string import SecsVarString

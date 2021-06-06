@@ -18,7 +18,8 @@
 from .secs_var import SecsVar  # noqa
 from .secs_var_dynamic import SecsVarDynamic  # noqa
 
-from .secs_var_list import SecsVarList, SecsVarArray  # noqa
+from .secs_var_array import SecsVarArray  # noqa
+from .secs_var_list import SecsVarList  # noqa
 from .secs_var_binary import SecsVarBinary  # noqa
 from .secs_var_boolean import SecsVarBoolean  # noqa
 
