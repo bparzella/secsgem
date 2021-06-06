@@ -23,8 +23,8 @@ import unicodedata
 
 from collections import OrderedDict
 
-from ..common import indent_block
-from ..common.codec_jis_x_0201 import *  # noqa
+from ...common import indent_block
+from ...common.codec_jis_x_0201 import *  # noqa
 
 
 class SecsVar:

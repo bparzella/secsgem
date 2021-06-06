@@ -16,7 +16,7 @@
 # pylint: disable=locally-disabled, non-parent-init-called
 """Data items for functions."""
 
-from .variables import SecsVarArray, SecsVarString, SecsVarBinary, \
+from ..variables import SecsVarArray, SecsVarString, SecsVarBinary, \
     SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
     SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
 
