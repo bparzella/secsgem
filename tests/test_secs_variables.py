@@ -22,6 +22,7 @@ import unittest
 import pytest
 
 from secsgem.secs.variables import *
+from secsgem.secs.variables.secs_var_list import generate, get_format
 from secsgem.secs.data_items import MDLN, OBJACK, SOFTREV, SVID
 
 def printable_value(value):
@@ -113,13 +114,13 @@ class TestSecsVar(unittest.TestCase):
 
     def testGenerateWithNonSecsVarClass(self):
         with self.assertRaises(TypeError):
-            SecsVar.generate(int)
+            generate(int)
 
     def testGenerateWithNonClass(self):
         dummy = 10
 
         with self.assertRaises(TypeError):
-            SecsVar.generate(dummy)
+            generate(dummy)
 
     def testSetNotImplemented(self):
         secsvar = SecsVar()
@@ -128,15 +129,15 @@ class TestSecsVar(unittest.TestCase):
             secsvar.set(b"test")
 
     def testGetFormatWithNone(self):
-        self.assertEqual(SecsVar.get_format(None), None)
+        self.assertEqual(get_format(None), None)
 
     def testGetFormatWithNonSecsVarClass(self):
         with self.assertRaises(TypeError):
-            SecsVar.get_format(int)
+            get_format(int)
 
     def testGetFormatWithNonClass(self):
         with self.assertRaises(TypeError):
-            SecsVar.get_format(10)
+            get_format(10)
 
 
 class TestSecsVarDynamic(unittest.TestCase):
