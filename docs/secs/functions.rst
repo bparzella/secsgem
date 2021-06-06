@@ -33,7 +33,7 @@ The objects can also en- and decode themselves.
 
 **Usage**::
 
-    >>> f=secsgem.SecsS02F33()
+    >>> f=secsgem.secs.functions.SecsS02F33()
     >>> f.DATAID=10
     >>> f.DATA.append({"RPTID": 5, "VID": ["Hello", "Hallo"]})
     >>> f.DATA.append({"RPTID": 6, "VID": ["1", "2"]})

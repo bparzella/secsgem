@@ -18,7 +18,7 @@ Custom stream function
 
 To integrate this new data item in a stream function then you need to inherit :class:`secsgem.secs.functionbase.SecsStreamFunction` ::
 
-    class SecsS01F12_New(secsgem.SecsStreamFunction):
+    class SecsS01F12_New(secsgem.secs.SecsStreamFunction):
         _stream = 1
         _function = 12
 
