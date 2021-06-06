@@ -15,7 +15,7 @@
 #####################################################################
 """Handler for GEM host."""
 
-from ..secs.dataitems import ALED, ACKC5, ACKC10
+from ..secs.data_items import ALED, ACKC5, ACKC10
 from .handler import GemHandler
 from collections import OrderedDict
 

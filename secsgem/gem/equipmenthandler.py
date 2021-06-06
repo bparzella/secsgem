@@ -23,7 +23,7 @@ from ..common.fysom import Fysom
 from ..gem.handler import GemHandler
 from ..secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, \
     SecsVarI4, SecsVarBinary
-from ..secs.dataitems import SV, ECV, ACKC5, ALED, ALCD, HCACK
+from ..secs.data_items import SV, ECV, ACKC5, ALED, ALCD, HCACK
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2

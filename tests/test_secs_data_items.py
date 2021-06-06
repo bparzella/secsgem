@@ -18,7 +18,7 @@ import inspect
 
 import pytest
 
-import secsgem.secs.dataitems
+import secsgem.secs.data_items
 
 
 def find_subclasses(module):
@@ -26,6 +26,6 @@ def find_subclasses(module):
 
 
 class TestDataItems(object):
-    @pytest.mark.parametrize("cls", find_subclasses(secsgem.secs.dataitems))
+    @pytest.mark.parametrize("cls", find_subclasses(secsgem.secs.data_items))
     def test_constructor_without_value(self, cls):
         cls()

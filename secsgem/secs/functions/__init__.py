@@ -16,7 +16,7 @@
 """Wrappers for SECS stream and functions."""
 
 from ..functionbase import SecsStreamFunction
-from ..dataitems import MDLN, SVID, SV, SVNAME, UNITS, COMMACK, OFLACK, ONLACK, ECID, ECV, EAC, TIME, ECNAME, ECMIN, \
+from ..data_items import MDLN, SVID, SV, SVNAME, UNITS, COMMACK, OFLACK, ONLACK, ECID, ECV, EAC, TIME, ECNAME, ECMIN, \
     ECMAX, ECDEF, DATAID, RPTID, VID, DRACK, CEID, LRACK, CEED, ERACK, RCMD, CPNAME, CPVAL, HCACK, CPACK, ALCD, ALID, \
     ALTX, ACKC5, ALED, TIMESTAMP, EXID, EXTYPE, EXMESSAGE, EXRECVRA, ACKA, ERRCODE, ERRTEXT, DATALENGTH, GRANT6, DSID, \
     DVNAME, DVVAL, V, ACKC6, PPID, LENGTH, PPGNT, PPBODY, ACKC7, MHEAD, SHEAD, MEXP, EDID, TID, TEXT, ACKC10, MID, \
@@ -182,7 +182,7 @@ class SecsS01F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SVID <secsgem.secs.dataitems.SVID>`
+    - :class:`SVID <secsgem.secs.data_items.SVID>`
 
     **Structure**::
 
@@ -228,7 +228,7 @@ class SecsS01F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SV <secsgem.secs.dataitems.SV>`
+    - :class:`SV <secsgem.secs.data_items.SV>`
 
     **Structure**::
 
@@ -274,7 +274,7 @@ class SecsS01F11(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SVID <secsgem.secs.dataitems.SVID>`
+    - :class:`SVID <secsgem.secs.data_items.SVID>`
 
     **Structure**::
 
@@ -321,9 +321,9 @@ class SecsS01F12(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SVID <secsgem.secs.dataitems.SVID>`
-    - :class:`SVNAME <secsgem.secs.dataitems.SVNAME>`
-    - :class:`UNITS <secsgem.secs.dataitems.UNITS>`
+    - :class:`SVID <secsgem.secs.data_items.SVID>`
+    - :class:`SVNAME <secsgem.secs.data_items.SVNAME>`
+    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
 
     **Structure**::
 
@@ -442,7 +442,7 @@ class SecsS01F14(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`COMMACK <secsgem.secs.dataitems.COMMACK>`
+    - :class:`COMMACK <secsgem.secs.data_items.COMMACK>`
 
     **Structure E->H**::
 
@@ -535,7 +535,7 @@ class SecsS01F16(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`OFLACK <secsgem.secs.dataitems.OFLACK>`
+    - :class:`OFLACK <secsgem.secs.data_items.OFLACK>`
 
     **Structure**::
 
@@ -608,7 +608,7 @@ class SecsS01F18(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ONLACK <secsgem.secs.dataitems.ONLACK>`
+    - :class:`ONLACK <secsgem.secs.data_items.ONLACK>`
 
     **Structure**::
 
@@ -681,7 +681,7 @@ class SecsS02F13(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+    - :class:`ECID <secsgem.secs.data_items.ECID>`
 
     **Structure**::
 
@@ -728,7 +728,7 @@ class SecsS02F14(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ECV <secsgem.secs.dataitems.ECV>`
+    - :class:`ECV <secsgem.secs.data_items.ECV>`
 
     **Structure**::
 
@@ -773,8 +773,8 @@ class SecsS02F15(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ECID <secsgem.secs.dataitems.ECID>`
-    - :class:`ECV <secsgem.secs.dataitems.ECV>`
+    - :class:`ECID <secsgem.secs.data_items.ECID>`
+    - :class:`ECV <secsgem.secs.data_items.ECV>`
 
     **Structure**::
 
@@ -833,7 +833,7 @@ class SecsS02F16(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`EAC <secsgem.secs.dataitems.EAC>`
+    - :class:`EAC <secsgem.secs.data_items.EAC>`
 
     **Structure**::
 
@@ -906,7 +906,7 @@ class SecsS02F18(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TIME <secsgem.secs.dataitems.TIME>`
+    - :class:`TIME <secsgem.secs.data_items.TIME>`
 
     **Structure**::
 
@@ -945,7 +945,7 @@ class SecsS02F29(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ECID <secsgem.secs.dataitems.ECID>`
+    - :class:`ECID <secsgem.secs.data_items.ECID>`
 
     **Structure**::
 
@@ -992,12 +992,12 @@ class SecsS02F30(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ECID <secsgem.secs.dataitems.ECID>`
-    - :class:`ECNAME <secsgem.secs.dataitems.ECNAME>`
-    - :class:`ECMIN <secsgem.secs.dataitems.ECMIN>`
-    - :class:`ECMAX <secsgem.secs.dataitems.ECMAX>`
-    - :class:`ECDEF <secsgem.secs.dataitems.ECDEF>`
-    - :class:`UNITS <secsgem.secs.dataitems.UNITS>`
+    - :class:`ECID <secsgem.secs.data_items.ECID>`
+    - :class:`ECNAME <secsgem.secs.data_items.ECNAME>`
+    - :class:`ECMIN <secsgem.secs.data_items.ECMIN>`
+    - :class:`ECMAX <secsgem.secs.data_items.ECMAX>`
+    - :class:`ECDEF <secsgem.secs.data_items.ECDEF>`
+    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
 
     **Structure**::
 
@@ -1075,9 +1075,9 @@ class SecsS02F33(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
-    - :class:`VID <secsgem.secs.dataitems.VID>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+    - :class:`VID <secsgem.secs.data_items.VID>`
 
     **Structure**::
 
@@ -1155,7 +1155,7 @@ class SecsS02F34(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DRACK <secsgem.secs.dataitems.DRACK>`
+    - :class:`DRACK <secsgem.secs.data_items.DRACK>`
 
     **Structure**::
 
@@ -1194,9 +1194,9 @@ class SecsS02F35(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
 
     **Structure**::
 
@@ -1266,7 +1266,7 @@ class SecsS02F36(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`LRACK <secsgem.secs.dataitems.LRACK>`
+    - :class:`LRACK <secsgem.secs.data_items.LRACK>`
 
     **Structure**::
 
@@ -1305,8 +1305,8 @@ class SecsS02F37(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`CEED <secsgem.secs.dataitems.CEED>`
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`CEED <secsgem.secs.data_items.CEED>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
 
     **Structure**::
 
@@ -1359,7 +1359,7 @@ class SecsS02F38(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ERACK <secsgem.secs.dataitems.ERACK>`
+    - :class:`ERACK <secsgem.secs.data_items.ERACK>`
 
     **Structure**::
 
@@ -1398,9 +1398,9 @@ class SecsS02F41(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RCMD <secsgem.secs.dataitems.RCMD>`
-    - :class:`CPNAME <secsgem.secs.dataitems.CPNAME>`
-    - :class:`CPVAL <secsgem.secs.dataitems.CPVAL>`
+    - :class:`RCMD <secsgem.secs.data_items.RCMD>`
+    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+    - :class:`CPVAL <secsgem.secs.data_items.CPVAL>`
 
     **Structure**::
 
@@ -1470,9 +1470,9 @@ class SecsS02F42(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`HCACK <secsgem.secs.dataitems.HCACK>`
-    - :class:`CPNAME <secsgem.secs.dataitems.CPNAME>`
-    - :class:`CPACK <secsgem.secs.dataitems.CPACK>`
+    - :class:`HCACK <secsgem.secs.data_items.HCACK>`
+    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+    - :class:`CPACK <secsgem.secs.data_items.CPACK>`
 
     **Structure**::
 
@@ -1579,9 +1579,9 @@ class SecsS05F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
-    - :class:`ALID <secsgem.secs.dataitems.ALID>`
-    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+    - :class:`ALCD <secsgem.secs.data_items.ALCD>`
+    - :class:`ALID <secsgem.secs.data_items.ALID>`
+    - :class:`ALTX <secsgem.secs.data_items.ALTX>`
 
     **Structure**::
 
@@ -1633,7 +1633,7 @@ class SecsS05F02(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC5 <secsgem.secs.dataitems.ACKC5>`
+    - :class:`ACKC5 <secsgem.secs.data_items.ACKC5>`
 
     **Structure**::
 
@@ -1672,8 +1672,8 @@ class SecsS05F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ALED <secsgem.secs.dataitems.ALED>`
-    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+    - :class:`ALED <secsgem.secs.data_items.ALED>`
+    - :class:`ALID <secsgem.secs.data_items.ALID>`
 
     **Structure**::
 
@@ -1721,7 +1721,7 @@ class SecsS05F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC5 <secsgem.secs.dataitems.ACKC5>`
+    - :class:`ACKC5 <secsgem.secs.data_items.ACKC5>`
 
     **Structure**::
 
@@ -1760,7 +1760,7 @@ class SecsS05F05(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ALID <secsgem.secs.dataitems.ALID>`
+    - :class:`ALID <secsgem.secs.data_items.ALID>`
 
     **Structure**::
 
@@ -1805,9 +1805,9 @@ class SecsS05F06(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
-    - :class:`ALID <secsgem.secs.dataitems.ALID>`
-    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+    - :class:`ALCD <secsgem.secs.data_items.ALCD>`
+    - :class:`ALID <secsgem.secs.data_items.ALID>`
+    - :class:`ALTX <secsgem.secs.data_items.ALTX>`
 
     **Structure**::
 
@@ -1898,9 +1898,9 @@ class SecsS05F08(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ALCD <secsgem.secs.dataitems.ALCD>`
-    - :class:`ALID <secsgem.secs.dataitems.ALID>`
-    - :class:`ALTX <secsgem.secs.dataitems.ALTX>`
+    - :class:`ALCD <secsgem.secs.data_items.ALCD>`
+    - :class:`ALID <secsgem.secs.data_items.ALID>`
+    - :class:`ALTX <secsgem.secs.data_items.ALTX>`
 
     **Structure**::
 
@@ -1957,11 +1957,11 @@ class SecsS05F09(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`EXTYPE <secsgem.secs.dataitems.EXTYPE>`
-    - :class:`EXMESSAGE <secsgem.secs.dataitems.EXMESSAGE>`
-    - :class:`EXRECVRA <secsgem.secs.dataitems.EXRECVRA>`
+    - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`EXTYPE <secsgem.secs.data_items.EXTYPE>`
+    - :class:`EXMESSAGE <secsgem.secs.data_items.EXMESSAGE>`
+    - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
 
     **Structure**::
 
@@ -2063,10 +2063,10 @@ class SecsS05F11(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`EXTYPE <secsgem.secs.dataitems.EXTYPE>`
-    - :class:`EXMESSAGE <secsgem.secs.dataitems.EXMESSAGE>`
+    - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`EXTYPE <secsgem.secs.data_items.EXTYPE>`
+    - :class:`EXMESSAGE <secsgem.secs.data_items.EXMESSAGE>`
 
     **Structure**::
 
@@ -2155,8 +2155,8 @@ class SecsS05F13(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`EXRECVRA <secsgem.secs.dataitems.EXRECVRA>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
 
     **Structure**::
 
@@ -2204,10 +2204,10 @@ class SecsS05F14(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
-    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`ACKA <secsgem.secs.data_items.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
 
     **Structure**::
 
@@ -2272,11 +2272,11 @@ class SecsS05F15(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TIMESTAMP <secsgem.secs.dataitems.TIMESTAMP>`
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
-    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+    - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`ACKA <secsgem.secs.data_items.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
 
     **Structure**::
 
@@ -2379,7 +2379,7 @@ class SecsS05F17(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
 
     **Structure**::
 
@@ -2418,10 +2418,10 @@ class SecsS05F18(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`EXID <secsgem.secs.dataitems.EXID>`
-    - :class:`ACKA <secsgem.secs.dataitems.ACKA>`
-    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+    - :class:`EXID <secsgem.secs.data_items.EXID>`
+    - :class:`ACKA <secsgem.secs.data_items.ACKA>`
+    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
 
     **Structure**::
 
@@ -2520,8 +2520,8 @@ class SecsS06F05(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`DATALENGTH <secsgem.secs.dataitems.DATALENGTH>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`DATALENGTH <secsgem.secs.data_items.DATALENGTH>`
 
     **Structure**::
 
@@ -2569,7 +2569,7 @@ class SecsS06F06(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`GRANT6 <secsgem.secs.dataitems.GRANT6>`
+    - :class:`GRANT6 <secsgem.secs.data_items.GRANT6>`
 
     **Structure**::
 
@@ -2608,7 +2608,7 @@ class SecsS06F07(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
 
     **Structure**::
 
@@ -2647,10 +2647,10 @@ class SecsS06F08(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
-    - :class:`DSID <secsgem.secs.dataitems.DSID>`
-    - :class:`DVNAME <secsgem.secs.dataitems.DVNAME>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
+    - :class:`DSID <secsgem.secs.data_items.DSID>`
+    - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
 
     **Structure**::
 
@@ -2746,10 +2746,10 @@ class SecsS06F11(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
-    - :class:`V <secsgem.secs.dataitems.V>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+    - :class:`V <secsgem.secs.data_items.V>`
 
     **Structure**::
 
@@ -2824,7 +2824,7 @@ class SecsS06F12(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC6 <secsgem.secs.dataitems.ACKC6>`
+    - :class:`ACKC6 <secsgem.secs.data_items.ACKC6>`
 
     **Structure**::
 
@@ -2863,7 +2863,7 @@ class SecsS06F15(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
 
     **Structure**::
 
@@ -2902,10 +2902,10 @@ class SecsS06F16(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`DATAID <secsgem.secs.dataitems.DATAID>`
-    - :class:`CEID <secsgem.secs.dataitems.CEID>`
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
-    - :class:`V <secsgem.secs.dataitems.V>`
+    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+    - :class:`CEID <secsgem.secs.data_items.CEID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+    - :class:`V <secsgem.secs.data_items.V>`
 
     **Structure**::
 
@@ -2980,7 +2980,7 @@ class SecsS06F19(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
 
     **Structure**::
 
@@ -3019,7 +3019,7 @@ class SecsS06F20(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`V <secsgem.secs.dataitems.V>`
+    - :class:`V <secsgem.secs.data_items.V>`
 
     **Structure**::
 
@@ -3064,7 +3064,7 @@ class SecsS06F21(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RPTID <secsgem.secs.dataitems.RPTID>`
+    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
 
     **Structure**::
 
@@ -3103,8 +3103,8 @@ class SecsS06F22(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`VID <secsgem.secs.dataitems.VID>`
-    - :class:`V <secsgem.secs.dataitems.V>`
+    - :class:`VID <secsgem.secs.data_items.VID>`
+    - :class:`V <secsgem.secs.data_items.V>`
 
     **Structure**::
 
@@ -3197,8 +3197,8 @@ class SecsS07F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
-    - :class:`LENGTH <secsgem.secs.dataitems.LENGTH>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
+    - :class:`LENGTH <secsgem.secs.data_items.LENGTH>`
 
     **Structure**::
 
@@ -3246,7 +3246,7 @@ class SecsS07F02(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPGNT <secsgem.secs.dataitems.PPGNT>`
+    - :class:`PPGNT <secsgem.secs.data_items.PPGNT>`
 
     **Structure**::
 
@@ -3285,8 +3285,8 @@ class SecsS07F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
-    - :class:`PPBODY <secsgem.secs.dataitems.PPBODY>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
+    - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
 
     **Structure**::
 
@@ -3334,7 +3334,7 @@ class SecsS07F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC7 <secsgem.secs.dataitems.ACKC7>`
+    - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
 
     **Structure**::
 
@@ -3373,7 +3373,7 @@ class SecsS07F05(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
 
     **Structure**::
 
@@ -3412,8 +3412,8 @@ class SecsS07F06(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
-    - :class:`PPBODY <secsgem.secs.dataitems.PPBODY>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
+    - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
 
     **Structure**::
 
@@ -3461,7 +3461,7 @@ class SecsS07F17(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
 
     **Structure**::
 
@@ -3506,7 +3506,7 @@ class SecsS07F18(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC7 <secsgem.secs.dataitems.ACKC7>`
+    - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
 
     **Structure**::
 
@@ -3579,7 +3579,7 @@ class SecsS07F20(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`PPID <secsgem.secs.dataitems.PPID>`
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
 
     **Structure**::
 
@@ -3658,7 +3658,7 @@ class SecsS09F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MHEAD <secsgem.secs.dataitems.MHEAD>`
+    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
 
     **Structure**::
 
@@ -3697,7 +3697,7 @@ class SecsS09F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MHEAD <secsgem.secs.dataitems.MHEAD>`
+    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
 
     **Structure**::
 
@@ -3736,7 +3736,7 @@ class SecsS09F05(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MHEAD <secsgem.secs.dataitems.MHEAD>`
+    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
 
     **Structure**::
 
@@ -3775,7 +3775,7 @@ class SecsS09F07(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MHEAD <secsgem.secs.dataitems.MHEAD>`
+    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
 
     **Structure**::
 
@@ -3814,7 +3814,7 @@ class SecsS09F09(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SHEAD <secsgem.secs.dataitems.SHEAD>`
+    - :class:`SHEAD <secsgem.secs.data_items.SHEAD>`
 
     **Structure**::
 
@@ -3853,7 +3853,7 @@ class SecsS09F11(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MHEAD <secsgem.secs.dataitems.MHEAD>`
+    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
 
     **Structure**::
 
@@ -3892,8 +3892,8 @@ class SecsS09F13(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MEXP <secsgem.secs.dataitems.MEXP>`
-    - :class:`EDID <secsgem.secs.dataitems.EDID>`
+    - :class:`MEXP <secsgem.secs.data_items.MEXP>`
+    - :class:`EDID <secsgem.secs.data_items.EDID>`
 
     **Structure**::
 
@@ -3975,8 +3975,8 @@ class SecsS10F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TID <secsgem.secs.dataitems.TID>`
-    - :class:`TEXT <secsgem.secs.dataitems.TEXT>`
+    - :class:`TID <secsgem.secs.data_items.TID>`
+    - :class:`TEXT <secsgem.secs.data_items.TEXT>`
 
     **Structure**::
 
@@ -4024,7 +4024,7 @@ class SecsS10F02(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC10 <secsgem.secs.dataitems.ACKC10>`
+    - :class:`ACKC10 <secsgem.secs.data_items.ACKC10>`
 
     **Structure**::
 
@@ -4063,8 +4063,8 @@ class SecsS10F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`TID <secsgem.secs.dataitems.TID>`
-    - :class:`TEXT <secsgem.secs.dataitems.TEXT>`
+    - :class:`TID <secsgem.secs.data_items.TID>`
+    - :class:`TEXT <secsgem.secs.data_items.TEXT>`
 
     **Structure**::
 
@@ -4112,7 +4112,7 @@ class SecsS10F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`ACKC10 <secsgem.secs.dataitems.ACKC10>`
+    - :class:`ACKC10 <secsgem.secs.data_items.ACKC10>`
 
     **Structure**::
 
@@ -4185,21 +4185,21 @@ class SecsS12F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`FNLOC <secsgem.secs.dataitems.FNLOC>`
-    - :class:`FFROT <secsgem.secs.dataitems.FFROT>`
-    - :class:`ORLOC <secsgem.secs.dataitems.ORLOC>`
-    - :class:`RPSEL <secsgem.secs.dataitems.RPSEL>`
-    - :class:`REFP <secsgem.secs.dataitems.REFP>`
-    - :class:`DUTMS <secsgem.secs.dataitems.DUTMS>`
-    - :class:`XDIES <secsgem.secs.dataitems.XDIES>`
-    - :class:`YDIES <secsgem.secs.dataitems.YDIES>`
-    - :class:`ROWCT <secsgem.secs.dataitems.ROWCT>`
-    - :class:`COLCT <secsgem.secs.dataitems.COLCT>`
-    - :class:`NULBC <secsgem.secs.dataitems.NULBC>`
-    - :class:`PRDCT <secsgem.secs.dataitems.PRDCT>`
-    - :class:`PRAXI <secsgem.secs.dataitems.PRAXI>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+    - :class:`FFROT <secsgem.secs.data_items.FFROT>`
+    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+    - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
+    - :class:`REFP <secsgem.secs.data_items.REFP>`
+    - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
+    - :class:`XDIES <secsgem.secs.data_items.XDIES>`
+    - :class:`YDIES <secsgem.secs.data_items.YDIES>`
+    - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
+    - :class:`COLCT <secsgem.secs.data_items.COLCT>`
+    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
+    - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
+    - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
 
     **Structure**::
 
@@ -4307,7 +4307,7 @@ class SecsS12F02(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`SDACK <secsgem.secs.dataitems.SDACK>`
+    - :class:`SDACK <secsgem.secs.data_items.SDACK>`
 
     **Structure**::
 
@@ -4346,15 +4346,15 @@ class SecsS12F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`MAPFT <secsgem.secs.dataitems.MAPFT>`
-    - :class:`FNLOC <secsgem.secs.dataitems.FNLOC>`
-    - :class:`FFROT <secsgem.secs.dataitems.FFROT>`
-    - :class:`ORLOC <secsgem.secs.dataitems.ORLOC>`
-    - :class:`PRAXI <secsgem.secs.dataitems.PRAXI>`
-    - :class:`BCEQU <secsgem.secs.dataitems.BCEQU>`
-    - :class:`NULBC <secsgem.secs.dataitems.NULBC>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
+    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+    - :class:`FFROT <secsgem.secs.data_items.FFROT>`
+    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+    - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
+    - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
+    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
 
     **Structure**::
 
@@ -4432,21 +4432,21 @@ class SecsS12F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`FNLOC <secsgem.secs.dataitems.FNLOC>`
-    - :class:`ORLOC <secsgem.secs.dataitems.ORLOC>`
-    - :class:`RPSEL <secsgem.secs.dataitems.RPSEL>`
-    - :class:`REFP <secsgem.secs.dataitems.REFP>`
-    - :class:`DUTMS <secsgem.secs.dataitems.DUTMS>`
-    - :class:`XDIES <secsgem.secs.dataitems.XDIES>`
-    - :class:`YDIES <secsgem.secs.dataitems.YDIES>`
-    - :class:`ROWCT <secsgem.secs.dataitems.ROWCT>`
-    - :class:`COLCT <secsgem.secs.dataitems.COLCT>`
-    - :class:`PRDCT <secsgem.secs.dataitems.PRDCT>`
-    - :class:`BCEQU <secsgem.secs.dataitems.BCEQU>`
-    - :class:`NULBC <secsgem.secs.dataitems.NULBC>`
-    - :class:`MLCL <secsgem.secs.dataitems.MLCL>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+    - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
+    - :class:`REFP <secsgem.secs.data_items.REFP>`
+    - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
+    - :class:`XDIES <secsgem.secs.data_items.XDIES>`
+    - :class:`YDIES <secsgem.secs.data_items.YDIES>`
+    - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
+    - :class:`COLCT <secsgem.secs.data_items.COLCT>`
+    - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
+    - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
+    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
+    - :class:`MLCL <secsgem.secs.data_items.MLCL>`
 
     **Structure**::
 
@@ -4554,10 +4554,10 @@ class SecsS12F05(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`MAPFT <secsgem.secs.dataitems.MAPFT>`
-    - :class:`MLCL <secsgem.secs.dataitems.MLCL>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
+    - :class:`MLCL <secsgem.secs.data_items.MLCL>`
 
     **Structure**::
 
@@ -4612,7 +4612,7 @@ class SecsS12F06(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`GRNT1 <secsgem.secs.dataitems.GRNT1>`
+    - :class:`GRNT1 <secsgem.secs.data_items.GRNT1>`
 
     **Structure**::
 
@@ -4651,10 +4651,10 @@ class SecsS12F07(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`RSINF <secsgem.secs.dataitems.RSINF>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`RSINF <secsgem.secs.data_items.RSINF>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -4730,7 +4730,7 @@ class SecsS12F08(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MDACK <secsgem.secs.dataitems.MDACK>`
+    - :class:`MDACK <secsgem.secs.data_items.MDACK>`
 
     **Structure**::
 
@@ -4769,10 +4769,10 @@ class SecsS12F09(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`STRP <secsgem.secs.dataitems.STRP>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`STRP <secsgem.secs.data_items.STRP>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -4827,7 +4827,7 @@ class SecsS12F10(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MDACK <secsgem.secs.dataitems.MDACK>`
+    - :class:`MDACK <secsgem.secs.data_items.MDACK>`
 
     **Structure**::
 
@@ -4866,10 +4866,10 @@ class SecsS12F11(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`XYPOS <secsgem.secs.dataitems.XYPOS>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`XYPOS <secsgem.secs.data_items.XYPOS>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -4945,7 +4945,7 @@ class SecsS12F12(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MDACK <secsgem.secs.dataitems.MDACK>`
+    - :class:`MDACK <secsgem.secs.data_items.MDACK>`
 
     **Structure**::
 
@@ -4984,8 +4984,8 @@ class SecsS12F13(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
 
     **Structure**::
 
@@ -5033,10 +5033,10 @@ class SecsS12F14(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`RSINF <secsgem.secs.dataitems.RSINF>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`RSINF <secsgem.secs.data_items.RSINF>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -5112,8 +5112,8 @@ class SecsS12F15(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
 
     **Structure**::
 
@@ -5161,10 +5161,10 @@ class SecsS12F16(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`STRP <secsgem.secs.dataitems.STRP>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`STRP <secsgem.secs.data_items.STRP>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -5219,9 +5219,9 @@ class SecsS12F17(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`SDBIN <secsgem.secs.dataitems.SDBIN>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`SDBIN <secsgem.secs.data_items.SDBIN>`
 
     **Structure**::
 
@@ -5272,10 +5272,10 @@ class SecsS12F18(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MID <secsgem.secs.dataitems.MID>`
-    - :class:`IDTYP <secsgem.secs.dataitems.IDTYP>`
-    - :class:`XYPOS <secsgem.secs.dataitems.XYPOS>`
-    - :class:`BINLT <secsgem.secs.dataitems.BINLT>`
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`XYPOS <secsgem.secs.data_items.XYPOS>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
 
     **Structure**::
 
@@ -5351,8 +5351,8 @@ class SecsS12F19(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`MAPER <secsgem.secs.dataitems.MAPER>`
-    - :class:`DATLC <secsgem.secs.dataitems.DATLC>`
+    - :class:`MAPER <secsgem.secs.data_items.MAPER>`
+    - :class:`DATLC <secsgem.secs.data_items.DATLC>`
 
     **Structure**::
 
@@ -5434,12 +5434,12 @@ class SecsS14F01(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`OBJSPEC <secsgem.secs.dataitems.OBJSPEC>`
-    - :class:`OBJTYPE <secsgem.secs.dataitems.OBJTYPE>`
-    - :class:`OBJID <secsgem.secs.dataitems.OBJID>`
-    - :class:`ATTRID <secsgem.secs.dataitems.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.dataitems.ATTRDATA>`
-    - :class:`ATTRRELN <secsgem.secs.dataitems.ATTRRELN>`
+    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+    - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
+    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+    - :class:`ATTRRELN <secsgem.secs.data_items.ATTRRELN>`
 
     **Structure**::
 
@@ -5540,12 +5540,12 @@ class SecsS14F02(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`OBJID <secsgem.secs.dataitems.OBJID>`
-    - :class:`ATTRID <secsgem.secs.dataitems.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.dataitems.ATTRDATA>`
-    - :class:`OBJACK <secsgem.secs.dataitems.OBJACK>`
-    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+    - :class:`OBJACK <secsgem.secs.data_items.OBJACK>`
+    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
 
     **Structure**::
 
@@ -5673,11 +5673,11 @@ class SecsS14F03(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`OBJSPEC <secsgem.secs.dataitems.OBJSPEC>`
-    - :class:`OBJTYPE <secsgem.secs.dataitems.OBJTYPE>`
-    - :class:`OBJID <secsgem.secs.dataitems.OBJID>`
-    - :class:`ATTRID <secsgem.secs.dataitems.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.dataitems.ATTRDATA>`
+    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+    - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
+    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
 
     **Structure**::
 
@@ -5754,12 +5754,12 @@ class SecsS14F04(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`OBJID <secsgem.secs.dataitems.OBJID>`
-    - :class:`ATTRID <secsgem.secs.dataitems.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.dataitems.ATTRDATA>`
-    - :class:`OBJACK <secsgem.secs.dataitems.OBJACK>`
-    - :class:`ERRCODE <secsgem.secs.dataitems.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.dataitems.ERRTEXT>`
+    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+    - :class:`OBJACK <secsgem.secs.data_items.OBJACK>`
+    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
 
     **Structure**::
 

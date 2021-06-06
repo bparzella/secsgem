@@ -22,7 +22,7 @@ import unittest
 import pytest
 
 from secsgem.secs.variables import *
-from secsgem.secs.dataitems import MDLN, OBJACK, SOFTREV, SVID
+from secsgem.secs.data_items import MDLN, OBJACK, SOFTREV, SVID
 
 def printable_value(value):
     if sys.version_info < (3, ):
