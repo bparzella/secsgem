@@ -29,7 +29,7 @@ jobs:
 
       # we run the tests here again, to avoid deployment with failed tests
       - name: Run pytest and coverage
-        run: poetry run coverage run --source=secsgem -m pytest tests secsgem
+        run: poetry run coverage run --source=secsgem -m pytest tests secsgem --doctest-modules
 
       - name: Lint with prospector
         run: poetry run prospector --no-autodetect --output-format=pylint secsgem

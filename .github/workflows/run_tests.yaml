@@ -36,7 +36,7 @@ jobs:
         run: poetry install --no-interaction
 
       - name: Run pytest and coverage
-        run: poetry run coverage run --source=secsgem -m pytest tests secsgem
+        run: poetry run coverage run --source=secsgem -m pytest tests secsgem --doctest-modules
 
       - name: Publish coverage to codeclimate
         uses: paambaati/codeclimate-action@v2.7.5
