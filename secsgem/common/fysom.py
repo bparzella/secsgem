@@ -243,20 +243,20 @@ class Fysom:  # pragma: no cover
             for autoforward in cfg['autoforward']:
                 self._autoforward[autoforward['src']] = autoforward['dst']
 
-        def add(e):
-            src = [e['src']] if isinstance(e['src'], (str, bytes)) else e['src']
-            if e['name'] not in tmap:
-                tmap[e['name']] = {}
-            for s in src:
-                tmap[e['name']][s] = e['dst']
+        def add(event):
+            sources = [event['src']] if isinstance(event['src'], (str, bytes)) else event['src']
+            if event['name'] not in tmap:
+                tmap[event['name']] = {}
+            for source in sources:
+                tmap[event['name']][source] = event['dst']
 
         if init:
             if 'event' not in init:
                 init['event'] = 'startup'
             add({'name': init['event'], 'src': 'none', 'dst': init['state']})
 
-        for e in events:
-            add(e)
+        for event in events:
+            add(event)
 
         for name in tmap:
             setattr(self, name, self._build_event(name))
@@ -269,8 +269,15 @@ class Fysom:  # pragma: no cover
         if init and 'defer' not in init:
             getattr(self, init['event'])()
 
+    class _EventObject:
+        def __init__(self, fsm, event, src, dst):
+            self.fsm = fsm
+            self.event = event
+            self.src = src
+            self.dst = dst
+
     def _build_event(self, event):
-        def fn(**kwargs):
+        def function(**kwargs):
             evt = event
 
             if hasattr(self, 'transition'):
@@ -282,29 +289,26 @@ class Fysom:  # pragma: no cover
             src = self.current
             dst = self._map[evt][src]
 
-            transitionAvailable = True
+            transition_available = True
 
-            while transitionAvailable:
-                class _e_obj:
-                    pass
-                e = _e_obj()
-                e.fsm, e.event, e.src, e.dst = self, evt, src, dst
+            while transition_available:
+                event_object = self._EventObject(self, evt, src, dst)
                 for k in kwargs:
-                    setattr(e, k, kwargs[k])
+                    setattr(event_object, k, kwargs[k])
 
                 if self.current != dst:
-                    if self._before_event(e) is False:
+                    if self._before_event(event_object) is False:
                         return
 
                     def _tran():
                         delattr(self, 'transition')
-                        self.current = dst
-                        self._enter_state(e)
-                        self._change_state(e)
-                        self._after_event(e)
-                    self.transition = _tran
+                        self.current = dst  # pylint: disable=attribute-defined-outside-init
+                        self._enter_state(event_object)
+                        self._change_state(event_object)
+                        self._after_event(event_object)
+                    self.transition = _tran  # pylint: disable=attribute-defined-outside-init
 
-                if self._leave_state(e) is not False:
+                if self._leave_state(event_object) is not False:
                     if hasattr(self, 'transition'):
                         self.transition()
 
@@ -313,40 +317,40 @@ class Fysom:  # pragma: no cover
                     dst = self._autoforward[src]
                     evt = "autoforward" + src + "-" + dst
 
-                    transitionAvailable = True
+                    transition_available = True
                 else:
-                    transitionAvailable = False
+                    transition_available = False
 
-        return fn
+        return function
 
-    def _before_event(self, e):
-        fnname = 'onbefore' + e.event
+    def _before_event(self, event):
+        fnname = 'onbefore' + event.event
         if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+            return getattr(self, fnname)(event)
         return None
 
-    def _after_event(self, e):
-        for fnname in ['onafter' + e.event, 'on' + e.event]:
+    def _after_event(self, event):
+        for fnname in ['onafter' + event.event, 'on' + event.event]:
             if hasattr(self, fnname):
-                return getattr(self, fnname)(e)
+                return getattr(self, fnname)(event)
         return None
 
-    def _leave_state(self, e):
-        fnname = 'onleave' + e.src
+    def _leave_state(self, event):
+        fnname = 'onleave' + event.src
         if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+            return getattr(self, fnname)(event)
         return None
 
-    def _enter_state(self, e):
-        for fnname in ['onenter' + e.dst, 'on' + e.dst]:
+    def _enter_state(self, event):
+        for fnname in ['onenter' + event.dst, 'on' + event.dst]:
             if hasattr(self, fnname):
-                return getattr(self, fnname)(e)
+                return getattr(self, fnname)(event)
         return None
 
-    def _change_state(self, e):
+    def _change_state(self, event):
         fnname = 'onchangestate'
         if hasattr(self, fnname):
-            return getattr(self, fnname)(e)
+            return getattr(self, fnname)(event)
         return None
 
 
