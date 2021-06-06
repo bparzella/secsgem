@@ -257,7 +257,6 @@ class testFunctionBase(unittest.TestCase):
         with self.assertRaises(IndexError):
             item[1] = 11
 
-
     def testGetitemOnNonArray(self):
         item = SecsS01F16(10)
 
@@ -296,6 +295,22 @@ class testFunctionBase(unittest.TestCase):
 
         with self.assertRaises(AttributeError):
             item.Item1 = 11
+
+    def test_repr(self):
+        item = SecsS01F16(10)
+
+        assert str(item) == "S1F16\n  <B 0xa> ."
+
+    def test_repr_header_only(self):
+        item = SecsS01F01()
+
+        assert str(item) == "S1F1 W ."
+
+    def test_class_repr(self):
+        assert str(SecsS01F16) == "OFLACK: B[1]"
+
+    def test_class_repr_header_only(self):
+        assert str(SecsS01F01) == "Header only"
 
 
 def generate_stream_list():

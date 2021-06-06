@@ -122,7 +122,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         self.data[key] = item
 
     def __len__(self):
-        """Get the lenth."""
+        """Get the length."""
         return len(self.data)
 
     def __getattr__(self, item):
@@ -132,12 +132,12 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
     def __setattr__(self, item, value):
         """Set an item as object member."""
         if '_object_intitialized' not in self.__dict__:
-            return dict.__setattr__(self, item, value)
+            dict.__setattr__(self, item, value)
+            return
 
         if item in self.data.data:
-            return self.data.__setattr__(item, value)
-
-        return None
+            self.data.__setattr__(item, value)
+            return
 
     def append(self, data):
         """
