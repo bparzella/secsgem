@@ -4,12 +4,12 @@ Implementing a GEM equipment
 This package can be used to create a GEM equipment implementation.
 This is done by subclassing the :class:`secsgem.gem.equipmenthandler.GemEquipmentHandler` class::
 
-    import secsgem
+    import secsgem.gem
     import code
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
     h = SampleEquipment("127.0.0.1", 5000, False, 0, "sampleequipment")
     h.enable()
@@ -24,9 +24,9 @@ Using your own name
 
 To use your own modelname and version for S1F14 reply you can override the :attr:`secsgem.gem.handler.GemHandler.MDLN` and :attr:`secsgem.gem.handler.GemHandler.SOFTREV` members of the GemHandler::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.MDLN = "gemequp"
             self.SOFTREV = "1.0.0"
@@ -36,13 +36,13 @@ Adding status variables
 
 A status variable can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.StatusVariable` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.status_variables` dictionary::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.status_variables.update({
-                10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, False),
-                "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, False),
+                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.variables.U4, False),
+                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.variables.String, False),
             })
 
             self.status_variables[10].value = 123
@@ -51,16 +51,16 @@ A status variable can be added by inserting an instance of the :class:`secsgem.g
 
 Alternatively the values can be acquired using a callback by setting the use_callback parameter of the constructor to True::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.sv1 = 123
             self.sv2 = "sample sv"
 
             self.status_variables.update({
-                10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, True),
-                "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, True),
+                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.variables.U4, True),
+                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.variables.String, True),
             })
 
         def on_sv_value_request(self, svid, sv):
@@ -77,13 +77,13 @@ Adding equipment constants
 
 An equipment constant can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.EquipmentConstant` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.status_variables` dictionary::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.equipment_constants.update({
-                20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4, False),
-                "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.SecsVarString, False),
+                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.variables.U4, False),
+                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.variables.String, False),
             })
 
             self.status_variables[20].value = 321
@@ -92,16 +92,16 @@ An equipment constant can be added by inserting an instance of the :class:`secsg
 
 Alternatively the values can be acquired and updated using callbacks by setting the use_callback parameter of the constructor to True::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.ec1 = 321
             self.ec2 = "sample ec"
 
             self.equipment_constants.update({
-                20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.SecsVarU4, True),
-                "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.SecsVarString, True),
+                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.variables.U4, True),
+                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.variables.String, True),
             })
 
         def on_ec_value_request(self, ecid, ec):
@@ -125,18 +125,18 @@ A collection event can be added by inserting an instance of the :class:`secsgem.
 Data values can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.DataValue` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.data_values` dictionary.
 The data values for a collection event can be passed while creating the :class:`secsgem.gem.equipmenthandler.CollectionEvent` instance::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.dv1 = 31337
 
             self.data_values.update({
-                30: secsgem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.SecsVarU4, True),
+                30: secsgem.gem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.secs.variables.U4, True),
             })
 
             self.collection_events.update({
-                50: secsgem.CollectionEvent(50, "test collection event", [30]),
+                50: secsgem.gem.CollectionEvent(50, "test collection event", [30]),
             })
 
         def on_dv_value_request(self, dvid, dv):
@@ -154,17 +154,17 @@ Adding alarms
 An alarm can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.Alarm` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.alarms` dictionary.
 The collection events for the alarm must be provided when adding the alarm. For an example see the section above::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.collection_events.update({
-                100025: secsgem.CollectionEvent(100025, "test collection event alarm set", []),
-                200025: secsgem.CollectionEvent(200025, "test collection event alarm clear", []),
+                100025: secsgem.gem.CollectionEvent(100025, "test collection event alarm set", []),
+                200025: secsgem.gem.CollectionEvent(200025, "test collection event alarm clear", []),
             })
 
             self.alarms.update({
-                25: secsgem.Alarm(25, "test alarm", "test text", secsgem.ALCD.PERSONAL_SAFETY | secsgem.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
+                25: secsgem.gem.Alarm(25, "test alarm", "test text", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
             })
 
         def set_sample_alarm():
@@ -179,15 +179,15 @@ Adding remote commands
 A remote command can be added by inserting an instance of the :class:`secsgem.gem.equipmenthandler.RemoteCommand` class to the :attr:`secsgem.gem.equipmenthandler.GemEquipmentHandler.remote_commands` dictionary.
 The collection event and parameters for the remote command must be provided when adding it. For an example see the section above::
 
-    class SampleEquipment(secsgem.GemEquipmentHandler):
+    class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-            secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+            secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.collection_events.update({
-                5001: secsgem.CollectionEvent(5001, "TEST_RCMD complete", []),
+                5001: secsgem.gem.CollectionEvent(5001, "TEST_RCMD complete", []),
             })
             self.remote_commands.update({
-                "TEST_RCMD": secsgem.RemoteCommand("TEST_RCMD", "test rcmd", ["TEST_PARAMETER"], 5001),
+                "TEST_RCMD": secsgem.gem.RemoteCommand("TEST_RCMD", "test rcmd", ["TEST_PARAMETER"], 5001),
             })
 
         def on_rcmd_TEST_RCMD(self, TEST_PARAMETER):

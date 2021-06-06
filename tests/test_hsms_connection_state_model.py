@@ -17,7 +17,7 @@ import unittest.mock
 
 from transitions import MachineError
 
-import secsgem
+import secsgem.secs
 import secsgem.hsms.connectionstatemachine
 
 from test_connection import HsmsTestServer
@@ -27,7 +27,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -55,7 +55,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def testSelection(self):
         self.server.simulate_connect()
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(self.server.get_next_system_counter())))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(self.server.get_next_system_counter())))
         self.assertIsNotNone(self.server.expect_packet(s_type=2))
 
         self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
@@ -63,7 +63,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def testSelectedDisconnect(self):
         self.server.simulate_connect()
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(self.server.get_next_system_counter())))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(self.server.get_next_system_counter())))
         self.assertIsNotNone(self.server.expect_packet(s_type=2))
 
         self.server.simulate_disconnect()
@@ -75,7 +75,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -94,7 +94,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         request_packet = self.server.expect_packet(s_type=1)
         self.assertIsNotNone(request_packet)
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(request_packet.header.system)))
 
         self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
@@ -103,7 +103,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         request_packet = self.server.expect_packet(s_type=1)
         self.assertIsNotNone(request_packet)
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(request_packet.header.system)))
 
         self.server.simulate_disconnect()
 
@@ -127,7 +127,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         request_packet = self.server.expect_packet(s_type=1)
         self.assertIsNotNone(request_packet)
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(request_packet.header.system)))
 
         self.assertEqual(self.client.connectionState.state, secsgem.hsms.connectionstatemachine.STATE_CONNECTED_SELECTED)
 
@@ -136,7 +136,7 @@ class TestSecsConnectionStateModelActive(unittest.TestCase):
 
         request_packet = self.server.expect_packet(s_type=1)
         self.assertIsNotNone(request_packet)
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(request_packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(request_packet.header.system)))
 
         self.server.simulate_disconnect()
 

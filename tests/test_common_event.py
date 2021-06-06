@@ -16,19 +16,19 @@
 
 import unittest.mock
 
-import secsgem
+import secsgem.common
 
 
 class TestEventProducer(unittest.TestCase):
     def testConstructor(self):
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         self.assertEqual(producer._events, {})
 
     def testAddEvent(self):
         f = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.test += f
 
@@ -37,7 +37,7 @@ class TestEventProducer(unittest.TestCase):
     def testRemoveEvent(self):
         f = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.test += f
 
@@ -50,7 +50,7 @@ class TestEventProducer(unittest.TestCase):
     def testEventRepr(self):
         f = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.test += f
 
@@ -61,8 +61,8 @@ class TestEventProducer(unittest.TestCase):
         f1 = unittest.mock.Mock()
         f2 = unittest.mock.Mock()
 
-        producer1 = secsgem.EventProducer()
-        producer2 = secsgem.EventProducer()
+        producer1 = secsgem.common.EventProducer()
+        producer2 = secsgem.common.EventProducer()
 
         producer1.test1 += f1
         producer2.test2 += f2
@@ -74,7 +74,7 @@ class TestEventProducer(unittest.TestCase):
     def testAddTarget(self):
         c = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.targets += c
 
@@ -83,7 +83,7 @@ class TestEventProducer(unittest.TestCase):
     def testRemoveTarget(self):
         c = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.targets += c
 
@@ -97,8 +97,8 @@ class TestEventProducer(unittest.TestCase):
         c1 = unittest.mock.Mock()
         c2 = unittest.mock.Mock()
 
-        producer1 = secsgem.EventProducer()
-        producer2 = secsgem.EventProducer()
+        producer1 = secsgem.common.EventProducer()
+        producer2 = secsgem.common.EventProducer()
 
         producer1.targets += c1
         producer2.targets += c2
@@ -113,7 +113,7 @@ class TestEventProducer(unittest.TestCase):
         c1 = unittest.mock.Mock()
         c2 = unittest.mock.Mock()
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         producer.targets += c1
         producer.targets += c2
@@ -132,7 +132,7 @@ class TestEventProducer(unittest.TestCase):
     def testInvalidTargetAssignment(self):
         test = 1
 
-        producer = secsgem.EventProducer()
+        producer = secsgem.common.EventProducer()
 
         with self.assertRaises(AttributeError):
             producer.targets = test

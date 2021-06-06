@@ -25,7 +25,7 @@ def format_hex(text):
 
     **Example**::
 
-        >>> import secsgem
+        >>> import secsgem.common
         >>>
         >>> data = b"asdfg"
         >>> secsgem.common.format_hex(data)

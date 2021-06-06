@@ -17,7 +17,7 @@
 import sys
 import unittest
 
-import secsgem
+import secsgem.common
 
 
 class TestTopLevelFunctions(unittest.TestCase):

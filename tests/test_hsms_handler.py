@@ -17,7 +17,7 @@
 import threading
 import unittest
 
-import secsgem
+import secsgem.hsms
 
 from test_connection import HsmsTestServer
 
@@ -25,7 +25,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = secsgem.hsms.HsmsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -53,7 +53,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x05)
         self.assertEqual(packet.header.sessionID, 0xffff)
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsLinktestRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestRspHeader(packet.header.system)))
 
         packet = self.server.expect_packet(s_type=0x05)
 
@@ -65,7 +65,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -81,7 +81,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.client.connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -93,7 +93,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -102,7 +102,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.sessionID, 0xffff)
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -114,7 +114,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -126,7 +126,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.client.connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -141,7 +141,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.client.connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -153,7 +153,7 @@ class TestHsmsHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -171,7 +171,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.HsmsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = secsgem.hsms.HsmsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -189,7 +189,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x01)
         self.assertEqual(packet.header.sessionID, 0xffff)
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
     def testSelectSendError(self):
         self.server.fail_next_send()
@@ -205,7 +205,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x01)
         self.assertEqual(packet.header.sessionID, 0xffff)
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
         clientCommandThread = threading.Thread(target=self.client.send_deselect_req, name="TestHsmsHandlerActive_testDeselect")
         clientCommandThread.daemon = True  # make thread killable on program termination
@@ -217,7 +217,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x03)
         self.assertEqual(packet.header.sessionID, 0xffff)
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectRspHeader(packet.header.system)))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -226,7 +226,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -238,7 +238,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.client.connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -253,7 +253,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.client.connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -266,7 +266,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -288,10 +288,10 @@ class TestHsmsHandlerActive(unittest.TestCase):
         self.assertEqual(packet.header.sType, 0x01)
         self.assertEqual(packet.header.sessionID, 0xffff)
 
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F01()))
 
         print(self.client)
 
@@ -300,7 +300,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
 
         self.server.fail_next_send()
 
-        self.assertEqual(self.client.send_and_waitfor_response(secsgem.SecsS01F01()), None)
+        self.assertEqual(self.client.send_and_waitfor_response(secsgem.secs.functions.SecsS01F01()), None)
 
     def testSelectReqSendingFailed(self):
         self.server.simulate_connect()
@@ -328,7 +328,7 @@ class TestHsmsHandlerActive(unittest.TestCase):
 
         self.client.connection.T3 = 0.1
 
-        self.assertEqual(self.client.send_and_waitfor_response(secsgem.SecsS01F01()), None)
+        self.assertEqual(self.client.send_and_waitfor_response(secsgem.secs.functions.SecsS01F01()), None)
 
     def testSelectReqSendingTimeout(self):
         self.server.simulate_connect()

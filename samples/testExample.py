@@ -16,11 +16,12 @@
 
 import unittest
 
-import secsgem
+import secsgem.gem
+
 
 class TestExampleSecsGem(unittest.TestCase):
     def setUp(self):
-        self.connection = secsgem.GemHandler("10.211.55.33", 5000, False, 0, "test")
+        self.connection = secsgem.gem.GemHandler("10.211.55.33", 5000, False, 0, "test")
 
         self.connection.enable()
         self.connection.waitfor_communicating()

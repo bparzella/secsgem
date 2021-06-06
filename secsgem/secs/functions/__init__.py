@@ -31,14 +31,14 @@ class SecsS00F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS00F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS00F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS00F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS00F00()
         S0F0 .
 
     :param value: function has no parameters
@@ -65,14 +65,14 @@ class SecsS01F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F00()
         S1F0 .
 
     :param value: function has no parameters
@@ -99,14 +99,14 @@ class SecsS01F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F01
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F01()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F01()
         S1F1 W .
 
     :param value: function has no parameters
@@ -147,14 +147,14 @@ class SecsS01F02(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F02(['secsgem', '0.0.6']) # E->H
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F02(['secsgem', '0.0.6']) # E->H
         S1F2
           <L [2]
             <A "secsgem">
             <A "0.0.6">
           > .
-        >>> secsgem.SecsS01F02() #H->E
+        >>> secsgem.secs.functions.SecsS01F02() #H->E
         S1F2
           <L> .
 
@@ -186,8 +186,8 @@ class SecsS01F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F03
         [
             SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
@@ -195,8 +195,8 @@ class SecsS01F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F03([1, "1337", 12])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F03([1, "1337", 12])
         S1F3 W
           <L [3]
             <U1 1 >
@@ -232,8 +232,8 @@ class SecsS01F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F04
         [
             SV: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             ...
@@ -241,8 +241,8 @@ class SecsS01F04(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F04([secsgem.U1(1), "text", secsgem.U4(1337)])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F04([secsgem.secs.variables.U1(1), "text", secsgem.secs.variables.U4(1337)])
         S1F4
           <L [3]
             <U1 1 >
@@ -278,8 +278,8 @@ class SecsS01F11(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F11
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F11
         [
             SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
@@ -287,8 +287,8 @@ class SecsS01F11(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F11([1, 1337])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F11([1, 1337])
         S1F11 W
           <L [2]
             <U1 1 >
@@ -327,8 +327,8 @@ class SecsS01F12(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F12
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F12
         [
             {
                 SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -340,8 +340,8 @@ class SecsS01F12(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"},
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"},
         ...     {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}])
         S1F12
           <L [2]
@@ -401,14 +401,14 @@ class SecsS01F13(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F13(['secsgem', '0.0.6']) # E->H
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F13(['secsgem', '0.0.6']) # E->H
         S1F13 W
           <L [2]
             <A "secsgem">
             <A "0.0.6">
           > .
-        >>> secsgem.SecsS01F13() #H->E
+        >>> secsgem.secs.functions.SecsS01F13() #H->E
         S1F13 W
           <L> .
 
@@ -463,8 +463,9 @@ class SecsS01F14(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F14({"COMMACK": secsgem.COMMACK.ACCEPTED, "MDLN": ["secsgem", "0.0.6"]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F14({"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED, \
+                                               "MDLN": ["secsgem", "0.0.6"]})
         S1F14
           <L [2]
             <B 0x0>
@@ -501,14 +502,14 @@ class SecsS01F15(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F15
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F15
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F15()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F15()
         S1F15 W .
 
     :param value: function has no parameters
@@ -539,14 +540,14 @@ class SecsS01F16(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F16
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F16
         OFLACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F16(secsgem.OFLACK.ACK)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F16(secsgem.secs.data_items.OFLACK.ACK)
         S1F16
           <B 0x0> .
 
@@ -574,14 +575,14 @@ class SecsS01F17(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F17
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F17
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F17()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F17()
         S1F17 W .
 
     :param value: function has no parameters
@@ -612,14 +613,14 @@ class SecsS01F18(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F18
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F18
         ONLACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS01F18(secsgem.ONLACK.ALREADY_ON)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F18(secsgem.secs.data_items.ONLACK.ALREADY_ON)
         S1F18
           <B 0x2> .
 
@@ -647,14 +648,14 @@ class SecsS02F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F00()
         S2F0 .
 
     :param value: function has no parameters
@@ -685,8 +686,8 @@ class SecsS02F13(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F13
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F13
         [
             ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
@@ -694,8 +695,8 @@ class SecsS02F13(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F13([1, 1337])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F13([1, 1337])
         S2F13 W
           <L [2]
             <U1 1 >
@@ -732,8 +733,8 @@ class SecsS02F14(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F14
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F14
         [
             ECV: L/BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
             ...
@@ -741,8 +742,8 @@ class SecsS02F14(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F14([secsgem.U1(1), "text"])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F14([secsgem.secs.variables.U1(1), "text"])
         S2F14
           <L [2]
             <U1 1 >
@@ -778,8 +779,8 @@ class SecsS02F15(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F15
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F15
         [
             {
                 ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -790,8 +791,10 @@ class SecsS02F15(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F15([{"ECID": 1, "ECV": secsgem.U4(10)}, {"ECID": "1337", "ECV": "text"}])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F15([ \
+                {"ECID": 1, "ECV": secsgem.secs.variables.U4(10)}, \
+                {"ECID": "1337", "ECV": "text"}])
         S2F15 W
           <L [2]
             <L [2]
@@ -837,14 +840,14 @@ class SecsS02F16(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F16
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F16
         EAC: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F16(secsgem.EAC.BUSY)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F16(secsgem.secs.data_items.EAC.BUSY)
         S2F16
           <B 0x2> .
 
@@ -872,14 +875,14 @@ class SecsS02F17(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F17
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F17
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F17()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F17()
         S2F17 W .
 
     :param value: function has no parameters
@@ -910,14 +913,14 @@ class SecsS02F18(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F18
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F18
         TIME: A[32]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F18("160816205942")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F18("160816205942")
         S2F18
           <A "160816205942"> .
 
@@ -949,8 +952,8 @@ class SecsS02F29(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F29
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F29
         [
             ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
@@ -958,8 +961,8 @@ class SecsS02F29(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F29([1, 1337])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F29([1, 1337])
         S2F29 W
           <L [2]
             <U1 1 >
@@ -1001,8 +1004,8 @@ class SecsS02F30(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F30
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F30
         [
             {
                 ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -1017,11 +1020,20 @@ class SecsS02F30(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F30([ \
-            {"ECID": 1, "ECNAME": "EC1", "ECMIN": secsgem.U1(0), "ECMAX": secsgem.U1(100), \
-                "ECDEF": secsgem.U1(50), "UNITS": "mm"}, \
-            {"ECID": 1337, "ECNAME": "EC2", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""}])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F30([ \
+            {"ECID": 1, \
+             "ECNAME": "EC1", \
+             "ECMIN": secsgem.secs.variables.U1(0), \
+             "ECMAX": secsgem.secs.variables.U1(100), \
+             "ECDEF": secsgem.secs.variables.U1(50), \
+             "UNITS": "mm"}, \
+            {"ECID": 1337, \
+             "ECNAME": "EC2", \
+             "ECMIN": "", \
+             "ECMAX": "", \
+             "ECDEF": "", \
+             "UNITS": ""}])
         S2F30
           <L [2]
             <L [6]
@@ -1081,8 +1093,8 @@ class SecsS02F33(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F33
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F33
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATA: [
@@ -1099,8 +1111,8 @@ class SecsS02F33(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]}, \
 {"RPTID": 1001, "VID": [1, 2355]}]})
         S2F33 W
           <L [2]
@@ -1159,14 +1171,14 @@ class SecsS02F34(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F34
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F34
         DRACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F34(secsgem.DRACK.INVALID_FORMAT)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.INVALID_FORMAT)
         S2F34
           <B 0x2> .
 
@@ -1200,8 +1212,8 @@ class SecsS02F35(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F35
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F35
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATA: [
@@ -1218,8 +1230,8 @@ class SecsS02F35(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
         S2F35 W
           <L [2]
             <U1 1 >
@@ -1270,14 +1282,14 @@ class SecsS02F36(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F36
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F36
         LRACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F36(secsgem.LRACK.CEID_UNKNOWN)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.CEID_UNKNOWN)
         S2F36
           <B 0x4> .
 
@@ -1310,8 +1322,8 @@ class SecsS02F37(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F37
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F37
         {
             CEED: BOOLEAN[1]
             CEID: [
@@ -1322,8 +1334,8 @@ class SecsS02F37(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F37({"CEED": True, "CEID": [1337]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F37({"CEED": True, "CEID": [1337]})
         S2F37 W
           <L [2]
             <BOOLEAN True >
@@ -1363,14 +1375,14 @@ class SecsS02F38(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F38
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F38
         ERACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F38(secsgem.ERACK.CEID_UNKNOWN)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F38(secsgem.secs.data_items.ERACK.CEID_UNKNOWN)
         S2F38
           <B 0x1> .
 
@@ -1404,8 +1416,8 @@ class SecsS02F41(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F41
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F41
         {
             RCMD: U1/I1/A
             PARAMS: [
@@ -1419,8 +1431,8 @@ class SecsS02F41(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, \
 {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
         S2F41 W
           <L [2]
@@ -1476,8 +1488,8 @@ class SecsS02F42(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F42
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F42
         {
             HCACK: B[1]
             PARAMS: [
@@ -1491,12 +1503,12 @@ class SecsS02F42(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F42({ \
-            "HCACK": secsgem.HCACK.INVALID_COMMAND, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F42({ \
+            "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, \
             "PARAMS": [ \
-                {"CPNAME": "PARAM1", "CPACK": secsgem.CPACK.CPVAL_ILLEGAL_VALUE}, \
-                {"CPNAME": "PARAM2", "CPACK": secsgem.CPACK.CPVAL_ILLEGAL_FORMAT}]})
+                {"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE}, \
+                {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]})
         S2F42
           <L [2]
             <B 0x1>
@@ -1545,14 +1557,14 @@ class SecsS05F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F00()
         S5F0 .
 
     :param value: function has no parameters
@@ -1585,8 +1597,8 @@ class SecsS05F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F01
         {
             ALCD: B[1]
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
@@ -1595,9 +1607,11 @@ class SecsS05F01(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F01({"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
-secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F01({"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | \
+                                                       secsgem.secs.data_items.ALCD.ALARM_SET, \
+                                               "ALID": 100, \
+                                               "ALTX": "text"})
         S5F1
           <L [3]
             <B 0x81>
@@ -1637,14 +1651,14 @@ class SecsS05F02(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F02
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F02
         ACKC5: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F02(secsgem.ACKC5.ACCEPTED)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED)
         S5F2
           <B 0x0> .
 
@@ -1677,8 +1691,8 @@ class SecsS05F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F03
         {
             ALED: B[1]
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
@@ -1686,8 +1700,8 @@ class SecsS05F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F03({"ALED": secsgem.ALED.ENABLE, "ALID": 100})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F03({"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100})
         S5F3
           <L [2]
             <B 0x80>
@@ -1725,14 +1739,14 @@ class SecsS05F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F04
         ACKC5: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F04(secsgem.ACKC5.ACCEPTED)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F04(secsgem.secs.data_items.ACKC5.ACCEPTED)
         S5F4
           <B 0x0> .
 
@@ -1764,8 +1778,8 @@ class SecsS05F05(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F05
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F05
         [
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
             ...
@@ -1773,8 +1787,8 @@ class SecsS05F05(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F05([100, 200])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F05([100, 200])
         S5F5 W
           <L [2]
             <U1 100 >
@@ -1811,8 +1825,8 @@ class SecsS05F06(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F06
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F06
         [
             {
                 ALCD: B[1]
@@ -1824,9 +1838,11 @@ class SecsS05F06(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F06([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
-secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F06([{"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | \
+                                                        secsgem.secs.data_items.ALCD.ALARM_SET, \
+                                                "ALID": 100, \
+                                                "ALTX": "text"}])
         S5F6
           <L [1]
             <L [3]
@@ -1864,14 +1880,14 @@ class SecsS05F07(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F07
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F07
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F07()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F07()
         S5F7 W .
 
     :param value: parameters for this function (see example)
@@ -1904,8 +1920,8 @@ class SecsS05F08(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F08
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F08
         [
             {
                 ALCD: B[1]
@@ -1917,9 +1933,11 @@ class SecsS05F08(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F08([{"ALCD": secsgem.ALCD.PERSONAL_SAFETY | \
-secsgem.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F08([{"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | \
+                                                        secsgem.secs.data_items.ALCD.ALARM_SET, \
+                                                "ALID": 100, \
+                                                "ALTX": "text"}])
         S5F8
           <L [1]
             <L [3]
@@ -1965,8 +1983,8 @@ class SecsS05F09(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F09
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F09
         {
             TIMESTAMP: A[32]
             EXID: A[20]
@@ -1980,8 +1998,8 @@ class SecsS05F09(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F09({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F09({ \
             "TIMESTAMP": "161006221500", \
             "EXID": "EX123", \
             "EXTYPE": "ALARM", \
@@ -2029,14 +2047,14 @@ class SecsS05F10(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F10
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F10
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F10()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F10()
         S5F10 .
 
     :param value: function has no parameters
@@ -2070,8 +2088,8 @@ class SecsS05F11(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F11
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F11
         {
             TIMESTAMP: A[32]
             EXID: A[20]
@@ -2081,8 +2099,8 @@ class SecsS05F11(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F11({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F11({"TIMESTAMP": "161006221500", "EXID": "EX123", "EXTYPE": "ALARM", \
 "EXMESSAGE": "Exception"})
         S5F11
           <L [4]
@@ -2121,14 +2139,14 @@ class SecsS05F12(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F12
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F12
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F12()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F12()
         S5F12 .
 
     :param value: function has no parameters
@@ -2160,8 +2178,8 @@ class SecsS05F13(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F13
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F13
         {
             EXID: A[20]
             EXRECVRA: A[40]
@@ -2169,8 +2187,8 @@ class SecsS05F13(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F13({"EXID": "EX123", "EXRECVRA": "EXRECVRA2"})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F13({"EXID": "EX123", "EXRECVRA": "EXRECVRA2"})
         S5F13 W
           <L [2]
             <A "EX123">
@@ -2211,8 +2229,8 @@ class SecsS05F14(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F14
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F14
         {
             EXID: A[20]
             DATA: {
@@ -2225,8 +2243,11 @@ class SecsS05F14(SecsStreamFunction):
         }
 
     **Example**::
-        >>> import secsgem
-        >>> secsgem.SecsS05F14({"EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F14({"EXID": "EX123", \
+                                               "DATA": {"ACKA": False, \
+                                                        "DATA": {"ERRCODE": 10, \
+                                                                 "ERRTEXT": "Error"}}})
         S5F14
           <L [2]
             <A "EX123">
@@ -2280,8 +2301,8 @@ class SecsS05F15(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F15
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F15
         {
             TIMESTAMP: A[32]
             EXID: A[20]
@@ -2295,8 +2316,8 @@ class SecsS05F15(SecsStreamFunction):
         }
 
     **Example**::
-        >>> import secsgem
-        >>> secsgem.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": \
 {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
         S5F15
           <L [3]
@@ -2345,14 +2366,14 @@ class SecsS05F16(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F16
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F16
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F16()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F16()
         S5F16 .
 
     :param value: function has no parameters
@@ -2383,14 +2404,14 @@ class SecsS05F17(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F17
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F17
         EXID: A[20]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F17("EX123")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F17("EX123")
         S5F17 W
           <A "EX123"> .
 
@@ -2425,8 +2446,8 @@ class SecsS05F18(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS05F18
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F18
         {
             EXID: A[20]
             DATA: {
@@ -2439,8 +2460,11 @@ class SecsS05F18(SecsStreamFunction):
         }
 
     **Example**::
-        >>> import secsgem
-        >>> secsgem.SecsS05F18({"EXID": "EX123", "DATA": {"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS05F18({"EXID": "EX123", \
+                                               "DATA": {"ACKA": False, \
+                                                        "DATA": {"ERRCODE": 10, \
+                                                                 "ERRTEXT": "Error"}}})
         S5F18
           <L [2]
             <A "EX123">
@@ -2486,14 +2510,14 @@ class SecsS06F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F00()
         S6F0 .
 
     :param value: function has no parameters
@@ -2525,8 +2549,8 @@ class SecsS06F05(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F05
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F05
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATALENGTH: U1/U2/U4/U8/I1/I2/I4/I8
@@ -2534,8 +2558,8 @@ class SecsS06F05(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F05({"DATAID": 1, "DATALENGTH": 1337})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F05({"DATAID": 1, "DATALENGTH": 1337})
         S6F5 W
           <L [2]
             <U1 1 >
@@ -2573,14 +2597,14 @@ class SecsS06F06(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F06
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F06
         GRANT6: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F06(secsgem.GRANT6.BUSY)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F06(secsgem.secs.data_items.GRANT6.BUSY)
         S6F6
           <B 0x1> .
 
@@ -2612,14 +2636,14 @@ class SecsS06F07(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F07
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F07
         DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F07(1)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F07(1)
         S6F7 W
           <U1 1 > .
 
@@ -2654,8 +2678,8 @@ class SecsS06F08(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F08
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F08
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -2676,15 +2700,15 @@ class SecsS06F08(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F08({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F08({ \
             "DATAID": 1, \
             "CEID": 1337, \
             "DS": [{ \
                 "DSID": 1000, \
                 "DV": [ \
                     {"DVNAME": "VAR1", "DVVAL": "VAR"}, \
-                    {"DVNAME": "VAR2", "DVVAL": secsgem.U4(100)}]}]})
+                    {"DVNAME": "VAR2", "DVVAL": secsgem.secs.variables.U4(100)}]}]})
         S6F8
           <L [3]
             <U1 1 >
@@ -2753,8 +2777,8 @@ class SecsS06F11(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F11
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F11
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -2772,9 +2796,9 @@ class SecsS06F11(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
-["VAR", secsgem.U4(100)]}]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F11({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
+["VAR", secsgem.secs.variables.U4(100)]}]})
         S6F11 W
           <L [3]
             <U1 1 >
@@ -2828,14 +2852,14 @@ class SecsS06F12(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F12
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F12
         ACKC6: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F12(secsgem.ACKC6.ACCEPTED)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F12(secsgem.secs.data_items.ACKC6.ACCEPTED)
         S6F12
           <B 0x0> .
 
@@ -2867,14 +2891,14 @@ class SecsS06F15(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F15
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F15
         CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F15(1337)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F15(1337)
         S6F15 W
           <U2 1337 > .
 
@@ -2909,8 +2933,8 @@ class SecsS06F16(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F16
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F16
         {
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -2928,9 +2952,9 @@ class SecsS06F16(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
-["VAR", secsgem.U4(100)]}]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
+["VAR", secsgem.secs.variables.U4(100)]}]})
         S6F16
           <L [3]
             <U1 1 >
@@ -2984,14 +3008,14 @@ class SecsS06F19(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F19
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F19
         RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F19(secsgem.U4(1337))
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F19(secsgem.secs.variables.U4(1337))
         S6F19 W
           <U4 1337 > .
 
@@ -3023,8 +3047,8 @@ class SecsS06F20(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F20
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F20
         [
             V: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             ...
@@ -3032,8 +3056,8 @@ class SecsS06F20(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F20(["ASD", 1337])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F20(["ASD", 1337])
         S6F20
           <L [2]
             <A "ASD">
@@ -3068,14 +3092,14 @@ class SecsS06F21(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F21
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F21
         RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F21(secsgem.U4(1337))
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F21(secsgem.secs.variables.U4(1337))
         S6F21 W
           <U4 1337 > .
 
@@ -3108,8 +3132,8 @@ class SecsS06F22(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F22
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F22
         [
             {
                 VID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -3120,8 +3144,8 @@ class SecsS06F22(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F22([{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F22([{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}])
         S6F22
           <L [2]
             <L [2]
@@ -3163,14 +3187,14 @@ class SecsS07F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F00()
         S7F0 .
 
     :param value: function has no parameters
@@ -3202,8 +3226,8 @@ class SecsS07F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F01
         {
             PPID: A/B[120]
             LENGTH: U1/U2/U4/U8/I1/I2/I4/I8
@@ -3211,8 +3235,8 @@ class SecsS07F01(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F01({"PPID": "program", "LENGTH": 4})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F01({"PPID": "program", "LENGTH": 4})
         S7F1 W
           <L [2]
             <A "program">
@@ -3250,14 +3274,14 @@ class SecsS07F02(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F02
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F02
         PPGNT: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F02(secsgem.PPGNT.OK)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F02(secsgem.secs.data_items.PPGNT.OK)
         S7F2
           <B 0x0> .
 
@@ -3290,8 +3314,8 @@ class SecsS07F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F03
         {
             PPID: A/B[120]
             PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
@@ -3299,8 +3323,8 @@ class SecsS07F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F03({"PPID": "program", "PPBODY": secsgem.Binary("data")})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F03({"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")})
         S7F3 W
           <L [2]
             <A "program">
@@ -3338,14 +3362,14 @@ class SecsS07F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F04
         ACKC7: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F04(secsgem.ACKC7.MATRIX_OVERFLOW)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW)
         S7F4
           <B 0x3> .
 
@@ -3377,14 +3401,14 @@ class SecsS07F05(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F05
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F05
         PPID: A/B[120]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F05("program")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F05("program")
         S7F5 W
           <A "program"> .
 
@@ -3417,8 +3441,8 @@ class SecsS07F06(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F06
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F06
         {
             PPID: A/B[120]
             PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
@@ -3426,8 +3450,8 @@ class SecsS07F06(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F06({"PPID": "program", "PPBODY": secsgem.Binary("data")})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F06({"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")})
         S7F6
           <L [2]
             <A "program">
@@ -3465,8 +3489,8 @@ class SecsS07F17(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F17
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F17
         [
             PPID: A/B[120]
             ...
@@ -3474,8 +3498,8 @@ class SecsS07F17(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F17(["program1", "program2"])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F17(["program1", "program2"])
         S7F17 W
           <L [2]
             <A "program1">
@@ -3510,14 +3534,14 @@ class SecsS07F18(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F18
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F18
         ACKC7: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F18(secsgem.ACKC7.MODE_UNSUPPORTED)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F18(secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED)
         S7F18
           <B 0x5> .
 
@@ -3545,14 +3569,14 @@ class SecsS07F19(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F19
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F19
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F19()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F19()
         S7F19 W .
 
     :param value: parameters for this function (see example)
@@ -3583,8 +3607,8 @@ class SecsS07F20(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F20
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F20
         [
             PPID: A/B[120]
             ...
@@ -3592,8 +3616,8 @@ class SecsS07F20(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS07F20(["program1", "program2"])
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F20(["program1", "program2"])
         S7F20
           <L [2]
             <A "program1">
@@ -3624,14 +3648,14 @@ class SecsS09F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F00()
         S9F0 .
 
     :param value: function has no parameters
@@ -3662,14 +3686,14 @@ class SecsS09F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F01
         MHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F01("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F01("HEADERDATA")
         S9F1
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3701,14 +3725,14 @@ class SecsS09F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F03
         MHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F03("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F03("HEADERDATA")
         S9F3
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3740,14 +3764,14 @@ class SecsS09F05(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F05
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F05
         MHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F05("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F05("HEADERDATA")
         S9F5
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3779,14 +3803,14 @@ class SecsS09F07(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F07
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F07
         MHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F07("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F07("HEADERDATA")
         S9F7
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3818,14 +3842,14 @@ class SecsS09F09(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F09
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F09
         SHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F09("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F09("HEADERDATA")
         S9F9
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3857,14 +3881,14 @@ class SecsS09F11(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F11
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F11
         MHEAD: B[10]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F11("HEADERDATA")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F11("HEADERDATA")
         S9F11
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
@@ -3897,8 +3921,8 @@ class SecsS09F13(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F13
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F13
         {
             MEXP: A[6]
             EDID: U1/U2/U4/U8/I1/I2/I4/I8/A/B
@@ -3906,8 +3930,8 @@ class SecsS09F13(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS09F13({"MEXP": "S01E01", "EDID": "data"})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS09F13({"MEXP": "S01E01", "EDID": "data"})
         S9F13
           <L [2]
             <A "S01E01">
@@ -3941,14 +3965,14 @@ class SecsS10F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F00()
         S10F0 .
 
     :param value: function has no parameters
@@ -3980,8 +4004,8 @@ class SecsS10F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F01
         {
             TID: B[1]
             TEXT: U1/U2/U4/U8/I1/I2/I4/I8/A/B
@@ -3989,8 +4013,8 @@ class SecsS10F01(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F01({"TID": 0, "TEXT": "hello?"})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F01({"TID": 0, "TEXT": "hello?"})
         S10F1
           <L [2]
             <B 0x0>
@@ -4028,14 +4052,14 @@ class SecsS10F02(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F02
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F02
         ACKC10: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F02(secsgem.ACKC10.ACCEPTED)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F02(secsgem.secs.data_items.ACKC10.ACCEPTED)
         S10F2
           <B 0x0> .
 
@@ -4068,8 +4092,8 @@ class SecsS10F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F03
         {
             TID: B[1]
             TEXT: U1/U2/U4/U8/I1/I2/I4/I8/A/B
@@ -4077,8 +4101,8 @@ class SecsS10F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F03({"TID": 0, "TEXT": "hello!"})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F03({"TID": 0, "TEXT": "hello!"})
         S10F3
           <L [2]
             <B 0x0>
@@ -4116,14 +4140,14 @@ class SecsS10F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F04
         ACKC10: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS10F04(secsgem.ACKC10.TERMINAL_NOT_AVAILABLE)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS10F04(secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE)
         S10F4
           <B 0x2> .
 
@@ -4151,14 +4175,14 @@ class SecsS12F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F00()
         S12F0 .
 
     :param value: function has no parameters
@@ -4203,8 +4227,8 @@ class SecsS12F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F01
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4228,12 +4252,12 @@ class SecsS12F01(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F01({"MID": "materialID", \
-                "IDTYP": secsgem.IDTYP.WAFER, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F01({"MID": "materialID", \
+                "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
                 "FNLOC": 0, \
                 "FFROT": 0, \
-                "ORLOC": secsgem.ORLOC.UPPER_LEFT, \
+                "ORLOC": secsgem.secs.data_items.ORLOC.UPPER_LEFT, \
                 "RPSEL": 0, \
                 "REFP": [[1,2], [2,3]], \
                 "DUTMS": "unit", \
@@ -4243,7 +4267,7 @@ class SecsS12F01(SecsStreamFunction):
                 "COLCT": 10, \
                 "NULBC": "{x}", \
                 "PRDCT": 100, \
-                "PRAXI": secsgem.PRAXI.ROWS_TOP_INCR, \
+                "PRAXI": secsgem.secs.data_items.PRAXI.ROWS_TOP_INCR, \
                 })
         S12F1 W
           <L [15]
@@ -4311,14 +4335,14 @@ class SecsS12F02(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F02
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F02
         SDACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F02(secsgem.SDACK.ACK)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F02(secsgem.secs.data_items.SDACK.ACK)
         S12F2
           <B 0x0> .
 
@@ -4358,8 +4382,8 @@ class SecsS12F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F03
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4374,14 +4398,14 @@ class SecsS12F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F03({"MID": "materialID", \
-                "IDTYP": secsgem.IDTYP.WAFER_CASSETTE, \
-                "MAPFT": secsgem.MAPFT.ROW, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F03({"MID": "materialID", \
+                "IDTYP": secsgem.secs.data_items.IDTYP.WAFER_CASSETTE, \
+                "MAPFT": secsgem.secs.data_items.MAPFT.ROW, \
                 "FNLOC": 0, \
                 "FFROT": 0, \
-                "ORLOC": secsgem.ORLOC.LOWER_LEFT, \
-                "PRAXI": secsgem.PRAXI.COLS_LEFT_INCR, \
+                "ORLOC": secsgem.secs.data_items.ORLOC.LOWER_LEFT, \
+                "PRAXI": secsgem.secs.data_items.PRAXI.COLS_LEFT_INCR, \
                 "BCEQU": [1, 3, 5, 7], \
                 "NULBC": "{x}", \
                 })
@@ -4450,8 +4474,8 @@ class SecsS12F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F04
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4475,11 +4499,11 @@ class SecsS12F04(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F04({"MID": "materialID", \
-                "IDTYP": secsgem.IDTYP.FILM_FRAME, \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F04({"MID": "materialID", \
+                "IDTYP": secsgem.secs.data_items.IDTYP.FILM_FRAME, \
                 "FNLOC": 0, \
-                "ORLOC": secsgem.ORLOC.CENTER_DIE, \
+                "ORLOC": secsgem.secs.data_items.ORLOC.CENTER_DIE, \
                 "RPSEL": 0, \
                 "REFP": [[1,2], [2,3]], \
                 "DUTMS": "unit", \
@@ -4561,8 +4585,8 @@ class SecsS12F05(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F05
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F05
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4572,9 +4596,11 @@ class SecsS12F05(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F05({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "MAPFT": secsgem.MAPFT.ARRAY, \
-"MLCL": 0})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F05({"MID": "materialID", \
+                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
+                                               "MAPFT": secsgem.secs.data_items.MAPFT.ARRAY, \
+                                               "MLCL": 0})
         S12F5 W
           <L [4]
             <A "materialID">
@@ -4616,14 +4642,14 @@ class SecsS12F06(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F06
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F06
         GRNT1: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F06(secsgem.GRNT1.MATERIALID_UNKNOWN)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F06(secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN)
         S12F6
           <B 0x5> .
 
@@ -4658,8 +4684,8 @@ class SecsS12F07(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F07
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F07
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4674,10 +4700,10 @@ class SecsS12F07(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F07({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F07({ \
             "MID": "materialID", \
-            "IDTYP": secsgem.IDTYP.WAFER, \
+            "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
             "DATA": [ \
                 {"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, \
                 {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
@@ -4734,14 +4760,14 @@ class SecsS12F08(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F08
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F08
         MDACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F08(secsgem.MDACK.ABORT_MAP)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F08(secsgem.secs.data_items.MDACK.ABORT_MAP)
         S12F8
           <B 0x3> .
 
@@ -4776,8 +4802,8 @@ class SecsS12F09(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F09
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F09
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4787,9 +4813,11 @@ class SecsS12F09(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F09({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], \
-"BINLT": [1, 2, 3, 4, 5, 6]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F09({"MID": "materialID", \
+                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
+                                               "STRP": [0, 1], \
+                                               "BINLT": [1, 2, 3, 4, 5, 6]})
         S12F9 W
           <L [4]
             <A "materialID">
@@ -4831,14 +4859,14 @@ class SecsS12F10(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F10
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F10
         MDACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F10(secsgem.MDACK.ACK)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F10(secsgem.secs.data_items.MDACK.ACK)
         S12F10
           <B 0x0> .
 
@@ -4873,8 +4901,8 @@ class SecsS12F11(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F11
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F11
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4889,10 +4917,10 @@ class SecsS12F11(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F11({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F11({ \
             "MID": "materialID", \
-            "IDTYP": secsgem.IDTYP.WAFER, \
+            "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
             "DATA": [ \
                 {"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, \
                 {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
@@ -4949,14 +4977,14 @@ class SecsS12F12(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F12
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F12
         MDACK: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F12(secsgem.MDACK.FORMAT_ERROR)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F12(secsgem.secs.data_items.MDACK.FORMAT_ERROR)
         S12F12
           <B 0x1> .
 
@@ -4989,8 +5017,8 @@ class SecsS12F13(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F13
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F13
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -4998,8 +5026,8 @@ class SecsS12F13(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F13({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F13({"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER})
         S12F13 W
           <L [2]
             <A "materialID">
@@ -5040,8 +5068,8 @@ class SecsS12F14(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F14
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F14
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -5056,10 +5084,10 @@ class SecsS12F14(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F14({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F14({ \
             "MID": "materialID", \
-            "IDTYP": secsgem.IDTYP.WAFER, \
+            "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
             "DATA": [ \
                 {"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, \
                 {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
@@ -5117,8 +5145,8 @@ class SecsS12F15(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F15
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F15
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -5126,8 +5154,8 @@ class SecsS12F15(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F15({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F15({"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER})
         S12F15 W
           <L [2]
             <A "materialID">
@@ -5168,8 +5196,8 @@ class SecsS12F16(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F16
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F16
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -5179,9 +5207,11 @@ class SecsS12F16(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F16({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "STRP": [0, 1], \
-"BINLT": [1, 2, 3, 4, 5, 6]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F16({"MID": "materialID", \
+                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
+                                               "STRP": [0, 1], \
+                                               "BINLT": [1, 2, 3, 4, 5, 6]})
         S12F16
           <L [4]
             <A "materialID">
@@ -5225,8 +5255,8 @@ class SecsS12F17(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F17
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F17
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -5235,8 +5265,10 @@ class SecsS12F17(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F17({"MID": "materialID", "IDTYP": secsgem.IDTYP.WAFER, "SDBIN": secsgem.SDBIN.DONT_SEND})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F17({"MID": "materialID", \
+                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
+                                               "SDBIN": secsgem.secs.data_items.SDBIN.DONT_SEND})
         S12F17 W
           <L [3]
             <A "materialID">
@@ -5279,8 +5311,8 @@ class SecsS12F18(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F18
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F18
         {
             MID: A/B[80]
             IDTYP: B[1]
@@ -5295,10 +5327,10 @@ class SecsS12F18(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F18({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F18({ \
                 "MID": "materialID", \
-                "IDTYP": secsgem.IDTYP.WAFER, \
+                "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
                 "DATA": [ \
                     {"XYPOS": [1, 2], "BINLT": [1, 2, 3, 4]}, \
                     {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]})
@@ -5356,8 +5388,8 @@ class SecsS12F19(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F19
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F19
         {
             MAPER: B[1]
             DATLC: U1
@@ -5365,8 +5397,8 @@ class SecsS12F19(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS12F19({"MAPER": secsgem.MAPER.INVALID_DATA, "DATLC": 0})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F19({"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0})
         S12F19
           <L [2]
             <B 0x1>
@@ -5400,14 +5432,14 @@ class SecsS14F00(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F00
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F00
         Header only
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F00()
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F00()
         S14F0 .
 
     :param value: function has no parameters
@@ -5443,8 +5475,8 @@ class SecsS14F01(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F01
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F01
         {
             OBJSPEC: A
             OBJTYPE: U1/U2/U4/U8/A
@@ -5468,8 +5500,8 @@ class SecsS14F01(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F01({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F01({ \
             "OBJSPEC": '', \
             "OBJTYPE": 'StripMap', \
             "OBJID": ['MAP001'], \
@@ -5549,8 +5581,8 @@ class SecsS14F02(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F02
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F02
         {
             DATA: [
                 {
@@ -5579,8 +5611,8 @@ class SecsS14F02(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F02({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F02({ \
             "DATA": [{ \
                 "OBJID": "MAP001", \
                 "ATTRIBS": [ \
@@ -5681,8 +5713,8 @@ class SecsS14F03(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F03
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F03
         {
             OBJSPEC: A
             OBJTYPE: U1/U2/U4/U8/A
@@ -5701,8 +5733,8 @@ class SecsS14F03(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], \
 "ATTRIBS": [ {"ATTRID": "CellStatus", "ATTRDATA": "3"} ] })
         S14F3 W
           <L [4]
@@ -5763,8 +5795,8 @@ class SecsS14F04(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F04
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F04
         {
             DATA: [
                 {
@@ -5793,8 +5825,8 @@ class SecsS14F04(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS14F04({ \
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS14F04({ \
             "DATA": [{ \
                 "OBJID": "MAP001", \
                 "ATTRIBS": [ \

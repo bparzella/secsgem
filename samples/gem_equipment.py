@@ -17,14 +17,15 @@
 import logging
 import code
 
-import secsgem
+import secsgem.secs
+import secsgem.gem
 
 from communication_log_file_handler import CommunicationLogFileHandler
 
 
-class SampleEquipment(secsgem.GemEquipmentHandler):
+class SampleEquipment(secsgem.gem.GemEquipmentHandler):
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "gemequp"
         self.SOFTREV = "1.0.0"
@@ -33,16 +34,16 @@ class SampleEquipment(secsgem.GemEquipmentHandler):
         self.sv2 = "sample sv"
 
         self.status_variables.update({
-            10: secsgem.StatusVariable(10, "sample1, numeric SVID, U4", "meters", secsgem.U4),
-            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, String", "chars", secsgem.String),
+            10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, U4", "meters", secsgem.secs.variables.U4),
+            "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, String", "chars", secsgem.secs.variables.String),
         })
 
         self.ec1 = 321
         self.ec2 = "sample ec"
 
         self.equipment_constants.update({
-            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, U4", 0, 500, 50, "degrees", secsgem.U4),
-            "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, String", "", "", "", "chars", secsgem.String),
+            20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, U4", 0, 500, 50, "degrees", secsgem.secs.variables.U4),
+            "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, String", "", "", "", "chars", secsgem.secs.variables.String),
         })
 
     def on_sv_value_request(self, svid, sv):

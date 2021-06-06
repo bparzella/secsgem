@@ -58,12 +58,12 @@ class HsmsHandler:
 
         **Example**::
 
-            import secsgem
+            import secsgem.hsms
 
             def onConnect(event, data):
                 print "Connected"
 
-            client = secsgem.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
+            client = secsgem.hsms.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
             client.events.hsms_connected += onConnect
 
             client.enable()

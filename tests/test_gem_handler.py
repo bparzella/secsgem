@@ -17,7 +17,9 @@
 import threading
 import unittest
 
-import secsgem
+import secsgem.hsms
+import secsgem.secs
+import secsgem.gem
 
 from test_connection import HsmsTestServer
 
@@ -69,7 +71,7 @@ class GemHandlerPassiveGroup(object):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -83,19 +85,19 @@ class GemHandlerPassiveGroup(object):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
         packet = self.server.expect_packet(function=13)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F14([0])))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS01F14([0])))
 
     def testReceivingS01F13(self):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -115,7 +117,7 @@ class GemHandlerPassiveGroup(object):
 
         self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F14([0])))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS01F14([0])))
 
         self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
 
@@ -123,7 +125,7 @@ class GemHandlerPassiveGroup(object):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -144,7 +146,7 @@ class GemHandlerPassiveGroup(object):
         self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F13()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F13()))
 
         self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
 
@@ -158,7 +160,7 @@ class GemHandlerPassiveGroup(object):
 
         self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(s01f13ReceivedPacket.header.system, secsgem.SecsS01F14([0])))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(s01f13ReceivedPacket.header.system, secsgem.secs.functions.SecsS01F14([0])))
 
         self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
 
@@ -166,7 +168,7 @@ class GemHandlerPassiveGroup(object):
         self.establishCommunication()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F01()))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -180,7 +182,7 @@ class GemHandlerPassiveGroup(object):
         self.establishCommunication()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F13()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F13()))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -217,7 +219,7 @@ class GemHandlerPassiveGroup(object):
 
         packet = self.server.expect_packet(stream=7)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS07F04(secsgem.ACKC7.ACCEPTED)))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.ACCEPTED)))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -245,7 +247,7 @@ class GemHandlerPassiveGroup(object):
 
         packet = self.server.expect_packet(stream=7)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS07F06({"PPID": ppid, "PPBODY": ppbody})))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS07F06({"PPID": ppid, "PPBODY": ppbody})))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -261,7 +263,7 @@ class GemHandlerPassiveGroup(object):
         self.assertEqual(function.get(), ppid)
 
 class TestGemHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
-    __testClass = secsgem.GemHandler
+    __testClass = secsgem.gem.GemHandler
 
     def setUp(self):
         self.assertIsNotNone(self.__testClass)

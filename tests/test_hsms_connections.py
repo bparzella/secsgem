@@ -17,12 +17,12 @@
 import unittest
 import errno
 
-import secsgem
+import secsgem.hsms
 
 class TestTopLevelFunctions(unittest.TestCase):
     def testIsErrorcodeEwouldBlock(self):
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(0))
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EPERM))
-        self.assertFalse(secsgem.is_errorcode_ewouldblock(errno.EBADF))
-        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EAGAIN))
-        self.assertTrue(secsgem.is_errorcode_ewouldblock(errno.EWOULDBLOCK))
+        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(0))
+        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(errno.EPERM))
+        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(errno.EBADF))
+        self.assertTrue(secsgem.hsms.is_errorcode_ewouldblock(errno.EAGAIN))
+        self.assertTrue(secsgem.hsms.is_errorcode_ewouldblock(errno.EWOULDBLOCK))

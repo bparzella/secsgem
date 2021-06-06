@@ -17,16 +17,17 @@
 import threading
 import unittest.mock
 
-import secsgem
+import secsgem.hsms
+import secsgem.secs
 
 from test_connection import HsmsTestServer
 
 class TestSecsHandler(unittest.TestCase):
     def testSecsDecode(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
-        packet = server.generate_stream_function_packet(0, secsgem.SecsS01F02(["MDLN", "SOFTREV"]))
+        packet = server.generate_stream_function_packet(0, secsgem.secs.SecsS01F02(["MDLN", "SOFTREV"]))
 
         function = client.secs_decode(packet)
 
@@ -37,7 +38,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeNone(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.secs_decode(None)
 
@@ -45,9 +46,9 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
-        packet = secsgem.HsmsPacket()
+        packet = secsgem.hsms.HsmsPacket()
         packet.header.stream = 99
         function = client.secs_decode(packet)
 
@@ -55,9 +56,9 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
-        packet = secsgem.HsmsPacket()
+        packet = secsgem.hsms.HsmsPacket()
         packet.header.function = 99
         function = client.secs_decode(packet)
 
@@ -65,15 +66,15 @@ class TestSecsHandler(unittest.TestCase):
     
     def testStreamFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(1, 1)
 
-        self.assertIs(function, secsgem.SecsS01F01)
+        self.assertIs(function, secsgem.secs.SecsS01F01)
 
     def testStreamFunctionInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(99, 1)
 
@@ -81,7 +82,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testStreamFunctionInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", server)
 
         function = client.stream_function(1, 99)
 
@@ -92,7 +93,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -102,12 +103,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.client.disable()
 
     def handleS01F01(self, handler, packet):
-        handler.send_response(secsgem.SecsS01F02(), packet.header.system)
+        handler.send_response(secsgem.secs.SecsS01F02(), packet.header.system)
 
     def performSelect(self):
         # select
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.HsmsPacket(secsgem.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -124,7 +125,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         #send s01e01
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F01()))
         
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -140,7 +141,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.performSelect()
 
         #send s01e01
-        clientCommandThread = threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.SecsS01F01(),), \
+        clientCommandThread = threading.Thread(target=self.client.send_and_waitfor_response, args=(secsgem.secs.SecsS01F01(),), \
             name="TestSecsHandlerPassive_testStreamFunctionSending")
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
@@ -153,7 +154,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F02()))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -165,7 +166,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         #send s01e01
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F01()))
         
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -180,7 +181,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         #send s01e01
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F01()))
         
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -201,7 +202,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         #send s01e01
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F01()))
+        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F01()))
         
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -233,7 +234,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(function["CEED"], False)
         self.assertEqual(function["CEID"].get(), [])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F38(secsgem.ERACK.ACCEPTED))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F38(secsgem.secs.data_items.ERACK.ACCEPTED))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -261,7 +262,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"].get(), [])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F34(secsgem.DRACK.ACK))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F34(secsgem.secs.data_items.DRACK.ACK))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -288,7 +289,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -315,7 +316,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -342,7 +343,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F04([1337]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F04([1337]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -369,7 +370,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F04([1337]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F04([1337]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -396,8 +397,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.U1(0), "ECMAX": secsgem.U1(100), "ECDEF": secsgem.U1(50), "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
+            "ECMIN": secsgem.secs.variables.U1(0), "ECMAX": secsgem.secs.variables.U1(100), "ECDEF": secsgem.secs.variables.U1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -424,8 +425,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.U1(0), "ECMAX": secsgem.U1(100), "ECDEF": secsgem.U1(50), "UNITS": "mm"}]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
+            "ECMIN": secsgem.secs.variables.U1(0), "ECMAX": secsgem.secs.variables.U1(100), "ECDEF": secsgem.secs.variables.U1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -452,7 +453,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F14([1337]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F14([1337]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -479,7 +480,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [1])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F14([1337]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F14([1337]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -506,7 +507,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [{'ECID': 1, 'ECV': u'1337'}])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F16(secsgem.EAC.ACK))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F16(secsgem.secs.data_items.EAC.ACK))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -533,7 +534,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
         self.assertEqual(function.get(), [{'ECV': 1337, 'ECID': 1}])
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F16(secsgem.EAC.ACK))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS02F16(secsgem.secs.data_items.EAC.ACK))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -562,7 +563,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(function.TID.get(), 0)
         self.assertEqual(function.TEXT.get(), "Hello World")
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS10F04(secsgem.ACKC10.ACCEPTED))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS10F04(secsgem.secs.data_items.ACKC10.ACCEPTED))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -585,7 +586,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
 
-        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS01F02([]))
+        packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.SecsS01F02([]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -600,7 +601,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.performSelect()
 
         system_id = self.server.get_next_system_counter()
-        packet = self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F02([]))
+        packet = self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F02([]))
         self.server.simulate_packet(packet)
 
     def testExceptionFunctionCallback(self):
@@ -612,7 +613,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.performSelect()
 
         system_id = self.server.get_next_system_counter()
-        packet = self.server.generate_stream_function_packet(system_id, secsgem.SecsS01F02([]))
+        packet = self.server.generate_stream_function_packet(system_id, secsgem.secs.SecsS01F02([]))
         self.server.simulate_packet(packet)
 
     def testGetCeidName(self):
@@ -693,7 +694,7 @@ class TestSecsHandlerActive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.SecsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler("127.0.0.1", 5000, True, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()

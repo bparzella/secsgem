@@ -108,10 +108,10 @@ class Dynamic(Base):
 
         **Example**::
 
-            >>> import secsgem
+            >>> import secsgem.secs
             >>>
-            >>> var = secsgem.Dynamic([secsgem.secs.variables.String,
-            ...                               secsgem.secs.variables.U1])
+            >>> var = secsgem.secs.variables.Dynamic([secsgem.secs.variables.String,
+            ...                                       secsgem.secs.variables.U1])
             >>> var.set(secsgem.secs.variables.U1(10))
             >>> var
             <U1 10 >

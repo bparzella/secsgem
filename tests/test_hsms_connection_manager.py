@@ -16,21 +16,21 @@
 
 import unittest.mock
 
-import secsgem
+import secsgem.hsms
 
 from test_connection import HsmsTestServer
 
 
 class TestHsmsConnectionManager(unittest.TestCase):
     def testConstructor(self):
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
 
         self.assertIsNotNone(manager)
 
     def testAddEvent(self):
         f = unittest.mock.Mock()
 
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
 
         manager.events.test += f
 
@@ -38,7 +38,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
 
     def testAddPassivePeer(self):
         server = HsmsTestServer()
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
 
         manager._testServerObject = server
 
@@ -51,7 +51,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
 
     def testAddActivePeer(self):
         server = HsmsTestServer()
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
 
         manager._testServerObject = server
 
@@ -63,7 +63,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
 
     def testRemoveActivePeer(self):
         server = HsmsTestServer()
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
 
         manager._testServerObject = server
 
@@ -78,6 +78,6 @@ class TestHsmsConnectionManager(unittest.TestCase):
         manager.stop()
 
     def testHasConnectionToUnknownHost(self):
-        manager = secsgem.HsmsConnectionManager()
+        manager = secsgem.hsms.HsmsConnectionManager()
         self.assertIsNone(manager.has_connection_to("test"))
         self.assertIsNone(manager["test"])

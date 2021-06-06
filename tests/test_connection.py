@@ -18,11 +18,9 @@
 import logging
 
 import datetime
-import time
 
-import threading
+import secsgem.hsms
 
-from secsgem import HsmsPacket, HsmsStreamFunctionHeader
 
 class HsmsTestConnection(object):
     """
@@ -183,4 +181,4 @@ class HsmsTestServer(object):
         return self.connection.get_next_system_counter()
 
     def generate_stream_function_packet(self, system_id, packet, session_id=0):
-        return HsmsPacket(HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())
+        return secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())

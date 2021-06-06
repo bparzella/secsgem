@@ -19,7 +19,7 @@ from builtins import chr
 
 import pytest
 
-import secsgem
+import secsgem.common
 
 
 class TestCodecJIS8:

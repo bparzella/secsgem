@@ -29,13 +29,13 @@ $ pip install git+git://github.com/bparzella/secsgem
 import logging
 import code
 
-import secsgem
+import secsgem.gem
 
 from communication_log_file_handler import CommunicationLogFileHandler
 
-class SampleHost(secsgem.GemHostHandler):
+class SampleHost(secsgem.gem.GemHostHandler):
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        secsgem.gem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "gemhost"
         self.SOFTREV = "1.0.0"
