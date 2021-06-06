@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_list.py
+# list_type.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -17,14 +17,14 @@
 
 from collections import OrderedDict
 
-from .secs_var import SecsVar
-from . import secs_var_array  # pylint: disable=cyclic-import
+from .base import Base
+from . import array  # pylint: disable=cyclic-import
 from . import functions  # pylint: disable=cyclic-import
 
 from ...common import indent_block
 
 
-class SecsVarList(SecsVar):
+class List(Base):
     """List variable type. List with items of different types."""
 
     format_code = 0
@@ -60,7 +60,7 @@ class SecsVarList(SecsVar):
         :param count: number of fields in the list
         :type count: integer
         """
-        super(SecsVarList, self).__init__()
+        super(List, self).__init__()
 
         self.name = "DATA"
 
@@ -80,7 +80,7 @@ class SecsVarList(SecsVar):
         :rtype: string
         """
         if showname:
-            arrayName = "{}: ".format(SecsVarList.get_name_from_format(data_format))
+            arrayName = "{}: ".format(List.get_name_from_format(data_format))
         else:
             arrayName = ""
 
@@ -91,9 +91,9 @@ class SecsVarList(SecsVar):
                     continue
                 if isinstance(item, list):
                     if len(item) == 1:
-                        items.append(indent_block(secs_var_array.SecsVarArray.get_format(item[0], True), 4))
+                        items.append(indent_block(array.Array.get_format(item[0], True), 4))
                     else:
-                        items.append(indent_block(SecsVarList.get_format(item, True), 4))
+                        items.append(indent_block(List.get_format(item, True), 4))
                 else:
                     items.append(indent_block(item.get_format(), 4))
             return arrayName + "{\n" + "\n".join(items) + "\n}"
@@ -123,7 +123,7 @@ class SecsVarList(SecsVar):
 
     def __iter__(self):
         """Get an iterator."""
-        return SecsVarList._SecsVarListIter(self.data.keys())
+        return List._SecsVarListIter(self.data.keys())
 
     def __setitem__(self, index, value):
         """Set an item using the indexer operator."""
@@ -132,7 +132,7 @@ class SecsVarList(SecsVar):
 
         if isinstance(value, (type(self.data[index]), self.data[index].__class__.__bases__)):
             self.data[index] = value
-        elif isinstance(value, SecsVar):
+        elif isinstance(value, Base):
             raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
                                                                      self.data[index].__class__.__name__))
         else:
@@ -149,11 +149,11 @@ class SecsVarList(SecsVar):
                 continue
 
             item_value = functions.generate(item)
-            if isinstance(item_value, secs_var_array.SecsVarArray):
+            if isinstance(item_value, array.Array):
                 result_data[item_value.name] = item_value
-            elif isinstance(item_value, SecsVarList):
-                result_data[SecsVarList.get_name_from_format(item)] = item_value
-            elif isinstance(item_value, SecsVar):
+            elif isinstance(item_value, List):
+                result_data[List.get_name_from_format(item)] = item_value
+            elif isinstance(item_value, Base):
                 result_data[item_value.name] = item_value
             else:
                 raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
@@ -176,7 +176,7 @@ class SecsVarList(SecsVar):
         if item in self.data:
             if isinstance(value, (type(self.data[item]), self.data[item].__class__.__bases__)):
                 self.data[item] = value
-            elif isinstance(value, SecsVar):
+            elif isinstance(value, Base):
                 raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
                                                                          self.data[item].__class__.__name__))
             else:
@@ -190,7 +190,7 @@ class SecsVarList(SecsVar):
         Generates a name for the passed data_format.
 
         :param data_format: data_format to get name for
-        :type data_format: list/SecsVar based class
+        :type data_format: list/Base based class
         :returns: name for data_format
         :rtype: str
         """

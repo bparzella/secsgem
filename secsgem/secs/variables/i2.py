@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_u4.py
+# i2.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,14 +13,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS 4 byte unsigned integer variable type."""
+"""SECS 2 byte signed integer variable type."""
 
-from .secs_var_number import SecsVarNumber
+from .base_number import BaseNumber
 
 
-class SecsVarU4(SecsVarNumber):
+class I2(BaseNumber):
     """
-    Secs type for 4 byte unsigned data.
+    Secs type for 2 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -28,11 +28,11 @@ class SecsVarU4(SecsVarNumber):
     :type count: integer
     """
 
-    format_code = 0o54
-    text_code = "U4"
+    format_code = 0o32
+    text_code = "I2"
     _base_type = int
-    _min = 0
-    _max = 4294967295
-    _bytes = 4
-    _struct_code = "L"
+    _min = -32768
+    _max = 32767
+    _bytes = 2
+    _struct_code = "h"
     preferred_types = [int]

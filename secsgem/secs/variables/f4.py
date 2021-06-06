@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_i4.py
+# f4.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,26 +13,26 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS 4 byte signed integer variable type."""
+"""SECS 4 byte float variable type."""
 
-from .secs_var_number import SecsVarNumber
+from .base_number import BaseNumber
 
 
-class SecsVarI4(SecsVarNumber):
+class F4(BaseNumber):
     """
-    Secs type for 4 byte signed data.
+    Secs type for 4 byte float data.
 
     :param value: initial value
-    :type value: list/integer
+    :type value: list/float
     :param count: number of items this value
     :type count: integer
     """
 
-    format_code = 0o34
-    text_code = "I4"
-    _base_type = int
-    _min = -2147483648
-    _max = 2147483647
+    format_code = 0o44
+    text_code = "F4"
+    _base_type = float
+    _min = -3.40282e+38
+    _max = 3.40282e+38
     _bytes = 4
-    _struct_code = "l"
-    preferred_types = [int]
+    _struct_code = "f"
+    preferred_types = [float]

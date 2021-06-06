@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_u8.py
+# i8.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,14 +13,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS 8 byte unsigned integer variable type."""
+"""SECS 8 byte signed integer variable type."""
 
-from .secs_var_number import SecsVarNumber
+from .base_number import BaseNumber
 
 
-class SecsVarU8(SecsVarNumber):
+class I8(BaseNumber):
     """
-    Secs type for 8 byte unsigned data.
+    Secs type for 8 byte signed data.
 
     :param value: initial value
     :type value: list/integer
@@ -28,11 +28,11 @@ class SecsVarU8(SecsVarNumber):
     :type count: integer
     """
 
-    format_code = 0o50
-    text_code = "U8"
+    format_code = 0o30
+    text_code = "I8"
     _base_type = int
-    _min = 0
-    _max = 18446744073709551615
+    _min = -9223372036854775808
+    _max = 9223372036854775807
     _bytes = 8
-    _struct_code = "Q"
+    _struct_code = "q"
     preferred_types = [int]

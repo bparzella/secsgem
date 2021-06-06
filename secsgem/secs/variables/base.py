@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var.py
+# base.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -16,12 +16,12 @@
 """SECS variable base type."""
 
 
-class SecsVar:
+class Base:
     """
     Base class for SECS variables.
 
     Due to the python types, wrapper classes for variables are required.
-    If constructor is called with SecsVar or subclass only the value is copied.
+    If constructor is called with Base or subclass only the value is copied.
     """
 
     format_code = -1
@@ -107,5 +107,5 @@ class SecsVar:
 
     @property
     def is_dynamic(self) -> bool:
-        """Check if this instance is SecsVarDynamic or derived."""
+        """Check if this instance is Dynamic or derived."""
         return False

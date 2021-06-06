@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_boolean.py
+# binary.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,33 +13,30 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS boolean variable type."""
+"""SECS binary variable type."""
 
-from .secs_var import SecsVar
+from .base import Base
 
 
-class SecsVarBoolean(SecsVar):
-    """Secs type for boolean data."""
+class Binary(Base):
+    """Secs type for binary data."""
 
-    format_code = 0o11
-    text_code = "BOOLEAN"
-    preferred_types = [bool]
-
-    _true_strings = ["TRUE", "YES"]
-    _false_strings = ["FALSE", "NO"]
+    format_code = 0o10
+    text_code = "B"
+    preferred_types = [bytes, bytearray]
 
     def __init__(self, value=None, count=-1):
         """
-        Initialize a boolean secs variable.
+        Initialize a binary secs variable.
 
         :param value: initial value
-        :type value: list/boolean
+        :type value: string/integer
         :param count: number of items this value
         :type count: integer
         """
-        super(SecsVarBoolean, self).__init__()
+        super(Binary, self).__init__()
 
-        self.value = []
+        self.value = bytearray()
         self.count = count
         if value is not None:
             self.set(value)
@@ -49,12 +46,9 @@ class SecsVarBoolean(SecsVar):
         if len(self.value) == 0:
             return "<{}>".format(self.text_code)
 
-        data = ""
+        data = " ".join("0x{:x}".format(c) for c in self.value)
 
-        for boolean in self.value:
-            data += "{} ".format(boolean)
-
-        return "<{} {}>".format(self.text_code, data)
+        return "<{} {}>".format(self.text_code, data.strip())
 
     def __len__(self):
         """Get the length."""
@@ -62,41 +56,45 @@ class SecsVarBoolean(SecsVar):
 
     def __getitem__(self, key):
         """Get an item using the indexer operator."""
+        if key >= self.count:
+            raise IndexError("Index {} out of bounds ({})".format(key, self.count))
+
+        if key >= len(self.value):
+            return 0
+
         return self.value[key]
 
     def __setitem__(self, key, item):
         """Set an item using the indexer operator."""
+        if key >= self.count:
+            raise IndexError("Index {} out of bounds ({})".format(key, self.count))
+
+        if key >= len(self.value):
+            while key >= len(self.value):
+                self.value.append(0)
+
         self.value[key] = item
 
     def __eq__(self, other):
         """Check equality with other object."""
-        if isinstance(other, SecsVar):
+        if isinstance(other, Base):
             if other.is_dynamic:
                 return other.value.value == self.value
             return other.value == self.value
 
-        if isinstance(other, list):
-            return other == self.value
-
-        return [other] == self.value
+        return other == self.value
 
     def __hash__(self):
         """Get data item for hashing."""
-        return hash(str(self.value))
+        return hash(bytes(self.value))
 
     def __check_single_item_support(self, value):
         if isinstance(value, bool):
             return True
 
         if isinstance(value, int):
-            if 0 <= value <= 1:
+            if 0 <= value <= 255:
                 return True
-            return False
-
-        if isinstance(value, str):
-            if value.upper() in self._true_strings or value.upper() in self._false_strings:
-                return True
-
             return False
 
         return False
@@ -109,7 +107,7 @@ class SecsVarBoolean(SecsVar):
         :type value: any
         """
         if isinstance(value, (list, tuple)):
-            if 0 < self.count < len(value):
+            if self.count > 0 and len(value) > self.count:
                 return False
             for item in value:
                 if not self.__check_single_item_support(item):
@@ -118,78 +116,70 @@ class SecsVarBoolean(SecsVar):
             return True
 
         if isinstance(value, bytearray):
-            if 0 < self.count < len(value):
+            if self.count > 0 and len(value) > self.count:
                 return False
-            for char in value:
-                if not 0 <= char <= 1:
-                    return False
+            return True
+
+        if isinstance(value, bytes):
+            if self.count > 0 and len(value) > self.count:
+                return False
+            return True
+
+        if isinstance(value, str):
+            if self.count > 0 and len(value) > self.count:
+                return False
+            try:
+                value.encode('ascii')
+            except UnicodeEncodeError:
+                return False
+
             return True
 
         return self.__check_single_item_support(value)
-
-    def __convert_single_item(self, value):
-        if isinstance(value, bool):
-            return value
-
-        if isinstance(value, int):
-            if not 0 <= value <= 1:
-                raise ValueError("Value {} out of bounds".format(value))
-
-            return bool(value)
-
-        if isinstance(value, str):
-            if value.upper() in self._true_strings:
-                return True
-
-            if value.upper() in self._false_strings:
-                return False
-
-            raise ValueError("Value {} out of bounds".format(value))
-
-        raise ValueError("Can't convert value {}".format(value))
 
     def set(self, value):
         """
         Set the internal value to the provided value.
 
         :param value: new value
-        :type value: list/boolean
+        :type value: string/integer
         """
-        if isinstance(value, (list, tuple)):
-            if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
+        if value is None:
+            return
 
-            new_value = []
-            for item in value:
-                new_value.append(self.__convert_single_item(item))
-
-            self.value = new_value
+        if isinstance(value, bytes):
+            value = bytearray(value)
+        elif isinstance(value, str):
+            value = bytearray(value.encode('ascii'))
+        elif isinstance(value, (list, tuple)):
+            value = bytearray(value)
         elif isinstance(value, bytearray):
-            if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
-
-            new_value = []
-            for char in value:
-                if not 0 <= char <= 1:
-                    raise ValueError("Value {} out of bounds".format(char))
-
-                new_value.append(char)
-
-            self.value = new_value
+            pass
+        elif isinstance(value, int):
+            if 0 <= value <= 255:
+                value = bytearray([value])
+            else:
+                raise ValueError("Value {} of type {} is out of range for {}".format(value, type(value).__name__,
+                                                                                     self.__class__.__name__))
         else:
-            self.value = [self.__convert_single_item(value)]
+            raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
+
+        if 0 < self.count < len(value):
+            raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
+
+        self.value = value
 
     def get(self):
         """
         Return the internal value.
 
         :returns: internal value
-        :rtype: list/boolean
+        :rtype: list/integer
         """
         if len(self.value) == 1:
             return self.value[0]
 
-        return self.value
+        return bytes(self.value)
 
     def encode(self):
         """
@@ -198,14 +188,10 @@ class SecsVarBoolean(SecsVar):
         :returns: encoded data bytes
         :rtype: string
         """
-        result = self.encode_item_header(len(self.value))
+        result = self.encode_item_header(len(self.value) if self.value is not None else 0)
 
-        for counter in range(len(self.value)):
-            value = self.value[counter]
-            if value:
-                result += b"\1"
-            else:
-                result += b"\0"
+        if self.value is not None:
+            result += bytes(self.value)
 
         return result
 
@@ -222,16 +208,12 @@ class SecsVarBoolean(SecsVar):
         """
         (text_pos, _, length) = self.decode_item_header(data, start)
 
-        result = []
+        # string
+        result = None
 
-        for _ in range(length):
-            if bytearray(data)[text_pos] == 0:
-                result.append(False)
-            else:
-                result.append(True)
-
-            text_pos += 1
+        if length > 0:
+            result = data[text_pos:text_pos + length]
 
         self.set(result)
 
-        return text_pos
+        return text_pos + length

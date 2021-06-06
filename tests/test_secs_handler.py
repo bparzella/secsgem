@@ -397,7 +397,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(function.get(), [])
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
+            "ECMIN": secsgem.U1(0), "ECMAX": secsgem.U1(100), "ECDEF": secsgem.U1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)
@@ -425,7 +425,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(function.get(), [1])
 
         packet = self.server.generate_stream_function_packet(packet.header.system, secsgem.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.SecsVarU1(0), "ECMAX": secsgem.SecsVarU1(100), "ECDEF": secsgem.SecsVarU1(50), "UNITS": "mm"}]))
+            "ECMIN": secsgem.U1(0), "ECMAX": secsgem.U1(100), "ECDEF": secsgem.U1(50), "UNITS": "mm"}]))
         self.server.simulate_packet(packet)
 
         clientCommandThread.join(1)

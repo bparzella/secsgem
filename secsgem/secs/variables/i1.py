@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_f8.py
+# i1.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,26 +13,26 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS 8 byte float variable type."""
+"""SECS 1 byte signed integer variable type."""
 
-from .secs_var_number import SecsVarNumber
+from .base_number import BaseNumber
 
 
-class SecsVarF8(SecsVarNumber):
+class I1(BaseNumber):
     """
-    Secs type for 8 byte float data.
+    Secs type for 1 byte signed data.
 
     :param value: initial value
-    :type value: list/float
+    :type value: list/integer
     :param count: number of items this value
     :type count: integer
     """
 
-    format_code = 0o40
-    text_code = "F8"
-    _base_type = float
-    _min = -1.79769e+308
-    _max = 1.79769e+308
-    _bytes = 8
-    _struct_code = "d"
-    preferred_types = [float]
+    format_code = 0o31
+    text_code = "I1"
+    _base_type = int
+    _min = -128
+    _max = 127
+    _bytes = 1
+    _struct_code = "b"
+    preferred_types = [int]

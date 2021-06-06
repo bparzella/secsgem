@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_string.py
+# string.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -17,10 +17,10 @@
 
 import unicodedata
 
-from .secs_var_text import SecsVarText
+from .base_text import BaseText
 
 
-class SecsVarString(SecsVarText):
+class String(BaseText):
     """
     Secs type for string data.
 

@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_f4.py
+# u2.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,26 +13,26 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""SECS 4 byte float variable type."""
+"""SECS 2 byte unsigned integer variable type."""
 
-from .secs_var_number import SecsVarNumber
+from .base_number import BaseNumber
 
 
-class SecsVarF4(SecsVarNumber):
+class U2(BaseNumber):
     """
-    Secs type for 4 byte float data.
+    Secs type for 2 byte unsigned data.
 
     :param value: initial value
-    :type value: list/float
+    :type value: list/integer
     :param count: number of items this value
     :type count: integer
     """
 
-    format_code = 0o44
-    text_code = "F4"
-    _base_type = float
-    _min = -3.40282e+38
-    _max = 3.40282e+38
-    _bytes = 4
-    _struct_code = "f"
-    preferred_types = [float]
+    format_code = 0o52
+    text_code = "U2"
+    _base_type = int
+    _min = 0
+    _max = 65535
+    _bytes = 2
+    _struct_code = "H"
+    preferred_types = [int]

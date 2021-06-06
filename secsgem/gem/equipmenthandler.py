@@ -19,10 +19,9 @@ from datetime import datetime
 
 from dateutil.tz import tzlocal
 
-from ..common.fysom import Fysom
+from ..common import fysom
 from ..gem.handler import GemHandler
-from ..secs.variables import SecsVarString, SecsVarU4, SecsVarArray, SecsVarI2, \
-    SecsVarI4, SecsVarBinary
+from ..secs.variables import String, U4, Array, I2, I4, Binary
 from ..secs.data_items import SV, ECV, ACKC5, ALED, ALCD, HCACK
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
@@ -65,7 +64,7 @@ class DataValue:
         :param name: long name of the data value
         :type name: string
         :param value_type: type of the data value
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
         :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
         :type use_callback: boolean
         """
@@ -76,9 +75,9 @@ class DataValue:
         self.value = 0
 
         if isinstance(self.dvid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -106,7 +105,7 @@ class StatusVariable:
         :param unit: unit (see SEMI E5, Units of Measure)
         :type unit: string
         :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
         :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
         :type use_callback: boolean
         """
@@ -118,9 +117,9 @@ class StatusVariable:
         self.value = 0
 
         if isinstance(self.svid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -153,9 +152,9 @@ class CollectionEvent:
         self.data_values = data_values
 
         if isinstance(self.ceid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -209,9 +208,9 @@ class CollectionEventReport:
         self.vars = variables
 
         if isinstance(self.rptid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -246,7 +245,7 @@ class EquipmentConstant:
         :param unit: unit (see SEMI E5, Units of Measure)
         :type unit: string
         :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.SecsVar`
+        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
         :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
         :type use_callback: boolean
         """
@@ -261,9 +260,9 @@ class EquipmentConstant:
         self.value = default_value
 
         if isinstance(self.ecid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -299,9 +298,9 @@ class Alarm:
         self.set = False
 
         if isinstance(self.alid, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -335,9 +334,9 @@ class RemoteCommand:
         self.ce_finished = ce_finished
 
         if isinstance(self.rcmd, int):
-            self.id_type = SecsVarU4
+            self.id_type = U4
         else:
-            self.id_type = SecsVarString
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -383,11 +382,11 @@ class GemEquipmentHandler(GemHandler):
         }
 
         self._status_variables = {
-            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", SecsVarString),
-            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", SecsVarBinary),
-            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", SecsVarArray),
-            SVID_ALARMS_ENABLED: StatusVariable(SVID_ALARMS_ENABLED, "AlarmsEnabled", "", SecsVarArray),
-            SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", SecsVarArray),
+            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", String),
+            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", Binary),
+            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", Array),
+            SVID_ALARMS_ENABLED: StatusVariable(SVID_ALARMS_ENABLED, "AlarmsEnabled", "", Array),
+            SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", Array),
         }
 
         self._collection_events = {
@@ -401,8 +400,8 @@ class GemEquipmentHandler(GemHandler):
         self._equipment_constants = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
-                                                                     "sec", SecsVarI2),
-            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", SecsVarI4),
+                                                                     "sec", I2),
+            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", I4),
         }
 
         self._alarms = {
@@ -416,7 +415,7 @@ class GemEquipmentHandler(GemHandler):
         self._registered_reports = {}
         self._registered_collection_events = {}
 
-        self.controlState = Fysom({
+        self.controlState = fysom.Fysom({
             'initial': "INIT",
             'events': [
                 {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1
@@ -582,11 +581,11 @@ class GemEquipmentHandler(GemHandler):
         Override in inherited class to provide custom data value request handling.
 
         :param dvid: Id of the data value encoded in the corresponding type
-        :type dvid: :class:`secsgem.secs.variables.SecsVar`
+        :type dvid: :class:`secsgem.secs.variables.Base`
         :param dv: The data value requested
         :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         del dvid  # unused variable
 
@@ -599,7 +598,7 @@ class GemEquipmentHandler(GemHandler):
         :param dv: The data value requested
         :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         if dv.use_callback:
             return self.on_dv_value_request(dv.id_type(dv.dvid), dv)
@@ -625,11 +624,11 @@ class GemEquipmentHandler(GemHandler):
         Override in inherited class to provide custom status variable request handling.
 
         :param svid: Id of the status variable encoded in the corresponding type
-        :type svid: :class:`secsgem.secs.variables.SecsVar`
+        :type svid: :class:`secsgem.secs.variables.Base`
         :param sv: The status variable requested
         :type sv: :class:`secsgem.gem.equipmenthandler.StatusVariable`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         del svid  # unused variable
 
@@ -642,7 +641,7 @@ class GemEquipmentHandler(GemHandler):
         :param sv: The status variable requested
         :type sv: :class:`secsgem.gem.equipmenthandler.StatusVariable`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         if sv.svid == SVID_CLOCK:
             return sv.value_type(self._get_clock())
@@ -685,7 +684,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for svid in message:
                 if svid not in self._status_variables:
-                    responses.append(SecsVarArray(SV, []))
+                    responses.append(Array(SV, []))
                 else:
                     sv = self._status_variables[svid]
                     responses.append(self._get_sv_value(sv))
@@ -994,11 +993,11 @@ class GemEquipmentHandler(GemHandler):
         Override in inherited class to provide custom equipment constant request handling.
 
         :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.SecsVar`
+        :type ecid: :class:`secsgem.secs.variables.Base`
         :param ec: The equipment constant requested
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         del ecid  # unused variable
 
@@ -1011,11 +1010,11 @@ class GemEquipmentHandler(GemHandler):
         Override in inherited class to provide custom equipment constant update handling.
 
         :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.SecsVar`
+        :type ecid: :class:`secsgem.secs.variables.Base`
         :param ec: The equipment constant to be updated
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
         :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.SecsVar`
+        :type value: :class:`secsgem.secs.variables.Base`
         """
         del ecid  # unused variable
 
@@ -1028,7 +1027,7 @@ class GemEquipmentHandler(GemHandler):
         :param ec: The equipment requested
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
         :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.SecsVar`
+        :rtype: :class:`secsgem.secs.variables.Base`
         """
         if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             return ec.value_type(self.establishCommunicationTimeout)
@@ -1046,7 +1045,7 @@ class GemEquipmentHandler(GemHandler):
         :param ec: The equipment requested
         :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
         :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.SecsVar`
+        :type value: :class:`secsgem.secs.variables.Base`
         """
         if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             self.establishCommunicationTimeout = value
@@ -1080,7 +1079,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
-                    responses.append(SecsVarArray(ECV, []))
+                    responses.append(Array(ECV, []))
                 else:
                     ec = self._equipment_constants[ecid]
                     responses.append(self._get_ec_value(ec))

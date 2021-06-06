@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_number.py
+# base_number.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -17,10 +17,10 @@
 
 import struct
 
-from .secs_var import SecsVar
+from .base import Base
 
 
-class SecsVarNumber(SecsVar):
+class BaseNumber(Base):
     """Secs base type for numeric data."""
 
     format_code = 0
@@ -40,7 +40,7 @@ class SecsVarNumber(SecsVar):
         :param count: number of items this value
         :type count: integer
         """
-        super(SecsVarNumber, self).__init__()
+        super(BaseNumber, self).__init__()
 
         self.value = []
         self.count = count
@@ -73,7 +73,7 @@ class SecsVarNumber(SecsVar):
 
     def __eq__(self, other):
         """Check equality with other object."""
-        if isinstance(other, SecsVar):
+        if isinstance(other, Base):
             if other.is_dynamic:
                 return other.value.value == self.value
             return other.value == self.value

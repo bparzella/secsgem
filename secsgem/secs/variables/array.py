@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_array.py
+# array.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -15,15 +15,15 @@
 #####################################################################
 """SECS array variable type."""
 
-from . import secs_var_list  # pylint: disable=cyclic-import
+from . import list_type  # pylint: disable=cyclic-import
 from . import functions  # pylint: disable=cyclic-import
 
-from .secs_var import SecsVar
+from .base import Base
 
 from ...common import indent_block
 
 
-class SecsVarArray(SecsVar):
+class Array(Base):
     """List variable type. List with items of same type."""
 
     format_code = 0
@@ -53,19 +53,19 @@ class SecsVarArray(SecsVar):
         Initialize a secs array variable.
 
         :param data_format: internal data definition/sample
-        :type data_format: :class:`secs.variables.SecsVar`
+        :type data_format: :class:`secs.variables.Base`
         :param value: initial value
         :type value: list
         :param count: number of fields in the list
         :type count: integer
         """
-        super(SecsVarArray, self).__init__()
+        super(Array, self).__init__()
 
         self.item_decriptor = data_format
         self.count = count
         self.data = []
         if isinstance(data_format, list):
-            self.name = secs_var_list.SecsVarList.get_name_from_format(data_format)
+            self.name = list_type.List.get_name_from_format(data_format)
         elif hasattr(data_format, "__name__"):
             self.name = data_format.__name__
         else:
@@ -85,7 +85,7 @@ class SecsVarArray(SecsVar):
         if showname:
             arrayName = "{}: "
             if isinstance(data_format, list):
-                arrayName = arrayName.format(secs_var_list.SecsVarList.get_name_from_format(data_format))
+                arrayName = arrayName.format(list_type.List.get_name_from_format(data_format))
             else:
                 arrayName = arrayName.format(data_format.__name__)
         else:
@@ -93,7 +93,7 @@ class SecsVarArray(SecsVar):
 
         if isinstance(data_format, list):
             return "{}[\n{}\n    ...\n]".format(arrayName,
-                                                indent_block(secs_var_list.SecsVarList.get_format(data_format), 4))
+                                                indent_block(list_type.List.get_format(data_format), 4))
 
         return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(data_format.get_format(not showname), 4))
 
@@ -119,13 +119,13 @@ class SecsVarArray(SecsVar):
 
     def __iter__(self):
         """Get an iterator."""
-        return SecsVarArray._SecsVarArrayIter(self.data)
+        return Array._SecsVarArrayIter(self.data)
 
     def __setitem__(self, key, value):
         """Set an item using the indexer operator."""
         if isinstance(value, (type(self.data[key]), self.data[key].__class__.__bases__)):
             self.data[key] = value
-        elif isinstance(value, SecsVar):
+        elif isinstance(value, Base):
             raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
                                                                      self.data[key].__class__.__name__))
         else:

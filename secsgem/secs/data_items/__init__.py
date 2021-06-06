@@ -16,9 +16,7 @@
 # pylint: disable=locally-disabled, non-parent-init-called
 """Data items for functions."""
 
-from ..variables import SecsVarArray, SecsVarString, SecsVarBinary, \
-    SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarU1, \
-    SecsVarU2, SecsVarU4, SecsVarU8, SecsVarBoolean, SecsVarDynamic
+from .. import variables
 
 
 # DataItemMeta adds __type__ member as base class
@@ -51,7 +49,7 @@ class DataItemBase(metaclass=DataItemMeta):
         """
         self.name = self.__class__.__name__
 
-        if self.__type__ is SecsVarDynamic:
+        if self.__type__ is variables.Dynamic:
             self.__type__.__init__(self, self.__allowedtypes__, value, self.__count__)
         else:
             self.__type__.__init__(self, value, self.__count__)
@@ -69,7 +67,7 @@ class DataItemBase(metaclass=DataItemMeta):
         else:
             clsname = "DATA"
 
-        if cls.__type__ is SecsVarDynamic:
+        if cls.__type__ is variables.Dynamic:
             if cls.__count__ > 0:
                 return "{}: {}[{}]".format(clsname,
                                            "/".join([x.text_code for x in cls.__allowedtypes__]),
@@ -87,7 +85,7 @@ class ACKC5(DataItemBase):
     """
     Acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -105,7 +103,7 @@ class ACKC5(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -116,7 +114,7 @@ class ACKC6(DataItemBase):
     """
     Acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -137,7 +135,7 @@ class ACKC6(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -148,7 +146,7 @@ class ACKC7(DataItemBase):
     """
     Acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -187,7 +185,7 @@ class ACKC7(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -203,7 +201,7 @@ class ACKC10(DataItemBase):
     """
     Acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -227,7 +225,7 @@ class ACKC10(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -239,7 +237,7 @@ class ACKA(DataItemBase):
     """
     Request success.
 
-       :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       :Types: :class:`Boolean <secsgem.secs.variables.Boolean>`
        :Length: 1
 
     **Values**
@@ -272,7 +270,7 @@ class ACKA(DataItemBase):
 
     """
 
-    __type__ = SecsVarBoolean
+    __type__ = variables.Boolean
     __count__ = 1
 
 
@@ -280,7 +278,7 @@ class ALCD(DataItemBase):
     """
     Alarm code byte.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -316,7 +314,7 @@ class ALCD(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     PERSONAL_SAFETY = 1
@@ -334,7 +332,7 @@ class ALED(DataItemBase):
     """
     Alarm en-/disable code byte.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -355,7 +353,7 @@ class ALED(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     DISABLE = 0
@@ -367,14 +365,14 @@ class ALID(DataItemBase):
     Alarm ID.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
@@ -384,8 +382,17 @@ class ALID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
 
 
 class ALTX(DataItemBase):
@@ -393,7 +400,7 @@ class ALTX(DataItemBase):
     Alarm ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
@@ -401,7 +408,7 @@ class ALTX(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 120
 
 
@@ -410,20 +417,20 @@ class ATTRDATA(DataItemBase):
     Object attribute value.
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Array <secsgem.secs.variables.Array>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F20 <secsgem.secs.functions.SecsS01F20>`
@@ -450,9 +457,23 @@ class ATTRDATA(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
-                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Array,
+        variables.Boolean,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.F4,
+        variables.F8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class ATTRID(DataItemBase):
@@ -460,11 +481,11 @@ class ATTRID(DataItemBase):
     Object attribute identifier.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F19 <secsgem.secs.functions.SecsS01F19>`
@@ -492,15 +513,21 @@ class ATTRID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.String
+    ]
 
 
 class ATTRRELN(DataItemBase):
     """
     Attribute relation to attribute of object.
 
-       :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       :Types: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Values**
         +-------+-----------------------+------------------------------------------------------+
@@ -530,7 +557,7 @@ class ATTRRELN(DataItemBase):
 
     """
 
-    __type__ = SecsVarU1
+    __type__ = variables.U1
 
     EQUAL = 0
     NOT_EQUAL = 1
@@ -547,8 +574,8 @@ class BCEQU(DataItemBase):
     Bin code equivalents.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F03 <secsgem.secs.functions.SecsS12F03>`
@@ -556,8 +583,8 @@ class BCEQU(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.U1, variables.String]
 
 
 class BINLT(DataItemBase):
@@ -565,8 +592,8 @@ class BINLT(DataItemBase):
     Bin list.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F07 <secsgem.secs.functions.SecsS12F07>`
@@ -578,15 +605,15 @@ class BINLT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.U1, variables.String]
 
 
 class CEED(DataItemBase):
     """
     Collection event or trace enable/disable code.
 
-       :Types: :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
+       :Types: :class:`Boolean <secsgem.secs.variables.Boolean>`
        :Length: 1
 
     **Values**
@@ -604,7 +631,7 @@ class CEED(DataItemBase):
 
     """
 
-    __type__ = SecsVarBoolean
+    __type__ = variables.Boolean
     __count__ = 1
 
 
@@ -613,15 +640,15 @@ class CEID(DataItemBase):
     Collection event ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F35 <secsgem.secs.functions.SecsS02F35>`
@@ -643,9 +670,18 @@ class CEID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class COLCT(DataItemBase):
@@ -653,10 +689,10 @@ class COLCT(DataItemBase):
     Column count in dies.
 
     :Types:
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -664,15 +700,20 @@ class COLCT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8
+    ]
 
 
 class COMMACK(DataItemBase):
     """
     Establish communications acknowledge.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -690,7 +731,7 @@ class COMMACK(DataItemBase):
         - :class:`SecsS01F14 <secsgem.secs.functions.SecsS01F14>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -701,7 +742,7 @@ class CPACK(DataItemBase):
     """
     Command parameter acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -721,7 +762,7 @@ class CPACK(DataItemBase):
         - :class:`SecsS02F42 <secsgem.secs.functions.SecsS02F42>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     PARAMETER_UNKNOWN = 1
@@ -734,15 +775,15 @@ class CPNAME(DataItemBase):
     Command parameter name.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
@@ -756,9 +797,18 @@ class CPNAME(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class CPVAL(DataItemBase):
@@ -766,17 +816,17 @@ class CPVAL(DataItemBase):
     Command parameter name.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
@@ -789,9 +839,20 @@ class CPVAL(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4,
-                        SecsVarI8, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Boolean,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class DATAID(DataItemBase):
@@ -799,15 +860,15 @@ class DATAID(DataItemBase):
     Data ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F33 <secsgem.secs.functions.SecsS02F33>`
@@ -857,9 +918,18 @@ class DATAID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class DATALENGTH(DataItemBase):
@@ -867,14 +937,14 @@ class DATALENGTH(DataItemBase):
     Length of data to be sent.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F39 <secsgem.secs.functions.SecsS02F39>`
@@ -893,29 +963,38 @@ class DATALENGTH(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
 
 
 class DATLC(DataItemBase):
     """
     Data location.
 
-       :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       :Types: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`
 
     """
 
-    __type__ = SecsVarU1
+    __type__ = variables.U1
 
 
 class DRACK(DataItemBase):
     """
     Define report acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -939,7 +1018,7 @@ class DRACK(DataItemBase):
         - :class:`SecsS02F34 <secsgem.secs.functions.SecsS02F34>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -954,15 +1033,15 @@ class DSID(DataItemBase):
     Data set ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
@@ -971,9 +1050,18 @@ class DSID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class DUTMS(DataItemBase):
@@ -981,7 +1069,7 @@ class DUTMS(DataItemBase):
     Die units of measure.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -989,7 +1077,7 @@ class DUTMS(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class DVNAME(DataItemBase):
@@ -997,15 +1085,15 @@ class DVNAME(DataItemBase):
     Data value name.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
@@ -1013,9 +1101,18 @@ class DVNAME(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class DVVAL(DataItemBase):
@@ -1023,20 +1120,20 @@ class DVVAL(DataItemBase):
     Data value.
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Array <secsgem.secs.variables.Array>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
@@ -1045,16 +1142,30 @@ class DVVAL(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
-                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Array,
+        variables.Boolean,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.F4,
+        variables.F8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class EAC(DataItemBase):
     """
     Equipment acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1076,7 +1187,7 @@ class EAC(DataItemBase):
         - :class:`SecsS02F16 <secsgem.secs.functions.SecsS02F16>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -1090,27 +1201,40 @@ class ECDEF(DataItemBase):
     Equipment constant default value.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
-                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Boolean,
+        variables.I8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.F8,
+        variables.F4,
+        variables.U8,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class ECID(DataItemBase):
@@ -1118,15 +1242,15 @@ class ECID(DataItemBase):
     Equipment constant ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F13 <secsgem.secs.functions.SecsS02F13>`
@@ -1135,9 +1259,18 @@ class ECID(DataItemBase):
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class ECMAX(DataItemBase):
@@ -1145,27 +1278,40 @@ class ECMAX(DataItemBase):
     Equipment constant maximum value.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
-                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Boolean,
+        variables.I8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.F8,
+        variables.F4,
+        variables.U8,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class ECMIN(DataItemBase):
@@ -1173,27 +1319,40 @@ class ECMIN(DataItemBase):
     Equipment constant minimum value.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4, SecsVarU8,
-                        SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Boolean,
+        variables.I8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.F8,
+        variables.F4,
+        variables.U8,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class ECNAME(DataItemBase):
@@ -1201,13 +1360,13 @@ class ECNAME(DataItemBase):
     Equipment constant name.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class ECV(DataItemBase):
@@ -1215,28 +1374,42 @@ class ECV(DataItemBase):
     Equipment constant value.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F14 <secsgem.secs.functions.SecsS02F14>`
         - :class:`SecsS02F15 <secsgem.secs.functions.SecsS02F15>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarI8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarF8, SecsVarF4,
-                        SecsVarU8, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Array,
+        variables.Boolean,
+        variables.I8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.F8,
+        variables.F4,
+        variables.U8,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class EDID(DataItemBase):
@@ -1244,32 +1417,42 @@ class EDID(DataItemBase):
     Expected data identification.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class ERACK(DataItemBase):
     """
     Enable/disable event report acknowledge.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1288,7 +1471,7 @@ class ERACK(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -1300,10 +1483,10 @@ class ERRCODE(DataItemBase):
     Reference point.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
 
     **Used In Function**
         - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
@@ -1365,8 +1548,13 @@ class ERRCODE(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
 
 
 class ERRTEXT(DataItemBase):
@@ -1374,7 +1562,7 @@ class ERRTEXT(DataItemBase):
     Error description for error code.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F20 <secsgem.secs.functions.SecsS01F20>`
@@ -1431,7 +1619,7 @@ class ERRTEXT(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 120
 
 
@@ -1440,7 +1628,7 @@ class EXID(DataItemBase):
     Exception identifier.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
@@ -1452,7 +1640,7 @@ class EXID(DataItemBase):
         - :class:`SecsS05F18 <secsgem.secs.functions.SecsS05F18>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 20
 
 
@@ -1461,14 +1649,14 @@ class EXMESSAGE(DataItemBase):
     Exception message.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
         - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class EXRECVRA(DataItemBase):
@@ -1476,14 +1664,14 @@ class EXRECVRA(DataItemBase):
     Exception recovery action.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
         - :class:`SecsS05F13 <secsgem.secs.functions.SecsS05F13>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 40
 
 
@@ -1492,7 +1680,7 @@ class EXTYPE(DataItemBase):
     Exception type.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
@@ -1502,7 +1690,7 @@ class EXTYPE(DataItemBase):
         - :class:`SecsS14F08 <secsgem.secs.functions.SecsS14F08>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class FFROT(DataItemBase):
@@ -1511,7 +1699,7 @@ class FFROT(DataItemBase):
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 
-       :Types: :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       :Types: :class:`U2 <secsgem.secs.variables.U2>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -1519,7 +1707,7 @@ class FFROT(DataItemBase):
 
     """
 
-    __type__ = SecsVarU2
+    __type__ = variables.U2
 
 
 class FNLOC(DataItemBase):
@@ -1528,7 +1716,7 @@ class FNLOC(DataItemBase):
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 
-       :Types: :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
+       :Types: :class:`U2 <secsgem.secs.variables.U2>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -1537,14 +1725,14 @@ class FNLOC(DataItemBase):
 
     """
 
-    __type__ = SecsVarU2
+    __type__ = variables.U2
 
 
 class GRANT6(DataItemBase):
     """
     Permission to send.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1564,7 +1752,7 @@ class GRANT6(DataItemBase):
         - :class:`SecsS06F06 <secsgem.secs.functions.SecsS06F06>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     GRANTED = 0
@@ -1576,7 +1764,7 @@ class GRNT1(DataItemBase):
     """
     Grant code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1605,7 +1793,7 @@ class GRNT1(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -1621,7 +1809,7 @@ class HCACK(DataItemBase):
     """
     Host command parameter acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1651,7 +1839,7 @@ class HCACK(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -1667,7 +1855,7 @@ class IDTYP(DataItemBase):
     """
     ID type.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1700,7 +1888,7 @@ class IDTYP(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     WAFER = 0
@@ -1713,14 +1901,14 @@ class LENGTH(DataItemBase):
     Service/process program length.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F01 <secsgem.secs.functions.SecsS02F01>`
@@ -1729,15 +1917,24 @@ class LENGTH(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
 
 
 class LRACK(DataItemBase):
     """
     Link report acknowledge code.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1763,7 +1960,7 @@ class LRACK(DataItemBase):
         - :class:`SecsS02F36 <secsgem.secs.functions.SecsS02F36>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -1778,7 +1975,7 @@ class MAPER(DataItemBase):
     """
     Map error.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1798,7 +1995,7 @@ class MAPER(DataItemBase):
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ID_UNKNOWN = 0
@@ -1810,7 +2007,7 @@ class MAPFT(DataItemBase):
     """
     Map data format.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1832,7 +2029,7 @@ class MAPFT(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ROW = 0
@@ -1844,7 +2041,7 @@ class MDACK(DataItemBase):
     """
     Map data acknowledge.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -1869,7 +2066,7 @@ class MDACK(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -1883,7 +2080,7 @@ class MDLN(DataItemBase):
     Equipment model type.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F02 <secsgem.secs.functions.SecsS01F02>`
@@ -1898,7 +2095,7 @@ class MDLN(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 20
 
 
@@ -1907,13 +2104,13 @@ class MEXP(DataItemBase):
     Message expected.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 6
 
 
@@ -1921,7 +2118,7 @@ class MHEAD(DataItemBase):
     """
     SECS message header.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 10
 
     **Used In Function**
@@ -1933,7 +2130,7 @@ class MHEAD(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 10
 
 
@@ -1942,8 +2139,8 @@ class MID(DataItemBase):
     Material ID.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS02F27 <secsgem.secs.functions.SecsS02F27>`
@@ -1990,8 +2187,8 @@ class MID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.String, variables.Binary]
     __count__ = 80
 
 
@@ -2000,10 +2197,10 @@ class MLCL(DataItemBase):
     Message length.
 
     :Types:
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
@@ -2011,8 +2208,13 @@ class MLCL(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8
+    ]
 
 
 class NULBC(DataItemBase):
@@ -2020,8 +2222,8 @@ class NULBC(DataItemBase):
     Column count in dies.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2030,15 +2232,15 @@ class NULBC(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.U1, variables.String]
 
 
 class OBJACK(DataItemBase):
     """
     Object acknowledgement code.
 
-       :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       :Types: :class:`U1 <secsgem.secs.variables.U1>`
        :Length: 1
 
     **Values**
@@ -2067,7 +2269,7 @@ class OBJACK(DataItemBase):
 
     """
 
-    __type__ = SecsVarU1
+    __type__ = variables.U1
     __count__ = 1
 
     SUCCESSFUL = 0
@@ -2079,11 +2281,11 @@ class OBJID(DataItemBase):
     Object identifier.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F19 <secsgem.secs.functions.SecsS01F19>`
@@ -2094,8 +2296,14 @@ class OBJID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.String
+    ]
 
 
 class OBJSPEC(DataItemBase):
@@ -2103,7 +2311,7 @@ class OBJSPEC(DataItemBase):
     Specific object instance.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
@@ -2129,7 +2337,7 @@ class OBJSPEC(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class OBJTYPE(DataItemBase):
@@ -2137,11 +2345,11 @@ class OBJTYPE(DataItemBase):
     Class of object identifier.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F19 <secsgem.secs.functions.SecsS01F19>`
@@ -2156,15 +2364,21 @@ class OBJTYPE(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.String
+    ]
 
 
 class OFLACK(DataItemBase):
     """
     Acknowledge code for OFFLINE request.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2180,7 +2394,7 @@ class OFLACK(DataItemBase):
         - :class:`SecsS01F16 <secsgem.secs.functions.SecsS01F16>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -2190,7 +2404,7 @@ class ONLACK(DataItemBase):
     """
     Acknowledge code for ONLINE request.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2210,7 +2424,7 @@ class ONLACK(DataItemBase):
         - :class:`SecsS01F18 <secsgem.secs.functions.SecsS01F18>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
@@ -2222,7 +2436,7 @@ class ORLOC(DataItemBase):
     """
     Origin location.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2249,7 +2463,7 @@ class ORLOC(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
 
     CENTER_DIE = 0
     UPPER_RIGHT = 1
@@ -2263,16 +2477,16 @@ class PPBODY(DataItemBase):
     Status variable ID.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS07F03 <secsgem.secs.functions.SecsS07F03>`
@@ -2283,16 +2497,26 @@ class PPBODY(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class PPGNT(DataItemBase):
     """
     Process program grant status.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2320,7 +2544,7 @@ class PPGNT(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     OK = 0
@@ -2336,8 +2560,8 @@ class PPID(DataItemBase):
     Process program ID.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS02F27 <secsgem.secs.functions.SecsS02F27>`
@@ -2363,8 +2587,8 @@ class PPID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.String, variables.Binary]
     __count__ = 120
 
 
@@ -2372,7 +2596,7 @@ class PRAXI(DataItemBase):
     """
     Process axis.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2404,7 +2628,7 @@ class PRAXI(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ROWS_TOP_INCR = 0
@@ -2422,10 +2646,10 @@ class PRDCT(DataItemBase):
     Process die count.
 
     :Types:
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2433,8 +2657,13 @@ class PRDCT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8
+    ]
 
 
 class RCMD(DataItemBase):
@@ -2442,9 +2671,9 @@ class RCMD(DataItemBase):
     Remote command.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS02F21 <secsgem.secs.functions.SecsS02F21>`
@@ -2452,8 +2681,12 @@ class RCMD(DataItemBase):
         - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarI1, SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.I1,
+        variables.String
+    ]
 
 
 class REFP(DataItemBase):
@@ -2461,10 +2694,10 @@ class REFP(DataItemBase):
     Reference point.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
 
     **Used In Function**
         - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
@@ -2473,8 +2706,13 @@ class REFP(DataItemBase):
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
 
 
 class ROWCT(DataItemBase):
@@ -2482,10 +2720,10 @@ class ROWCT(DataItemBase):
     Row count in dies.
 
     :Types:
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2493,15 +2731,20 @@ class ROWCT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8
+    ]
 
 
 class RPSEL(DataItemBase):
     """
     Reference point select.
 
-       :Types: :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+       :Types: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2509,7 +2752,7 @@ class RPSEL(DataItemBase):
 
     """
 
-    __type__ = SecsVarU1
+    __type__ = variables.U1
 
 
 class RPTID(DataItemBase):
@@ -2517,15 +2760,15 @@ class RPTID(DataItemBase):
     Report ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F33 <secsgem.secs.functions.SecsS02F33>`
@@ -2549,9 +2792,18 @@ class RPTID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class RSINF(DataItemBase):
@@ -2559,10 +2811,10 @@ class RSINF(DataItemBase):
     Starting location.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
 
     **Used In Function**
         - :class:`SecsS12F07 <secsgem.secs.functions.SecsS12F07>`
@@ -2570,8 +2822,13 @@ class RSINF(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
     __count__ = 3
 
 
@@ -2579,7 +2836,7 @@ class SDACK(DataItemBase):
     """
     Map setup acknowledge.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2596,7 +2853,7 @@ class SDACK(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
@@ -2606,7 +2863,7 @@ class SDBIN(DataItemBase):
     """
     Send bin information.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Values**
@@ -2624,7 +2881,7 @@ class SDBIN(DataItemBase):
         - :class:`SecsS12F17 <secsgem.secs.functions.SecsS12F17>`
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
     SEND = 0
@@ -2635,7 +2892,7 @@ class SHEAD(DataItemBase):
     """
     SECS message header.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 10
 
     **Used In Function**
@@ -2643,7 +2900,7 @@ class SHEAD(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 10
 
 
@@ -2652,7 +2909,7 @@ class SOFTREV(DataItemBase):
     Software revision.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F02 <secsgem.secs.functions.SecsS01F02>`
@@ -2667,7 +2924,7 @@ class SOFTREV(DataItemBase):
 
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 20
 
 
@@ -2676,18 +2933,23 @@ class STRP(DataItemBase):
     Starting position.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
 
     **Used In Function**
         - :class:`SecsS12F09 <secsgem.secs.functions.SecsS12F09>`
         - :class:`SecsS12F16 <secsgem.secs.functions.SecsS12F16>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
     __count__ = 2
 
 
@@ -2696,29 +2958,43 @@ class SV(DataItemBase):
     Status variable value.
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Array <secsgem.secs.variables.Array>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F04 <secsgem.secs.functions.SecsS01F04>`
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
-                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Array,
+        variables.Boolean,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.F4,
+        variables.F8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class SVID(DataItemBase):
@@ -2726,15 +3002,15 @@ class SVID(DataItemBase):
     Status variable ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
@@ -2743,9 +3019,18 @@ class SVID(DataItemBase):
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class SVNAME(DataItemBase):
@@ -2753,13 +3038,13 @@ class SVNAME(DataItemBase):
     Status variable name.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class TEXT(DataItemBase):
@@ -2767,16 +3052,16 @@ class TEXT(DataItemBase):
     Line of characters.
 
     :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS10F01 <secsgem.secs.functions.SecsS10F01>`
@@ -2786,16 +3071,26 @@ class TEXT(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class TID(DataItemBase):
     """
     Terminal ID.
 
-       :Types: :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
        :Length: 1
 
     **Used In Function**
@@ -2806,7 +3101,7 @@ class TID(DataItemBase):
 
     """
 
-    __type__ = SecsVarBinary
+    __type__ = variables.Binary
     __count__ = 1
 
 
@@ -2815,14 +3110,14 @@ class TIME(DataItemBase):
     Time of day.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS02F18 <secsgem.secs.functions.SecsS02F18>`
         - :class:`SecsS02F31 <secsgem.secs.functions.SecsS02F31>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 32
 
 
@@ -2831,7 +3126,7 @@ class TIMESTAMP(DataItemBase):
     Timestamp.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
@@ -2844,7 +3139,7 @@ class TIMESTAMP(DataItemBase):
         - :class:`SecsS16F09 <secsgem.secs.functions.SecsS16F09>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
     __count__ = 32
 
 
@@ -2853,7 +3148,7 @@ class UNITS(DataItemBase):
     Units identifier.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
@@ -2862,7 +3157,7 @@ class UNITS(DataItemBase):
         - :class:`SecsS07F22 <secsgem.secs.functions.SecsS07F22>`
     """
 
-    __type__ = SecsVarString
+    __type__ = variables.String
 
 
 class V(DataItemBase):
@@ -2870,20 +3165,20 @@ class V(DataItemBase):
     Variable data.
 
     :Types:
-       - :class:`SecsVarArray <secsgem.secs.variables.SecsVarArray>`
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
-       - :class:`SecsVarBoolean <secsgem.secs.variables.SecsVarBoolean>`
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`Array <secsgem.secs.variables.Array>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
+       - :class:`Boolean <secsgem.secs.variables.Boolean>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS06F11 <secsgem.secs.functions.SecsS06F11>`
@@ -2894,9 +3189,23 @@ class V(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2,
-                        SecsVarI4, SecsVarI8, SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.Array,
+        variables.Boolean,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.F4,
+        variables.F8,
+        variables.String,
+        variables.Binary
+    ]
 
 
 class VID(DataItemBase):
@@ -2904,15 +3213,15 @@ class VID(DataItemBase):
     Variable ID.
 
     :Types:
-       - :class:`SecsVarString <secsgem.secs.variables.SecsVarString>`
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS02F33 <secsgem.secs.functions.SecsS02F33>`
@@ -2927,9 +3236,18 @@ class VID(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8,
-                        SecsVarString]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.String
+    ]
 
 
 class XDIES(DataItemBase):
@@ -2937,12 +3255,12 @@ class XDIES(DataItemBase):
     Die size/index X-axis.
 
     :Types:
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2950,8 +3268,15 @@ class XDIES(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.F4,
+        variables.F8
+    ]
 
 
 class XYPOS(DataItemBase):
@@ -2959,18 +3284,23 @@ class XYPOS(DataItemBase):
     X/Y coordinate position.
 
     :Types:
-       - :class:`SecsVarI8 <secsgem.secs.variables.SecsVarI8>`
-       - :class:`SecsVarI1 <secsgem.secs.variables.SecsVarI1>`
-       - :class:`SecsVarI2 <secsgem.secs.variables.SecsVarI2>`
-       - :class:`SecsVarI4 <secsgem.secs.variables.SecsVarI4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
 
     **Used In Function**
         - :class:`SecsS12F11 <secsgem.secs.functions.SecsS12F11>`
         - :class:`SecsS12F18 <secsgem.secs.functions.SecsS12F18>`
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.I1,
+        variables.I2,
+        variables.I4,
+        variables.I8
+    ]
     __count__ = 2
 
 
@@ -2979,12 +3309,12 @@ class YDIES(DataItemBase):
     Die size/index Y-axis.
 
     :Types:
-       - :class:`SecsVarF4 <secsgem.secs.variables.SecsVarF4>`
-       - :class:`SecsVarF8 <secsgem.secs.variables.SecsVarF8>`
-       - :class:`SecsVarU8 <secsgem.secs.variables.SecsVarU8>`
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
-       - :class:`SecsVarU2 <secsgem.secs.variables.SecsVarU2>`
-       - :class:`SecsVarU4 <secsgem.secs.variables.SecsVarU4>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
@@ -2992,5 +3322,12 @@ class YDIES(DataItemBase):
 
     """
 
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarF4, SecsVarF8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8,
+        variables.F4,
+        variables.F8
+    ]

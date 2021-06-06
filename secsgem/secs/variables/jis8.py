@@ -1,5 +1,5 @@
 #####################################################################
-# secs_var_jis8.py
+# jis8.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -17,12 +17,12 @@
 
 import unicodedata
 
-from .secs_var_text import SecsVarText
+from .base_text import BaseText
 
 from ...common.codec_jis_x_0201 import *  # noqa
 
 
-class SecsVarJIS8(SecsVarText):
+class JIS8(BaseText):
     """
     Secs type for string data.
 

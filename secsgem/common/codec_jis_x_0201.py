@@ -14,7 +14,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""JIS X 0201 Codec required for JIS8 encoding of SecsVarJIS8."""
+"""JIS X 0201 Codec required for JIS8 encoding of JIS8."""
 
 import codecs
 

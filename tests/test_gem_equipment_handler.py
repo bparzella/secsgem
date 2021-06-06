@@ -22,7 +22,7 @@ from dateutil.tz import tzlocal
 from dateutil.parser import parse
 
 import secsgem
-from secsgem.secs.variables import SecsVarString, SecsVarU4
+from secsgem.secs.variables import String, U4
 from secsgem.gem.equipmenthandler import DataValue, StatusVariable, CollectionEvent, \
     CollectionEventLink, CollectionEventReport, EquipmentConstant, Alarm, RemoteCommand
 
@@ -31,21 +31,21 @@ from test_connection import HsmsTestServer
 
 class TestDataValue(unittest.TestCase):
     def testConstructorWithInt(self):
-        dv = DataValue(123, "TestDataValue", SecsVarString, False, param1="param1", param2=2)
+        dv = DataValue(123, "TestDataValue", String, False, param1="param1", param2=2)
 
         self.assertEqual(dv.dvid, 123)
         self.assertEqual(dv.name, "TestDataValue")
-        self.assertEqual(dv.value_type, SecsVarString)
+        self.assertEqual(dv.value_type, String)
         self.assertEqual(dv.use_callback, False)
         self.assertEqual(dv.param1, "param1")
         self.assertEqual(dv.param2, 2)
 
     def testConstructorWithStr(self):
-        dv = DataValue("DV123", "TestDataValue", SecsVarString, False, param1="param1", param2=2)
+        dv = DataValue("DV123", "TestDataValue", String, False, param1="param1", param2=2)
 
         self.assertEqual(dv.dvid, "DV123")
         self.assertEqual(dv.name, "TestDataValue")
-        self.assertEqual(dv.value_type, SecsVarString)
+        self.assertEqual(dv.value_type, String)
         self.assertEqual(dv.use_callback, False)
         self.assertEqual(dv.param1, "param1")
         self.assertEqual(dv.param2, 2)
@@ -53,23 +53,23 @@ class TestDataValue(unittest.TestCase):
 
 class TestStatusVariable(unittest.TestCase):
     def testConstructorWithInt(self):
-        sv = StatusVariable(123, "TestStatusVariable", "mm", SecsVarString, False, param1="param1", param2=2)
+        sv = StatusVariable(123, "TestStatusVariable", "mm", String, False, param1="param1", param2=2)
 
         self.assertEqual(sv.svid, 123)
         self.assertEqual(sv.name, "TestStatusVariable")
         self.assertEqual(sv.unit, "mm")
-        self.assertEqual(sv.value_type, SecsVarString)
+        self.assertEqual(sv.value_type, String)
         self.assertEqual(sv.use_callback, False)
         self.assertEqual(sv.param1, "param1")
         self.assertEqual(sv.param2, 2)
 
     def testConstructorWithStr(self):
-        sv = StatusVariable("SV123", "TestStatusVariable", "mm", SecsVarString, False, param1="param1", param2=2)
+        sv = StatusVariable("SV123", "TestStatusVariable", "mm", String, False, param1="param1", param2=2)
 
         self.assertEqual(sv.svid, "SV123")
         self.assertEqual(sv.name, "TestStatusVariable")
         self.assertEqual(sv.unit, "mm")
-        self.assertEqual(sv.value_type, SecsVarString)
+        self.assertEqual(sv.value_type, String)
         self.assertEqual(sv.use_callback, False)
         self.assertEqual(sv.param1, "param1")
         self.assertEqual(sv.param2, 2)
@@ -127,7 +127,7 @@ class TestCollectionEventReport(unittest.TestCase):
 
 class TestEquipmentConstant(unittest.TestCase):
     def testConstructorWithInt(self):
-        ec = EquipmentConstant(123, "TestEquipmentConstant", 0, 100, 50, "mm", SecsVarU4, False, param1="param1", param2=2)
+        ec = EquipmentConstant(123, "TestEquipmentConstant", 0, 100, 50, "mm", U4, False, param1="param1", param2=2)
 
         self.assertEqual(ec.ecid, 123)
         self.assertEqual(ec.name, "TestEquipmentConstant")
@@ -135,13 +135,13 @@ class TestEquipmentConstant(unittest.TestCase):
         self.assertEqual(ec.max_value, 100)
         self.assertEqual(ec.default_value, 50)
         self.assertEqual(ec.unit, "mm")
-        self.assertEqual(ec.value_type, SecsVarU4)
+        self.assertEqual(ec.value_type, U4)
         self.assertEqual(ec.use_callback, False)
         self.assertEqual(ec.param1, "param1")
         self.assertEqual(ec.param2, 2)
 
     def testConstructorWithStr(self):
-        ec = EquipmentConstant("EC123", "TestEquipmentConstant", 0, 100, 50, "mm", SecsVarU4, False, param1="param1", param2=2)
+        ec = EquipmentConstant("EC123", "TestEquipmentConstant", 0, 100, 50, "mm", U4, False, param1="param1", param2=2)
 
         self.assertEqual(ec.ecid, "EC123")
         self.assertEqual(ec.name, "TestEquipmentConstant")
@@ -149,7 +149,7 @@ class TestEquipmentConstant(unittest.TestCase):
         self.assertEqual(ec.max_value, 100)
         self.assertEqual(ec.default_value, 50)
         self.assertEqual(ec.unit, "mm")
-        self.assertEqual(ec.value_type, SecsVarU4)
+        self.assertEqual(ec.value_type, U4)
         self.assertEqual(ec.use_callback, False)
         self.assertEqual(ec.param1, "param1")
         self.assertEqual(ec.param2, 2)
@@ -463,8 +463,8 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
     def setupTestStatusVariables(self, use_callback = False):
         self.client.status_variables.update({
-            10: secsgem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.SecsVarU4, use_callback),
-            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.SecsVarString, use_callback),
+            10: secsgem.StatusVariable(10, "sample1, numeric SVID, U4", "meters", secsgem.U4, use_callback),
+            "SV2": secsgem.StatusVariable("SV2", "sample2, text SVID, String", "chars", secsgem.String, use_callback),
         })
 
         self.client.status_variables[10].value = 123
@@ -493,13 +493,13 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         SV2 = next((x for x in function if x[0].get() == "SV2"), None)
 
         self.assertIsNotNone(SV2)
-        self.assertEqual(SV2[1].get(), u"sample2, text SVID, SecsVarString")
+        self.assertEqual(SV2[1].get(), u"sample2, text SVID, String")
         self.assertEqual(SV2[2].get(), "chars")
 
         SV10 = next((x for x in function if x[0].get() == 10), None)
 
         self.assertIsNotNone(SV10)
-        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, SecsVarU4")
+        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, U4")
         self.assertEqual(SV10[2].get(), "meters")
 
     def testStatusVariableNameListLimited(self):
@@ -512,14 +512,14 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertIsNotNone(SV2)
         self.assertEqual(SV2[0].get(), u"SV2")
-        self.assertEqual(SV2[1].get(), u"sample2, text SVID, SecsVarString")
+        self.assertEqual(SV2[1].get(), u"sample2, text SVID, String")
         self.assertEqual(SV2[2].get(), "chars")
 
         SV10 = function[1]
 
         self.assertIsNotNone(SV10)
         self.assertEqual(SV10[0].get(), 10)
-        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, SecsVarU4")
+        self.assertEqual(SV10[1].get(), u"sample1, numeric SVID, U4")
         self.assertEqual(SV10[2].get(), "meters")
 
     def testStatusVariableNameListInvalid(self):
@@ -610,7 +610,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         delta = datetime.timedelta(seconds=5)
 
         # timeformat 0
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(0)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.U4(0)}])
 
         function = self.sendSVRequest([secsgem.SVID_CLOCK])
 
@@ -624,7 +624,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 1
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(1)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.U4(1)}])
 
         function = self.sendSVRequest([secsgem.SVID_CLOCK])
 
@@ -638,7 +638,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 2
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarU4(2)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.U4(2)}])
 
         function = self.sendSVRequest([secsgem.SVID_CLOCK])
 
@@ -715,7 +715,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
     def setupTestDataValues(self, use_callbacks=False):
         self.client.data_values.update({
-            30: secsgem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.SecsVarU4, use_callbacks),
+            30: secsgem.DataValue(30, "sample1, numeric DV, U4", secsgem.U4, use_callbacks),
         })
 
         self.client.data_values[30].value = 31337
@@ -1256,8 +1256,8 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
     def setupTestEquipmentConstants(self, use_callback = False):
         self.client.equipment_constants.update({
-            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarI4", 0, 500, 50, "degrees", secsgem.SecsVarI4, use_callback),
-            "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", None, None, "", "chars", secsgem.SecsVarString, use_callback),
+            20: secsgem.EquipmentConstant(20, "sample1, numeric ECID, I4", 0, 500, 50, "degrees", secsgem.I4, use_callback),
+            "EC2": secsgem.EquipmentConstant("EC2", "sample2, text ECID, String", None, None, "", "chars", secsgem.String, use_callback),
         })
 
         self.client.equipment_constants[20].value = 321
@@ -1314,7 +1314,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         EC2 = next((x for x in function if x[0].get() == "EC2"), None)
 
         self.assertIsNotNone(EC2)
-        self.assertEqual(EC2[1].get(), u"sample2, text ECID, SecsVarString")
+        self.assertEqual(EC2[1].get(), u"sample2, text ECID, String")
         self.assertEqual(EC2[2].get(), "")
         self.assertEqual(EC2[3].get(), "")
         self.assertEqual(EC2[4].get(), "")
@@ -1323,7 +1323,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         EC20 = next((x for x in function if x[0].get() == 20), None)
 
         self.assertIsNotNone(EC20)
-        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarI4")
+        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, I4")
         self.assertEqual(EC20[2].get(), 0)
         self.assertEqual(EC20[3].get(), 500)
         self.assertEqual(EC20[4].get(), 50)
@@ -1339,7 +1339,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertIsNotNone(EC2)
         self.assertEqual(EC2[0].get(), u"EC2")
-        self.assertEqual(EC2[1].get(), u"sample2, text ECID, SecsVarString")
+        self.assertEqual(EC2[1].get(), u"sample2, text ECID, String")
         self.assertEqual(EC2[2].get(), "")
         self.assertEqual(EC2[3].get(), "")
         self.assertEqual(EC2[4].get(), "")
@@ -1349,7 +1349,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertIsNotNone(EC20)
         self.assertEqual(EC20[0].get(), 20)
-        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, SecsVarI4")
+        self.assertEqual(EC20[1].get(), u"sample1, numeric ECID, I4")
         self.assertEqual(EC20[2].get(), 0)
         self.assertEqual(EC20[3].get(), 500)
         self.assertEqual(EC20[4].get(), 50)
@@ -1425,7 +1425,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestEquipmentConstants()
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.I4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
 
         self.assertEqual(function.get(), 0)
 
@@ -1436,7 +1436,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestEquipmentConstants()
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(-1)}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.I4(-1)}])
 
         self.assertEqual(function.get(), 3)
 
@@ -1446,7 +1446,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestEquipmentConstants()
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(501)}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.I4(501)}])
 
         self.assertEqual(function.get(), 3)
 
@@ -1456,7 +1456,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestEquipmentConstants(True)
         self.establishCommunication()
 
-        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.SecsVarI4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
+        function = self.sendECUpdate([{"ECID": 20, "ECV": secsgem.I4(123)}, {"ECID": "EC2", "ECV": "ce elpmas"}])
 
         self.assertEqual(function.get(), 0)
 
@@ -1482,7 +1482,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 10)
 
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "ECV": secsgem.SecsVarI4(20)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "ECV": secsgem.I4(20)}])
 
         self.assertEqual(function.get(), 0)
 
@@ -1499,7 +1499,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 1)
 
-        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.SecsVarI4(0)}])
+        function = self.sendECUpdate([{"ECID": secsgem.ECID_TIME_FORMAT, "ECV": secsgem.I4(0)}])
 
         self.assertEqual(function.get(), 0)
 

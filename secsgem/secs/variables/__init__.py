@@ -15,24 +15,24 @@
 #####################################################################
 """SECS variable types."""
 
-from .secs_var import SecsVar  # noqa
-from .secs_var_dynamic import SecsVarDynamic  # noqa
+from .base import Base  # noqa
+from .dynamic import Dynamic  # noqa
 
-from .secs_var_array import SecsVarArray  # noqa
-from .secs_var_list import SecsVarList  # noqa
-from .secs_var_binary import SecsVarBinary  # noqa
-from .secs_var_boolean import SecsVarBoolean  # noqa
+from .array import Array  # noqa
+from .list_type import List  # noqa
+from .binary import Binary  # noqa
+from .boolean import Boolean  # noqa
 
-from .secs_var_string import SecsVarString  # noqa
-from .secs_var_jis8 import SecsVarJIS8  # noqa
+from .string import String  # noqa
+from .jis8 import JIS8  # noqa
 
-from .secs_var_f4 import SecsVarF4  # noqa
-from .secs_var_f8 import SecsVarF8  # noqa
-from .secs_var_i1 import SecsVarI1  # noqa
-from .secs_var_i2 import SecsVarI2  # noqa
-from .secs_var_i4 import SecsVarI4  # noqa
-from .secs_var_i8 import SecsVarI8  # noqa
-from .secs_var_u1 import SecsVarU1  # noqa
-from .secs_var_u2 import SecsVarU2  # noqa
-from .secs_var_u4 import SecsVarU4  # noqa
-from .secs_var_u8 import SecsVarU8  # noqa
+from .f4 import F4  # noqa
+from .f8 import F8  # noqa
+from .i1 import I1  # noqa
+from .i2 import I2  # noqa
+from .i4 import I4  # noqa
+from .i8 import I8  # noqa
+from .u1 import U1  # noqa
+from .u2 import U2  # noqa
+from .u4 import U4  # noqa
+from .u8 import U8  # noqa

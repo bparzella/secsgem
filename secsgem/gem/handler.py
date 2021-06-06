@@ -18,7 +18,7 @@
 import logging
 import threading
 
-from ..common.fysom import Fysom
+from ..common import fysom
 from ..secs.handler import SecsHandler
 
 
@@ -55,7 +55,7 @@ class GemHandler(SecsHandler):
 
         # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states.
         # but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
-        self.communicationState = Fysom({
+        self.communicationState = fysom.Fysom({
             'initial': 'DISABLED',  # 1
             'events': [
                 {'name': 'enable', 'src': 'DISABLED', 'dst': 'ENABLED'},  # 2
