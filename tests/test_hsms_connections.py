@@ -1,7 +1,7 @@
 #####################################################################
 # test_hsms_connections.py
 #
-# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,12 +17,12 @@
 import unittest
 import errno
 
-import secsgem.hsms
+import secsgem.common
 
 class TestTopLevelFunctions(unittest.TestCase):
     def testIsErrorcodeEwouldBlock(self):
-        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(0))
-        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(errno.EPERM))
-        self.assertFalse(secsgem.hsms.is_errorcode_ewouldblock(errno.EBADF))
-        self.assertTrue(secsgem.hsms.is_errorcode_ewouldblock(errno.EAGAIN))
-        self.assertTrue(secsgem.hsms.is_errorcode_ewouldblock(errno.EWOULDBLOCK))
+        self.assertFalse(secsgem.common.is_errorcode_ewouldblock(0))
+        self.assertFalse(secsgem.common.is_errorcode_ewouldblock(errno.EPERM))
+        self.assertFalse(secsgem.common.is_errorcode_ewouldblock(errno.EBADF))
+        self.assertTrue(secsgem.common.is_errorcode_ewouldblock(errno.EAGAIN))
+        self.assertTrue(secsgem.common.is_errorcode_ewouldblock(errno.EWOULDBLOCK))

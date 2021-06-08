@@ -1,7 +1,7 @@
 #####################################################################
 # connections.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,7 +21,6 @@ import select
 import struct
 import time
 import threading
-import errno
 
 import secsgem.common
 
@@ -40,19 +39,6 @@ HSMS_STYPES = {
     9: "Separate.req"
 }
 """Names for hsms header SType."""
-
-
-def is_errorcode_ewouldblock(errorcode):
-    """
-    Check if the errorcode is a would-block error.
-
-    :param errorcode: Code of the error
-    :return: True if blocking error code
-    """
-    if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
-        return True
-
-    return False
 
 
 class HsmsConnection:  # pragma: no cover

@@ -18,7 +18,8 @@
 from .callbacks import CallbackHandler
 from .events import EventProducer
 from .fysom import Fysom
-from .helpers import format_hex, function_name, indent_block, is_windows
+from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
 
 
-__all__ = ["CallbackHandler", "EventProducer", "Fysom", "format_hex", "function_name", "indent_block", "is_windows"]
+__all__ = ["CallbackHandler", "EventProducer", "Fysom", "format_hex", "function_name", "indent_block", "is_windows",
+           "is_errorcode_ewouldblock"]

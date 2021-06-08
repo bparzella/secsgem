@@ -1,7 +1,7 @@
 #####################################################################
 # functions.py
 #
-# (c) Copyright 2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2016-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,6 +15,7 @@
 #####################################################################
 """Contains helper functions."""
 
+import errno
 import sys
 import types
 
@@ -95,3 +96,16 @@ def indent_block(block, spaces=2):
     lines = filter(None, lines)
     lines = map(lambda line, spc=spaces: indent_line(line, spc), lines)
     return '\n'.join(lines)
+
+
+def is_errorcode_ewouldblock(errorcode):
+    """
+    Check if the errorcode is a would-block error.
+
+    :param errorcode: Code of the error
+    :return: True if blocking error code
+    """
+    if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
+        return True
+
+    return False

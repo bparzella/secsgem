@@ -1,7 +1,7 @@
 #####################################################################
 # __init__.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,8 @@
 # pylint: disable=locally-disabled, wildcard-import
 """module imports."""
 
-from .connections import *  # noqa
-from .connectionmanager import *  # noqa
-from .packets import *  # noqa
-from .handler import *  # noqa
+from .connectionmanager import HsmsConnectionManager
+from .handler import HsmsHandler
+from .packets import HsmsHeader, HsmsSelectReqHeader, HsmsSelectRspHeader, HsmsDeselectReqHeader, \
+    HsmsDeselectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsRejectReqHeader, HsmsSeparateReqHeader, \
+    HsmsStreamFunctionHeader, HsmsPacket
