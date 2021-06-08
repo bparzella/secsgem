@@ -23,6 +23,7 @@ import secsgem.gem
 from test_connection import HsmsTestServer
 from test_gem_handler import GemHandlerPassiveGroup
 
+
 class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.gem.GemHostHandler
     

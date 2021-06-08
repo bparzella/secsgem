@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,10 @@ import logging
 import threading
 
 import secsgem.common
-from ..secs.handler import SecsHandler
+import secsgem.secs
 
 
-class GemHandler(SecsHandler):
+class GemHandler(secsgem.secs.SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
     def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
@@ -44,7 +44,7 @@ class GemHandler(SecsHandler):
         :param custom_connection_handler: object for connection handling (ie multi server)
         :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
         """
-        SecsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        super().__init__(address, port, active, session_id, name, custom_connection_handler)
 
         self.MDLN = "secsgem"  #: model number returned by S01E13/14
         self.SOFTREV = "0.1.0"  #: software version returned by S01E13/14
@@ -107,7 +107,7 @@ class GemHandler(SecsHandler):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        data = SecsHandler._serialize_data(self)
+        data = super()._serialize_data()
         data.update({'communicationState': self.communicationState.current,
                      'commDelayTimeout': self.establishCommunicationTimeout,
                      'reportIDCounter': self.reportIDCounter})
@@ -235,7 +235,7 @@ class GemHandler(SecsHandler):
         self.logger.info("Connection was closed")
 
         # call parent handlers
-        SecsHandler.on_connection_closed(self, connection)
+        super().on_connection_closed(connection)
 
         if self.communicationState.current == "COMMUNICATING":
             # update communication state

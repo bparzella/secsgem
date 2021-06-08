@@ -1,7 +1,7 @@
 #####################################################################
 # hosthandler.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,9 +15,11 @@
 #####################################################################
 """Handler for GEM host."""
 
-from ..secs.data_items import ALED, ACKC5, ACKC10
+import collections
+
+import secsgem.secs
+
 from .handler import GemHandler
-from collections import OrderedDict
 
 
 class GemHostHandler(GemHandler):
@@ -106,7 +108,7 @@ class GemHostHandler(GemHandler):
         if isinstance(params, list):
             for param in params:
                 s2f41.PARAMS.append({"CPNAME": param[0], "CPVAL": param[1]})
-        elif isinstance(params, OrderedDict):
+        elif isinstance(params, collections.OrderedDict):
             for param in params:
                 s2f41.PARAMS.append({"CPNAME": param, "CPVAL": params[param]})
 
@@ -156,7 +158,7 @@ class GemHostHandler(GemHandler):
         self.logger.info("Enable alarm %d", alid)
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
-            {"ALED": ALED.ENABLE, "ALID": alid}))).get()
+            {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
 
     def disable_alarm(self, alid):
         """
@@ -168,7 +170,7 @@ class GemHostHandler(GemHandler):
         self.logger.info("Disable alarm %d", alid)
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
-            {"ALED": ALED.DISABLE, "ALID": alid}))).get()
+            {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
 
     def list_alarms(self, alids=None):
         """
@@ -193,7 +195,7 @@ class GemHostHandler(GemHandler):
 
     def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
         del handler, ALID, ALCD, ALTX  # unused variables
-        return ACKC5.ACCEPTED
+        return secsgem.secs.data_items.ACKC5.ACCEPTED
 
     def _on_s05f01(self, handler, packet):
         """
@@ -243,7 +245,7 @@ class GemHostHandler(GemHandler):
 
     def _on_terminal_received(self, handler, TID, TEXT):
         del handler, TID, TEXT  # unused variables
-        return ACKC10.ACCEPTED
+        return secsgem.secs.data_items.ACKC10.ACCEPTED
 
     def _on_s10f01(self, handler, packet):
         """

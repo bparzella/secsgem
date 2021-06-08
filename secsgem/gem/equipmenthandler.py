@@ -20,9 +20,11 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 
 import secsgem.common
-from ..gem.handler import GemHandler
-from ..secs.variables import String, U4, Array, I2, I4, Binary
-from ..secs.data_items import SV, ECV, ACKC5, ALED, ALCD, HCACK
+import secsgem.secs.variables
+import secsgem.secs.data_items
+
+from .handler import GemHandler
+
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
@@ -75,9 +77,9 @@ class DataValue:
         self.value = 0
 
         if isinstance(self.dvid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -117,9 +119,9 @@ class StatusVariable:
         self.value = 0
 
         if isinstance(self.svid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -152,9 +154,9 @@ class CollectionEvent:
         self.data_values = data_values
 
         if isinstance(self.ceid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -208,9 +210,9 @@ class CollectionEventReport:
         self.vars = variables
 
         if isinstance(self.rptid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -260,9 +262,9 @@ class EquipmentConstant:
         self.value = default_value
 
         if isinstance(self.ecid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -298,9 +300,9 @@ class Alarm:
         self.set = False
 
         if isinstance(self.alid, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -334,9 +336,9 @@ class RemoteCommand:
         self.ce_finished = ce_finished
 
         if isinstance(self.rcmd, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -366,7 +368,7 @@ class GemEquipmentHandler(GemHandler):
         "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
         :type initial_control_state: string
         """
-        GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        super().__init__(address, port, active, session_id, name, custom_connection_handler)
 
         self.isHost = False
 
@@ -382,11 +384,11 @@ class GemEquipmentHandler(GemHandler):
         }
 
         self._status_variables = {
-            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", String),
-            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", Binary),
-            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", Array),
-            SVID_ALARMS_ENABLED: StatusVariable(SVID_ALARMS_ENABLED, "AlarmsEnabled", "", Array),
-            SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", Array),
+            SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", secsgem.secs.variables.String),
+            SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", secsgem.secs.variables.Binary),
+            SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.variables.Array),
+            SVID_ALARMS_ENABLED: StatusVariable(SVID_ALARMS_ENABLED, "AlarmsEnabled", "", secsgem.secs.variables.Array),
+            SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", secsgem.secs.variables.Array),
         }
 
         self._collection_events = {
@@ -400,8 +402,8 @@ class GemEquipmentHandler(GemHandler):
         self._equipment_constants = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
-                                                                     "sec", I2),
-            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", I4),
+                                                                     "sec", secsgem.secs.variables.I2),
+            ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4),
         }
 
         self._alarms = {
@@ -649,13 +651,13 @@ class GemEquipmentHandler(GemHandler):
             return sv.value_type(self._get_control_state_id())
         if sv.svid == SVID_EVENTS_ENABLED:
             events = self._get_events_enabled()
-            return sv.value_type(SV, events)
+            return sv.value_type(secsgem.secs.data_items.SV, events)
         if sv.svid == SVID_ALARMS_ENABLED:
             alarms = self._get_alarms_enabled()
-            return sv.value_type(SV, alarms)
+            return sv.value_type(secsgem.secs.data_items.SV, alarms)
         if sv.svid == SVID_ALARMS_SET:
             alarms = self._get_alarms_set()
-            return sv.value_type(SV, alarms)
+            return sv.value_type(secsgem.secs.data_items.SV, alarms)
 
         if sv.use_callback:
             return self.on_sv_value_request(sv.id_type(sv.svid), sv)
@@ -684,7 +686,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for svid in message:
                 if svid not in self._status_variables:
-                    responses.append(Array(SV, []))
+                    responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.SV, []))
                 else:
                     sv = self._status_variables[svid]
                     responses.append(self._get_sv_value(sv))
@@ -1079,7 +1081,7 @@ class GemEquipmentHandler(GemHandler):
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
-                    responses.append(Array(ECV, []))
+                    responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
                 else:
                     ec = self._equipment_constants[ecid]
                     responses.append(self._get_ec_value(ec))
@@ -1182,8 +1184,12 @@ class GemEquipmentHandler(GemHandler):
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code | ALCD.ALARM_SET,
-                                                                       "ALID": alid, "ALTX": self.alarms[alid].text}))
+            self.send_and_waitfor_response(self.stream_function(5, 1)(
+                {
+                    "ALCD": self.alarms[alid].code | secsgem.secs.data_items.ALCD.ALARM_SET,
+                    "ALID": alid,
+                    "ALTX": self.alarms[alid].text
+                }))
 
         self.alarms[alid].set = True
 
@@ -1225,13 +1231,13 @@ class GemEquipmentHandler(GemHandler):
 
         # 0  = Accepted
         # 1  = Error
-        result = ACKC5.ACCEPTED
+        result = secsgem.secs.data_items.ACKC5.ACCEPTED
 
         alid = message.ALID.get()
         if alid not in self._alarms:
-            result = ACKC5.ERROR
+            result = secsgem.secs.data_items.ACKC5.ERROR
         else:
-            self.alarms[alid].enabled = (message.ALED.get() == ALED.ENABLE)
+            self.alarms[alid].enabled = (message.ALED.get() == secsgem.secs.data_items.ALED.ENABLE)
 
         return self.stream_function(5, 4)(result)
 
@@ -1256,8 +1262,10 @@ class GemEquipmentHandler(GemHandler):
             alids = list(self.alarms.keys())
 
         for alid in alids:
-            result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0),
-                           "ALID": alid, "ALTX": self.alarms[alid].text})
+            result.append({"ALCD": self.alarms[alid].code |
+                           (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                           "ALID": alid,
+                           "ALTX": self.alarms[alid].text})
 
         return self.stream_function(5, 6)(result)
 
@@ -1276,7 +1284,8 @@ class GemEquipmentHandler(GemHandler):
 
         for alid in list(self.alarms.keys()):
             if self.alarms[alid].enabled:
-                result.append({"ALCD": self.alarms[alid].code | (ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                result.append({"ALCD": self.alarms[alid].code |
+                               (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
                                "ALID": alid, "ALTX": self.alarms[alid].text})
 
         return self.stream_function(5, 8)(result)
@@ -1315,18 +1324,20 @@ class GemEquipmentHandler(GemHandler):
 
         if rcmd_name not in self._remote_commands:
             self.logger.info("remote command %s not registered", rcmd_name)
-            return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
+            return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
         if rcmd_callback_name not in self._callback_handler:
             self.logger.warning("callback for remote command %s not available", rcmd_name)
-            return self.stream_function(2, 42)({"HCACK": HCACK.INVALID_COMMAND, "PARAMS": []})
+            return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
         for param in message.PARAMS:
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
                 self.logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
-                return self.stream_function(2, 42)({"HCACK": HCACK.PARAMETER_INVALID, "PARAMS": []})
+                return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.PARAMETER_INVALID,
+                                                    "PARAMS": []})
 
-        self.send_response(self.stream_function(2, 42)({"HCACK": HCACK.ACK_FINISH_LATER, "PARAMS": []}),
+        self.send_response(self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.ACK_FINISH_LATER,
+                                                        "PARAMS": []}),
                            packet.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
@@ -1433,7 +1444,7 @@ class GemEquipmentHandler(GemHandler):
     def on_connection_closed(self, connection):
         """Connection was closed."""
         # call parent handlers
-        GemHandler.on_connection_closed(self, connection)
+        super().on_connection_closed(connection)
 
         # update control state
         if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
