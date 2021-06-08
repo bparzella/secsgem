@@ -1,7 +1,7 @@
 #####################################################################
 # connectionmanager.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,7 +17,7 @@
 
 import logging
 
-from ..common.events import EventProducer
+import secsgem.common
 
 from .handler import HsmsHandler
 from .connections import HsmsMultiPassiveServer
@@ -28,7 +28,7 @@ class HsmsConnectionManager:
 
     def __init__(self):
         """Initialize a hsms connection manager."""
-        self._eventProducer = EventProducer()
+        self._eventProducer = secsgem.common.EventProducer()
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 

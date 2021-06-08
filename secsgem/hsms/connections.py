@@ -23,7 +23,7 @@ import time
 import threading
 import errno
 
-from ..common import is_windows
+import secsgem.common
 
 from .packets import HsmsPacket
 
@@ -437,7 +437,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         """
         self.serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not is_windows():
+        if not secsgem.common.is_windows():
             self.serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         self.serverSock.bind(('', self.remotePort))
@@ -609,7 +609,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         """
         self.listenSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not is_windows():
+        if not secsgem.common.is_windows():
             self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         self.listenSock.bind(('', self.port))

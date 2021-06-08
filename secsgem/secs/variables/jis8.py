@@ -19,7 +19,7 @@ import unicodedata
 
 from .base_text import BaseText
 
-from ...common.codec_jis_x_0201 import *  # noqa
+import secsgem.common.codec_jis_x_0201  # noqa
 
 
 class JIS8(BaseText):

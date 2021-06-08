@@ -1,7 +1,7 @@
 #####################################################################
 # equipmenthandler.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@ from datetime import datetime
 
 from dateutil.tz import tzlocal
 
-from ..common import fysom
+import secsgem.common
 from ..gem.handler import GemHandler
 from ..secs.variables import String, U4, Array, I2, I4, Binary
 from ..secs.data_items import SV, ECV, ACKC5, ALED, ALCD, HCACK
@@ -415,7 +415,7 @@ class GemEquipmentHandler(GemHandler):
         self._registered_reports = {}
         self._registered_collection_events = {}
 
-        self.controlState = fysom.Fysom({
+        self.controlState = secsgem.common.Fysom({
             'initial': "INIT",
             'events': [
                 {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1

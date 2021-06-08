@@ -21,7 +21,7 @@ from .base import Base
 from . import array  # pylint: disable=cyclic-import
 from . import functions  # pylint: disable=cyclic-import
 
-from ...common import indent_block
+import secsgem.common
 
 
 class List(Base):
@@ -91,11 +91,11 @@ class List(Base):
                     continue
                 if isinstance(item, list):
                     if len(item) == 1:
-                        items.append(indent_block(array.Array.get_format(item[0], True), 4))
+                        items.append(secsgem.common.indent_block(array.Array.get_format(item[0], True), 4))
                     else:
-                        items.append(indent_block(List.get_format(item, True), 4))
+                        items.append(secsgem.common.indent_block(List.get_format(item, True), 4))
                 else:
-                    items.append(indent_block(item.get_format(), 4))
+                    items.append(secsgem.common.indent_block(item.get_format(), 4))
             return arrayName + "{\n" + "\n".join(items) + "\n}"
         return None
 
@@ -107,7 +107,7 @@ class List(Base):
         data = ""
 
         for field_name in self.data:
-            data += "{}\n".format(indent_block(self.data[field_name].__repr__()))
+            data += "{}\n".format(secsgem.common.indent_block(self.data[field_name].__repr__()))
 
         return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
 

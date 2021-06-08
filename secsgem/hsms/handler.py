@@ -20,8 +20,7 @@ import threading
 import logging
 import queue
 
-from ..common.callbacks import CallbackHandler
-from ..common.events import EventProducer
+import secsgem.common
 
 from .connections import HsmsActiveConnection, HsmsPassiveConnection, HSMS_STYPES
 from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
@@ -73,10 +72,10 @@ class HsmsHandler:
             client.disable()
 
         """
-        self._eventProducer = EventProducer()
+        self._eventProducer = secsgem.common.EventProducer()
         self._eventProducer.targets += self
 
-        self._callback_handler = CallbackHandler()
+        self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)

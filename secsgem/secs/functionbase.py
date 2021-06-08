@@ -1,7 +1,7 @@
 #####################################################################
 # functionbase.py
 #
-# (c) Copyright 2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2015-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
 """Base class for for SECS stream and functions."""
 
 from .variables import functions
-from ..common import indent_block
+import secsgem.common
 
 
 class StructureDisplayingMeta(type):
@@ -111,7 +111,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         return "{}{}\n{} .".format(
             function,
             " W" if self._is_reply_required else "",
-            indent_block(data))
+            secsgem.common.indent_block(data))
 
     def __getitem__(self, key):
         """Get an item using the indexer operator."""

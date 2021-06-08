@@ -20,7 +20,7 @@ from . import functions  # pylint: disable=cyclic-import
 
 from .base import Base
 
-from ...common import indent_block
+import secsgem.common
 
 
 class Array(Base):
@@ -93,9 +93,10 @@ class Array(Base):
 
         if isinstance(data_format, list):
             return "{}[\n{}\n    ...\n]".format(arrayName,
-                                                indent_block(list_type.List.get_format(data_format), 4))
+                                                secsgem.common.indent_block(list_type.List.get_format(data_format), 4))
 
-        return "{}[\n{}\n    ...\n]".format(arrayName, indent_block(data_format.get_format(not showname), 4))
+        return "{}[\n{}\n    ...\n]".format(arrayName,
+                                            secsgem.common.indent_block(data_format.get_format(not showname), 4))
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
@@ -105,7 +106,7 @@ class Array(Base):
         data = ""
 
         for value in self.data:
-            data += "{}\n".format(indent_block(value.__repr__()))
+            data += "{}\n".format(secsgem.common.indent_block(value.__repr__()))
 
         return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
 
