@@ -201,7 +201,7 @@ class HsmsConnection:  # pragma: no cover
                     # retry will be cleared if send succeeded
                     retry = False
                 except OSError as e:
-                    if not is_errorcode_ewouldblock(e.errno):
+                    if not secsgem.common.is_errorcode_ewouldblock(e.errno):
                         # raise if not EWOULDBLOCK
                         return False
                     # it is EWOULDBLOCK, so retry sending
@@ -272,7 +272,7 @@ class HsmsConnection:  # pragma: no cover
                     # add received data to input buffer
                     self.receiveBuffer += recv_data
                 except OSError as e:
-                    if not is_errorcode_ewouldblock(e.errno):
+                    if not secsgem.common.is_errorcode_ewouldblock(e.errno):
                         raise e
 
                 # handle data in input buffer
@@ -691,7 +691,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
                     try:
                         accept_result = self.listenSock.accept()
                     except OSError as e:
-                        if not is_errorcode_ewouldblock(e.errno):
+                        if not secsgem.common.is_errorcode_ewouldblock(e.errno):
                             raise e
 
                     if accept_result is None:

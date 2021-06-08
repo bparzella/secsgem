@@ -19,6 +19,7 @@ import errno
 
 import secsgem.common
 
+
 class TestTopLevelFunctions(unittest.TestCase):
     def testIsErrorcodeEwouldBlock(self):
         self.assertFalse(secsgem.common.is_errorcode_ewouldblock(0))

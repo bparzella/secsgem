@@ -21,3 +21,7 @@ from .handler import HsmsHandler
 from .packets import HsmsHeader, HsmsSelectReqHeader, HsmsSelectRspHeader, HsmsDeselectReqHeader, \
     HsmsDeselectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, HsmsRejectReqHeader, HsmsSeparateReqHeader, \
     HsmsStreamFunctionHeader, HsmsPacket
+
+__all__ = ["HsmsConnectionManager", "HsmsHandler", "HsmsHeader", "HsmsSelectReqHeader", "HsmsSelectRspHeader",
+           "HsmsDeselectReqHeader", "HsmsDeselectRspHeader", "HsmsLinktestReqHeader", "HsmsLinktestRspHeader",
+           "HsmsRejectReqHeader", "HsmsSeparateReqHeader", "HsmsStreamFunctionHeader", "HsmsPacket"]

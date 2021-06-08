@@ -21,6 +21,7 @@ import secsgem.hsms
 
 from test_connection import HsmsTestServer
 
+
 class TestHsmsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
