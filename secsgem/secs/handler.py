@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,11 +19,12 @@ import logging
 import threading
 import copy
 
-from ..hsms.handler import HsmsHandler
+import secsgem.hsms
+
 from . import functions
 
 
-class SecsHandler(HsmsHandler):
+class SecsHandler(secsgem.hsms.HsmsHandler):
     """
     Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
@@ -47,7 +48,7 @@ class SecsHandler(HsmsHandler):
         :param custom_connection_handler: object for connection handling (ie multi server)
         :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
         """
-        HsmsHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        super().__init__(address, port, active, session_id, name, custom_connection_handler)
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
