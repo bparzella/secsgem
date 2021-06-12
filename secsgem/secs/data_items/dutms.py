@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# dutms.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,22 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""DUTMS data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class DUTMS(DataItemBase):
+    """
+    Die units of measure.
+
+    :Types:
+       - :class:`String <secsgem.secs.variables.String>`
+
+    **Used In Function**
+        - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
+        - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
+
+    """
+
+    __type__ = variables.String

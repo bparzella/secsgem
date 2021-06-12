@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# time.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,22 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""TIME data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class TIME(DataItemBase):
+    """
+    Time of day.
+
+    :Types:
+       - :class:`String <secsgem.secs.variables.String>`
+
+    **Used In Function**
+        - :class:`SecsS02F18 <secsgem.secs.functions.SecsS02F18>`
+        - :class:`SecsS02F31 <secsgem.secs.functions.SecsS02F31>`
+    """
+
+    __type__ = variables.String
+    __count__ = 32

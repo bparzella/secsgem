@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# shead.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,22 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""SHEAD data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class SHEAD(DataItemBase):
+    """
+    SECS message header.
+
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
+       :Length: 10
+
+    **Used In Function**
+        - :class:`SecsS09F09 <secsgem.secs.functions.SecsS09F09>`
+
+    """
+
+    __type__ = variables.Binary
+    __count__ = 10

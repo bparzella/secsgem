@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# mexp.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""MEXP data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class MEXP(DataItemBase):
+    """
+    Message expected.
+
+    :Types:
+       - :class:`String <secsgem.secs.variables.String>`
+
+    **Used In Function**
+        - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`
+    """
+
+    __type__ = variables.String
+    __count__ = 6

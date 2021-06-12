@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# rpsel.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""RPSEL data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class RPSEL(DataItemBase):
+    """
+    Reference point select.
+
+       :Types: :class:`U1 <secsgem.secs.variables.U1>`
+
+    **Used In Function**
+        - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
+        - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
+
+    """
+
+    __type__ = variables.U1

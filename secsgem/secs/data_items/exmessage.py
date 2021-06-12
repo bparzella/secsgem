@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# exmessage.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""EXMESSAGE data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class EXMESSAGE(DataItemBase):
+    """
+    Exception message.
+
+    :Types:
+       - :class:`String <secsgem.secs.variables.String>`
+
+    **Used In Function**
+        - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
+        - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
+    """
+
+    __type__ = variables.String

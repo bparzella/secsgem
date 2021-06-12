@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# tid.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,4 +13,25 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""module imports."""
+"""TID data item."""
+from .. import variables
+from .base import DataItemBase
+
+
+class TID(DataItemBase):
+    """
+    Terminal ID.
+
+       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
+       :Length: 1
+
+    **Used In Function**
+        - :class:`SecsS10F01 <secsgem.secs.functions.SecsS10F01>`
+        - :class:`SecsS10F03 <secsgem.secs.functions.SecsS10F03>`
+        - :class:`SecsS10F05 <secsgem.secs.functions.SecsS10F05>`
+        - :class:`SecsS10F07 <secsgem.secs.functions.SecsS10F07>`
+
+    """
+
+    __type__ = variables.Binary
+    __count__ = 1
