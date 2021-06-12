@@ -1,0 +1,64 @@
+#####################################################################
+# s07f20.py
+#
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#####################################################################
+"""Class for stream 07 function 20."""
+
+from .base import SecsStreamFunction
+from ..data_items import PPID
+
+
+class SecsS07F20(SecsStreamFunction):
+    """
+    current equipment process program - data.
+
+    **Data Items**
+
+    - :class:`PPID <secsgem.secs.data_items.PPID>`
+
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F20
+        [
+            PPID: A/B[120]
+            ...
+        ]
+
+    **Example**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS07F20(["program1", "program2"])
+        S7F20
+          <L [2]
+            <A "program1">
+            <A "program2">
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+
+    _stream = 7
+    _function = 20
+
+    _data_format = [PPID]
+
+    _to_host = True
+    _to_equipment = False
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = True

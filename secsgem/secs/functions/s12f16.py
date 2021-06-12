@@ -1,0 +1,79 @@
+#####################################################################
+# s12f16.py
+#
+# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#####################################################################
+"""Class for stream 12 function 16."""
+
+from .base import SecsStreamFunction
+from ..data_items import MID, IDTYP, STRP, BINLT
+
+
+class SecsS12F16(SecsStreamFunction):
+    """
+    map data type 2.
+
+    **Data Items**
+
+    - :class:`MID <secsgem.secs.data_items.MID>`
+    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+    - :class:`STRP <secsgem.secs.data_items.STRP>`
+    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
+
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F16
+        {
+            MID: A/B[80]
+            IDTYP: B[1]
+            STRP: I1/I2/I4/I8[2]
+            BINLT: U1/A
+        }
+
+    **Example**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS12F16({"MID": "materialID", \
+                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
+                                               "STRP": [0, 1], \
+                                               "BINLT": [1, 2, 3, 4, 5, 6]})
+        S12F16
+          <L [4]
+            <A "materialID">
+            <B 0x0>
+            <I1 0 1 >
+            <U1 1 2 3 4 5 6 >
+          > .
+
+    :param value: parameters for this function (see example)
+    :type value: dict
+    """
+
+    _stream = 12
+    _function = 16
+
+    _data_format = [
+        MID,
+        IDTYP,
+        STRP,
+        BINLT
+    ]
+
+    _to_host = False
+    _to_equipment = True
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = True
