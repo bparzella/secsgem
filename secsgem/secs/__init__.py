@@ -19,7 +19,7 @@ from . import variables
 from . import data_items
 from . import functions
 
-from .functionbase import SecsStreamFunction
+from .functions.base import SecsStreamFunction
 from .handler import SecsHandler
 
 

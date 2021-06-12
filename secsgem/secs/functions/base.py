@@ -1,5 +1,5 @@
 #####################################################################
-# functionbase.py
+# base.py
 #
 # (c) Copyright 2015-2021, Benjamin Parzella. All rights reserved.
 #
@@ -15,8 +15,8 @@
 #####################################################################
 """Base class for for SECS stream and functions."""
 
-from .variables import functions
 import secsgem.common
+from ..variables import functions
 
 
 class StructureDisplayingMeta(type):
