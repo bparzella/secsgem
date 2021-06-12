@@ -1,5 +1,6 @@
 plugins:
   duplication:
     enabled: true
-    exclude_patterns:
-    - "secsgem/secs/functions/s*.py"
+    checks:
+      Similar code:
+        enabled: false
