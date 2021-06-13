@@ -38,7 +38,7 @@ class CollectionEventLink:
     @property
     def reports(self):
         """
-        The list of the data values.
+        Get list of the data values.
 
         :returns: List of linked reports
         :rtype: list of :class:`gem.CollectionEventReport`

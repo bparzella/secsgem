@@ -102,7 +102,7 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def _serialize_data(self):
         """
-        Returns data for serialization.
+        Get serialized data.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -114,14 +114,14 @@ class GemHandler(secsgem.secs.SecsHandler):
         return data
 
     def enable(self):
-        """Enables the connection."""
+        """Enable the connection."""
         self.connection.enable()
         self.communicationState.enable()
 
         self.logger.info("Connection enabled")
 
     def disable(self):
-        """Disables the connection."""
+        """Disable the connection."""
         self.connection.disable()
         self.communicationState.disable()
 
@@ -231,7 +231,7 @@ class GemHandler(secsgem.secs.SecsHandler):
             event.set()
 
     def on_connection_closed(self, connection):
-        """Connection was closed."""
+        """Handle connection was closed event."""
         self.logger.info("Connection was closed")
 
         # call parent handlers
@@ -304,7 +304,7 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def _on_s01f01(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 1, Are You There.
+        Handle Stream 1, Function 1, Are You There.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -320,7 +320,7 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def _on_s01f13(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 13, Establish Communication Request.
+        Handle Stream 1, Function 13, Establish Communication Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`

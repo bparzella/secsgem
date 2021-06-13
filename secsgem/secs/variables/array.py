@@ -15,12 +15,12 @@
 #####################################################################
 """SECS array variable type."""
 
+import secsgem.common
+
 from . import list_type  # pylint: disable=cyclic-import
 from . import functions  # pylint: disable=cyclic-import
 
 from .base import Base
-
-import secsgem.common
 
 
 class Array(Base):
@@ -77,25 +77,25 @@ class Array(Base):
     @staticmethod
     def get_format(data_format, showname=False):
         """
-        Gets the format of the variable.
+        Get the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
         """
         if showname:
-            arrayName = "{}: "
+            array_name = "{}: "
             if isinstance(data_format, list):
-                arrayName = arrayName.format(list_type.List.get_name_from_format(data_format))
+                array_name = array_name.format(list_type.List.get_name_from_format(data_format))
             else:
-                arrayName = arrayName.format(data_format.__name__)
+                array_name = array_name.format(data_format.__name__)
         else:
-            arrayName = ""
+            array_name = ""
 
         if isinstance(data_format, list):
-            return "{}[\n{}\n    ...\n]".format(arrayName,
+            return "{}[\n{}\n    ...\n]".format(array_name,
                                                 secsgem.common.indent_block(list_type.List.get_format(data_format), 4))
 
-        return "{}[\n{}\n    ...\n]".format(arrayName,
+        return "{}[\n{}\n    ...\n]".format(array_name,
                                             secsgem.common.indent_block(data_format.get_format(not showname), 4))
 
     def __repr__(self):

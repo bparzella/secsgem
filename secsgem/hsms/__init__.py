@@ -32,4 +32,4 @@ from .header import HsmsHeader
 
 __all__ = ["HsmsConnectionManager", "HsmsHandler", "HsmsPacket", "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader",
            "HsmsRejectReqHeader", "HsmsLinktestRspHeader", "HsmsLinktestReqHeader", "HsmsDeselectRspHeader",
-           "HsmsDeselectReqHeader", "HsmsSelectRspHeader", "HsmsSelectReqHeader", "HsmsHeader" ]
+           "HsmsDeselectReqHeader", "HsmsSelectRspHeader", "HsmsSelectReqHeader", "HsmsHeader"]

@@ -68,7 +68,7 @@ class HsmsConnectionManager:
     @staticmethod
     def get_connection_id(address):
         """
-        Generates connection ids used for internal indexing.
+        Generate connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
         :type address: string
@@ -77,7 +77,7 @@ class HsmsConnectionManager:
 
     def _update_required_servers(self, additional_port=-1):  # pragma: no cover
         """
-        Starts server if any active handler is found.
+        Start server if any active handler is found.
 
         .. warning:: Do not call this directly, for internal use only.
         """

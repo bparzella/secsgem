@@ -101,7 +101,7 @@ class HsmsConnection:  # pragma: no cover
 
     def _serialize_data(self):
         """
-        Returns data for serialization.
+        Return data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -147,7 +147,7 @@ class HsmsConnection:  # pragma: no cover
                 and callable(getattr(self.delegate, 'on_connection_established')):
             try:
                 self.delegate.on_connection_established(self)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 self.logger.exception('ignoring exception for on_connection_established handler')
 
     def _on_hsms_connection_close(self, data):
@@ -200,8 +200,8 @@ class HsmsConnection:  # pragma: no cover
 
                     # retry will be cleared if send succeeded
                     retry = False
-                except OSError as e:
-                    if not secsgem.common.is_errorcode_ewouldblock(e.errno):
+                except OSError as exc:
+                    if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
                         # raise if not EWOULDBLOCK
                         return False
                     # it is EWOULDBLOCK, so retry sending
@@ -238,7 +238,7 @@ class HsmsConnection:  # pragma: no cover
                 and callable(getattr(self.delegate, 'on_connection_packet_received')):
             try:
                 self.delegate.on_connection_packet_received(self, response)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 self.logger.exception('ignoring exception for on_connection_packet_received handler')
 
         # return True if more data is available
@@ -271,9 +271,9 @@ class HsmsConnection:  # pragma: no cover
 
                     # add received data to input buffer
                     self.receiveBuffer += recv_data
-                except OSError as e:
-                    if not secsgem.common.is_errorcode_ewouldblock(e.errno):
-                        raise e
+                except OSError as exc:
+                    if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
+                        raise exc
 
                 # handle data in input buffer
                 while self._process_receive_buffer():
@@ -290,7 +290,7 @@ class HsmsConnection:  # pragma: no cover
 
         try:
             self.__receiver_thread_read_data()
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             self.logger.exception('exception')
 
         # notify listeners of disconnection
@@ -298,7 +298,7 @@ class HsmsConnection:  # pragma: no cover
                 and callable(getattr(self.delegate, 'on_connection_before_closed')):
             try:
                 self.delegate.on_connection_before_closed(self)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 self.logger.exception('ignoring exception for on_connection_before_closed handler')
 
         # close the socket
@@ -309,7 +309,7 @@ class HsmsConnection:  # pragma: no cover
                 and callable(getattr(self.delegate, 'on_connection_closed')):
             try:
                 self.delegate.on_connection_closed(self)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 self.logger.exception('ignoring exception for on_connection_closed handler')
 
         # reset all flags
@@ -432,7 +432,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         while not self.stopServerThread:
             try:
                 select_result = select.select([self.serverSock], [], [], self.select_timeout)
-            except Exception:
+            except Exception:  # pylint: disable=broad-except
                 continue
 
             if not select_result[0]:
@@ -494,7 +494,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
 
     def on_connected(self, sock, address):
         """
-        Connected callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
+        Connect callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
         :param sock: Socket for new connection
         :type sock: :class:`Socket`
@@ -589,7 +589,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
     def start(self):
         """
-        Starts the server and returns.
+        Start the server and return.
 
         It will launch a listener running in background to wait for incoming connections.
         """
@@ -610,7 +610,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
     def stop(self, terminate_connections=True):
         """
-        Stops the server. The background job waiting for incoming connections will be terminated.
+        Stop the server. The background job waiting for incoming connections will be terminated.
 
         Optionally all connections received will be closed.
 
@@ -636,7 +636,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
     def _initialize_connection_thread(self, accept_result):
         """
-        Setup connection.
+        Set connection up.
 
         .. warning:: Do not call this directly, used internally.
         """
@@ -651,8 +651,8 @@ class HsmsMultiPassiveServer:  # pragma: no cover
             named_connection_found = False
 
             # check all connections if connection with hostname can be resolved
-            for connectionID in self.connections:
-                connection = self.connections[connectionID]
+            for connection_id in self.connections:
+                connection = self.connections[connection_id]
                 try:
                     if source_ip == socket.gethostbyname(connection.remoteAddress):
                         new_connection = connection
@@ -690,9 +690,9 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
                     try:
                         accept_result = self.listenSock.accept()
-                    except OSError as e:
-                        if not secsgem.common.is_errorcode_ewouldblock(e.errno):
-                            raise e
+                    except OSError as exc:
+                        if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
+                            raise exc
 
                     if accept_result is None:
                         continue
@@ -706,7 +706,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
                                      name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}"
                                      .format(accept_result[1][0], accept_result[1][1])).start()
 
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             self.logger.exception('exception')
 
         self.threadRunning = False

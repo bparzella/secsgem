@@ -59,7 +59,8 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
 
-    def _generate_sf_callback_name(self, stream, function):
+    @staticmethod
+    def _generate_sf_callback_name(stream, function):
         return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
 
     def register_stream_function(self, stream, function, callback):
@@ -91,7 +92,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
     @property
     def collection_events(self):
         """
-        Dictionary of available collection events.
+        Get available collection events.
 
         *Example*::
 
@@ -118,7 +119,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
     @property
     def data_values(self):
         """
-        Dictionary of available data values.
+        Get available data values.
 
         *Example*::
 
@@ -145,7 +146,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
     @property
     def alarms(self):
         """
-        Dictionary of available alarms.
+        Get available alarms.
 
         *Example*::
 
@@ -172,7 +173,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
     @property
     def remote_commands(self):
         """
-        Dictionary of available remote commands.
+        Get available remote commands.
 
         *Example*::
 
@@ -223,7 +224,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
             result = callback(self, packet)
             if result is not None:
                 self.send_response(result, packet.header.system)
-        except Exception:
+        except Exception:  # pylint: disable=broad-except
             self.logger.exception('Callback aborted because of exception, abort sent')
             self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
 
@@ -282,18 +283,18 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         return self.secs_decode(packet)
 
-    def request_sv(self, sv):
+    def request_sv(self, sv_id):
         """
         Request contents of one Service Variable.
 
-        :param sv: id of Service Variable
-        :type sv: int
+        :param sv_id: id of Service Variable
+        :type sv_id: int
         :returns: value of requested Service Variable
         :rtype: various
         """
-        self.logger.info("Get value of service variable %s", sv)
+        self.logger.info("Get value of service variable %s", sv_id)
 
-        return self.request_svs([sv])[0]
+        return self.request_svs([sv_id])[0]
 
     def list_ecs(self, ecs=None):
         """
@@ -325,18 +326,18 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         return self.secs_decode(packet)
 
-    def request_ec(self, ec):
+    def request_ec(self, ec_id):
         """
         Request contents of one Equipment Constant.
 
-        :param ec: id of Equipment Constant
-        :type ec: int
+        :param ec_id: id of Equipment Constant
+        :type ec_id: int
         :returns: value of requested Equipment Constant
         :rtype: various
         """
-        self.logger.info("Get value of equipment constant %s", ec)
+        self.logger.info("Get value of equipment constant %s", ec_id)
 
-        return self.request_ecs([ec])
+        return self.request_ecs([ec_id])
 
     def set_ecs(self, ecs):
         """
@@ -351,18 +352,18 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         return self.secs_decode(packet).get()
 
-    def set_ec(self, ec, value):
+    def set_ec(self, ec_id, value):
         """
         Set contents of one Equipment Constant.
 
-        :param ec: id of Equipment Constant
-        :type ec: int
+        :param ec_id: id of Equipment Constant
+        :type ec_id: int
         :param value: new content of Equipment Constant
         :type value: various
         """
-        self.logger.info("Set value of equipment constant %s to %s", ec, value)
+        self.logger.info("Set value of equipment constant %s to %s", ec_id, value)
 
-        return self.set_ecs([[ec, value]])
+        return self.set_ecs([[ec_id, value]])
 
     def send_equipment_terminal(self, terminal_id, text):
         """

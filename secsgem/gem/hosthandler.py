@@ -199,7 +199,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s05f01(self, handler, packet):
         """
-        Callback handler for Stream 5, Function 1, Alarm request.
+        Handle Stream 5, Function 1, Alarm request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -217,7 +217,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s06f11(self, handler, packet):
         """
-        Callback handler for Stream 6, Function 11, Establish Communication Request.
+        Handle Stream 6, Function 11, Establish Communication Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -249,7 +249,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s10f01(self, handler, packet):
         """
-        Callback handler for Stream 10, Function 1, Terminal Request.
+        Handle Stream 10, Function 1, Terminal Request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`

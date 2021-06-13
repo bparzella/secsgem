@@ -91,7 +91,8 @@ class BaseText(Base):
         """Get data item for hashing."""
         return hash(self.value)
 
-    def __check_single_item_support(self, value):
+    @staticmethod
+    def __check_single_item_support(value):
         if isinstance(value, bool):
             return True
 

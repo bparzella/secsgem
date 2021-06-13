@@ -154,7 +154,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     def encode(self):
         """
-        Generates the encoded hsms data of the stream/function parameter.
+        Generate the encoded hsms data of the stream/function parameter.
 
         :returns: encoded data
         :rtype: string
@@ -166,7 +166,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     def decode(self, data):
         """
-        Updates stream/function parameter data from the passed data.
+        Update stream/function parameter data from the passed data.
 
         :param data: encoded data
         :type data: string
@@ -176,7 +176,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     def set(self, value):
         """
-        Updates the value of the stream/function parameter.
+        Update the value of the stream/function parameter.
 
         :param value: new value for the parameter
         :type value: various
@@ -185,7 +185,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     def get(self):
         """
-        Gets the current value of the stream/function parameter.
+        Get the current value of the stream/function parameter.
 
         :returns: current parameter value
         :rtype: various
@@ -195,7 +195,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
     @classmethod
     def get_format(cls):
         """
-        Gets the format of the function.
+        Get the format of the function.
 
         :returns: returns the string representation of the function
         :rtype: string

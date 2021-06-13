@@ -234,7 +234,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f15(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 15, Request offline.
+        Handle Stream 1, Function 15, Request offline.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -253,7 +253,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f17(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 17, Request online.
+        Handle Stream 1, Function 17, Request online.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -277,7 +277,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def data_values(self):
         """
-        The list of the data values.
+        Get list of the data values.
 
         :returns: Data value list
         :rtype: list of :class:`secsgem.gem.DataValue`
@@ -320,7 +320,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def status_variables(self):
         """
-        The list of the status variables.
+        Get list of the status variables.
 
         :returns: Status variable list
         :rtype: list of :class:`secsgem.gem.StatusVariables`
@@ -374,7 +374,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f03(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 3, Equipment status request.
+        Handle Stream 1, Function 3, Equipment status request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -403,7 +403,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f11(self, handler, packet):
         """
-        Callback handler for Stream 1, Function 11, SV namelist request.
+        Handle Stream 1, Function 11, SV namelist request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -435,7 +435,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def collection_events(self):
         """
-        The list of the collection events.
+        Get list of the collection events.
 
         :returns: Collection event list
         :rtype: list of :class:`secsgem.gem.CollectionEvent`
@@ -445,7 +445,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def registered_reports(self):
         """
-        The list of the subscribed reports.
+        Get list of the subscribed reports.
 
         :returns: Collection event report list
         :rtype: dictionary of subscribed reports
@@ -455,7 +455,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def registered_collection_events(self):
         """
-        The list of the subscribed collection events.
+        Get list of the subscribed collection events.
 
         :returns: Collection event list
         :rtype: dictionary of :class:`secsgem.gem.CollectionEventLink`
@@ -483,7 +483,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f33(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 33, Define Report.
+        Handle Stream 2, Function 33, Define Report.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -539,7 +539,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f35(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 35, Link event report.
+        Handle Stream 2, Function 35, Link event report.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -769,7 +769,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f13(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 13, Equipment constant request.
+        Handle Stream 2, Function 13, Equipment constant request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -798,7 +798,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f15(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 15, Equipment constant send.
+        Handle Stream 2, Function 15, Equipment constant send.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -833,7 +833,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f29(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 29, EC namelist request.
+        Handle Stream 2, Function 29, EC namelist request.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -848,21 +848,21 @@ class GemEquipmentHandler(GemHandler):
 
         if len(message) == 0:
             for ecid in self._equipment_constants:
-                ec = self._equipment_constants[ecid]
-                responses.append({"ECID": ec.ecid, "ECNAME": ec.name,
-                                  "ECMIN": ec.min_value if ec.min_value is not None else "",
-                                  "ECMAX": ec.max_value if ec.max_value is not None else "",
-                                  "ECDEF": ec.default_value, "UNITS": ec.unit})
+                eq_constant = self._equipment_constants[ecid]
+                responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
+                                  "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                                  "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                                  "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
-                    ec = self._equipment_constants[ecid]
-                    responses.append({"ECID": ec.ecid, "ECNAME": ec.name,
-                                      "ECMIN": ec.min_value if ec.min_value is not None else "",
-                                      "ECMAX": ec.max_value if ec.max_value is not None else "",
-                                      "ECDEF": ec.default_value, "UNITS": ec.unit})
+                    eq_constant = self._equipment_constants[ecid]
+                    responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
+                                      "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                                      "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                                      "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
 
         return self.stream_function(2, 30)(responses)
 
@@ -871,7 +871,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def alarms(self):
         """
-        The list of the alarms.
+        Get the list of the alarms.
 
         :returns: Alarms list
         :rtype: list of :class:`secsgem.gem.Alarm`
@@ -880,7 +880,7 @@ class GemEquipmentHandler(GemHandler):
 
     def set_alarm(self, alid):
         """
-        The list of the alarms.
+        Set the list of the alarms.
 
         :param alid: Alarm id
         :type alid: str/int
@@ -905,7 +905,7 @@ class GemEquipmentHandler(GemHandler):
 
     def clear_alarm(self, alid):
         """
-        The list of the alarms.
+        Clear the list of the alarms.
 
         :param alid: Alarm id
         :type alid: str/int
@@ -926,7 +926,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f03(self, handler, packet):
         """
-        Callback handler for Stream 5, Function 3, Alarm en-/disabled.
+        Handle Stream 5, Function 3, Alarm en-/disabled.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -951,7 +951,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f05(self, handler, packet):
         """
-        Callback handler for Stream 5, Function 5, Alarm list.
+        Handle Stream 5, Function 5, Alarm list.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -979,7 +979,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f07(self, handler, packet):
         """
-        Callback handler for Stream 5, Function 7, Enabled alarm list.
+        Handle Stream 5, Function 7, Enabled alarm list.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -1003,7 +1003,7 @@ class GemEquipmentHandler(GemHandler):
     @property
     def remote_commands(self):
         """
-        The list of the remote commands.
+        Get list of the remote commands.
 
         :returns: Remote command list
         :rtype: list of :class:`secsgem.gem.RemoteCommand`
@@ -1012,7 +1012,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f41(self, handler, packet):
         """
-        Callback handler for Stream 2, Function 41, host command send.
+        Handle Stream 2, Function 41, host command send.
 
         The remote command handing differs from usual stream function handling, because we send the ack with later
         completion first.
@@ -1070,7 +1070,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _get_clock(self):
         """
-        Returns the clock depending on configured time format.
+        Get the clock depending on configured time format.
 
         :returns: time code
         :rtype: string
@@ -1086,7 +1086,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _get_control_state_id(self):
         """
-        The id of the control state for the current control state.
+        Get id of the control state for the current control state.
 
         :returns: control state
         :rtype: integer
@@ -1150,7 +1150,7 @@ class GemEquipmentHandler(GemHandler):
         return set_alarms
 
     def on_connection_closed(self, connection):
-        """Connection was closed."""
+        """Handle connection was closed event."""
         # call parent handlers
         super().on_connection_closed(connection)
 

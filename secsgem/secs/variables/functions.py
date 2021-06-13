@@ -47,7 +47,7 @@ def generate(data_format):
 
 def get_format(data_format, showname=False):
     """
-    Gets the format of the function.
+    Get the format of the function.
 
     :returns: returns the string representation of the function
     :rtype: string

@@ -17,11 +17,11 @@
 
 from collections import OrderedDict
 
+import secsgem.common
+
 from .base import Base
 from . import array  # pylint: disable=cyclic-import
 from . import functions  # pylint: disable=cyclic-import
-
-import secsgem.common
 
 
 class List(Base):
@@ -74,15 +74,15 @@ class List(Base):
     @staticmethod
     def get_format(data_format, showname=False):
         """
-        Gets the format of the variable.
+        Get the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
         """
         if showname:
-            arrayName = "{}: ".format(List.get_name_from_format(data_format))
+            array_name = "{}: ".format(List.get_name_from_format(data_format))
         else:
-            arrayName = ""
+            array_name = ""
 
         if isinstance(data_format, list):
             items = []
@@ -96,7 +96,7 @@ class List(Base):
                         items.append(secsgem.common.indent_block(List.get_format(item, True), 4))
                 else:
                     items.append(secsgem.common.indent_block(item.get_format(), 4))
-            return arrayName + "{\n" + "\n".join(items) + "\n}"
+            return array_name + "{\n" + "\n".join(items) + "\n}"
         return None
 
     def __repr__(self):
@@ -187,7 +187,7 @@ class List(Base):
     @staticmethod
     def get_name_from_format(data_format):
         """
-        Generates a name for the passed data_format.
+        Generate a name for the passed data_format.
 
         :param data_format: data_format to get name for
         :type data_format: list/Base based class

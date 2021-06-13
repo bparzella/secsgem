@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -139,7 +139,7 @@ class HsmsHandler:
 
     def get_next_system_counter(self):
         """
-        Returns the next System.
+        Return the next System.
 
         :returns: System for the next command
         :rtype: integer
@@ -151,7 +151,7 @@ class HsmsHandler:
 
         return self.systemCounter
 
-    def _sendSelectReqThread(self):
+    def _send_select_req_thread(self):
         response = self.send_select_req()
         if response is None:
             self.logger.warning("select request failed")
@@ -164,7 +164,7 @@ class HsmsHandler:
 
     def _on_state_connect(self):
         """
-        Connection state model got event connect.
+        Handle connection state model got event connect.
 
         :param data: event attributes
         :type data: object
@@ -174,14 +174,14 @@ class HsmsHandler:
 
         # start select process if connection is active
         if self.active:
-            self.selectReqThread = threading.Thread(target=self._sendSelectReqThread,
+            self.selectReqThread = threading.Thread(target=self._send_select_req_thread,
                                                     name="secsgem_hsmsHandler_sendSelectReqThread")
             self.selectReqThread.daemon = True  # kill thread automatically on main program termination
             self.selectReqThread.start()
 
     def _on_state_disconnect(self):
         """
-        Connection state model got event disconnect.
+        Handle connection state model got event disconnect.
 
         :param data: event attributes
         :type data: object
@@ -194,7 +194,7 @@ class HsmsHandler:
 
     def _on_state_select(self):
         """
-        Connection state model got event select.
+        Handle connection state model got event select.
 
         :param data: event attributes
         :type data: object
@@ -215,7 +215,7 @@ class HsmsHandler:
         self._start_linktest_timer()
 
     def on_connection_established(self, _):
-        """Connection was established."""
+        """Handle connection was established event."""
         self.connected = True
 
         # update connection state
@@ -224,12 +224,12 @@ class HsmsHandler:
         self.events.fire("hsms_connected", {'connection': self})
 
     def on_connection_before_closed(self, _):
-        """Connection is about to be closed."""
+        """Handle connection is about to be closed event."""
         # send separate request
         self.send_separate_req()
 
     def on_connection_closed(self, _):
-        """Connection was closed."""
+        """Handle connection was closed event."""
         # update connection state
         self.connected = False
         self.connectionState.disconnect()
@@ -337,7 +337,7 @@ class HsmsHandler:
 
     def _get_queue_for_system(self, system_id):
         """
-        Creates a new queue to receive responses for a certain system.
+        Create a new queue to receive responses for a certain system.
 
         :param system_id: system id to watch
         :type system_id: int
@@ -362,7 +362,7 @@ class HsmsHandler:
 
     def _serialize_data(self):
         """
-        Returns data for serialization.
+        Return data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
@@ -371,11 +371,11 @@ class HsmsHandler:
                 'name': self.name, 'connected': self.connected}
 
     def enable(self):
-        """Enables the connection."""
+        """Enable the connection."""
         self.connection.enable()
 
     def disable(self):
-        """Disables the connection."""
+        """Disable the connection."""
         self.connection.disable()
 
     def send_stream_function(self, packet):
