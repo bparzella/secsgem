@@ -20,7 +20,7 @@ import logging
 import secsgem.common
 
 from .handler import HsmsHandler
-from .connections import HsmsMultiPassiveServer
+from .multi_passive_server import HsmsMultiPassiveServer
 
 
 class HsmsConnectionManager:

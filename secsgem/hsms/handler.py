@@ -22,7 +22,9 @@ import queue
 
 import secsgem.common
 
-from .connections import HsmsActiveConnection, HsmsPassiveConnection, HSMS_STYPES
+from .connection import HSMS_STYPES
+from .active_connection import HsmsActiveConnection
+from .passive_connection import HsmsPassiveConnection
 from .packet import HsmsPacket
 from .select_req_header import HsmsSelectReqHeader
 from .select_rsp_header import HsmsSelectRspHeader
@@ -59,7 +61,7 @@ class HsmsHandler:
         :param name: Name of the underlying configuration
         :type name: string
         :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        :type custom_connection_handler: :class:`secsgem.hsms.HsmsMultiPassiveServer`
 
         **Example**::
 
