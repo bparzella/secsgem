@@ -249,3 +249,13 @@ class TestHsmsPacket(unittest.TestCase):
 
         self.assertEqual(packet.header.stream, 0)
         self.assertEqual(packet.header.function, 0)
+
+    def testRepr(self):
+        packet = secsgem.hsms.HsmsPacket.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+
+        assert packet.__repr__() == "HsmsPacket({'header': HsmsHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x0000007b, requireResponse:True}), 'data': ''})"
+
+    def testStr(self):
+        packet = secsgem.hsms.HsmsPacket.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
+
+        assert str(packet) == "'header': {sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x0000007b, requireResponse:True}"
