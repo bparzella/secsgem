@@ -23,6 +23,12 @@ import secsgem.common
 import secsgem.secs.variables
 import secsgem.secs.data_items
 
+from .status_variable import StatusVariable
+from .collection_event import CollectionEvent
+from .collection_event_link import CollectionEventLink
+from .collection_event_report import CollectionEventReport
+from .equipment_constant import EquipmentConstant
+from .remote_command import RemoteCommand
 from .handler import GemHandler
 
 
@@ -44,304 +50,6 @@ CEID_CMD_STOP_DONE = 21
 
 RCMD_START = "START"
 RCMD_STOP = "STOP"
-
-
-class DataValue:
-    """Data value definition."""
-
-    def __init__(self, dvid, name, value_type, use_callback=True, **kwargs):
-        """
-        Initialize a data value.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        Custom parameters can be set with the keyword arguments,
-        they will be passed to the GemEquipmentHandlers callback
-        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
-
-        If use_callbacks is disabled, you can set the value with the value property.
-
-        :param dvid: ID of the data value
-        :type dvid: various
-        :param name: long name of the data value
-        :type name: string
-        :param value_type: type of the data value
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-        :type use_callback: boolean
-        """
-        self.dvid = dvid
-        self.name = name
-        self.value_type = value_type
-        self.use_callback = use_callback
-        self.value = 0
-
-        if isinstance(self.dvid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class StatusVariable:
-    """Status variable definition."""
-
-    def __init__(self, svid, name, unit, value_type, use_callback=True, **kwargs):
-        """
-        Initialize a status variable.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        Custom parameters can be set with the keyword arguments,
-        they will be passed to the GemEquipmentHandlers callback
-        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_sv_value_request`.
-
-        If use_callbacks is disabled, you can set the value with the value property.
-
-        :param svid: ID of the status variable
-        :type svid: various
-        :param name: long name of the status variable
-        :type name: string
-        :param unit: unit (see SEMI E5, Units of Measure)
-        :type unit: string
-        :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-        :type use_callback: boolean
-        """
-        self.svid = svid
-        self.name = name
-        self.unit = unit
-        self.value_type = value_type
-        self.use_callback = use_callback
-        self.value = 0
-
-        if isinstance(self.svid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class CollectionEvent:
-    """Collection event definition."""
-
-    def __init__(self, ceid, name, data_values, **kwargs):
-        """
-        Initialize a collection event.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        Custom parameters can be set with the keyword arguments,
-        they will be passed to the GemEquipmentHandlers callback
-        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_dv_value_request`.
-
-        If use_callbacks is disabled, you can set the value with the value property.
-
-        :param ceid: ID of the collection event
-        :type ceid: various
-        :param name: long name of the collection event
-        :type name: string
-        :param data_values: data values available for this event
-        :type data_values: list of DVIDs
-        """
-        self.ceid = ceid
-        self.name = name
-        self.data_values = data_values
-
-        if isinstance(self.ceid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class CollectionEventLink:
-    """Representation for registered/linked collection event."""
-
-    def __init__(self, ce, reports, **kwargs):
-        """
-        Initialize a collection event link.
-
-        :param ce: ID of the collection event
-        :type ce: :class:`secsgem.gem.equipmenthandler.CollectionEvent`
-        :param reports: list of the linked reports
-        :type reports: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
-        """
-        self.ce = ce
-        self._reports = reports
-        self.enabled = False
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    @property
-    def reports(self):
-        """
-        The list of the data values.
-
-        :returns: List of linked reports
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEventReport`
-        """
-        return self._reports
-
-
-class CollectionEventReport:
-    """Report definition for registered collection events."""
-
-    def __init__(self, rptid, variables, **kwargs):
-        """
-        Initialize a collection event report.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        :param rptid: ID of the report
-        :type rptid: various
-        :param vars: long name of the collection event
-        :type vars: string
-        """
-        self.rptid = rptid
-        self.vars = variables
-
-        if isinstance(self.rptid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class EquipmentConstant:
-    """Equipment constant definition."""
-
-    def __init__(self, ecid, name, min_value, max_value, default_value, unit, value_type, use_callback=True, **kwargs):
-        """
-        Initialize an equipment constant.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        Custom parameters can be set with the keyword arguments,
-        they will be passed to the GemEquipmentHandlers callbacks
-        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_request`
-        and :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler.on_ec_value_update` .
-
-        If use_callbacks is disabled, you can set the value with the value property.
-
-        :param ecid: ID of the equipment constant
-        :type ecid: various
-        :param name: long name
-        :type name: string
-        :param min_value: minimum value
-        :type min_value: various
-        :param max_value: maximum value
-        :type max_value: various
-        :param default_value: default value
-        :type default_value: various
-        :param unit: unit (see SEMI E5, Units of Measure)
-        :type unit: string
-        :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
-        :type use_callback: boolean
-        """
-        self.ecid = ecid
-        self.name = name
-        self.min_value = min_value
-        self.max_value = max_value
-        self.default_value = default_value
-        self.unit = unit
-        self.value_type = value_type
-        self.use_callback = use_callback
-        self.value = default_value
-
-        if isinstance(self.ecid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class Alarm:
-    """Alarm definition."""
-
-    def __init__(self, alid, name, text, code, ce_on, ce_off, **kwargs):
-        """
-        Initialize an alarm.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        :param alid: ID of the alarm
-        :type alid: various
-        :param name: long name of the alarm
-        :type name: string
-        :param text: alarm text
-        :type text: string
-        :param ce_on: collection event for alarm set
-        :type ce_on: types supported by data item CEID
-        :param ce_off: collection event for alarm cleared
-        :type ce_off: types supported by data item CEID
-        """
-        self.alid = alid
-        self.name = name
-        self.text = text
-        self.code = code
-        self.ce_on = ce_on
-        self.ce_off = ce_off
-        self.enabled = False
-        self.set = False
-
-        if isinstance(self.alid, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-
-class RemoteCommand:
-    """Remote command definition."""
-
-    def __init__(self, rcmd, name, params, ce_finished, **kwargs):
-        """
-        Initialize a remote command.
-
-        You can manually set the secs-type of the id with the 'id_type' keyword argument.
-
-        Custom parameters can be set with the keyword arguments,
-        they will be passed to the GemEquipmentHandlers callback
-        :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler._on_rcmd_<remote_command>`.
-
-        :param rcmd: ID of the status variable
-        :type rcmd: various
-        :param name: long name of the status variable
-        :type name: string
-        :param params: array of available parameter names
-        :type params: list
-        :param ce_finished: collection event to trigger when remote command was finished
-        :type ce_finished: types supported by data item CEID
-        """
-        self.rcmd = rcmd
-        self.name = name
-        self.params = params
-        self.ce_finished = ce_finished
-
-        if isinstance(self.rcmd, int):
-            self.id_type = secsgem.secs.variables.U4
-        else:
-            self.id_type = secsgem.secs.variables.String
-
-        for key, value in kwargs.items():
-            setattr(self, key, value)
 
 
 class GemEquipmentHandler(GemHandler):
@@ -572,7 +280,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the data values.
 
         :returns: Data value list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.DataValue`
+        :rtype: list of :class:`secsgem.gem.DataValue`
         """
         return self._data_values
 
@@ -585,7 +293,7 @@ class GemEquipmentHandler(GemHandler):
         :param dvid: Id of the data value encoded in the corresponding type
         :type dvid: :class:`secsgem.secs.variables.Base`
         :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
+        :type dv: :class:`secsgem.gem.DataValue`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -598,7 +306,7 @@ class GemEquipmentHandler(GemHandler):
         Get the data value depending on its configuation.
 
         :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.equipmenthandler.DataValue`
+        :type dv: :class:`secsgem.gem.DataValue`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -615,7 +323,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the status variables.
 
         :returns: Status variable list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.StatusVariables`
+        :rtype: list of :class:`secsgem.gem.StatusVariables`
         """
         return self._status_variables
 
@@ -628,7 +336,7 @@ class GemEquipmentHandler(GemHandler):
         :param svid: Id of the status variable encoded in the corresponding type
         :type svid: :class:`secsgem.secs.variables.Base`
         :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.equipmenthandler.StatusVariable`
+        :type sv: :class:`secsgem.gem.StatusVariable`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -641,7 +349,7 @@ class GemEquipmentHandler(GemHandler):
         Get the status variable value depending on its configuation.
 
         :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.equipmenthandler.StatusVariable`
+        :type sv: :class:`secsgem.gem.StatusVariable`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -730,7 +438,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the collection events.
 
         :returns: Collection event list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.CollectionEvent`
+        :rtype: list of :class:`secsgem.gem.CollectionEvent`
         """
         return self._collection_events
 
@@ -750,7 +458,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the subscribed collection events.
 
         :returns: Collection event list
-        :rtype: dictionary of :class:`secsgem.gem.equipmenthandler.CollectionEventLink`
+        :rtype: dictionary of :class:`secsgem.gem.CollectionEventLink`
 
         """
         return self._registered_collection_events
@@ -984,7 +692,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the equipments contstants.
 
         :returns: Equipment constant list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :rtype: list of :class:`secsgem.gem.EquipmentConstant`
         """
         return self._equipment_constants
 
@@ -997,7 +705,7 @@ class GemEquipmentHandler(GemHandler):
         :param ecid: Id of the equipment constant encoded in the corresponding type
         :type ecid: :class:`secsgem.secs.variables.Base`
         :param ec: The equipment constant requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :type ec: :class:`secsgem.gem.EquipmentConstant`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -1014,7 +722,7 @@ class GemEquipmentHandler(GemHandler):
         :param ecid: Id of the equipment constant encoded in the corresponding type
         :type ecid: :class:`secsgem.secs.variables.Base`
         :param ec: The equipment constant to be updated
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :type ec: :class:`secsgem.gem.EquipmentConstant`
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.Base`
         """
@@ -1027,7 +735,7 @@ class GemEquipmentHandler(GemHandler):
         Get the equipment constant value depending on its configuation.
 
         :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :type ec: :class:`secsgem.gem.EquipmentConstant`
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
@@ -1045,7 +753,7 @@ class GemEquipmentHandler(GemHandler):
         Get the equipment constant value depending on its configuation.
 
         :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.equipmenthandler.EquipmentConstant`
+        :type ec: :class:`secsgem.gem.EquipmentConstant`
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.Base`
         """
@@ -1166,7 +874,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the alarms.
 
         :returns: Alarms list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.Alarm`
+        :rtype: list of :class:`secsgem.gem.Alarm`
         """
         return self._alarms
 
@@ -1298,7 +1006,7 @@ class GemEquipmentHandler(GemHandler):
         The list of the remote commands.
 
         :returns: Remote command list
-        :rtype: list of :class:`secsgem.gem.equipmenthandler.RemoteCommand`
+        :rtype: list of :class:`secsgem.gem.RemoteCommand`
         """
         return self._remote_commands
 
