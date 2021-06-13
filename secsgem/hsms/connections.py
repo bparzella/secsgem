@@ -24,7 +24,7 @@ import threading
 
 import secsgem.common
 
-from .packets import HsmsPacket
+from .packet import HsmsPacket
 
 # TODO: timeouts (T7, T8)
 

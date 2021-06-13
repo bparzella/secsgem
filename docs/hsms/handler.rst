@@ -13,7 +13,7 @@ It also replies to incoming HSMS requests like linktest automatically.
     >>> client.enable()
     Connected
     >>> client.send_linktest_req()
-    secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 7, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
+    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 7, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
     >>> client.disable()
 
 The handler has functions to send requests and responses and wait for a certain response.

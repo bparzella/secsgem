@@ -204,7 +204,7 @@ class GemHostHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         s5f1 = self.secs_decode(packet)
 
@@ -222,7 +222,7 @@ class GemHostHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -254,7 +254,7 @@ class GemHostHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         s10f1 = self.secs_decode(packet)
 

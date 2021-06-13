@@ -232,7 +232,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         Packet received from hsms layer.
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         # check if callbacks available for this stream and function
         threading.Thread(
@@ -439,7 +439,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         Get object of decoded stream and function class, or None if no class is available.
 
         :param packet: packet to get object for
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         :return: matching stream and function object
         :rtype: secsSxFx object
         """

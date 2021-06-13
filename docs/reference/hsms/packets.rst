@@ -1,14 +1,14 @@
 Packets
 =======
 
-.. autoclass:: secsgem.hsms.packets.HsmsPacket
-.. autoclass:: secsgem.hsms.packets.HsmsHeader
-.. autoclass:: secsgem.hsms.packets.HsmsStreamFunctionHeader
-.. autoclass:: secsgem.hsms.packets.HsmsSelectReqHeader
-.. autoclass:: secsgem.hsms.packets.HsmsSelectRspHeader
-.. autoclass:: secsgem.hsms.packets.HsmsDeselectReqHeader
-.. autoclass:: secsgem.hsms.packets.HsmsDeselectRspHeader
-.. autoclass:: secsgem.hsms.packets.HsmsLinktestReqHeader
-.. autoclass:: secsgem.hsms.packets.HsmsLinktestRspHeader
-.. autoclass:: secsgem.hsms.packets.HsmsRejectReqHeader
-.. autoclass:: secsgem.hsms.packets.HsmsSeparateReqHeader
+.. autoclass:: secsgem.hsms.HsmsPacket
+.. autoclass:: secsgem.hsms.HsmsHeader
+.. autoclass:: secsgem.hsms.HsmsStreamFunctionHeader
+.. autoclass:: secsgem.hsms.HsmsSelectReqHeader
+.. autoclass:: secsgem.hsms.HsmsSelectRspHeader
+.. autoclass:: secsgem.hsms.HsmsDeselectReqHeader
+.. autoclass:: secsgem.hsms.HsmsDeselectRspHeader
+.. autoclass:: secsgem.hsms.HsmsLinktestReqHeader
+.. autoclass:: secsgem.hsms.HsmsLinktestRspHeader
+.. autoclass:: secsgem.hsms.HsmsRejectReqHeader
+.. autoclass:: secsgem.hsms.HsmsSeparateReqHeader

@@ -531,7 +531,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler, packet  # unused parameters
 
@@ -550,7 +550,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler, packet  # unused parameters
 
@@ -671,7 +671,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -700,7 +700,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -780,7 +780,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -836,7 +836,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -888,7 +888,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -910,7 +910,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1066,7 +1066,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1095,7 +1095,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1130,7 +1130,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1223,7 +1223,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1248,7 +1248,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 
@@ -1276,7 +1276,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler, packet  # unused parameters
 
@@ -1313,7 +1313,7 @@ class GemEquipmentHandler(GemHandler):
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         del handler  # unused parameters
 

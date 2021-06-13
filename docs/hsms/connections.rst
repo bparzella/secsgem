@@ -109,7 +109,7 @@ It creates and removes :class:`secsgem.hsms.connections.HsmsActiveConnection` an
     >>> handler=manager.add_peer("connection", '10.211.55.33', 5000, False, 0)
     >>> handler.enable()
     >>> handler.send_linktest_req()
-    secsgem.hsms.packets.HsmsPacket({'header': secsgem.hsms.packets.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 13, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
+    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 13, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
     >>> handler.disable()
     >>> manager.stop()
 

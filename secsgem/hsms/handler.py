@@ -23,10 +23,16 @@ import queue
 import secsgem.common
 
 from .connections import HsmsActiveConnection, HsmsPassiveConnection, HSMS_STYPES
-from .packets import HsmsPacket, HsmsRejectReqHeader, HsmsStreamFunctionHeader,\
-    HsmsSelectReqHeader, HsmsSelectRspHeader, HsmsLinktestReqHeader, HsmsLinktestRspHeader, \
-    HsmsDeselectReqHeader, HsmsDeselectRspHeader, HsmsSeparateReqHeader
-
+from .packet import HsmsPacket
+from .select_req_header import HsmsSelectReqHeader
+from .select_rsp_header import HsmsSelectRspHeader
+from .deselect_req_header import HsmsDeselectReqHeader
+from .deselect_rsp_header import HsmsDeselectRspHeader
+from .linktest_req_header import HsmsLinktestReqHeader
+from .linktest_rsp_header import HsmsLinktestRspHeader
+from .reject_req_header import HsmsRejectReqHeader
+from .separate_req_header import HsmsSeparateReqHeader
+from .stream_function_header import HsmsStreamFunctionHeader
 from .connectionstatemachine import ConnectionStateMachine
 
 
@@ -297,7 +303,7 @@ class HsmsHandler:
         Packet received by connection.
 
         :param packet: received data packet
-        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
         if packet.header.sType > 0:
             self.__handle_hsms_requests(packet)
@@ -395,7 +401,7 @@ class HsmsHandler:
         :param packet: packet to be sent
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         :returns: Packet that was received
-        :rtype: :class:`secsgem.hsms.packets.HsmsPacket`
+        :rtype: :class:`secsgem.hsms.HsmsPacket`
         """
         system_id = self.get_next_system_counter()
 
