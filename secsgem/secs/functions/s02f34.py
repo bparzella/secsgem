@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 34."""
 
-from .base import SecsStreamFunction
-from ..data_items import DRACK
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import DRACK
 
 
 class SecsS02F34(SecsStreamFunction):

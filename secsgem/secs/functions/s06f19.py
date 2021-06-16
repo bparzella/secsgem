@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 06 function 19."""
 
-from .base import SecsStreamFunction
-from ..data_items import RPTID
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import RPTID
 
 
 class SecsS06F19(SecsStreamFunction):

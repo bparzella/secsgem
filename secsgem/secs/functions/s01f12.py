@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 01 function 12."""
 
-from .base import SecsStreamFunction
-from ..data_items import SVID, SVNAME, UNITS
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import SVID, SVNAME, UNITS
 
 
 class SecsS01F12(SecsStreamFunction):

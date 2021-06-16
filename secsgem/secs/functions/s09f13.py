@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 09 function 13."""
 
-from .base import SecsStreamFunction
-from ..data_items import MEXP, EDID
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import MEXP, EDID
 
 
 class SecsS09F13(SecsStreamFunction):

@@ -15,9 +15,9 @@
 #####################################################################
 """Class for stream 12 function 01."""
 
-from .base import SecsStreamFunction
-from ..data_items import MID, IDTYP, FNLOC, FFROT, ORLOC, RPSEL, REFP, DUTMS, XDIES, YDIES, ROWCT, COLCT, NULBC, \
-    PRDCT, PRAXI
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import MID, IDTYP, FNLOC, FFROT, ORLOC, RPSEL, REFP, DUTMS, XDIES, YDIES, ROWCT, COLCT, \
+    NULBC, PRDCT, PRAXI
 
 
 class SecsS12F01(SecsStreamFunction):

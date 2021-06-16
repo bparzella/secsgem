@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 12 function 05."""
 
-from .base import SecsStreamFunction
-from ..data_items import MID, IDTYP, MAPFT, MLCL
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import MID, IDTYP, MAPFT, MLCL
 
 
 class SecsS12F05(SecsStreamFunction):

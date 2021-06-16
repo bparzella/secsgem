@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 10 function 01."""
 
-from .base import SecsStreamFunction
-from ..data_items import TID, TEXT
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import TID, TEXT
 
 
 class SecsS10F01(SecsStreamFunction):

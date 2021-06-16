@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 18."""
 
-from .base import SecsStreamFunction
-from ..data_items import TIME
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import TIME
 
 
 class SecsS02F18(SecsStreamFunction):

@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 12 function 06."""
 
-from .base import SecsStreamFunction
-from ..data_items import GRNT1
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import GRNT1
 
 
 class SecsS12F06(SecsStreamFunction):

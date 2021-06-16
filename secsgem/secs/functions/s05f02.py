@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 05 function 02."""
 
-from .base import SecsStreamFunction
-from ..data_items import ACKC5
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import ACKC5
 
 
 class SecsS05F02(SecsStreamFunction):

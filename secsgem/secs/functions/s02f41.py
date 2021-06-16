@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 41."""
 
-from .base import SecsStreamFunction
-from ..data_items import RCMD, CPNAME, CPVAL
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import RCMD, CPNAME, CPVAL
 
 
 class SecsS02F41(SecsStreamFunction):

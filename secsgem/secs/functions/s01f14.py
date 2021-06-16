@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 01 function 14."""
 
-from .base import SecsStreamFunction
-from ..data_items import COMMACK, MDLN
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import COMMACK, MDLN
 
 
 class SecsS01F14(SecsStreamFunction):

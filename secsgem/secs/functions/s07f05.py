@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 07 function 05."""
 
-from .base import SecsStreamFunction
-from ..data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import PPID
 
 
 class SecsS07F05(SecsStreamFunction):

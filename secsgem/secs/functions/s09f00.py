@@ -15,7 +15,7 @@
 #####################################################################
 """Class for stream 09 function 00."""
 
-from .base import SecsStreamFunction
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F00(SecsStreamFunction):

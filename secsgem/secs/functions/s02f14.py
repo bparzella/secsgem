@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 14."""
 
-from .base import SecsStreamFunction
-from ..data_items import ECV
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import ECV
 
 
 class SecsS02F14(SecsStreamFunction):

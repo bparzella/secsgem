@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 29."""
 
-from .base import SecsStreamFunction
-from ..data_items import ECID
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import ECID
 
 
 class SecsS02F29(SecsStreamFunction):

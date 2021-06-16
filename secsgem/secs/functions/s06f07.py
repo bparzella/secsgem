@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 06 function 07."""
 
-from .base import SecsStreamFunction
-from ..data_items import DATAID
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import DATAID
 
 
 class SecsS06F07(SecsStreamFunction):

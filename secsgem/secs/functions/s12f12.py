@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 12 function 12."""
 
-from .base import SecsStreamFunction
-from ..data_items import MDACK
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import MDACK
 
 
 class SecsS12F12(SecsStreamFunction):

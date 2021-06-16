@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 01 function 02."""
 
-from .base import SecsStreamFunction
-from ..data_items import MDLN
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import MDLN
 
 
 class SecsS01F02(SecsStreamFunction):

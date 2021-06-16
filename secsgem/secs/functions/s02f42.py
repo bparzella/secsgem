@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 02 function 42."""
 
-from .base import SecsStreamFunction
-from ..data_items import HCACK, CPNAME, CPACK
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import HCACK, CPNAME, CPACK
 
 
 class SecsS02F42(SecsStreamFunction):

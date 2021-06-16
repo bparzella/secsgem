@@ -15,8 +15,8 @@
 #####################################################################
 """Class for stream 14 function 04."""
 
-from .base import SecsStreamFunction
-from ..data_items import OBJID, ATTRID, ATTRDATA, OBJACK, ERRCODE, ERRTEXT
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import OBJID, ATTRID, ATTRDATA, OBJACK, ERRCODE, ERRTEXT
 
 
 class SecsS14F04(SecsStreamFunction):
