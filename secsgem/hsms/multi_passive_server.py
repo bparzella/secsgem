@@ -35,7 +35,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
     select_timeout = 0.5
     """ Timeout for select calls ."""
 
-    def __init__(self, port=5000):
+    def __init__(self, port=5000, bind_ip=''):
         """
         Initialize a passive hsms server.
 
@@ -52,6 +52,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.listenSock = None
 
         self.port = port
+        self.bind_ip = bind_ip
 
         self.threadRunning = False
         self.stopThread = False
@@ -91,7 +92,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         if not secsgem.common.is_windows():
             self.listenSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self.listenSock.bind(('', self.port))
+        self.listenSock.bind((self.bind_ip, self.port))
         self.listenSock.listen(1)
         self.listenSock.setblocking(0)
 

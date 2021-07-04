@@ -33,7 +33,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     After the connection is established the listening socket is closed.
     """
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None):
+    def __init__(self, address, port=5000, session_id=0, delegate=None, bind_ip=''):
         """
         Initialize a passive hsms connection.
 
@@ -53,6 +53,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         """
         # initialize super class
         HsmsConnection.__init__(self, True, address, port, session_id, delegate)
+        self._bind_ip = bind_ip
 
         # initially not enabled
         self.enabled = False
@@ -127,7 +128,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         if not secsgem.common.is_windows():
             self.serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self.serverSock.bind(('', self.remotePort))
+        self.serverSock.bind((self._bind_ip, self.remotePort))
         self.serverSock.listen(1)
 
         while not self.stopServerThread:
