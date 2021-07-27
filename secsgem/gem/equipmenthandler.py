@@ -827,7 +827,7 @@ class GemEquipmentHandler(GemHandler):
 
         if eac == 0:
             for ec in message:
-                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV)
+                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV.get())
 
         return self.stream_function(2, 16)(eac)
 
