@@ -410,7 +410,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
 name = "transitions"
-version = "0.8.8"
+version = "0.8.9"
 description = "A lightweight, object-oriented Python state machine implementation with many extensions."
 category = "main"
 optional = false
@@ -697,8 +697,8 @@ toml = [
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
 ]
 transitions = [
-    {file = "transitions-0.8.8-py2.py3-none-any.whl", hash = "sha256:f35efa070fbdf9a0f3f093b19f1258068786af75786a8cbcc884444f3d1a66d4"},
-    {file = "transitions-0.8.8.tar.gz", hash = "sha256:e7a86b31a161a76133f189b3ae9dad2755a80ea4c1e0eee1805648d021fb677d"},
+    {file = "transitions-0.8.9-py2.py3-none-any.whl", hash = "sha256:6e03db07fb29bfdb2f560c9da834d995782a06e50dda26e103cfdd5bcb1c56b7"},
+    {file = "transitions-0.8.9.tar.gz", hash = "sha256:fc2ec6d6b6f986cd7e28e119eeb9ba1c9cc51ab4fbbdb7f2dedad01983fd2de0"},
 ]
 typed-ast = [
     {file = "typed_ast-1.4.3-cp35-cp35m-manylinux1_i686.whl", hash = "sha256:2068531575a125b87a41802130fa7e29f26c09a2833fea68d9a40cf33902eba6"},
