@@ -54,8 +54,7 @@ class HsmsConnectionManager:
         :returns: Is peer available
         :rtype: boolean
         """
-        for handlerID in self.handlers:
-            handler = self.handlers[handlerID]
+        for handler in self.handlers.values():
             if handler.name == index:
                 return handler
 
@@ -73,7 +72,7 @@ class HsmsConnectionManager:
         :param address: The IP address for the affected remote.
         :type address: string
         """
-        return "%s" % address
+        return f"{address}"
 
     def _update_required_servers(self, additional_port=-1):  # pragma: no cover
         """
@@ -89,17 +88,16 @@ class HsmsConnectionManager:
         if additional_port > 0:
             required_ports.append(additional_port)
 
-        for handlerID in self.handlers:
-            handler = self.handlers[handlerID]
+        for handler in self.handlers.values():
             if not handler.active:
                 if handler.port not in required_ports:
                     required_ports.append(handler.port)
 
-        for serverPort in self.servers:
+        for serverPort, server in self.servers.items():
             if serverPort not in required_ports:
                 self.logger.debug("stopping server on port %d", serverPort)
-                self.servers[serverPort].stop()
-                del self.servers[serverPort]
+                server.stop()
+                del self.servers[serverPort]  # pylint: disable=unnecessary-dict-index-lookup
 
         for requiredPort in required_ports:
             if requiredPort not in self.servers:
@@ -163,7 +161,7 @@ class HsmsConnectionManager:
 
         connection_id = self.get_connection_id(address)
 
-        if connection_id in self.handlers.keys():
+        if connection_id in self.handlers:
             handler = self.handlers[connection_id]
 
             handler.connection.disconnect()
@@ -177,8 +175,7 @@ class HsmsConnectionManager:
         """Stop all servers and terminate the connections."""
         self.stopping = True
 
-        for handlerID in self.handlers:
-            handler = self.handlers[handlerID]
+        for handler in self.handlers.values():
             handler.connection.disconnect()
 
         self.handlers.clear()

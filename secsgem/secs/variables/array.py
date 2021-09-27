@@ -59,7 +59,7 @@ class Array(Base):
         :param count: number of fields in the list
         :type count: integer
         """
-        super(Array, self).__init__()
+        super().__init__()
 
         self.item_decriptor = data_format
         self.count = count
@@ -92,23 +92,25 @@ class Array(Base):
             array_name = ""
 
         if isinstance(data_format, list):
-            return "{}[\n{}\n    ...\n]".format(array_name,
-                                                secsgem.common.indent_block(list_type.List.get_format(data_format), 4))
+            return f"{array_name}[\n" \
+                   f"{secsgem.common.indent_block(list_type.List.get_format(data_format), 4)}\n" \
+                   f"    ...\n]"
 
-        return "{}[\n{}\n    ...\n]".format(array_name,
-                                            secsgem.common.indent_block(data_format.get_format(not showname), 4))
+        return f"{array_name}[\n" \
+               f"{secsgem.common.indent_block(data_format.get_format(not showname), 4)}\n" \
+               f"    ...\n]"
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
-            return "<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
         data = ""
 
         for value in self.data:
-            data += "{}\n".format(secsgem.common.indent_block(value.__repr__()))
+            data += f"{secsgem.common.indent_block(value.__repr__())}\n"
 
-        return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
+        return f"<{self.text_code} [{len(self.data)}]\n{data}\n>"
 
     def __len__(self):
         """Get the length."""
@@ -127,8 +129,7 @@ class Array(Base):
         if isinstance(value, (type(self.data[key]), self.data[key].__class__.__bases__)):
             self.data[key] = value
         elif isinstance(value, Base):
-            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
-                                                                     self.data[key].__class__.__name__))
+            raise TypeError(f"Wrong type {value.__class__.__name__} when expecting {self.data[key].__class__.__name__}")
         else:
             self.data[key].set(value)
 
@@ -151,12 +152,11 @@ class Array(Base):
         :type value: list
         """
         if not isinstance(value, list):
-            raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
+            raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
         if self.count >= 0:
             if not len(value) == self.count:
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})"
-                                 .format(self.count, len(value)))
+                raise ValueError(f"Value has invalid field count (expected: {self.count}, actual: {len(value)})")
 
         self.data = []
 

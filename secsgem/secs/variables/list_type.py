@@ -60,7 +60,7 @@ class List(Base):
         :param count: number of fields in the list
         :type count: integer
         """
-        super(List, self).__init__()
+        super().__init__()
 
         self.name = "DATA"
 
@@ -80,7 +80,7 @@ class List(Base):
         :rtype: string
         """
         if showname:
-            array_name = "{}: ".format(List.get_name_from_format(data_format))
+            array_name = f"{List.get_name_from_format(data_format)}: "
         else:
             array_name = ""
 
@@ -102,14 +102,14 @@ class List(Base):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.data) == 0:
-            return "<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
         data = ""
 
         for field_name in self.data:
-            data += "{}\n".format(secsgem.common.indent_block(self.data[field_name].__repr__()))
+            data += f"{secsgem.common.indent_block(self.data[field_name].__repr__())}\n"
 
-        return "<{} [{}]\n{}\n>".format(self.text_code, len(self.data), data)
+        return f"<{self.text_code} [{len(self.data)}]\n{data}\n>"
 
     def __len__(self):
         """Get the length."""
@@ -133,8 +133,8 @@ class List(Base):
         if isinstance(value, (type(self.data[index]), self.data[index].__class__.__bases__)):
             self.data[index] = value
         elif isinstance(value, Base):
-            raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
-                                                                     self.data[index].__class__.__name__))
+            raise TypeError(
+                f"Wrong type {value.__class__.__name__} when expecting {self.data[index].__class__.__name__}")
         else:
             self.data[index].set(value)
 
@@ -156,7 +156,7 @@ class List(Base):
             elif isinstance(item_value, Base):
                 result_data[item_value.name] = item_value
             else:
-                raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
+                raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")
 
         return result_data
 
@@ -165,7 +165,7 @@ class List(Base):
         try:
             return self.data.__getitem__(item)
         except KeyError:
-            raise AttributeError(item)
+            raise AttributeError(item)  # pylint: disable=raise-missing-from
 
     def __setattr__(self, item, value):
         """Set an item as member of the object."""
@@ -177,8 +177,8 @@ class List(Base):
             if isinstance(value, (type(self.data[item]), self.data[item].__class__.__bases__)):
                 self.data[item] = value
             elif isinstance(value, Base):
-                raise TypeError("Wrong type {} when expecting {}".format(value.__class__.__name__,
-                                                                         self.data[item].__class__.__name__))
+                raise TypeError(
+                    f"Wrong type {value.__class__.__name__} when expecting {self.data[item].__class__.__name__}")
             else:
                 self.data[item].set(value)
         else:
@@ -195,7 +195,7 @@ class List(Base):
         :rtype: str
         """
         if not isinstance(data_format, list):
-            raise TypeError("Can't generate item name of class {}".format(data_format.__class__.__name__))
+            raise TypeError(f"Can't generate item name of class {data_format.__class__.__name__}")
 
         if isinstance(data_format[0], str):
             return data_format[0]
@@ -214,15 +214,14 @@ class List(Base):
                 self.data[field_name].set(value[field_name])
         elif isinstance(value, list):
             if len(value) > len(self.data):
-                raise ValueError("Value has invalid field count (expected: {}, actual: {})"
-                                 .format(len(self.data), len(value)))
+                raise ValueError(f"Value has invalid field count (expected: {len(self.data)}, actual: {len(value)})")
 
             counter = 0
             for itemvalue in value:
                 self.data[list(self.data.keys())[counter]].set(itemvalue)
                 counter += 1
         else:
-            raise ValueError("Invalid value type {} for {}".format(type(value).__name__, self.__class__.__name__))
+            raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
     def get(self):
         """

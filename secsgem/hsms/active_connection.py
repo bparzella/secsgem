@@ -124,9 +124,9 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         return True
 
     def __start_connect_thread(self):
-        self.connectionThread = threading.Thread(target=self.__connect_thread,
-                                                 name="secsgem_HsmsActiveConnection_connectThread_{}"
-                                                 .format(self.remoteAddress))
+        self.connectionThread = threading.Thread(
+            target=self.__connect_thread,
+            name=f"secsgem_HsmsActiveConnection_connectThread_{self.remoteAddress}")
         self.connectionThread.start()
 
     def __connect_thread(self):

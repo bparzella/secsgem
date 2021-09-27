@@ -40,7 +40,7 @@ class BaseNumber(Base):
         :param count: number of items this value
         :type count: integer
         """
-        super(BaseNumber, self).__init__()
+        super().__init__()
 
         self.value = []
         self.count = count
@@ -50,14 +50,14 @@ class BaseNumber(Base):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
         data = ""
 
         for item in self.value:
-            data += "{} ".format(item)
+            data += f"{item} "
 
-        return "<{} {}>".format(self.text_code, data)
+        return f"<{self.text_code} {data}>"
 
     def __len__(self):
         """Get the length."""
@@ -138,35 +138,35 @@ class BaseNumber(Base):
         :type value: list/integer/float
         """
         if isinstance(value, float) and self._base_type == int:
-            raise ValueError("Invalid value {}".format(value))
+            raise ValueError(f"Invalid value {value}")
 
         if isinstance(value, (list, tuple)):
             if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
+                raise ValueError(f"Value longer than {self.count} chars")
 
             new_list = []
             for item in value:
                 item = self._base_type(item)
                 if item < self._min or item > self._max:
-                    raise ValueError("Invalid value {}".format(item))
+                    raise ValueError(f"Invalid value {item}")
 
                 new_list.append(item)
             self.value = new_list
         elif isinstance(value, bytearray):
             if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
+                raise ValueError(f"Value longer than {self.count} chars")
 
             new_list = []
             for item in value:
                 if item < self._min or item > self._max:
-                    raise ValueError("Invalid value {}".format(item))
+                    raise ValueError(f"Invalid value {item}")
                 new_list.append(item)
             self.value = new_list
         else:
             new_value = self._base_type(value)
 
             if new_value < self._min or new_value > self._max:
-                raise ValueError("Invalid value {}".format(value))
+                raise ValueError(f"Invalid value {value}")
 
             self.value = [new_value]
 
@@ -191,9 +191,8 @@ class BaseNumber(Base):
         """
         result = self.encode_item_header(len(self.value) * self._bytes)
 
-        for counter in range(len(self.value)):
-            value = self.value[counter]
-            result += struct.pack(">{}".format(self._struct_code), value)
+        for value in self.value:
+            result += struct.pack(f">{self._struct_code}", value)
 
         return result
 
@@ -217,12 +216,9 @@ class BaseNumber(Base):
 
             if len(result_text) != self._bytes:
                 raise ValueError(
-                    "No enough data found for {} with length {} at position {} ".format(
-                        self.__class__.__name__,
-                        length,
-                        start))
+                    f"No enough data found for {self.__class__.__name__} with length {length} at position {start} ")
 
-            result.append(struct.unpack(">{}".format(self._struct_code), result_text)[0])
+            result.append(struct.unpack(f">{self._struct_code}", result_text)[0])
 
             text_pos += self._bytes
 

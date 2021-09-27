@@ -41,8 +41,8 @@ def generate(data_format):
     if inspect.isclass(data_format):
         if issubclass(data_format, base.Base):
             return data_format()
-        raise TypeError("Can't generate item of class {}".format(data_format.__name__))
-    raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
+        raise TypeError(f"Can't generate item of class {data_format.__name__}")
+    raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")
 
 
 def get_format(data_format, showname=False):
@@ -64,6 +64,6 @@ def get_format(data_format, showname=False):
     if inspect.isclass(data_format):
         if issubclass(data_format, base.Base):
             return data_format.get_format()
-        raise TypeError("Can't generate data_format for class {}".format(data_format.__name__))
+        raise TypeError(f"Can't generate data_format for class {data_format.__name__}")
 
-    raise TypeError("Can't handle item of class {}".format(data_format.__class__.__name__))
+    raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")

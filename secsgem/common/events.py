@@ -44,7 +44,7 @@ class Event:
 
     def __repr__(self):
         """Generate representation for an object."""
-        return "{}: {}".format(self.__class__.__name__, self._callbacks)
+        return f"{self.__class__.__name__}: {self._callbacks}"
 
 
 class Targets:
@@ -140,7 +140,7 @@ class EventProducer:
 
     def __repr__(self):
         """Generate representation for an object."""
-        return "{}: {}".format(self.__class__.__name__, self._events)
+        return f"{self.__class__.__name__}: {self._events}"
 
     class _EventsIter:
         def __init__(self, keys):
@@ -162,7 +162,7 @@ class EventProducer:
 
     def __iter__(self):
         """Return the iterator."""
-        return self._EventsIter([event for event in self._events if len(self._events[event]) > 0])
+        return self._EventsIter([event for event, event_value in self._events.items() if len(event_value) > 0])
 
     @property
     def targets(self):

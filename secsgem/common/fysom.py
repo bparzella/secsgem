@@ -281,11 +281,9 @@ class Fysom:  # pragma: no cover
             evt = event
 
             if hasattr(self, 'transition'):
-                raise FysomError("event %s inappropriate because previous"
-                                 " transition did not complete" % evt)
+                raise FysomError(f"event {evt} inappropriate because previous transition did not complete")
             if not self.can(evt):
-                raise FysomError("event %s inappropriate in current state"
-                                 " %s" % (evt, self.current))
+                raise FysomError(f"event {evt} inappropriate in current state {self.current}")
             src = self.current
             dst = self._map[evt][src]
 
@@ -293,8 +291,8 @@ class Fysom:  # pragma: no cover
 
             while transition_available:
                 event_object = self._EventObject(self, evt, src, dst)
-                for k in kwargs:
-                    setattr(event_object, k, kwargs[k])
+                for kwarg_name, kwarg in kwargs.items():
+                    setattr(event_object, kwarg_name, kwarg)
 
                 if self.current != dst:
                     if self._before_event(event_object) is False:
@@ -302,11 +300,11 @@ class Fysom:  # pragma: no cover
 
                     def _tran():
                         delattr(self, 'transition')
-                        self.current = dst  # pylint: disable=attribute-defined-outside-init
+                        self.current = dst
                         self._enter_state(event_object)
                         self._change_state(event_object)
                         self._after_event(event_object)
-                    self.transition = _tran  # pylint: disable=attribute-defined-outside-init
+                    self.transition = _tran
 
                 if self._leave_state(event_object) is not False:
                     if hasattr(self, 'transition'):

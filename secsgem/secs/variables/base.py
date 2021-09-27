@@ -49,11 +49,9 @@ class Base:
         :rtype: string
         """
         if length < 0:
-            raise ValueError("Encoding {} not possible, data length too small {}"
-                             .format(self.__class__.__name__, length))
+            raise ValueError(f"Encoding {self.__class__.__name__} not possible, data length too small {length}")
         if length > 0xFFFFFF:
-            raise ValueError("Encoding {} not possible, data length too big {}"
-                             .format(self.__class__.__name__, length))
+            raise ValueError(f"Encoding {self.__class__.__name__} not possible, data length too big {length}")
 
         if length > 0xFFFF:
             length_bytes = 3
@@ -81,7 +79,7 @@ class Base:
         :rtype: (integer, integer, integer)
         """
         if len(data) == 0:
-            raise ValueError("Decoding for {} without any text".format(self.__class__.__name__))
+            raise ValueError(f"Decoding for {self.__class__.__name__} without any text")
 
         # parse format byte
         format_byte = bytearray(data)[text_pos]
@@ -100,8 +98,8 @@ class Base:
             text_pos += 1
 
         if 0 <= self.format_code != format_code:
-            raise ValueError("Decoding data for {} ({}) has invalid format {}"
-                             .format(self.__class__.__name__, self.format_code, format_code))
+            raise ValueError(
+                f"Decoding data for {self.__class__.__name__} ({self.format_code}) has invalid format {format_code}")
 
         return text_pos, format_code, length
 

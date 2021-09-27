@@ -37,7 +37,7 @@ class Boolean(Base):
         :param count: number of items this value
         :type count: integer
         """
-        super(Boolean, self).__init__()
+        super().__init__()
 
         self.value = []
         self.count = count
@@ -47,14 +47,14 @@ class Boolean(Base):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
         data = ""
 
         for boolean in self.value:
-            data += "{} ".format(boolean)
+            data += f"{boolean} "
 
-        return "<{} {}>".format(self.text_code, data)
+        return f"<{self.text_code} {data}>"
 
     def __len__(self):
         """Get the length."""
@@ -133,7 +133,7 @@ class Boolean(Base):
 
         if isinstance(value, int):
             if not 0 <= value <= 1:
-                raise ValueError("Value {} out of bounds".format(value))
+                raise ValueError(f"Value {value} out of bounds")
 
             return bool(value)
 
@@ -144,9 +144,9 @@ class Boolean(Base):
             if value.upper() in self._false_strings:
                 return False
 
-            raise ValueError("Value {} out of bounds".format(value))
+            raise ValueError(f"Value {value} out of bounds")
 
-        raise ValueError("Can't convert value {}".format(value))
+        raise ValueError(f"Can't convert value {value}")
 
     def set(self, value):
         """
@@ -157,7 +157,7 @@ class Boolean(Base):
         """
         if isinstance(value, (list, tuple)):
             if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
+                raise ValueError(f"Value longer than {self.count} chars")
 
             new_value = []
             for item in value:
@@ -166,12 +166,12 @@ class Boolean(Base):
             self.value = new_value
         elif isinstance(value, bytearray):
             if 0 <= self.count < len(value):
-                raise ValueError("Value longer than {} chars".format(self.count))
+                raise ValueError(f"Value longer than {self.count} chars")
 
             new_value = []
             for char in value:
                 if not 0 <= char <= 1:
-                    raise ValueError("Value {} out of bounds".format(char))
+                    raise ValueError(f"Value {char} out of bounds")
 
                 new_value.append(char)
 
@@ -200,8 +200,7 @@ class Boolean(Base):
         """
         result = self.encode_item_header(len(self.value))
 
-        for counter in range(len(self.value)):
-            value = self.value[counter]
+        for value in self.value:
             if value:
                 result += b"\1"
             else:

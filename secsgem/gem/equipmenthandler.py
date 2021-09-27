@@ -388,8 +388,7 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for svid in self._status_variables:
-                sv = self._status_variables[svid]
+            for svid, sv in self._status_variables.items():
                 responses.append(self._get_sv_value(sv))
         else:
             for svid in message:
@@ -417,8 +416,7 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for svid in self._status_variables:
-                sv = self._status_variables[svid]
+            for svid, sv in self._status_variables.items():
                 responses.append({"SVID": sv.svid, "SVNAME": sv.name, "UNITS": sv.unit})
         else:
             for svid in message:
@@ -647,8 +645,8 @@ class GemEquipmentHandler(GemHandler):
         """
         result = True
         if not ceids:
-            for ceid in self._registered_collection_events:
-                self._registered_collection_events[ceid].enabled = ceed
+            for ceid, collection_event in self._registered_collection_events.items():
+                collection_event.enabled = ceed
         else:
             for ceid in ceids:
                 if ceid in self._registered_collection_events:
@@ -783,8 +781,7 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for ecid in self._equipment_constants:
-                ec = self._equipment_constants[ecid]
+            for ecid, ec in self._equipment_constants.items():
                 responses.append(self._get_ec_value(ec))
         else:
             for ecid in message:
@@ -847,8 +844,7 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for ecid in self._equipment_constants:
-                eq_constant = self._equipment_constants[ecid]
+            for ecid, eq_constant in self._equipment_constants.items():
                 responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
                                   "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
                                   "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
@@ -886,7 +882,7 @@ class GemEquipmentHandler(GemHandler):
         :type alid: str/int
         """
         if alid not in self.alarms:
-            raise ValueError("Unknown alarm id {}".format(alid))
+            raise ValueError(f"Unknown alarm id {alid}")
 
         if self.alarms[alid].set:
             return
@@ -911,7 +907,7 @@ class GemEquipmentHandler(GemHandler):
         :type alid: str/int
         """
         if alid not in self.alarms:
-            raise ValueError("Unknown alarm id {}".format(alid))
+            raise ValueError(f"Unknown alarm id {alid}")
 
         if not self.alarms[alid].set:
             return
@@ -1113,8 +1109,8 @@ class GemEquipmentHandler(GemHandler):
         """
         enabled_ceid = []
 
-        for ceid in self._registered_collection_events:
-            if self._registered_collection_events[ceid].enabled:
+        for ceid, collection_event in self._registered_collection_events.items():
+            if collection_event.enabled:
                 enabled_ceid.append(ceid)
 
         return enabled_ceid
@@ -1128,8 +1124,8 @@ class GemEquipmentHandler(GemHandler):
         """
         enabled_alarms = []
 
-        for alid in self._alarms:
-            if self._alarms[alid].enabled:
+        for alid, alarm in self._alarms.items():
+            if alarm.enabled:
                 enabled_alarms.append(alid)
 
         return enabled_alarms
@@ -1143,8 +1139,8 @@ class GemEquipmentHandler(GemHandler):
         """
         set_alarms = []
 
-        for alid in self._alarms:
-            if self._alarms[alid].set:
+        for alid, alarm in self._alarms.items():
+            if alarm.set:
                 set_alarms.append(alid)
 
         return set_alarms

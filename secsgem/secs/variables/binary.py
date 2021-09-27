@@ -34,7 +34,7 @@ class Binary(Base):
         :param count: number of items this value
         :type count: integer
         """
-        super(Binary, self).__init__()
+        super().__init__()
 
         self.value = bytearray()
         self.count = count
@@ -44,11 +44,11 @@ class Binary(Base):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return "<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
-        data = " ".join("0x{:x}".format(c) for c in self.value)
+        data = " ".join(f"0x{c:x}" for c in self.value)
 
-        return "<{} {}>".format(self.text_code, data.strip())
+        return f"<{self.text_code} {data.strip()}>"
 
     def __len__(self):
         """Get the length."""
@@ -57,7 +57,7 @@ class Binary(Base):
     def __getitem__(self, key):
         """Get an item using the indexer operator."""
         if key >= self.count:
-            raise IndexError("Index {} out of bounds ({})".format(key, self.count))
+            raise IndexError(f"Index {key} out of bounds ({self.count})")
 
         if key >= len(self.value):
             return 0
@@ -67,7 +67,7 @@ class Binary(Base):
     def __setitem__(self, key, item):
         """Set an item using the indexer operator."""
         if key >= self.count:
-            raise IndexError("Index {} out of bounds ({})".format(key, self.count))
+            raise IndexError(f"Index {key} out of bounds ({self.count})")
 
         if key >= len(self.value):
             while key >= len(self.value):
@@ -160,13 +160,13 @@ class Binary(Base):
             if 0 <= value <= 255:
                 value = bytearray([value])
             else:
-                raise ValueError("Value {} of type {} is out of range for {}".format(value, type(value).__name__,
-                                                                                     self.__class__.__name__))
+                raise ValueError(
+                    f"Value {value} of type {type(value).__name__} is out of range for {self.__class__.__name__}")
         else:
-            raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
+            raise TypeError(f"Unsupported type {type(value).__name__} for {self.__class__.__name__}")
 
         if 0 < self.count < len(value):
-            raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
+            raise ValueError(f"Value longer than {self.count} chars ({len(value)} chars)")
 
         self.value = value
 

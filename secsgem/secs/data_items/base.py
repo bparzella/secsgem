@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-# pylint: disable=locally-disabled, non-parent-init-called
+# pylint: disable=non-parent-init-called
 """Data item base class."""
 
 from .. import variables
@@ -67,13 +67,11 @@ class DataItemBase(metaclass=DataItemMeta):
 
         if cls.__type__ is variables.Dynamic:
             if cls.__count__ > 0:
-                return "{}: {}[{}]".format(clsname,
-                                           "/".join([x.text_code for x in cls.__allowedtypes__]),
-                                           cls.__count__)
+                return f"{clsname}: {'/'.join([x.text_code for x in cls.__allowedtypes__])}[{cls.__count__}]"
 
-            return "{}: {}".format(clsname, "/".join([x.text_code for x in cls.__allowedtypes__]))
+            return f"{clsname}: {'/'.join([x.text_code for x in cls.__allowedtypes__])}"
 
         if cls.__count__ > 0:
-            return "{}: {}[{}]".format(clsname, cls.text_code, cls.__count__)
+            return f"{clsname}: {cls.text_code}[{cls.__count__}]"
 
-        return "{}: {}".format(clsname, cls.text_code)
+        return f"{clsname}: {cls.text_code}"

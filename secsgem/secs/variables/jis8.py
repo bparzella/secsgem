@@ -33,7 +33,7 @@ class JIS8(BaseText):
     """
 
     format_code = 0o21
-    text_code = u"J"
+    text_code = "J"
     preferred_types = [bytes, str]
-    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
+    control_chars = "".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
     coding = "jis_8"

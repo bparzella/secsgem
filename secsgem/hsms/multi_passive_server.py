@@ -97,7 +97,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.listenSock.setblocking(0)
 
         self.listenThread = threading.Thread(target=self._listen_thread, args=(),
-                                             name="secsgem_hsmsMultiPassiveServer_listenThread_{}".format(self.port))
+                                             name=f"secsgem_hsmsMultiPassiveServer_listenThread_{self.port}")
         self.listenThread.start()
 
         self.logger.debug("listening")
@@ -122,8 +122,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
         self.stopThread = False
 
         if terminate_connections:
-            for address in self.connections:
-                connection = self.connections[address]
+            for connection in self.connections.values():
                 connection.disconnect()
 
         self.logger.debug("server stopped")
@@ -145,8 +144,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover
             named_connection_found = False
 
             # check all connections if connection with hostname can be resolved
-            for connection_id in self.connections:
-                connection = self.connections[connection_id]
+            for connection in self.connections.values():
                 try:
                     if source_ip == socket.gethostbyname(connection.remoteAddress):
                         new_connection = connection
@@ -196,9 +194,11 @@ class HsmsMultiPassiveServer:  # pragma: no cover
 
                     self.logger.debug("connection from %s:%d", accept_result[1][0], accept_result[1][1])
 
-                    threading.Thread(target=self._initialize_connection_thread, args=(accept_result,),
-                                     name="secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_{}:{}"
-                                     .format(accept_result[1][0], accept_result[1][1])).start()
+                    threading.Thread(
+                        target=self._initialize_connection_thread, args=(accept_result,),
+                        name=f"secsgem_hsmsMultiPassiveServer_InitializeConnectionThread_"
+                             f"{accept_result[1][0]}:{accept_result[1][1]}"
+                    ).start()
 
         except Exception:  # pylint: disable=broad-except
             self.logger.exception('exception')

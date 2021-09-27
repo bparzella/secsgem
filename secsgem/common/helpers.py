@@ -38,7 +38,7 @@ def format_hex(text):
     :returns: Formated text
     :rtype: string
     """
-    return ":".join("{0:02x}".format(c) for c in bytearray(text))
+    return ":".join(f"{c:02x}" for c in bytearray(text))
 
 
 def is_windows():

@@ -58,8 +58,8 @@ sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        return "%s({'header': %s, 'data': '%s'})" % (self.__class__.__name__, self.header.__repr__(),
-                                                     self.data.decode("utf-8"))
+        return f"{self.__class__.__name__}" \
+               f"({{'header': {self.header.__repr__()}, 'data': '{self.data.decode('utf-8')}'}})"
 
     def encode(self):
         """

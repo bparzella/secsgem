@@ -31,7 +31,7 @@ class String(BaseText):
     """
 
     format_code = 0o20
-    text_code = u"A"
+    text_code = "A"
     preferred_types = [bytes, str]
-    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C" or ch > 127)
+    control_chars = "".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C" or ch > 127)
     coding = "latin-1"

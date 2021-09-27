@@ -98,7 +98,7 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        return "{} {}".format(self.__class__.__name__, str(self._serialize_data()))
+        return f"{self.__class__.__name__} {str(self._serialize_data())}"
 
     def _serialize_data(self):
         """
@@ -152,8 +152,8 @@ class GemHandler(secsgem.secs.SecsHandler):
             pass
         elif self.communicationState.isstate('COMMUNICATING'):
             threading.Thread(target=self._handle_stream_function, args=(packet, ),
-                             name="secsgem_gemHandler_callback_S{}F{}".format(packet.header.stream,
-                                                                              packet.header.function)).start()
+                             name=f"secsgem_gemHandler_callback_S{packet.header.stream}F{packet.header.function}"
+                             ).start()
 
     def _on_hsms_select(self):
         """Selected received from hsms layer."""

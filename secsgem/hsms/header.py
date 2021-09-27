@@ -52,13 +52,17 @@ requireResponse:False})
 
     def __str__(self):
         """Generate string representation for an object of this class."""
-        return '{sessionID:0x%04x, stream:%02d, function:%02d, pType:0x%02x, sType:0x%02x, system:0x%08x, ' \
-               'requireResponse:%r}' % \
-            (self.sessionID, self.stream, self.function, self.pType, self.sType, self.system, self.requireResponse)
+        return f'{{sessionID:0x{self.sessionID:04x}, ' \
+               f'stream:{self.stream:02d}, ' \
+               f'function:{self.function:02d}, ' \
+               f'pType:0x{self.pType:02x}, ' \
+               f'sType:0x{self.sType:02x}, ' \
+               f'system:0x{self.system:08x}, ' \
+               f'requireResponse:{self.requireResponse!r}}}'
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        return "%s(%s)" % (self.__class__.__name__, self.__str__())
+        return f"{self.__class__.__name__}({self.__str__()})"
 
     def encode(self):
         """

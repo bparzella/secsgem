@@ -61,7 +61,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
     @staticmethod
     def _generate_sf_callback_name(stream, function):
-        return "s{stream:02d}f{function:02d}".format(stream=stream, function=function)
+        return f"s{stream:02d}f{function:02d}"
 
     def register_stream_function(self, stream, function, callback):
         """
@@ -238,7 +238,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         # check if callbacks available for this stream and function
         threading.Thread(
             target=self._handle_stream_function, args=(packet, ),
-            name="secsgem_secsHandler_callback_S{}F{}".format(packet.header.stream, packet.header.function)).start()
+            name=f"secsgem_secsHandler_callback_S{packet.header.stream}F{packet.header.function}").start()
 
     def disable_ceids(self):
         """Disable all Collection Events."""

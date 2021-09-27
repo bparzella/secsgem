@@ -114,9 +114,8 @@ class HsmsConnection:  # pragma: no cover
 
     def __str__(self):
         """Get the contents of this object as a string."""
-        return "{} connection to {}:{} sessionID={}".format(("Active" if self.active else "Passive"),
-                                                            self.remoteAddress, str(self.remotePort),
-                                                            str(self.sessionID))
+        return f"{('Active' if self.active else 'Passive')} connection to {self.remoteAddress}:{str(self.remotePort)}" \
+               f" sessionID={str(self.sessionID)}"
 
     def _start_receiver(self):
         """
@@ -134,8 +133,7 @@ class HsmsConnection:  # pragma: no cover
 
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(),
-                         name="secsgem_hsmsConnection_receiver_{}:{}".format(self.remoteAddress,
-                                                                             self.remotePort)).start()
+                         name=f"secsgem_hsmsConnection_receiver_{self.remoteAddress}:{self.remotePort}").start()
 
         # wait until thread is running
         while not self.threadRunning:

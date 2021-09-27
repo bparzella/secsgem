@@ -113,8 +113,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
     def __start_server_thread(self):
         self.serverThread = threading.Thread(target=self.__server_thread,
-                                             name="secsgem_HsmsPassiveConnection_serverThread_{}"
-                                             .format(self.remoteAddress))
+                                             name=f"secsgem_HsmsPassiveConnection_serverThread_{self.remoteAddress}")
         self.serverThread.start()
 
     def __server_thread(self):

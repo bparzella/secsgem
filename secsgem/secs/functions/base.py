@@ -103,15 +103,12 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        function = "S{0}F{1}".format(self.stream, self.function)
+        function = f"S{self.stream}F{self.function}"
         if self.data is None:
-            return "{}{} .".format(function, " W" if self._is_reply_required else "")
-        data = "{}".format(self.data.__repr__())
+            return f"{function}{' W' if self._is_reply_required else ''} ."
+        data = f"{self.data.__repr__()}"
 
-        return "{}{}\n{} .".format(
-            function,
-            " W" if self._is_reply_required else "",
-            secsgem.common.indent_block(data))
+        return f"{function}{' W' if self._is_reply_required else ''}\n{secsgem.common.indent_block(data)} ."
 
     def __getitem__(self, key):
         """Get an item using the indexer operator."""
@@ -150,7 +147,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
             self.data.append(data)
         else:
             raise AttributeError(
-                "class {} has no attribute 'append'".format(self.__class__.__name__))
+                f"class {self.__class__.__name__} has no attribute 'append'")
 
     def encode(self):
         """

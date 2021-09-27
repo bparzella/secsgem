@@ -24,8 +24,8 @@ class BaseText(Base):
     """Secs type base for any text data."""
 
     format_code = -1
-    text_code = u""
-    control_chars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
+    text_code = ""
+    control_chars = "".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
     coding = ""
 
     def __init__(self, value="", count=-1):
@@ -37,9 +37,9 @@ class BaseText(Base):
         :param count: number of items this value
         :type count: integer
         """
-        super(BaseText, self).__init__()
+        super().__init__()
 
-        self.value = u""
+        self.value = ""
         self.count = count
 
         if value is not None:
@@ -48,9 +48,9 @@ class BaseText(Base):
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         if len(self.value) == 0:
-            return u"<{}>".format(self.text_code)
+            return f"<{self.text_code}>"
 
-        data = u""
+        data = ""
         last_char_printable = False
 
         for char in self.value:
@@ -72,7 +72,7 @@ class BaseText(Base):
         if last_char_printable:
             data += '"'
 
-        return u"<{}{}>".format(self.text_code, data)
+        return f"<{self.text_code}{data}>"
 
     def __len__(self):
         """Get the length."""
@@ -152,7 +152,7 @@ class BaseText(Base):
         :type value: string/integer
         """
         if value is None:
-            raise ValueError("{} can't be None".format(self.__class__.__name__))
+            raise ValueError(f"{self.__class__.__name__} can't be None")
 
         if isinstance(value, bytes):
             value = value.decode(self.coding)
@@ -165,10 +165,10 @@ class BaseText(Base):
         elif isinstance(value, str):
             value.encode(self.coding)  # try if it can be encoded as ascii (values 0-127)
         else:
-            raise TypeError("Unsupported type {} for {}".format(type(value).__name__, self.__class__.__name__))
+            raise TypeError(f"Unsupported type {type(value).__name__} for {self.__class__.__name__}")
 
         if 0 < self.count < len(value):
-            raise ValueError("Value longer than {} chars ({} chars)".format(self.count, len(value)))
+            raise ValueError(f"Value longer than {self.count} chars ({len(value)} chars)")
 
         self.value = str(value)
 
@@ -208,7 +208,7 @@ class BaseText(Base):
         (text_pos, _, length) = self.decode_item_header(data, start)
 
         # string
-        result = u""
+        result = ""
 
         if length > 0:
             result = data[text_pos:text_pos + length].decode(self.coding)

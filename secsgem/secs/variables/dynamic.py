@@ -46,7 +46,7 @@ class Dynamic(Base):
         :param count: max number of items in type
         :type count: integer
         """
-        super(Dynamic, self).__init__()
+        super().__init__()
 
         self.value = None
 
@@ -124,22 +124,24 @@ class Dynamic(Base):
         if isinstance(value, Base):
             if isinstance(value, Dynamic):
                 if not isinstance(value.value, tuple(self.types)) and self.types:
-                    raise ValueError("Unsupported type {} for this instance of Dynamic, allowed {}"
-                                     .format(value.value.__class__.__name__, self.types))
+                    raise ValueError(
+                        f"Unsupported type {value.value.__class__.__name__} "
+                        f"for this instance of Dynamic, allowed {self.types}")
 
                 self.value = value.value
             else:
                 if not isinstance(value, tuple(self.types)) and self.types:
-                    raise ValueError("Unsupported type {} for this instance of Dynamic, allowed {}"
-                                     .format(value.__class__.__name__, self.types))
+                    raise ValueError(
+                        f"Unsupported type {value.__class__.__name__} "
+                        f"for this instance of Dynamic, allowed {self.types}")
 
                 self.value = value
         else:
             matched_type = self._match_type(value)
 
             if matched_type is None:
-                raise ValueError('Value "{}" of type {} not valid for SecsDynamic with {}'
-                                 .format(value, value.__class__.__name__, self.types))
+                raise ValueError(
+                    f'Value "{value}" of type {value.__class__.__name__} not valid for SecsDynamic with {self.types}')
 
             self.value = matched_type(count=self.count)
             self.value.set(value)
@@ -208,9 +210,7 @@ class Dynamic(Base):
             self.value = U4(count=self.count)
         else:
             raise ValueError(
-                "Unsupported format {} for this instance of Dynamic, allowed {}".format(
-                    format_code,
-                    self.types))
+                f"Unsupported format {format_code} for this instance of Dynamic, allowed {self.types}")
 
         return self.value.decode(data, start)
 
@@ -270,6 +270,4 @@ class ANYVALUE(Dynamic):
         """
         self.name = self.__class__.__name__
 
-        super(ANYVALUE, self).__init__([Array, Boolean, U1, U2, U4, U8,
-                                        I1, I2, I4, I8, F4, F8,
-                                        String, Binary], value=value)
+        super().__init__([Array, Boolean, U1, U2, U4, U8, I1, I2, I4, I8, F4, F8, String, Binary], value=value)
