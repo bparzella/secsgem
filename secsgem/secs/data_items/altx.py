@@ -32,4 +32,6 @@ class ALTX(DataItemBase):
     """
 
     __type__ = variables.String
-    __count__ = 120
+    # ALTX is limited to 120 characters according to specification,
+    # but data sent by equipment is/might be longer
+    __count__ = 180 
