@@ -152,10 +152,10 @@ class GemHostHandler(GemHandler):
         """
         Enable alarm.
 
-        :param alid: alarm id to enable
+        :param alid: alarm id to enable, [] for all alarms
         :type alid: :class:`secsgem.secs.dataitems.ALID`
         """
-        self.logger.info("Enable alarm %d", alid)
+        self.logger.info("Enable alarm %s", str(alid) if alid != [] else 'ALL')
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
@@ -164,10 +164,10 @@ class GemHostHandler(GemHandler):
         """
         Disable alarm.
 
-        :param alid: alarm id to disable
+        :param alid: alarm id to disable, [] for all alarms
         :type alid: :class:`secsgem.secs.dataitems.ALID`
         """
-        self.logger.info("Disable alarm %d", alid)
+        self.logger.info("Disable alarm %s", str(alid) if alid != [] else 'ALL')
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
