@@ -42,3 +42,6 @@ class CEED(DataItemBase):
 
     __type__ = variables.Boolean
     __count__ = 1
+
+    ENABLE = True
+    DISABLE = False
