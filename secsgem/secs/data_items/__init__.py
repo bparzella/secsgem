@@ -113,6 +113,12 @@ from .vid import VID
 from .xdies import XDIES
 from .xypos import XYPOS
 from .ydies import YDIES
+from .fcnid import FCNID
+from .strack import STRACK
+from .strid import STRID
+from .rspack import RSPACK
+from .rsdc import RSDC
+from .rsda import RSDA
 
 __all__ = [
     "DataItemBase", "ACKA", "ACKC5", "ACKC6", "ACKC7", "ACKC10", "ALCD", "ALED", "ALID", "ALTX", "ATTRDATA", "ATTRID",
@@ -123,5 +129,5 @@ __all__ = [
     "MHEAD", "MID", "MLCL", "NULBC", "OBJACK", "OBJID", "OBJSPEC", "OBJTYPE", "OFLACK", "ONLACK", "ORLOC", "PPBODY",
     "PPGNT", "PPID", "PRAXI", "PRDCT", "RCMD", "REFP", "ROWCT", "RPSEL", "RPTID", "RSINF", "SDACK", "SDBIN", "SHEAD",
     "SOFTREV", "STRP", "SV", "SVID", "SVNAME", "TEXT", "TID", "TIME", "TIMESTAMP", "UNITS", "V", "VID", "XDIES",
-    "XYPOS", "YDIES"
+    "XYPOS", "YDIES", "FCNID", "STRACK", "STRID", "RSPACK", "RSDC", "RSDA"
 ]
