@@ -47,12 +47,12 @@ class SecsS06F24(SecsStreamFunction):
     _stream = 6
     _function = 24
 
-    _dataFormat = RSDA
+    _data_format = RSDA
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False
