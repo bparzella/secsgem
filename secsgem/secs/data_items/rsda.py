@@ -36,11 +36,11 @@ class RSDA(DataItemBase):
         +-------+-------------------+
 
     **Used In Function**
-        - :class:`SecsS06F24 <secsgem.secs.functions.SecsS05F02>`
+        - :class:`SecsS06F24 <secsgem.secs.functions.SecsS06F24>`
 
     """
 
-    __type__ = secsgem.secs.variables.Binary
+    __type__ = variables.Binary
     __count__ = 1
 
     OK = 0

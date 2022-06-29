@@ -30,5 +30,5 @@ class ABS(DataItemBase):
         - :class:`SecsS02F26 <secsgem.secs.functions.SecsS02F26>`
     """
 
-    __type__ = secsgem.secs.variables.Binary
+    __type__ = variables.Binary
     __count__ = 1

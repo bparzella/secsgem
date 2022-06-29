@@ -28,4 +28,4 @@ class LIMITMAX(DataItemBase):
         - :class:`SecsS02F48 <secsgem.secs.functions.SecsS02F48>`
     """
 
-    __type__ = secsgem.secs.variables.F4
+    __type__ = variables.F4

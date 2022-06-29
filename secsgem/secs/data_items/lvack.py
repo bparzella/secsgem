@@ -38,7 +38,7 @@ class LVACK(DataItemBase):
 
     """
 
-    __type__ = secsgem.secs.variables.Binary
+    __type__ = variables.Binary
     __count__ = 1
 
     NO_VID = 1

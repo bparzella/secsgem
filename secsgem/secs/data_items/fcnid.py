@@ -29,5 +29,5 @@ class FCNID(DataItemBase):
         - :class:`SecsS02F44 <secsgem.secs.functions.SecsS02F44>`
     """
 
-    __type__ = secsgem.secs.variables.U1
+    __type__ = variables.U1
     __count__ = 1

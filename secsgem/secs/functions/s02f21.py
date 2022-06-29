@@ -16,6 +16,7 @@
 """Class for stream 02 function 21."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import RCMD
 
 
 class SecsS02F21(SecsStreamFunction):

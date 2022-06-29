@@ -27,8 +27,6 @@ class TRID(DataItemBase):
     **Used In Function**
         - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
-        - :class:`SecsS06F27 <secsgem.secs.functions.SecsS06F27>`
-        - :class:`SecsS06F28 <secsgem.secs.functions.SecsS06F28>`
     """
 
-    __type__ = secsgem.secs.variables.U4 # Centrotherm Firing Furnace expects secsgem.secs.variables.U4
+    __type__ = variables.U4 # Centrotherm Firing Furnace expects secsgem.secs.variables.U4

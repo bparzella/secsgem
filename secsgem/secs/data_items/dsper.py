@@ -29,4 +29,4 @@ class DSPER(DataItemBase):
 
     """
 
-    __type__ = secsgem.secs.variables.String
+    __type__ = variables.String

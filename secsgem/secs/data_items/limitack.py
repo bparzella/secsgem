@@ -34,11 +34,11 @@ class LIMITACK(DataItemBase):
         +-------+-------------------+------------------------------------------------+
 
     **Used In Function**
-        - :class:`SecsS06F02 <secsgem.secs.functions.SecsS02F46>`
+        - :class:`SecsS02F46 <secsgem.secs.functions.SecsS02F46>`
 
     """
 
-    __type__ = secsgem.secs.variables.Binary
+    __type__ = variables.Binary
     __count__ = 1
 
     LIMITID_NONEXSISTENT = 1

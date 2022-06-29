@@ -28,4 +28,4 @@ class UPPERDB(DataItemBase):
         - :class:`SecsS02F45 <secsgem.secs.functions.SecsS02F45>`
     """
 
-    __type__ = secsgem.secs.variables.F4
+    __type__ = variables.F4

@@ -29,5 +29,10 @@ class REPGSZ(DataItemBase):
         - :class:`SecsS17F05 <secsgem.secs.functions.SecsS17F05>`
     """
 
-    __type__ = secsgem.secs.variables.Dynamic    
-    __allowedtypes__ = [secsgem.secs.variables.U1, secsgem.secs.variables.U2, secsgem.secs.variables.U4, secsgem.secs.variables.U8, secsgem.secs.variables.F4, secsgem.secs.variables.F8]
+    __type__ = variables.Dynamic    
+    __allowedtypes__ = [variables.U1, 
+                        variables.U2, 
+                        variables.U4, 
+                        variables.U8, 
+                        variables.F4, 
+                        variables.F8]

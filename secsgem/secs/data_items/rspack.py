@@ -37,7 +37,7 @@ class RSPACK(DataItemBase):
 
     """
 
-    __type__ = secsgem.secs.variables.Binary
+    __type__ = variables.Binary
     __count__ = 1
     
     OK = 0

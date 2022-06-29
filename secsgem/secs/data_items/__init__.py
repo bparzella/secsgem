@@ -78,6 +78,7 @@ from .limitmin import LIMITMIN
 from .limitmax import LIMITMAX
 from .lowerdb import LOWERDB
 from .lrack import LRACK
+from .lvack import LVACK
 from .maper import MAPER
 from .mapft import MAPFT
 from .mdack import MDACK
@@ -150,5 +151,5 @@ __all__ = [
     , "ABS", "CENAME", "CMDA", "FCNID", "LIMITACK", "LIMITID", "LIMITMAX"
     , "LIMITMIN", "LOWERDB", "RSDA", "RSDC", "RSPACK", "SMPLN", "STIME"
     , "STRACK", "STRID", "TIAACK", "TRID", "UPPERDB", "VLAACK"
-    , "DSPER", "TOTSMP", "REPGSZ"
+    , "DSPER", "TOTSMP", "REPGSZ", "LVACK"
 ]

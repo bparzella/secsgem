@@ -16,7 +16,7 @@
 """Class for stream 01 function 24."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import CENAME
+from secsgem.secs.data_items import CENAME, CEID, VID
 
 
 class SecsS01F24(SecsStreamFunction):
