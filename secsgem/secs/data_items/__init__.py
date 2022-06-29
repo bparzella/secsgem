@@ -16,6 +16,7 @@
 """Data items for functions."""
 from .base import DataItemBase
 
+from .abs import ABS
 from .acka import ACKA
 from .ackc5 import ACKC5
 from .ackc6 import ACKC6
@@ -32,6 +33,8 @@ from .bcequ import BCEQU
 from .binlt import BINLT
 from .ceed import CEED
 from .ceid import CEID
+from .cename import CENAME
+from .cmda import CMDA
 from .colct import COLCT
 from .commack import COMMACK
 from .cpack import CPACK
@@ -42,6 +45,7 @@ from .datalength import DATALENGTH
 from .datlc import DATLC
 from .drack import DRACK
 from .dsid import DSID
+from .dsper import DSPER
 from .dutms import DUTMS
 from .dvname import DVNAME
 from .dvval import DVVAL
@@ -60,6 +64,7 @@ from .exid import EXID
 from .exmessage import EXMESSAGE
 from .exrecvra import EXRECVRA
 from .extype import EXTYPE
+from .fcnid import FCNID
 from .ffrot import FFROT
 from .fnloc import FNLOC
 from .grant5 import GRANT6
@@ -67,6 +72,11 @@ from .grnt1 import GRNT1
 from .hcack import HCACK
 from .idtyp import IDTYP
 from .length import LENGTH
+from .limitack import LIMITACK
+from .limitid import LIMITID
+from .limitmin import LIMITMIN
+from .limitmax import LIMITMAX
+from .lowerdb import LOWERDB
 from .lrack import LRACK
 from .maper import MAPER
 from .mapft import MAPFT
@@ -91,24 +101,37 @@ from .praxi import PRAXI
 from .prdct import PRDCT
 from .rcmd import RCMD
 from .refp import REFP
+from .repgsz import REPGSZ
 from .rowct import ROWCT
 from .rpsel import RPSEL
 from .rptid import RPTID
+from .rsda import RSDA
+from .rsdc import RSDC
 from .rsinf import RSINF
+from .rspack import RSPACK
 from .sdack import SDACK
 from .sdbin import SDBIN
 from .shead import SHEAD
+from .smpln import SMPLN
 from .softrev import SOFTREV
+from .strid import STRID
+from .stime import STIME
 from .strp import STRP
+from .strack import STRACK
 from .sv import SV
 from .svid import SVID
 from .svname import SVNAME
 from .text import TEXT
+from .tiaack import TIAACK
 from .tid import TID
 from .time import TIME
 from .timestamp import TIMESTAMP
+from .trid import TRID
+from .totsmp import TOTSMP
 from .units import UNITS
+from .upperdb import UPPERDB
 from .v import V
+from .vlaack import VLAACK
 from .vid import VID
 from .xdies import XDIES
 from .xypos import XYPOS
@@ -124,4 +147,8 @@ __all__ = [
     "PPGNT", "PPID", "PRAXI", "PRDCT", "RCMD", "REFP", "ROWCT", "RPSEL", "RPTID", "RSINF", "SDACK", "SDBIN", "SHEAD",
     "SOFTREV", "STRP", "SV", "SVID", "SVNAME", "TEXT", "TID", "TIME", "TIMESTAMP", "UNITS", "V", "VID", "XDIES",
     "XYPOS", "YDIES"
+    , "ABS", "CENAME", "CMDA", "FCNID", "LIMITACK", "LIMITID", "LIMITMAX"
+    , "LIMITMIN", "LOWERDB", "RSDA", "RSDC", "RSPACK", "SMPLN", "STIME"
+    , "STRACK", "STRID", "TIAACK", "TRID", "UPPERDB", "VLAACK"
+    , "DSPER", "TOTSMP", "REPGSZ"
 ]
