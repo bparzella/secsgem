@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secsgem"
-version = "0.2.0-alpha.4"
+version = "0.2.0-alpha.5"
 description = "Python SECS/GEM implementation"
 readme = "README.md"
 
@@ -13,7 +13,7 @@ repository = "https://github.com/bparzella/secsgem"
 documentation = "https://secsgem.readthedocs.io/"
 
 classifiers = [
-    "Development Status :: 4 - Alpha",
+    "Development Status :: 5 - Alpha",
 
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries",
