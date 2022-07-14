@@ -52,7 +52,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collectionEvents = {}
+        self._collection_events = {}
         self._data_values = {}
         self._alarms = {}
         self._remoteCommands = {}
@@ -114,7 +114,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
                 Data values for the collection event (list of integers)
 
         """
-        return self._collectionEvents
+        return self._collection_events
 
     @property
     def data_values(self):
@@ -387,9 +387,9 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if ceid in self._collectionEvents:
-            if "name" in self._collectionEvents[ceid]:
-                return self._collectionEvents[ceid]["name"]
+        if ceid in self._collection_events:
+            if "name" in vars(self._collection_events[ceid]):
+                return vars(self._collection_events[ceid])["name"]
 
         return ""
 
