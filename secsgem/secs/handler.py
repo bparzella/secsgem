@@ -53,7 +53,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         self._collectionEvents = {}
-        self._dataValues = {}
+        self._data_values = {}
         self._alarms = {}
         self._remoteCommands = {}
 
@@ -141,7 +141,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
                 Collection event the data value is used for (integer)
 
         """
-        return self._dataValues
+        return self._data_values
 
     @property
     def alarms(self):
@@ -402,9 +402,9 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if dvid in self._dataValues:
-            if "name" in self._dataValues[dvid]:
-                return self._dataValues[dvid]["name"]
+        if dvid in self._data_values:
+            if "name" in vars(self._data_values[dvid]):
+                return vars(self._data_values[dvid])["name"]
 
         return ""
 
