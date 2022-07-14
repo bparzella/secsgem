@@ -47,6 +47,7 @@ class DataValue:
         self.value_type = value_type
         self.use_callback = use_callback
         self.value = 0
+        self.units = ''
 
         if isinstance(self.dvid, int):
             self.id_type = secsgem.secs.variables.U4
