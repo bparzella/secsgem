@@ -315,6 +315,33 @@ class GemEquipmentHandler(GemHandler):
 
         return dv.value_type(dv.value)
 
+    def _on_s01f21(self, handler, packet):
+        """Callback handler for Stream 1, Function 21, DV namelist request
+
+        :param handler: handler the message was received on
+        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :param packet: complete message received
+        :type packet: :class:`secsgem.hsms.packets.HsmsPacket`
+        """
+        del handler  # unused parameters
+        message = self.secs_decode(packet)
+
+        responses = []
+       
+        if len(message) == 0:
+            for dvid in self._data_values:
+                dv = self._data_values[dvid]
+                responses.append({"VID": dv.dvid, "DVNAME": dv.name, "UNITS": dv.units})
+        else:
+            for dvid in message:
+                if dvid not in self._data_values:
+                    responses.append({"VID": dvid, "DVNAME": "", "UNITS": dv.units})
+                else:
+                    dv = self._data_values[dvid]
+                    responses.append({"VID": dv.dvid, "DVNAME": dv.name, "UNITS": dv.units})
+                    
+        return self.stream_function(1, 22)(responses)
+
     # status variables
 
     @property
@@ -681,6 +708,25 @@ class GemEquipmentHandler(GemHandler):
             reports.append({"RPTID": rptid, "V": variables})
 
         return reports
+
+    def _on_s01f23(self, handler, packet):
+        message = self.secs_decode(packet)
+
+        responses = []
+       
+        if len(message) == 0:
+            for ceid in self.collection_events:
+                ce = self.collection_events[ceid]
+                responses.append({"CEID": ce.ceid, "CENAME": ce.name, "VID": []})
+        else:
+            for ceid in message:
+                if ceid not in self.collection_events:
+                    responses.append({"CEID": ceid, "CENAME": "", "VID": []})
+                else:
+                    ce = self.collection_events[ceid]
+                    responses.append({"CEID": ce.ceid, "CENAME": ce.name, "VID": []})
+
+        return self.stream_function(1, 24)(responses)
 
     # equipment constants
 
