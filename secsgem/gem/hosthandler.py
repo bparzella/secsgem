@@ -92,6 +92,23 @@ class GemHostHandler(GemHandler):
         # enable collection event
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
+    def list_events(self, ce_ids=[]):
+        """
+        List events.
+
+        :param ce_ids: events to list details for
+        :type ce_ids: array of int/str
+        """
+        if not isinstance(ce_ids,list):
+            ce_ids = [ce_ids]
+
+        self.logger.info("List events {}".format(ce_ids))
+
+        packet = self.send_and_waitfor_response(self.stream_function(1, 23)(ce_ids))
+        decoded = self.secs_decode(packet).get()
+
+        return decoded
+
     def send_remote_command(self, rcmd, params):
         """
         Send a remote command.
