@@ -26,18 +26,18 @@ class SecsS02F22(SecsStreamFunction):
 
     - :class:`CMDA <secsgem.secs.dataitems.CMDA>`
 
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F22
+        CMDA: U1/I1
+
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F22(CMDA)
-        S1F14
-          <L [2]
-            <B 0x0>
-            <L [2]
-              <A "secsgem">
-              <A "0.0.6">
-            >
-          > .
+        >>> secsgem.secs.functions.SecsS02F22(CMDA.COMPLETED_DONE)
+        S2F22
+          <U1 0 > .
 
     :param value: parameters for this function (see example)
     :type value: dict

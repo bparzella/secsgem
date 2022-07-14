@@ -30,25 +30,14 @@ class SecsS02F21(SecsStreamFunction):
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F21
-        TIME: A[32]
+        RCMD: U1/I1/A
 
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F21({"RCMD":"ABCD"})
-        S2F23 W
-          <L [1]
-            <L [5]
-              <A "1">
-              <A "000100">
-              <U4 10 >
-              <U4 1 >
-              <L [2]
-                <U4 1002004 >
-                <U4 400210 >
-              >
-            >
-          > .
+        >>> secsgem.secs.functions.SecsS02F21("my_command")
+        S2F21 W
+          <A "my_command"> .
 
     :param value: parameters for this function (see example)
     :type value: ASCII string

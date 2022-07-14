@@ -29,7 +29,12 @@ class SMPLN(DataItemBase):
 
     """
 
-    __type__ = variables.U4 # Centrotherm Firing Furnace
-
-    # __type__ = variables.Dynamic
-    # __allowedtypes__ = [variables.U1, variables.U2, variables.U4, variables.U8, variables.I1, variables.I2, variables.I4, variables.I8]
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.U1, 
+                        variables.U2, 
+                        variables.U4, 
+                        variables.U8, 
+                        variables.I1, 
+                        variables.I2, 
+                        variables.I4, 
+                        variables.I8]

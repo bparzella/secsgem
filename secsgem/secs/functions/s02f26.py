@@ -25,10 +25,18 @@ class SecsS02F26(SecsStreamFunction):
 
     - :class:`ABS <secsgem.secs.dataitems.ABS>`
 
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F25
+        ABS: B[1]
+
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F26(
+        >>> secsgem.SecsS02F26('x')
+        S2F26
+          <B 0x78> .
 
     :param value: parameters for this function (see example)
     :type value: dict

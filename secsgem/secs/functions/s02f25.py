@@ -28,11 +28,17 @@ class SecsS02F25(SecsStreamFunction):
     
     **Structure**::
 
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F25
+        ABS: B[1]
 
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS02F25(
+        >>> secsgem.SecsS02F25('x')
+        S2F25 W
+          <B 0x78> .
+
 
     :param value: parameters for this function (see example)
     :type value:

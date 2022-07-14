@@ -50,3 +50,8 @@ class TIAACK(DataItemBase):
 
     ACCEPTED = 0
     DENIED = 1
+    TOO_MANY_SVIDS = 1
+    NO_MORE_TRACE_ALLOWED = 2
+    INVALID_PERIOD = 3
+    UNKNOWN_SVID = 4
+    INVALID_REPGSZ = 5

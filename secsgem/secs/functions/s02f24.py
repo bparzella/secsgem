@@ -25,10 +25,18 @@ class SecsS02F24(SecsStreamFunction):
 
     - :class:`TIAACK <secsgem.secs.dataitems.TIAACK>`
 
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F24
+        TIAACK: B[1]
+
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.secs.functions.SecsS02F24(...)
+        >>> secsgem.secs.functions.SecsS02F24(TIAACK.ACCEPTED)
+        S2F24
+            <B 0x0> .
 
     :param value: parameters for this function (see example)
     :type value: dict

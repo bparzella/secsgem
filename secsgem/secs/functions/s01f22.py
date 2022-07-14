@@ -22,7 +22,7 @@ from secsgem.secs.data_items import VID, DVNAME, UNITS
 class SecsS01F22(SecsStreamFunction):
     """data variables namelist
     
-        >>> secsgem.SecsS01F22
+        >>> secsgem.secs.functions.SecsS01F22
         [
             {
                 VID: U1/U2/U4/U8/I1/I2/I4/I8/A
@@ -36,7 +36,7 @@ class SecsS01F22(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.SecsS01F22([ \
+        >>> secsgem.secs.functions.SecsS01F22([ \
             {"VID": 1, "DVNAME": "EC1", "UNITS": "mm"}])
         S1F22
           <L [1]

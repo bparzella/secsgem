@@ -26,7 +26,7 @@ class CENAME(DataItemBase):
        - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
-        - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F24>`
+        - :class:`SecsS01F14 <secsgem.secs.functions.SecsS01F24>`
     """
 
     __type__ = variables.String

@@ -31,20 +31,38 @@ class SecsS02F23(SecsStreamFunction):
     
     **Structure**::
 
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F23
+        {
+            TRID: U4
+            DSPER: A
+            TOTSMP: U1/U2/U4/U8/F4/F8/A
+            REPGSZ: U1/U2/U4/U8/F4/F8
+            SVID: [
+                DATA: U1/U2/U4/U8/I1/I2/I4/I8/A
+                ...
+            ]
+        }
+
+
     **Example**::
 
         >>> import secsgem
-        >>> secsgem.secs.functions.SecsS02F23([{"TRID":1 ,"DSPER":'000010',"TOTSMP":secsgem.secs.variables.U4(10),"REPGSZ":secsgem.secs.variables.U4(1),"SVID":[1002004,400210]}])
-        S2F23 W          
-            <L [5]
-              <A "1">
-              <A "000010">
-              <U4 10 >
-              <U4 1 >
-              <L [2]
-                <U4 1002004 >
-                <U4 400210 >
-              >            
+        >>> secsgem.secs.functions.SecsS02F23({"TRID":1, \
+                            "DSPER":'000010', \
+                            "TOTSMP":secsgem.secs.variables.U4(10), \
+                            "REPGSZ":secsgem.secs.variables.U4(1),
+                            "SVID":[1002004,400210]})
+        S2F23 W
+          <L [5]
+            <U4 1 >
+            <A "000010">
+            <U4 10 >
+            <U4 1 >
+            <L [2]
+              <U4 1002004 >
+              <U4 400210 >
+            >
           > .
 
     :param value: parameters for this function (see example)

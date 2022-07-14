@@ -29,4 +29,13 @@ class TRID(DataItemBase):
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
     """
 
-    __type__ = variables.U4 # Centrotherm Firing Furnace expects secsgem.secs.variables.U4
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [variables.String, 
+                        variables.U1, 
+                        variables.U2, 
+                        variables.U4, 
+                        variables.U8, 
+                        variables.I1, 
+                        variables.I2, 
+                        variables.I4, 
+                        variables.I8]
