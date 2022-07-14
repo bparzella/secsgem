@@ -263,3 +263,22 @@ class GemHostHandler(GemHandler):
                                                'peer': self})
 
         return self.stream_function(10, 2)(result)
+
+    def list_dvs(self, dvs=None):
+        """Get list of available Data Variables.
+
+        :returns: available data Variables
+        :rtype: list
+        """
+        self.logger.info("Get list of data variables")
+
+        if dvs is None:
+            dvs = []
+
+        if not isinstance(dvs, list):
+            dvs = [dvs]
+
+        packet = self.send_and_waitfor_response(self.stream_function(1, 21)(dvs))
+
+        return self.secs_decode(packet)
+
