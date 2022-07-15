@@ -13,7 +13,7 @@ repository = "https://github.com/bparzella/secsgem"
 documentation = "https://secsgem.readthedocs.io/"
 
 classifiers = [
-    "Development Status :: 5 - Alpha",
+    "Development Status :: 6 - Alpha",
 
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries",

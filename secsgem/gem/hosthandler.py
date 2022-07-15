@@ -47,6 +47,7 @@ class GemHostHandler(GemHandler):
         self.isHost = True
 
         self.reportSubscriptions = {}
+        self.ce_report_subscriptions = {}
 
     def clear_collection_events(self):
         """Clear all collection events."""
@@ -54,6 +55,7 @@ class GemHostHandler(GemHandler):
 
         # clear subscribed reports
         self.reportSubscriptions = {}
+        self.ce_report_subscriptions = {}
 
         # disable all ceids
         self.disable_ceids()
@@ -80,6 +82,10 @@ class GemHostHandler(GemHandler):
 
         # note subscribed reports
         self.reportSubscriptions[report_id] = dvs
+        if ceid in self.ce_report_subscriptions:
+            self.ce_report_subscriptions[ceid].add(report_id)
+        else:
+            self.ce_report_subscriptions[ceid] = set([report_id])
 
         # create report
         self.send_and_waitfor_response(self.stream_function(2, 33)(
