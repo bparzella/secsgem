@@ -619,16 +619,16 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
     def testGetCeidName(self):
-        self.client._collection_events = {
+        self.client._collection_events.update({
             0: secsgem.gem.CollectionEvent(None, "CollectionEvent0", [], description="Collection event #0"),
-        }
+        })
 
         self.assertEqual(self.client.get_ceid_name(0), "CollectionEvent0")
 
     def testGetCeidNameMissingName(self):
-        self.client._collection_events = {
+        self.client._collection_events.update({
             0: secsgem.gem.CollectionEvent(None, None, [], description="Collection event #0"),
-        }
+        })
 
         self.assertEqual(self.client.get_ceid_name(0), "")
 
@@ -636,9 +636,9 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(self.client.get_ceid_name(0), "")
 
     def testGetDvidName(self):
-        self.client._data_values = {
+        self.client._data_values.update({
             0: secsgem.gem.DataValue(None, "DataValue0", None, description="Data Value #0"),
-        }
+        })
 
         self.assertEqual(self.client.get_dvid_name(0), "DataValue0")
 
