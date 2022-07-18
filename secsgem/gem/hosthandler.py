@@ -270,7 +270,8 @@ class GemHostHandler(GemHandler):
 
         for report in message.RPT:
             report_values = report.V.get()
-            report_dvs = self._get_report_dvs(report.RPTID, len(report_values))
+            report_dvs = self._get_report_dvs(report.RPTID.get(), 
+                                                len(report_values))
 
             values = []
 
@@ -279,10 +280,11 @@ class GemHostHandler(GemHandler):
                                "value": report_values[i], 
                                "name": self.get_dvid_name(s)})
 
-            data = {"ceid": message.CEID, 
-                    "rptid": report.RPTID, 
+            data = {"dataid" : message.DATAID.get(),
+                    "ceid": message.CEID.get(), 
+                    "rptid": report.RPTID.get(), 
                     "values": values,
-                    "name": self.get_ceid_name(message.CEID), 
+                    "name": self.get_ceid_name(message.CEID.get()), 
                     "handler": self.connection, 'peer': self}
 
             reports.append(data)
@@ -363,7 +365,7 @@ class GemHostHandler(GemHandler):
                  "DATA" : [{"RPTID" : rptid, "VID" : []}]})
         packet = self.send_and_waitfor_response(msg)
         ack = self.secs_decode(packet).get()
-        if not ack == DRACK.ACK:
+        if not ack == secsgem.secs.data_items.DRACK.ACK:
             self.logger.error("Operation failed: error code={}".format(DRACK))
         else:
             self.reportSubscriptions.pop(rptid, None)
@@ -384,7 +386,7 @@ class GemHostHandler(GemHandler):
                  "DATA" : [{"CEID" : ceid, "RPTID" : []}]})
         packet = self.send_and_waitfor_response(msg)
         ack = self.secs_decode(packet).get()
-        if not ack == LRACK.ACK:
+        if not ack == secsgem.secs.data_items.LRACK.ACK:
             self.logger.error("Operation failed: error code={}".format(DRACK))
         else:
             rptids = self.ce_report_subscriptions.pop(ceid,[])
