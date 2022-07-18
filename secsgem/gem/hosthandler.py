@@ -238,9 +238,10 @@ class GemHostHandler(GemHandler):
 
         return self.stream_function(5, 2)(result)
 
+
     def _on_s06f11(self, handler, packet):
         """
-        Handle Stream 6, Function 11, Establish Communication Request.
+        Handle Stream 6, Function 11, Event Report Send.
 
         :param handler: handler the message was received on
         :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
@@ -251,20 +252,145 @@ class GemHostHandler(GemHandler):
 
         message = self.secs_decode(packet)
 
+        reports = self._preprocess_event_report(message)
+
+        for data in reports:
+            self.events.fire("collection_event_received", data)
+
+        return self.stream_function(6, 12)(0)
+
+
+    def _preprocess_event_report(self, message):
+        """
+        Common code for preprocessing the data received by S6,F11 and S6,F15/16
+
+        :param message: decoded hsms packet (S6,F11 or S6,F16 message)
+        """
+        reports = []
+
         for report in message.RPT:
-            report_dvs = self.reportSubscriptions[report.RPTID.get()]
             report_values = report.V.get()
+            report_dvs = self._get_report_dvs(report.RPTID, len(report_values))
 
             values = []
 
             for i, s in enumerate(report_dvs):
-                values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
+                values.append({"dvid": s, 
+                               "value": report_values[i], 
+                               "name": self.get_dvid_name(s)})
 
-            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values,
-                    "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
-            self.events.fire("collection_event_received", data)
+            data = {"ceid": message.CEID, 
+                    "rptid": report.RPTID, 
+                    "values": values,
+                    "name": self.get_ceid_name(message.CEID), 
+                    "handler": self.connection, 'peer': self}
 
-        return self.stream_function(6, 12)(0)
+            reports.append(data)
+
+        return reports
+
+
+    def _get_report_dvs(self, rptid, nvals):
+        """
+        Returns the data values for the given rptid 
+        if the report is registered in self.reportSubscriptions,
+        otherwise a list of None's of length 'nvals'.
+        Can be overwritten in subclasses for improved support 
+        of not registered reports.
+
+        :param rptid: id of report
+        :type report: int
+        :param nval: number of None's in case of not registered 'rptid'
+        :type nval: int
+        """
+        if rptid in self.reportSubscriptions:
+            return self.reportSubscriptions[rptid]
+        else:
+            return [None,]*nvals
+
+
+    def request_event_report(self, ceid):
+        """
+        Request event report(s) for given 'ceid' (using the S6,F15 message).
+
+        :param ceid: id of collection event
+        :type ceid: int
+        """
+        packet = self.send_and_waitfor_response(
+                        self.stream_function(6, 15)(ceid))
+        message = self.secs_decode(packet)
+
+        return self._preprocess_event_report(message)
+
+
+    def request_individual_report(self, rptid):
+        """
+        Request event report for given 'rptid' (using the S6,F19 message).
+
+        :param rptid: id of report
+        :type rptid: int
+        """
+        packet = self.send_and_waitfor_response(
+                        self.stream_function(6, 19)(rptid))
+        msg = self.secs_decode(packet)
+
+        report_values = msg.get()
+        report_dvs = self._get_report_dvs(rptid, len(report_values))
+
+        values = []
+        
+        for i, s in enumerate(report_dvs):
+            values.append({"dvid": s, 
+                            "value": report_values[i], 
+                            "name": self.get_dvid_name(s)})
+
+        data = {"rptid": rptid, 
+                "values": values,
+                "handler": self.connection, 
+                "peer": self}
+        return data
+
+
+    def clear_report(self, rptid):
+        """
+        Deletes report definition for given 'rptid' (using the S2,F33 message).
+
+        :param rptid: id of report
+        :type rptid: int
+        """
+        msg = self.stream_function(2, 33)(
+                {"DATAID" : 0, 
+                 "DATA" : [{"RPTID" : rptid, "VID" : []}]})
+        packet = self.send_and_waitfor_response(msg)
+        ack = self.secs_decode(packet).get()
+        if not ack == DRACK.ACK:
+            self.logger.error("Operation failed: error code={}".format(DRACK))
+        else:
+            self.reportSubscriptions.pop(rptid, None)
+            for ce in self.ce_report_subscriptions.values():
+                ce.discard(rptid)
+
+
+    def clear_event_report(self, ceid):
+        """
+        Deletes all report definitions linked to given 'ceid' 
+        (using the S2,F35 message).
+
+        :param ceid: id of report
+        :type ceid: int
+        """
+        msg = self.stream_function(2, 35)(
+                {"DATAID" : 0, 
+                 "DATA" : [{"CEID" : ceid, "RPTID" : []}]})
+        packet = self.send_and_waitfor_response(msg)
+        ack = self.secs_decode(packet).get()
+        if not ack == LRACK.ACK:
+            self.logger.error("Operation failed: error code={}".format(DRACK))
+        else:
+            rptids = self.ce_report_subscriptions.pop(ceid,[])
+            for report_id in rptids:
+                del self.reportSubscriptions[report_id]
+
 
     def _on_terminal_received(self, handler, TID, TEXT):
         del handler, TID, TEXT  # unused variables
