@@ -41,7 +41,7 @@ class CollectionEvent:
         :type data_values: list of DVIDs
         """
         self.ceid = ceid
-        self.name = name
+        self.name = name if name is not None else ''
         self.data_values = data_values
 
         if isinstance(self.ceid, int):

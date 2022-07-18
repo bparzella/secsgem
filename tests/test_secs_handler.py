@@ -19,6 +19,7 @@ import unittest.mock
 
 import secsgem.hsms
 import secsgem.secs
+import secsgem.gem
 
 from test_connection import HsmsTestServer
 
@@ -618,15 +619,15 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
     def testGetCeidName(self):
-        self.client._collectionEvents = {
-            0: {"name": "CollectionEvent0", "description": "Collection event #0", "dvids": []},
+        self.client._collection_events = {
+            0: secsgem.gem.CollectionEvent(None, "CollectionEvent0", [], description="Collection event #0"),
         }
 
         self.assertEqual(self.client.get_ceid_name(0), "CollectionEvent0")
 
     def testGetCeidNameMissingName(self):
-        self.client._collectionEvents = {
-            0: {"description": "Collection event #0", "dvids": []},
+        self.client._collection_events = {
+            0: secsgem.gem.CollectionEvent(None, None, [], description="Collection event #0"),
         }
 
         self.assertEqual(self.client.get_ceid_name(0), "")
@@ -635,8 +636,8 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(self.client.get_ceid_name(0), "")
 
     def testGetDvidName(self):
-        self.client._dataValues = {
-            0: {"name": "DataValue0", "description": "Data Value #0"},
+        self.client._data_values = {
+            0: secsgem.gem.DataValue(None, "DataValue0", None, description="Data Value #0"),
         }
 
         self.assertEqual(self.client.get_dvid_name(0), "DataValue0")
