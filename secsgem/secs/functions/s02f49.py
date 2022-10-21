@@ -52,7 +52,7 @@ class SecsS02F49(SecsStreamFunction):
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49({"DATAID": 1, "OBJSPEC": "test", "RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CEPVAL": "VAL1"}, \
-{"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
+{"CPNAME": "PARAM2", "CEPVAL": "VAL2"}]})
         S2F49 W
           <L [2]
             <I 1>

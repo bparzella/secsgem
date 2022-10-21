@@ -16,7 +16,7 @@
 """Class for stream 02 function 50."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import HCACK, CPNAME, CPACK
+from secsgem.secs.data_items import HCACK, CPNAME, CEPACK
 
 
 class SecsS02F50(SecsStreamFunction):
