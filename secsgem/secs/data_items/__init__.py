@@ -38,8 +38,10 @@ from .cmda import CMDA
 from .colct import COLCT
 from .commack import COMMACK
 from .cpack import CPACK
+from .cepack import CEPACK
 from .cpname import CPNAME
 from .cpval import CPVAL
+from .cepval import CEPVAL
 from .dataid import DATAID
 from .datalength import DATALENGTH
 from .datlc import DATLC
