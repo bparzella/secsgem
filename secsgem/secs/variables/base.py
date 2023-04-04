@@ -85,7 +85,7 @@ class Base:
         format_byte = bytearray(data)[text_pos]
 
         format_code = (format_byte & 0b11111100) >> 2
-        length_bytes = (format_byte & 0b00000011)
+        length_bytes = format_byte & 0b00000011
 
         text_pos += 1
 

@@ -82,7 +82,7 @@ class BaseNumber(Base):
         """Get data item for hashing."""
         return hash(str(self.value))
 
-    def __check_single_item_support(self, value):
+    def _check_single_item_support(self, value):
         if isinstance(value, float) and self._base_type == int:
             return False
 
@@ -95,16 +95,20 @@ class BaseNumber(Base):
             return True
 
         if isinstance(value, (bytes, str)):
-            try:
-                val = self._base_type(value)
-            except ValueError:
-                return False
-            if val < self._min or val > self._max:
-                return False
-            return True
+            return self._check_single_item_support_str(value)
+
         return False
 
-    def supports_value(self, value):
+    def _check_single_item_support_str(self, value) -> bool:
+        try:
+            val = self._base_type(value)
+        except ValueError:
+            return False
+        if val < self._min or val > self._max:
+            return False
+        return True
+
+    def supports_value(self, value) -> bool:
         """
         Check if the current instance supports the provided value.
 
@@ -112,20 +116,26 @@ class BaseNumber(Base):
         :type value: any
         """
         if isinstance(value, (list, tuple)):
-            if 0 <= self.count < len(value):
-                return False
-            for item in value:
-                if not self.__check_single_item_support(item):
-                    return False
-            return True
+            return self._supports_value_list(value)
         if isinstance(value, bytearray):
-            if 0 <= self.count < len(value):
+            return self._supports_value_bytearray(value)
+        return self._check_single_item_support(value)
+
+    def _supports_value_list(self, value) -> bool:
+        if 0 <= self.count < len(value):
+            return False
+        for item in value:
+            if not self._check_single_item_support(item):
                 return False
-            for item in value:
-                if item < self._min or item > self._max:
-                    return False
-            return True
-        return self.__check_single_item_support(value)
+        return True
+
+    def _supports_value_bytearray(self, value) -> bool:
+        if 0 <= self.count < len(value):
+            return False
+        for item in value:
+            if item < self._min or item > self._max:
+                return False
+        return True
 
     def set(self, value):
         """
@@ -138,27 +148,9 @@ class BaseNumber(Base):
             raise ValueError(f"Invalid value {value}")
 
         if isinstance(value, (list, tuple)):
-            if 0 <= self.count < len(value):
-                raise ValueError(f"Value longer than {self.count} chars")
-
-            new_list = []
-            for item in value:
-                item = self._base_type(item)
-                if item < self._min or item > self._max:
-                    raise ValueError(f"Invalid value {item}")
-
-                new_list.append(item)
-            self.value = new_list
+            self._set_list(value)
         elif isinstance(value, bytearray):
-            if 0 <= self.count < len(value):
-                raise ValueError(f"Value longer than {self.count} chars")
-
-            new_list = []
-            for item in value:
-                if item < self._min or item > self._max:
-                    raise ValueError(f"Invalid value {item}")
-                new_list.append(item)
-            self.value = new_list
+            self._set_bytearray(value)
         else:
             new_value = self._base_type(value)
 
@@ -166,6 +158,30 @@ class BaseNumber(Base):
                 raise ValueError(f"Invalid value {value}")
 
             self.value = [new_value]
+
+    def _set_list(self, value):
+        if 0 <= self.count < len(value):
+            raise ValueError(f"Value longer than {self.count} chars")
+
+        new_list = []
+        for item in value:
+            item = self._base_type(item)
+            if item < self._min or item > self._max:
+                raise ValueError(f"Invalid value {item}")
+
+            new_list.append(item)
+        self.value = new_list
+
+    def _set_bytearray(self, value):
+        if 0 <= self.count < len(value):
+            raise ValueError(f"Value longer than {self.count} chars")
+
+        new_list = []
+        for item in value:
+            if item < self._min or item > self._max:
+                raise ValueError(f"Invalid value {item}")
+            new_list.append(item)
+        self.value = new_list
 
     def get(self):
         """

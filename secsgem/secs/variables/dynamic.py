@@ -180,37 +180,32 @@ class Dynamic(Base):
         """
         (_, format_code, _) = self.decode_item_header(data, start)
 
-        if format_code == Array.format_code and self.__type_supported(Array):
-            self.value = Array(ANYVALUE)
-        elif format_code == Binary.format_code and self.__type_supported(Binary):
-            self.value = Binary(count=self.count)
-        elif format_code == Boolean.format_code and self.__type_supported(Boolean):
-            self.value = Boolean(count=self.count)
-        elif format_code == String.format_code and self.__type_supported(String):
-            self.value = String(count=self.count)
-        elif format_code == I8.format_code and self.__type_supported(I8):
-            self.value = I8(count=self.count)
-        elif format_code == I1.format_code and self.__type_supported(I1):
-            self.value = I1(count=self.count)
-        elif format_code == I2.format_code and self.__type_supported(I2):
-            self.value = I2(count=self.count)
-        elif format_code == I4.format_code and self.__type_supported(I4):
-            self.value = I4(count=self.count)
-        elif format_code == F8.format_code and self.__type_supported(F8):
-            self.value = F8(count=self.count)
-        elif format_code == F4.format_code and self.__type_supported(F4):
-            self.value = F4(count=self.count)
-        elif format_code == U8.format_code and self.__type_supported(U8):
-            self.value = U8(count=self.count)
-        elif format_code == U1.format_code and self.__type_supported(U1):
-            self.value = U1(count=self.count)
-        elif format_code == U2.format_code and self.__type_supported(U2):
-            self.value = U2(count=self.count)
-        elif format_code == U4.format_code and self.__type_supported(U4):
-            self.value = U4(count=self.count)
-        else:
+        format_codes = {
+            Array.format_code: Array,
+            Binary.format_code: Binary,
+            Boolean.format_code: Boolean,
+            String.format_code: String,
+            I8.format_code: I8,
+            I1.format_code: I1,
+            I2.format_code: I2,
+            I4.format_code: I4,
+            F8.format_code: F8,
+            F4.format_code: F4,
+            U8.format_code: U8,
+            U1.format_code: U1,
+            U2.format_code: U2,
+            U4.format_code: U4,
+        }
+
+        if format_code not in format_codes or not self.__type_supported(format_codes[format_code]):
             raise ValueError(
                 f"Unsupported format {format_code} for this instance of Dynamic, allowed {self.types}")
+
+        typ = format_codes[format_code]
+        if typ == Array:
+            self.value = Array(ANYVALUE)
+        else:
+            self.value = typ(count=self.count)
 
         return self.value.decode(data, start)
 
