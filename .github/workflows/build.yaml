@@ -8,25 +8,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.7, 3.8, 3.9, 3.10, 3.11]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install poetry
-        uses: snok/install-poetry@v1.1.6
+        uses: snok/install-poetry@v1.3.3
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
       - name: Cache venv
         id: cached-pip-wheels
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.cache
           key: venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
@@ -38,12 +38,12 @@ jobs:
         run: poetry run coverage run --source=secsgem -m pytest tests secsgem --doctest-modules
 
       - name: Publish coverage to codeclimate
-        uses: paambaati/codeclimate-action@v2.7.5
+        uses: paambaati/codeclimate-action@v3.2.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
           coverageCommand: poetry run coverage xml
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
 
       - name: Lint with prospector
         run: poetry run prospector --no-autodetect --output-format=pylint secsgem
