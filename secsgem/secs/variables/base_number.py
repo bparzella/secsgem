@@ -54,7 +54,7 @@ class BaseNumber(Base):
 
         data = " ".join([str(value) for value in self.value])
 
-        return f"<{self.text_code} {data}>"
+        return f"<{self.text_code} {data} >"
 
     def __len__(self):
         """Get the length."""
