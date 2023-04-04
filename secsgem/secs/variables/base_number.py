@@ -52,7 +52,7 @@ class BaseNumber(Base):
         if len(self.value) == 0:
             return f"<{self.text_code}>"
 
-        data = " ".join(self.value)
+        data = " ".join([str(value) for value in self.value])
 
         return f"<{self.text_code} {data}>"
 
