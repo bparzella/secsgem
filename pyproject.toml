@@ -40,6 +40,12 @@ pytest = "^7.2.2"
 coverage = "^7.2.2"
 prospector = "^1.9.0"
 
+[tool.pytest.ini_options]
+addopts = "--doctest-modules --doctest-report ndiff"
+testpaths = [
+    "tests",
+    "secsgem"
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
