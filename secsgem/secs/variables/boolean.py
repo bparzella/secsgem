@@ -49,10 +49,7 @@ class Boolean(Base):
         if len(self.value) == 0:
             return f"<{self.text_code}>"
 
-        data = ""
-
-        for boolean in self.value:
-            data += f"{boolean} "
+        data = " ".join(self.value)
 
         return f"<{self.text_code} {data}>"
 
