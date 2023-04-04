@@ -509,31 +509,36 @@ class GemEquipmentHandler(GemHandler):
                     if (vid not in self._data_values) and (vid not in self._status_variables):
                         DRACK = 4
 
-        # pre check okay
-        if DRACK == 0:
-            # no data -> remove all reports and links
-            if not message.DATA:
-                self._registered_collection_events.clear()
-                self._registered_reports.clear()
-            else:
-                for report in message.DATA:
-                    # no vids -> remove this reports and links
-                    if not report.VID:
-                        # remove report from linked collection events
-                        for collection_event in list(self._registered_collection_events):
-                            if report.RPTID in self._registered_collection_events[collection_event].reports:
-                                self._registered_collection_events[collection_event].reports.remove(report.RPTID)
-                                # remove collection event link if no collection events present
-                                if not self._registered_collection_events[collection_event].reports:
-                                    del self._registered_collection_events[collection_event]
-                        # remove report
-                        if report.RPTID in self._registered_reports:
-                            del self._registered_reports[report.RPTID]
-                    else:
-                        # add report
-                        self._registered_reports[report.RPTID] = CollectionEventReport(report.RPTID, report.VID)
+        result = self.stream_function(2, 34)(DRACK)
 
-        return self.stream_function(2, 34)(DRACK)
+        if DRACK != 0:
+            return result
+
+        # no data -> remove all reports and links
+        if not message.DATA:
+            self._registered_collection_events.clear()
+            self._registered_reports.clear()
+
+            return result
+        
+        for report in message.DATA:
+            # no vids -> remove this reports and links
+            if not report.VID:
+                # remove report from linked collection events
+                for collection_event in list(self._registered_collection_events):
+                    if report.RPTID in self._registered_collection_events[collection_event].reports:
+                        self._registered_collection_events[collection_event].reports.remove(report.RPTID)
+                        # remove collection event link if no collection events present
+                        if not self._registered_collection_events[collection_event].reports:
+                            del self._registered_collection_events[collection_event]
+                # remove report
+                if report.RPTID in self._registered_reports:
+                    del self._registered_reports[report.RPTID]
+            else:
+                # add report
+                self._registered_reports[report.RPTID] = CollectionEventReport(report.RPTID, report.VID)
+
+        return result
 
     def _on_s02f35(self, handler, packet):
         """
