@@ -5,6 +5,8 @@ doc-warnings: true
 
 max-line-length: 120
 
+autodetect: false
+
 output-format: pylint
 
 pylint:
