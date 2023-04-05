@@ -139,7 +139,16 @@ class GemHostHandler(GemHandler):
         self.logger.info("Go online")
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)())).get()
+        resp = self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)()))
+
+        if isinstance(resp,self.stream_function(1,18)):
+            val = resp.get()
+            if val in (secsgem.secs.data_items.ONLACK.ACCEPTED,
+                       secsgem.secs.data_items.ONLACK.ALREADY_ON):
+                return val
+
+            raise RuntimeError(f"S1F17 request returned S1F18 with value {val}")
+        raise RuntimeError(f"S1F17 request returned {type(resp)} response")
 
     def go_offline(self):
         """Set control state to offline."""

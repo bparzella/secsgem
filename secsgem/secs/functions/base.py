@@ -187,7 +187,10 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         :returns: current parameter value
         :rtype: various
         """
-        return self.data.get()
+        if self.data is None:
+            return None
+        else:
+            return self.data.get()
 
     @classmethod
     def get_format(cls):
