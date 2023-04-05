@@ -89,7 +89,7 @@ class Binary(Base):
         return hash(bytes(self.value))
 
     @staticmethod
-    def __check_single_item_support(value):
+    def _check_single_item_support(value):
         if isinstance(value, bool):
             return True
 
@@ -100,7 +100,7 @@ class Binary(Base):
 
         return False
 
-    def supports_value(self, value):
+    def supports_value(self, value) -> bool:
         """
         Check if the current instance supports the provided value.
 
@@ -108,35 +108,47 @@ class Binary(Base):
         :type value: any
         """
         if isinstance(value, (list, tuple)):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            for item in value:
-                if not self.__check_single_item_support(item):
-                    return False
-
-            return True
+            return self._supports_value_list(value)
 
         if isinstance(value, bytearray):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            return True
+            return self._supports_value_bytearray(value)
 
         if isinstance(value, bytes):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            return True
+            return self._supports_value_bytes(value)
 
         if isinstance(value, str):
-            if self.count > 0 and len(value) > self.count:
-                return False
-            try:
-                value.encode('ascii')
-            except UnicodeEncodeError:
+            return self._supports_value_str(value)
+
+        return self._check_single_item_support(value)
+
+    def _supports_value_list(self, value) -> bool:
+        if self.count > 0 and len(value) > self.count:
+            return False
+        for item in value:
+            if not self._check_single_item_support(item):
                 return False
 
-            return True
+        return True
 
-        return self.__check_single_item_support(value)
+    def _supports_value_bytearray(self, value) -> bool:
+        if self.count > 0 and len(value) > self.count:
+            return False
+        return True
+
+    def _supports_value_bytes(self, value) -> bool:
+        if self.count > 0 and len(value) > self.count:
+            return False
+        return True
+
+    def _supports_value_str(self, value) -> bool:
+        if self.count > 0 and len(value) > self.count:
+            return False
+        try:
+            value.encode('ascii')
+        except UnicodeEncodeError:
+            return False
+
+        return True
 
     def set(self, value):
         """

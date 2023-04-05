@@ -1,0 +1,23 @@
+strictness: medium
+
+test-warnings: false
+doc-warnings: true
+
+max-line-length: 120
+
+autodetect: false
+
+output-format: pylint
+
+pylint:
+  disable:
+    - too-many-arguments
+
+pydocstyle:
+  disable:
+    - D203
+    - D212
+
+ignore-paths:
+  - docs
+  - samples

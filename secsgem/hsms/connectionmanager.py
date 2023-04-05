@@ -97,7 +97,7 @@ class HsmsConnectionManager:
             if serverPort not in required_ports:
                 self.logger.debug("stopping server on port %d", serverPort)
                 server.stop()
-                del self.servers[serverPort]  # pylint: disable=unnecessary-dict-index-lookup
+                del self.servers[serverPort]
 
         for requiredPort in required_ports:
             if requiredPort not in self.servers:

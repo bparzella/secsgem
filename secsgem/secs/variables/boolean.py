@@ -49,12 +49,9 @@ class Boolean(Base):
         if len(self.value) == 0:
             return f"<{self.text_code}>"
 
-        data = ""
+        data = " ".join([str(value) for value in self.value])
 
-        for boolean in self.value:
-            data += f"{boolean} "
-
-        return f"<{self.text_code} {data}>"
+        return f"<{self.text_code} {data} >"
 
     def __len__(self):
         """Get the length."""
@@ -84,7 +81,7 @@ class Boolean(Base):
         """Get data item for hashing."""
         return hash(str(self.value))
 
-    def __check_single_item_support(self, value):
+    def _check_single_item_support(self, value):
         if isinstance(value, bool):
             return True
 
@@ -101,7 +98,7 @@ class Boolean(Base):
 
         return False
 
-    def supports_value(self, value):
+    def supports_value(self, value) -> bool:
         """
         Check if the current instance supports the provided value.
 
@@ -109,23 +106,31 @@ class Boolean(Base):
         :type value: any
         """
         if isinstance(value, (list, tuple)):
-            if 0 < self.count < len(value):
-                return False
-            for item in value:
-                if not self.__check_single_item_support(item):
-                    return False
-
-            return True
+            return self._supports_value_list(value)
 
         if isinstance(value, bytearray):
-            if 0 < self.count < len(value):
-                return False
-            for char in value:
-                if not 0 <= char <= 1:
-                    return False
-            return True
+            return self._supports_value_bytearray(value)
 
-        return self.__check_single_item_support(value)
+        return self._check_single_item_support(value)
+
+    def _supports_value_list(self, value) -> bool:
+        if 0 < self.count < len(value):
+            return False
+
+        for item in value:
+            if not self._check_single_item_support(item):
+                return False
+
+        return True
+
+    def _supports_value_bytearray(self, value) -> bool:
+        if 0 < self.count < len(value):
+            return False
+
+        for char in value:
+            if not 0 <= char <= 1:
+                return False
+        return True
 
     def __convert_single_item(self, value):
         if isinstance(value, bool):

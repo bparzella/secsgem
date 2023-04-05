@@ -86,7 +86,7 @@ sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
 
     @staticmethod
     def decode(text):
-        """
+        r"""
         Decode byte array hsms packet to HsmsPacket object.
 
         :returns: received packet object
@@ -97,15 +97,14 @@ sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
             >>> import secsgem.common
             >>> import secsgem.hsms
             >>>
-            >>> packetData = b"\\x00\\x00\\x00\\x0b\\xff\\xff\\x00\\x00\\x00\\x05\\x00\\x00\\x00\\x02"
+            >>> packetData = b"\x00\x00\x00\x0b\xff\xff\x00\x00\x00\x05\x00\x00\x00\x02"
             >>>
             >>> secsgem.common.format_hex(packetData)
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
             >>>
             >>> secsgem.hsms.HsmsPacket.decode(packetData)
-            HsmsPacket({'header': HsmsHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, \
-system:0x00000002, requireResponse:False}), 'data': ''})
-        """
+            HsmsPacket({'header': HsmsHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
+        """   # noqa pylint: disable=line-too-long
         data_length = len(text) - 14
         data_length_text = str(data_length) + "s"
 
