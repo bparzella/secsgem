@@ -47,7 +47,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
 
       - name: Lint with prospector
-        run: python -m poetry run prospector secsgem
+        run: python -m poetry run prospector
 
   release:
     needs: test

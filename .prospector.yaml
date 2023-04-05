@@ -19,5 +19,9 @@ pydocstyle:
     - D212
 
 ignore-paths:
+  - data/out
   - docs
   - samples
+
+ignore-patterns:
+  - ^data/.*\.tmpl\.py$
