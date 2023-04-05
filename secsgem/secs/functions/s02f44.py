@@ -99,10 +99,10 @@ class SecsS02F44(SecsStreamFunction):
         ]
     ]
 
-    _toHost = True
-    _toEquipment = False
+    _to_host = True
+    _to_equipment = False
 
-    _hasReply = False
-    _isReplyRequired = False
+    _has_reply = False
+    _is_reply_required = False
 
-    _isMultiBlock = False
+    _is_multi_block = False

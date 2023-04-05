@@ -47,12 +47,12 @@ class SecsS06F23(SecsStreamFunction):
     _stream = 6
     _function = 23
 
-    _dataFormat = RSDC
+    _data_format = RSDC
 
-    _toHost = False
-    _toEquipment = True
+    _to_host = False
+    _to_equipment = True
 
-    _hasReply = True
-    _isReplyRequired = True
+    _has_reply = True
+    _is_reply_required = True
 
-    _isMultiBlock = False
+    _is_multi_block = False
