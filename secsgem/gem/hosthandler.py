@@ -139,7 +139,11 @@ class GemHostHandler(GemHandler):
         self.logger.info("Go online")
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)())).get()
+        resp = self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)()))
+        if resp is None:
+            return None
+
+        return resp.get()
 
     def go_offline(self):
         """Set control state to offline."""

@@ -15,6 +15,7 @@
 #####################################################################
 """Wrappers for SECS stream and functions."""
 import importlib
+import importlib.util
 import inspect
 import pathlib
 import typing
