@@ -189,8 +189,8 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         """
         if self.data is None:
             return None
-        else:
-            return self.data.get()
+        
+        return self.data.get()
 
     @classmethod
     def get_format(cls):

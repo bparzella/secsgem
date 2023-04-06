@@ -20,7 +20,7 @@ from .base import DataItemBase
 
 class RSDC(DataItemBase):
     """
-    Request spooled data command
+    Request spooled data command.
 
     :Types:
        - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`

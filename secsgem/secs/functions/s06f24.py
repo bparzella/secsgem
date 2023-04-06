@@ -29,16 +29,16 @@ class SecsS06F24(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F24
-            RSDA: B
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F24
+        RSDA: B[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F22(RSDA)
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F24(secsgem.secs.data_items.RSDA.ACK)
         S6F24
-          <B [1] 0x01> .
+          <B 0x0> .
 
     :param value: parameters for this function (see example)
     :type value: list

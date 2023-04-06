@@ -21,7 +21,7 @@ from secsgem.secs.data_items import RSDC
 
 class SecsS06F23(SecsStreamFunction):
     """
-    Request spooled data
+    Request spooled data.
 
     **Data Items**
 
@@ -29,16 +29,16 @@ class SecsS06F23(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F23
-            RSDC: U1
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F23
+        RSDC: U1[1]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS06F22("RSDC")
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS06F23(secsgem.secs.data_items.RSDC.PURGE)
         S6F23 W
-          <U1 RSDC> .
+          <U1 1 > .
 
     :param value: parameters for this function (see example)
     :type value: list

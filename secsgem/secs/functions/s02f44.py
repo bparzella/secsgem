@@ -32,16 +32,16 @@ class SecsS02F44(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F44
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F44
         {
             RSPACK: B[1]
-            ERRORS: [
+            DATA: [
                 {
-                    STRID: U1
+                    STRID: U1[1]
                     STRACK: B[1]
-                    FCNIDS: [
-                        FCNID: U1
+                    FCNID: [
+                        DATA: U1[1]
                         ...
                     ]
                 }
@@ -51,28 +51,28 @@ class SecsS02F44(SecsStreamFunction):
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F44({ \
-            "RSPACK": 0x01 (spooling setup rejected), \
-            "ERRORS": [ \
-                {"STRID": "STRID1", "STRACK": 0x01 (spooling not allowed), "FCNIDS": ["FCNID2"]}, \
-                {"STRID": "STRID2", "STRACK": 0x04 (requested message is secondary message), "FCNIDS": ["FCNID3"]}]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F44({ \
+            "RSPACK": secsgem.secs.data_items.RSPACK.REJECTED, \
+            "DATA": [ \
+                {"STRID": 1, "STRACK": secsgem.secs.data_items.STRACK.NOT_ALLOWED, "FCNID": [10]}, \
+                {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.MSG_INELIGIBLE, "FCNID": [20]}]})
         S2F44
           <L [2]
-            <B 0x01 ("RSPACK")>
+            <B 0x1>
             <L [2]
               <L [3]
-                <U1 "STRID1">
-                <B 0x01 ("STRACK")>
+                <U1 1 >
+                <B 0x1>
                 <L [1]
-                  <U1 "FCNID2">
+                  <U1 10 >
                 >
               >
               <L [3]
-                <U1 "STRID2">
-                <B 0x04 ("STRACK")>
+                <U1 2 >
+                <B 0x4>
                 <L [1]
-                  <U1 "FCNID3">
+                  <U1 20 >
                 >
               >
             >
@@ -85,16 +85,13 @@ class SecsS02F44(SecsStreamFunction):
     _stream = 2
     _function = 44
 
-    _dataFormat = [
+    _data_format = [
         RSPACK,
-        [   "ERRORS",    # name of the list
+        [
             [
                 STRID,
                 STRACK,
-                [
-                    "FCNIDS",    # name of the list
-                    FCNID,
-                ]
+                [FCNID]
             ]
         ]
     ]

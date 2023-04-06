@@ -30,36 +30,37 @@ class SecsS02F43(SecsStreamFunction):
 
     **Structure**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F43
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F43
         [
             {
-                STRID: U1
-                FCNIDS: [
-                    FCNID: U1
+                STRID: U1[1]
+                FCNID: [
+                    DATA: U1[1]
                     ...
                 ]
             }
+            ...
         ]
 
     **Example**::
 
-        >>> import secsgem
-        >>> secsgem.SecsS02F43([{"STRID": "STRID1", "FCNIDS": ["FCNID1", "FCNID2"]}, {"STRID": "STRID2", "FCNIDS": ["FCNID3", "FCNID4"]})
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F43([{"STRID": 1, "FCNID": [10, 20]}, {"STRID": 2, "FCNID": [30, 40]}])
         S2F43 W
           <L [2]
             <L [2]
-              <U1 "STRID1">
+              <U1 1 >
               <L [2]
-                <U1 "FCNID1">
-                <U1 "FCNID2">
+                <U1 10 >
+                <U1 20 >
               >
             >
             <L [2]
-              <U1 "STRID2">
+              <U1 2 >
               <L [2]
-                <U1 "FCNID3">
-                <U1 "FCNID4">
+                <U1 30 >
+                <U1 40 >
               >
             >
           > .
@@ -71,13 +72,10 @@ class SecsS02F43(SecsStreamFunction):
     _stream = 2
     _function = 43
 
-    _dataFormat = [
+    _data_format = [
         [
             STRID,
-            [
-                "FCNIDS",   # name of the list
-                FCNID
-            ]
+            [FCNID]
         ]
     ]
 
