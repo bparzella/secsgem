@@ -1,0 +1,108 @@
+ACKA:
+  type: Boolean
+  description: Request success
+  values:
+    true: Success
+    false: Failed
+
+ACKC5:
+  type: Binary
+  description: Acknowledge code for stream 5
+  values:
+    0:
+      description: Accepted
+      constant: ACCEPTED
+    1-63:
+      description: Error
+      constant: ERROR
+
+ACKC6:
+  type: Binary
+  description: Acknowledge code for stream 6
+  values:
+    0:
+      description: Accepted
+      constant: ACCEPTED
+    1-63:
+      description: Error
+      constant: ERROR
+
+ACKC7:
+  type: Binary
+  description: Acknowledge code for stream 7
+  values:
+    0:
+      description: Accepted
+      constant: ACCEPTED
+    1:
+      description: Permission not granted
+      constant: NO_PERMISSION
+    2:
+      description: Length error
+      constant: LENGTH_ERROR
+    3:
+      description: Matrix overflow
+      constant: MATRIX_OVERFLOW
+    4:
+      description: PPID not found
+      constant: PPID_NOT_FOUND
+    5:
+      description: Mode unsupported
+      constant: MODE_UNSUPPORTED
+    6:
+      description: Performed later
+      constant: PERFORMED_LATER
+    7-63:
+      description: Reserved
+
+ACKC10:
+  type: Binary
+  description: Acknowledge code for stream 10
+  values:
+    0:
+      description: Accepted
+      constant: ACCEPTED
+    1:
+      description: Will not be displayed
+      constant: NOT_DISPLAYED
+    2:
+      description: Terminal not available
+      constant: TERMINAL_NOT_AVAILABLE
+    3-63:
+      description: Other error
+
+ALCD:
+  type: Binary
+  description: Alarm code byte
+  values:
+    0:
+      description: Not used
+    1:
+      description: Personal safety
+      constant: PERSONAL_SAFETY
+    2:
+      description: Equipment safety
+      constant: EQUIPMENT_SAFETY
+    3:
+      description: Parameter control warning
+      constant: PARAMETER_CONTROL_WARNING
+    4:
+      description: Parameter control error
+      constant: PARAMETER_CONTROL_ERROR
+    5:
+      description: Irrecoverable error
+      constant: IRRECOVERABLE_ERROR
+    6:
+      description: Equipment status warning
+      constant: EQUIPMENT_STATUS_WARNING
+    7:
+      description: Attention flags
+      constant: ATTENTION_FLAGS
+    8:
+      description: Data integrity
+      constant: DATA_INTEGRITY
+    9-63:
+      description: Other catogeries
+    128:
+      description: Alarm set flag
+      constant: ALARM_SET

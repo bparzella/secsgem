@@ -47,7 +47,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
 
       - name: Lint with prospector
-        run: python -m poetry run prospector secsgem
+        run: python -m poetry run prospector
 
   release:
     needs: test
@@ -56,21 +56,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
-      - name: Install poetry
-        uses: snok/install-poetry@v1.1.6
-        with:
-          virtualenvs-create: true
-          virtualenvs-in-project: true
+      - uses: actions/checkout@v3
 
       - name: Build and publish to pypi
-        uses: JRubics/poetry-publish@v1.7
+        uses: JRubics/poetry-publish@v1.16
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
           ignore_dev_requirements: "yes"
