@@ -155,6 +155,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             # start the receiver thread
             self._start_receiver()
 
+            self.serverSock.shutdown(socket.SHUT_RDWR)
             self.serverSock.close()
 
             return
