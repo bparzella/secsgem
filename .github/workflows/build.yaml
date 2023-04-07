@@ -44,7 +44,34 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
         with:
           coverageCommand: python -m poetry run coverage xml
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11' && github.ref == 'refs/heads/main'
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install poetry
+        run: python -m pip install --upgrade poetry
+
+      - name: Setup poetry
+        run: python -m poetry config virtualenvs.in-project "true"
+
+      - name: Cache venv
+        id: cached-pip-wheels
+        uses: actions/cache@v3
+        with:
+          path: ~/.venv
+          key: venv-ubuntu-latest-3.11-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: python -m poetry install --no-interaction
 
       - name: Lint with prospector
         run: python -m poetry run prospector
