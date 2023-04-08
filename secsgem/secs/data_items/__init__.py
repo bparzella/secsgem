@@ -62,7 +62,7 @@ from .exrecvra import EXRECVRA
 from .extype import EXTYPE
 from .ffrot import FFROT
 from .fnloc import FNLOC
-from .grant5 import GRANT6
+from .grant6 import GRANT6
 from .grnt1 import GRNT1
 from .hcack import HCACK
 from .idtyp import IDTYP
