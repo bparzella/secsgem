@@ -30,4 +30,5 @@ S02F14:
   reply_required: False
   multi_block: True
   structure: [ECV]
+  sample_data: '[secsgem.secs.variables.U1(1), "text"]'
 

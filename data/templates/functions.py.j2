@@ -46,7 +46,7 @@ class Secs{{ data.name }}(SecsStreamFunction):
         S{{ data.stream }}F{{ data.function }}{{ " W" if data.has_reply }}
     {%- if data.data_items|length > 0 %}
 
-{{ data.sample_data_text | indent(10, True) -}}
+{{ data.sample_data_text | indent(8, True) -}}
     {% endif %} .
 
     {% if data.data_items|length > 0 %}

@@ -1,5 +1,4 @@
 """Data item class definition."""
-import pathlib
 import typing
 
 import yaml
@@ -19,9 +18,9 @@ class DataItem:
         assert "description" in data
 
     @classmethod
-    def load_all(cls) -> typing.List["DataItem"]:
+    def load_all(cls, root) -> typing.List["DataItem"]:
         """Load all data item objects."""
-        data = pathlib.Path("data_items.yaml").read_text(encoding="utf8")
+        data = (root / "data_items.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
     

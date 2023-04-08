@@ -1,5 +1,4 @@
 """Function class definition."""
-import pathlib
 import re
 import typing
 
@@ -7,6 +6,27 @@ import yaml
 
 from data_item import DataItem
 
+
+structure_code = """
+import secsgem.secs
+{imports}
+
+data_item = {data_item}
+
+var = secsgem.secs.variables.functions.get_format(data_item)
+"""
+
+sample_data_code = """
+import secsgem.secs
+import secsgem.common
+{imports}
+
+data_item = {data_item}
+
+data = secsgem.secs.variables.functions.generate(data_item)
+data.set({sample_value})
+var = secsgem.common.indent_block(repr(data))
+"""
 
 class Function:
     """Function configuration from yaml."""
@@ -42,9 +62,9 @@ class Function:
         self._function = int(match.group(2))
 
     @classmethod
-    def load_all(cls, data_items: typing.Dict[str, DataItem]) -> typing.List["Function"]:
+    def load_all(cls, root, data_items: typing.Dict[str, DataItem]) -> typing.List["Function"]:
         """Load all function objects."""
-        data = pathlib.Path("functions.yaml").read_text(encoding="utf8")
+        data = (root / "functions.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
@@ -171,9 +191,37 @@ class Function:
         """Get the output of the data structure."""
         if self.raw_structure is None:
             return "Header only"
-        return f"""{self.structure}"""
+        
+        imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
+
+        code = structure_code.format(imports=imports, data_item=self.structure)
+
+        glob = {}
+        loc = {}
+
+        exec(code, glob, loc)
+
+        return loc["var"]
     
+    @property
+    def sample_data(self) -> str:
+        """Get the configured sample data."""
+        if "sample_data" not in self._data:
+            return ""
+        
+        return self._data["sample_data"]
+
     @property
     def sample_data_text(self) -> str:
         """Get the output of the sample data."""
-        return '<L [2]\n  <U1 1 >\n  <A "blah">\n>'
+        imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
+
+        code = sample_data_code.format(imports=imports, data_item=self.structure, sample_value=self.sample_data)
+
+        glob = {}
+        loc = {}
+
+        exec(code, glob, loc)
+        print(loc)
+
+        return loc["var"]
