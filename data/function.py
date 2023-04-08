@@ -154,6 +154,4 @@ class Function:
     @property
     def sample_data_text(self) -> str:
         """Get the output of the sample data."""
-        return f'<L [2]\n  <U1 1 >\n  <A "blah">\n>'
-
-
+        return '<L [2]\n  <U1 1 >\n  <A "blah">\n>'
