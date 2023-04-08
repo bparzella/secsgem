@@ -25,6 +25,8 @@ class Function:
 
         self._data_items = data_items
 
+        self._rendered = None
+
         assert "description" in data
         assert "to_host" in data
         assert "to_equipment" in data
@@ -46,7 +48,28 @@ class Function:
         yaml_data = yaml.safe_load(data)
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
-    
+    @staticmethod
+    def render_list(functions, function_template, target_path):
+        """Render all functions to file."""
+        last = None
+
+        for function in functions:
+            last = function.render(function_template, target_path)
+        
+        return last
+
+    def render(self, function_template, target_path):
+        """Render a function to file."""
+        print(f"# generate function {self.name}")
+
+        self._rendered = function_template.render(
+            data=self
+        )
+
+        out_path = target_path / self.file_name
+        out_path.write_text(self._rendered)
+        return self.file_name
+
     @property
     def file_name(self) -> str:
         """Get the file name."""
@@ -134,7 +157,6 @@ class Function:
         
         items = []
         self._find_items(self.raw_structure, items)
-        print(items)
         return items
 
     def _find_items(self, structure, items):

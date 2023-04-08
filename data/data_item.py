@@ -13,6 +13,8 @@ class DataItem:
         self._name = name
         self._data = data
 
+        self._rendered = None
+
         assert "type" in data
         assert "description" in data
 
@@ -22,6 +24,28 @@ class DataItem:
         data = pathlib.Path("data_items.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
+    
+    @staticmethod
+    def render_list(data_items, data_item_template, target_path):
+        """Render a list of data items."""
+        last = None
+
+        for data_item in data_items:
+            print(f"# generate data item {data_item.name}")
+
+            last = data_item.render(data_item_template, target_path)
+
+        return last
+
+    def render(self, data_item_template, target_path):
+        """Render the data item file."""
+        self._rendered = data_item_template.render(
+            data=self
+        )
+
+        out_path = target_path / self.file_name
+        out_path.write_text(self._rendered)
+        return self.file_name
 
     @property
     def name(self) -> str:
