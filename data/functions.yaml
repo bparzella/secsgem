@@ -22,6 +22,33 @@ S01F01:
   reply_required: True
   multi_block: False
 
+S01F02:
+  description: on line data
+  to_host: True
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [MDLN]
+  sample_data: 
+    - data: '["secsgem", "0.0.6"]'
+      info: E->H
+    - data: ''
+      info: H->E
+  extra_help: |
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        If it is sent from the eqipment side it has the structure below, if it
+        is sent from the host it is an empty list.
+        Be sure to fill the array accordingly.
+
+    **Structure E->H**::
+
+        {
+            MDLN: A[20]
+            SOFTREV: A[20]
+        }
 S02F14:
   description: equipment constant - data
   to_host: True
@@ -31,4 +58,3 @@ S02F14:
   multi_block: True
   structure: [ECV]
   sample_data: '[secsgem.secs.variables.U1(1), "text"]'
-

@@ -911,3 +911,9 @@ MDACK:
       constant: ABORT_MAP
     4-63:
       description: Reserved, error
+
+MDLN:
+  type: String
+  description: Equipment model type
+  length: 20
+

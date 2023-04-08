@@ -28,6 +28,17 @@ data.set({sample_value})
 var = secsgem.common.indent_block(repr(data))
 """
 
+sample_data_code_empty = """
+import secsgem.secs
+import secsgem.common
+{imports}
+
+data_item = {data_item}
+
+data = secsgem.secs.variables.functions.generate(data_item)
+var = secsgem.common.indent_block(repr(data))
+"""
+
 class Function:
     """Function configuration from yaml."""
 
@@ -204,24 +215,48 @@ class Function:
         return loc["var"]
     
     @property
-    def sample_data(self) -> str:
-        """Get the configured sample data."""
+    def samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
+        """Get samples and result data."""
         if "sample_data" not in self._data:
+            sample_data =[{"data": ""}]
+        else:
+            sample_data = self._data["sample_data"]
+            if isinstance(sample_data, str):
+                sample_data = [{"data": sample_data}]
+        
+        samples = []
+
+        for sample in sample_data:
+            imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
+
+            if not sample["data"]:
+                code = sample_data_code_empty.format(
+                    imports=imports,
+                    data_item=self.structure,
+                    sample_value=sample["data"])
+            else:
+                code = sample_data_code.format(
+                    imports=imports,
+                    data_item=self.structure,
+                    sample_value=sample["data"])
+
+            glob = {}
+            loc = {}
+
+            exec(code, glob, loc)
+
+            samples.append({
+                "data": sample["data"],
+                "comment": f" # {sample['info']}" if "info" in sample else "",
+                "text": loc["var"]
+            })
+        
+        return samples
+    
+    @property
+    def extra_help(self) -> str:
+        """Get the configured extra help."""
+        if "extra_help" not in self._data:
             return ""
         
-        return self._data["sample_data"]
-
-    @property
-    def sample_data_text(self) -> str:
-        """Get the output of the sample data."""
-        imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
-
-        code = sample_data_code.format(imports=imports, data_item=self.structure, sample_value=self.sample_data)
-
-        glob = {}
-        loc = {}
-
-        exec(code, glob, loc)
-        print(loc)
-
-        return loc["var"]
+        return self._data["extra_help"]
