@@ -1,0 +1,33 @@
+S00F00:
+  description: Hsms communication
+  to_host: True
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: False
+
+S01F00:
+  description: abort transaction stream 1
+  to_host: True
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: False
+
+S01F01:
+  description: are you online - request
+  to_host: True
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: False
+
+S02F14:
+  description: equipment constant - data
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: True
+  structure: [ECV]
+

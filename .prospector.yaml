@@ -20,8 +20,7 @@ pydocstyle:
 
 ignore-paths:
   - data/out
+  - data/out_func
+  - data/templates
   - docs
   - samples
-
-ignore-patterns:
-  - ^data/.*\.tmpl\.py$

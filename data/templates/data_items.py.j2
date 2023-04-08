@@ -22,11 +22,34 @@ class {{ data.name }}(DataItemBase):
     """
     {{ data.description }}.
 
-       :Types: :class:`{{ data.type }} <secsgem.secs.variables.{{ data.type }}>`
+    {% if data.help %}
+    {{ data.help }}
+
+    {% endif %}
+      {% if data.single_type %}
+       :Types: :class:`{{ data.type[0] }} <secsgem.secs.variables.{{ data.type[0] }}>`
+      {% if data.length > 0 %}
        :Length: {{ data.length }}
+      {% endif %}
+      {% else %}
+    :Types:
+    {% for type in data.type %}
+       - :class:`{{ type }} <secsgem.secs.variables.{{ type }}>`
+    {% endfor %}
+      {% endif %}
 
 {{ data.values }}    """
 
-    __type__ = variables.{{ data.type }}
+  {% if data.single_type %}
+    __type__ = variables.{{ data.type[0] }}
+  {% if data.length > 0 %}
     __count__ = {{ data.length }}
-{{ data.extra_variables }}
+    {% endif %}
+{{ data.extra_variables }}{% else %}
+    __type__ = variables.Dynamic
+    __allowedtypes__ = [
+      {% for type in data.type %}
+        variables.{{ type }}{{ "," if not loop.last else "" }}
+      {% endfor %}
+    ]
+  {% endif %}
