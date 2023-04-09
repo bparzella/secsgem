@@ -16,7 +16,11 @@
 """Class for stream 06 function 08."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID, CEID, DSID, DVNAME, DVVAL
+from secsgem.secs.data_items import DATAID
+from secsgem.secs.data_items import CEID
+from secsgem.secs.data_items import DSID
+from secsgem.secs.data_items import DVNAME
+from secsgem.secs.data_items import DVVAL
 
 
 class SecsS06F08(SecsStreamFunction):
@@ -29,6 +33,7 @@ class SecsS06F08(SecsStreamFunction):
     - :class:`CEID <secsgem.secs.data_items.CEID>`
     - :class:`DSID <secsgem.secs.data_items.DSID>`
     - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
+    - :class:`DVVAL <secsgem.secs.data_items.DVVAL>`
 
     **Structure**::
 
@@ -55,14 +60,14 @@ class SecsS06F08(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS06F08({ \
-            "DATAID": 1, \
-            "CEID": 1337, \
-            "DS": [{ \
-                "DSID": 1000, \
-                "DV": [ \
-                    {"DVNAME": "VAR1", "DVVAL": "VAR"}, \
-                    {"DVNAME": "VAR2", "DVVAL": secsgem.secs.variables.U4(100)}]}]})
+        >>> secsgem.secs.functions.SecsS06F08({
+        ...     "DATAID": 1,
+        ...     "CEID": 1337,
+        ...     "DS": [{
+        ...         "DSID": 1000,
+        ...         "DV": [
+        ...             {"DVNAME": "VAR1", "DVVAL": "VAR"},
+        ...             {"DVNAME": "VAR2", "DVVAL": secsgem.secs.variables.U4(100)}]}]})
         S6F8
           <L [3]
             <U1 1 >
@@ -96,11 +101,11 @@ class SecsS06F08(SecsStreamFunction):
         CEID,
         [
             [
-                "DS",   # name of the list
+                "DS",
                 DSID,
                 [
                     [
-                        "DV",   # name of the list
+                        "DV",
                         DVNAME,
                         DVVAL
                     ]

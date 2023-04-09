@@ -23,16 +23,15 @@ class REFP(DataItemBase):
     Reference point.
 
     :Types:
-       - :class:`I8 <secsgem.secs.variables.I8>`
        - :class:`I1 <secsgem.secs.variables.I1>`
        - :class:`I2 <secsgem.secs.variables.I2>`
        - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
 
     **Used In Function**
-        - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
-        - :class:`SecsS01F11 <secsgem.secs.functions.SecsS01F11>`
-        - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
-        - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
+        - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
+        - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
+
     """
 
     __type__ = variables.Dynamic

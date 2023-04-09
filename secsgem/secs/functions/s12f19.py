@@ -16,7 +16,8 @@
 """Class for stream 12 function 19."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MAPER, DATLC
+from secsgem.secs.data_items import MAPER
+from secsgem.secs.data_items import DATLC
 
 
 class SecsS12F19(SecsStreamFunction):

@@ -23,16 +23,16 @@ class EDID(DataItemBase):
     Expected data identification.
 
     :Types:
-       - :class:`Binary <secsgem.secs.variables.Binary>`
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
 
     **Used In Function**
         - :class:`SecsS09F13 <secsgem.secs.functions.SecsS09F13>`

@@ -16,7 +16,10 @@
 """Class for stream 12 function 05."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID, IDTYP, MAPFT, MLCL
+from secsgem.secs.data_items import MID
+from secsgem.secs.data_items import IDTYP
+from secsgem.secs.data_items import MAPFT
+from secsgem.secs.data_items import MLCL
 
 
 class SecsS12F05(SecsStreamFunction):
@@ -44,10 +47,11 @@ class SecsS12F05(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS12F05({"MID": "materialID", \
-                                               "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
-                                               "MAPFT": secsgem.secs.data_items.MAPFT.ARRAY, \
-                                               "MLCL": 0})
+        >>> secsgem.secs.functions.SecsS12F05({
+        ...     "MID": "materialID",
+        ...     "IDTYP": secsgem.secs.data_items.IDTYP.WAFER,
+        ...     "MAPFT": secsgem.secs.data_items.MAPFT.ARRAY,
+        ...     "MLCL": 0})
         S12F5 W
           <L [4]
             <A "materialID">

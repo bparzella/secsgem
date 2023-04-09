@@ -25,7 +25,7 @@ class SecsS06F23(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RSDC <secsgem.secs.dataitems.RSDC>`
+    - :class:`RSDC <secsgem.secs.data_items.RSDC>`
 
     **Structure**::
 
@@ -41,7 +41,7 @@ class SecsS06F23(SecsStreamFunction):
           <U1 1 > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: int
     """
 
     _stream = 6

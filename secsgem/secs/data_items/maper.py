@@ -22,8 +22,8 @@ class MAPER(DataItemBase):
     """
     Map error.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+---------------+-----------------------------------------------------+
@@ -40,6 +40,7 @@ class MAPER(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`
+
     """
 
     __type__ = variables.Binary

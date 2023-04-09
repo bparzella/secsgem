@@ -41,7 +41,7 @@ class SecsS07F05(SecsStreamFunction):
           <A "program"> .
 
     :param value: parameters for this function (see example)
-    :type value: byte
+    :type value: bytes
     """
 
     _stream = 7

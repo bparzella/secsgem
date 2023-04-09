@@ -22,8 +22,8 @@ class ALCD(DataItemBase):
     """
     Alarm code byte.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+---------------------------+-----------------------------------------------------------------+
@@ -47,7 +47,7 @@ class ALCD(DataItemBase):
         +-------+---------------------------+-----------------------------------------------------------------+
         | 8     | Data integrity            | :const:`secsgem.secs.data_items.ALCD.DATA_INTEGRITY`            |
         +-------+---------------------------+-----------------------------------------------------------------+
-        | 9-63  | Other catogories          |                                                                 |
+        | 9-63  | Other catogeries          |                                                                 |
         +-------+---------------------------+-----------------------------------------------------------------+
         | 128   | Alarm set flag            | :const:`secsgem.secs.data_items.ALCD.ALARM_SET`                 |
         +-------+---------------------------+-----------------------------------------------------------------+
@@ -55,6 +55,7 @@ class ALCD(DataItemBase):
     **Used In Function**
         - :class:`SecsS05F01 <secsgem.secs.functions.SecsS05F01>`
         - :class:`SecsS05F06 <secsgem.secs.functions.SecsS05F06>`
+        - :class:`SecsS05F08 <secsgem.secs.functions.SecsS05F08>`
 
     """
 

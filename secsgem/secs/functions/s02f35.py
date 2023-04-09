@@ -16,7 +16,9 @@
 """Class for stream 02 function 35."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID, CEID, RPTID
+from secsgem.secs.data_items import DATAID
+from secsgem.secs.data_items import CEID
+from secsgem.secs.data_items import RPTID
 
 
 class SecsS02F35(SecsStreamFunction):
@@ -66,7 +68,7 @@ class SecsS02F35(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 2

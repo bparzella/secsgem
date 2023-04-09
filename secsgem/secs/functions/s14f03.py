@@ -16,7 +16,11 @@
 """Class for stream 14 function 03."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJSPEC, OBJTYPE, OBJID, ATTRID, ATTRDATA
+from secsgem.secs.data_items import OBJSPEC
+from secsgem.secs.data_items import OBJTYPE
+from secsgem.secs.data_items import OBJID
+from secsgem.secs.data_items import ATTRID
+from secsgem.secs.data_items import ATTRDATA
 
 
 class SecsS14F03(SecsStreamFunction):
@@ -54,8 +58,13 @@ class SecsS14F03(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS14F03({"OBJSPEC": '', "OBJTYPE": 'StripMap', "OBJID": ['MAP001'], \
-"ATTRIBS": [ {"ATTRID": "CellStatus", "ATTRDATA": "3"} ] })
+        >>> secsgem.secs.functions.SecsS14F03({
+        ...       "OBJSPEC": '',
+        ...       "OBJTYPE": 'StripMap',
+        ...       "OBJID": ['MAP001'],
+        ...       "ATTRIBS": [{
+        ...           "ATTRID": "CellStatus", 
+        ...           "ATTRDATA": "3"}]})
         S14F3 W
           <L [4]
             <A>
@@ -84,7 +93,7 @@ class SecsS14F03(SecsStreamFunction):
         [OBJID],
         [
             [
-                "ATTRIBS",   # name of the list
+                "ATTRIBS",
                 ATTRID,
                 ATTRDATA
             ]

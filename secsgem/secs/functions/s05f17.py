@@ -41,7 +41,7 @@ class SecsS05F17(SecsStreamFunction):
           <A "EX123"> .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: bytes
     """
 
     _stream = 5

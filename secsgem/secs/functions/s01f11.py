@@ -23,6 +23,8 @@ class SecsS01F11(SecsStreamFunction):
     """
     status variable namelist - request.
 
+    An empty list will return all available status variables.
+
     **Data Items**
 
     - :class:`SVID <secsgem.secs.data_items.SVID>`
@@ -45,8 +47,6 @@ class SecsS01F11(SecsStreamFunction):
             <U1 1 >
             <U2 1337 >
           > .
-
-    An empty list will return all available status variables.
 
     :param value: parameters for this function (see example)
     :type value: list

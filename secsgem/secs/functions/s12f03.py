@@ -16,7 +16,15 @@
 """Class for stream 12 function 03."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID, IDTYP, MAPFT, FNLOC, FFROT, ORLOC, PRAXI, BCEQU, NULBC
+from secsgem.secs.data_items import MID
+from secsgem.secs.data_items import IDTYP
+from secsgem.secs.data_items import MAPFT
+from secsgem.secs.data_items import FNLOC
+from secsgem.secs.data_items import FFROT
+from secsgem.secs.data_items import ORLOC
+from secsgem.secs.data_items import PRAXI
+from secsgem.secs.data_items import BCEQU
+from secsgem.secs.data_items import NULBC
 
 
 class SecsS12F03(SecsStreamFunction):
@@ -45,7 +53,7 @@ class SecsS12F03(SecsStreamFunction):
             MAPFT: B[1]
             FNLOC: U2
             FFROT: U2
-            ORLOC: B
+            ORLOC: B[1]
             PRAXI: B[1]
             BCEQU: U1/A
             NULBC: U1/A
@@ -54,16 +62,16 @@ class SecsS12F03(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS12F03({"MID": "materialID", \
-                "IDTYP": secsgem.secs.data_items.IDTYP.WAFER_CASSETTE, \
-                "MAPFT": secsgem.secs.data_items.MAPFT.ROW, \
-                "FNLOC": 0, \
-                "FFROT": 0, \
-                "ORLOC": secsgem.secs.data_items.ORLOC.LOWER_LEFT, \
-                "PRAXI": secsgem.secs.data_items.PRAXI.COLS_LEFT_INCR, \
-                "BCEQU": [1, 3, 5, 7], \
-                "NULBC": "{x}", \
-                })
+        >>> secsgem.secs.functions.SecsS12F03({
+        ...     "MID": "materialID",
+        ...     "IDTYP": secsgem.secs.data_items.IDTYP.WAFER_CASSETTE,
+        ...     "MAPFT": secsgem.secs.data_items.MAPFT.ROW,
+        ...     "FNLOC": 0,
+        ...     "FFROT": 0,
+        ...     "ORLOC": secsgem.secs.data_items.ORLOC.LOWER_LEFT,
+        ...     "PRAXI": secsgem.secs.data_items.PRAXI.COLS_LEFT_INCR,
+        ...     "BCEQU": [1, 3, 5, 7],
+        ...     "NULBC": "{x}"})
         S12F3 W
           <L [9]
             <A "materialID">

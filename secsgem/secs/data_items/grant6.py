@@ -1,5 +1,5 @@
 #####################################################################
-# grant5.py
+# grant6.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""GRANT5 data item."""
+"""GRANT6 data item."""
 from .. import variables
 from .base import DataItemBase
 
@@ -22,8 +22,8 @@ class GRANT6(DataItemBase):
     """
     Permission to send.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+----------------+--------------------------------------------------------+
@@ -40,6 +40,7 @@ class GRANT6(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS06F06 <secsgem.secs.functions.SecsS06F06>`
+
     """
 
     __type__ = variables.Binary

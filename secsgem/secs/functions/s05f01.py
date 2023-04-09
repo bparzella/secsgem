@@ -16,7 +16,9 @@
 """Class for stream 05 function 01."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ALCD, ALID, ALTX
+from secsgem.secs.data_items import ALCD
+from secsgem.secs.data_items import ALID
+from secsgem.secs.data_items import ALTX
 
 
 class SecsS05F01(SecsStreamFunction):
@@ -42,10 +44,11 @@ class SecsS05F01(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS05F01({"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | \
-                                                       secsgem.secs.data_items.ALCD.ALARM_SET, \
-                                               "ALID": 100, \
-                                               "ALTX": "text"})
+        >>> secsgem.secs.functions.SecsS05F01({
+        ...     "ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
+        ...             secsgem.secs.data_items.ALCD.ALARM_SET,
+        ...     "ALID": 100,
+        ...     "ALTX": "text"})
         S5F1
           <L [3]
             <B 0x81>
@@ -54,7 +57,7 @@ class SecsS05F01(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 5

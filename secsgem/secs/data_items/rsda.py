@@ -22,8 +22,21 @@ class RSDA(DataItemBase):
     """
     Request spooled data acknowledge.
 
-    :Types:
-       - :class:`SecsVarBinary <secsgem.secs.variables.SecsVarBinary>`
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
+
+    **Values**
+        +-------+-------------------------------------+------------------------------------------------------+
+        | Value | Description                         | Constant                                             |
+        +=======+=====================================+======================================================+
+        | 0     | OK                                  | :const:`secsgem.secs.data_items.RSDA.ACK`            |
+        +-------+-------------------------------------+------------------------------------------------------+
+        | 1     | Denied, busy try later              | :const:`secsgem.secs.data_items.RSDA.DENIED_BUSY`    |
+        +-------+-------------------------------------+------------------------------------------------------+
+        | 2     | Denied, spooled data does not exist | :const:`secsgem.secs.data_items.RSDA.DENIED_NO_DATA` |
+        +-------+-------------------------------------+------------------------------------------------------+
+        | 3-63  | Reserved                            |                                                      |
+        +-------+-------------------------------------+------------------------------------------------------+
 
     **Used In Function**
         - :class:`SecsS06F24 <secsgem.secs.functions.SecsS06F24>`

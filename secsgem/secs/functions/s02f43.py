@@ -16,7 +16,8 @@
 """Class for stream 02 function 43."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import STRID, FCNID
+from secsgem.secs.data_items import STRID
+from secsgem.secs.data_items import FCNID
 
 
 class SecsS02F43(SecsStreamFunction):
@@ -25,8 +26,8 @@ class SecsS02F43(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`STRID <secsgem.secs.dataitems.STRID>`
-    - :class:`FCNID <secsgem.secs.dataitems.FCNID>`
+    - :class:`STRID <secsgem.secs.data_items.STRID>`
+    - :class:`FCNID <secsgem.secs.data_items.FCNID>`
 
     **Structure**::
 

@@ -16,7 +16,11 @@
 """Class for stream 05 function 15."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TIMESTAMP, EXID, ACKA, ERRCODE, ERRTEXT
+from secsgem.secs.data_items import TIMESTAMP
+from secsgem.secs.data_items import EXID
+from secsgem.secs.data_items import ACKA
+from secsgem.secs.data_items import ERRCODE
+from secsgem.secs.data_items import ERRTEXT
 
 
 class SecsS05F15(SecsStreamFunction):
@@ -48,9 +52,17 @@ class SecsS05F15(SecsStreamFunction):
         }
 
     **Example**::
+
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS05F15({"TIMESTAMP": "161006221500", "EXID": "EX123", "DATA": \
-{"ACKA": False, "DATA": {"ERRCODE": 10, "ERRTEXT": "Error"}}})
+        >>> secsgem.secs.functions.SecsS05F15({
+        ...     "TIMESTAMP": "161006221500",
+        ...     "EXID": "EX123",
+        ...     "DATA": {
+        ...         "ACKA": False,
+        ...         "DATA": {
+        ...             "ERRCODE": 10,
+        ...             "ERRTEXT": "Error"
+        ...         }}})
         S5F15
           <L [3]
             <A "161006221500">
@@ -65,7 +77,7 @@ class SecsS05F15(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 5

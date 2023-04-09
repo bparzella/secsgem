@@ -22,8 +22,8 @@ class IDTYP(DataItemBase):
     """
     ID type.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-------------------+-------------------------------------------------------+
@@ -42,7 +42,7 @@ class IDTYP(DataItemBase):
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
         - :class:`SecsS12F03 <secsgem.secs.functions.SecsS12F03>`
         - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
-        - :class:`SecsS12F05 <secsgem.secs.functions.SecsS12F06>`
+        - :class:`SecsS12F05 <secsgem.secs.functions.SecsS12F05>`
         - :class:`SecsS12F07 <secsgem.secs.functions.SecsS12F07>`
         - :class:`SecsS12F09 <secsgem.secs.functions.SecsS12F09>`
         - :class:`SecsS12F11 <secsgem.secs.functions.SecsS12F11>`

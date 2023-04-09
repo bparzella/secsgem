@@ -22,8 +22,8 @@ class MAPFT(DataItemBase):
     """
     Map data format.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-------------------+---------------------------------------------------+

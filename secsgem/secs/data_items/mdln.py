@@ -22,19 +22,13 @@ class MDLN(DataItemBase):
     """
     Equipment model type.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
+    :Length: 20
 
     **Used In Function**
         - :class:`SecsS01F02 <secsgem.secs.functions.SecsS01F02>`
         - :class:`SecsS01F13 <secsgem.secs.functions.SecsS01F13>`
         - :class:`SecsS01F14 <secsgem.secs.functions.SecsS01F14>`
-        - :class:`SecsS07F22 <secsgem.secs.functions.SecsS07F22>`
-        - :class:`SecsS07F23 <secsgem.secs.functions.SecsS07F23>`
-        - :class:`SecsS07F26 <secsgem.secs.functions.SecsS07F26>`
-        - :class:`SecsS07F31 <secsgem.secs.functions.SecsS07F31>`
-        - :class:`SecsS07F39 <secsgem.secs.functions.SecsS07F39>`
-        - :class:`SecsS07F43 <secsgem.secs.functions.SecsS07F43>`
 
     """
 

@@ -16,7 +16,8 @@
 """Class for stream 05 function 03."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ALED, ALID
+from secsgem.secs.data_items import ALED
+from secsgem.secs.data_items import ALID
 
 
 class SecsS05F03(SecsStreamFunction):
@@ -48,7 +49,7 @@ class SecsS05F03(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 5

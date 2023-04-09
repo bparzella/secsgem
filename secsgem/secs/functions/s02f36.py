@@ -41,7 +41,7 @@ class SecsS02F36(SecsStreamFunction):
           <B 0x4> .
 
     :param value: parameters for this function (see example)
-    :type value: byte
+    :type value: bytes
     """
 
     _stream = 2
@@ -49,8 +49,8 @@ class SecsS02F36(SecsStreamFunction):
 
     _data_format = LRACK
 
-    _to_host = False
-    _to_equipment = True
+    _to_host = True
+    _to_equipment = False
 
     _has_reply = False
     _is_reply_required = False

@@ -22,8 +22,8 @@ class ORLOC(DataItemBase):
     """
     Origin location.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+---------------------+----------------------------------------------------+
@@ -50,9 +50,10 @@ class ORLOC(DataItemBase):
     """
 
     __type__ = variables.Binary
+    __count__ = 1
 
     CENTER_DIE = 0
     UPPER_RIGHT = 1
     UPPER_LEFT = 2
     LOWER_LEFT = 3
-    LOWER_RIGHT = 3
+    LOWER_RIGHT = 4

@@ -22,11 +22,11 @@ class SVNAME(DataItemBase):
     """
     Status variable name.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
+
     """
 
     __type__ = variables.String

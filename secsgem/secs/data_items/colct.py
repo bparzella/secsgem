@@ -23,10 +23,10 @@ class COLCT(DataItemBase):
     Column count in dies.
 
     :Types:
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`

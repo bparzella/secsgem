@@ -23,14 +23,16 @@ class STRP(DataItemBase):
     Starting position.
 
     :Types:
-       - :class:`I8 <secsgem.secs.variables.I8>`
        - :class:`I1 <secsgem.secs.variables.I1>`
        - :class:`I2 <secsgem.secs.variables.I2>`
        - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+    :Length: 2
 
     **Used In Function**
         - :class:`SecsS12F09 <secsgem.secs.functions.SecsS12F09>`
         - :class:`SecsS12F16 <secsgem.secs.functions.SecsS12F16>`
+
     """
 
     __type__ = variables.Dynamic

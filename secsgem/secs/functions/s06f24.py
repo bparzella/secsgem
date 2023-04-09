@@ -25,7 +25,7 @@ class SecsS06F24(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RSDA <secsgem.secs.dataitems.RSDA>`
+    - :class:`RSDA <secsgem.secs.data_items.RSDA>`
 
     **Structure**::
 
@@ -41,7 +41,7 @@ class SecsS06F24(SecsStreamFunction):
           <B 0x0> .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: bytes
     """
 
     _stream = 6

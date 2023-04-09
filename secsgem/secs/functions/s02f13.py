@@ -23,6 +23,8 @@ class SecsS02F13(SecsStreamFunction):
     """
     equipment constant - request.
 
+    An empty list will return all available equipment constants.
+
     **Data Items**
 
     - :class:`ECID <secsgem.secs.data_items.ECID>`
@@ -45,8 +47,6 @@ class SecsS02F13(SecsStreamFunction):
             <U1 1 >
             <U2 1337 >
           > .
-
-    An empty list will return all available equipment constants.
 
     :param value: parameters for this function (see example)
     :type value: list

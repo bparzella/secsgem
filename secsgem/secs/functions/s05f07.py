@@ -34,8 +34,8 @@ class SecsS05F07(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS05F07()
         S5F7 W .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    :param value: function has no parameters
+    :type value: None
     """
 
     _stream = 5

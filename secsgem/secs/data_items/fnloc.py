@@ -24,7 +24,7 @@ class FNLOC(DataItemBase):
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 
-       :Types: :class:`U2 <secsgem.secs.variables.U2>`
+    :Type: :class:`U2 <secsgem.secs.variables.U2>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`

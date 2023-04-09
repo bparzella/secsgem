@@ -16,7 +16,8 @@
 """Class for stream 07 function 06."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import PPID, PPBODY
+from secsgem.secs.data_items import PPID
+from secsgem.secs.data_items import PPBODY
 
 
 class SecsS07F06(SecsStreamFunction):

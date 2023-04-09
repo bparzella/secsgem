@@ -20,10 +20,10 @@ from .base import DataItemBase
 
 class ACKC7(DataItemBase):
     """
-    Acknowledge code.
+    Acknowledge code for stream 7.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+------------------------+---------------------------------------------------------+
@@ -48,16 +48,7 @@ class ACKC7(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS07F04 <secsgem.secs.functions.SecsS07F04>`
-        - :class:`SecsS07F12 <secsgem.secs.functions.SecsS07F12>`
-        - :class:`SecsS07F14 <secsgem.secs.functions.SecsS07F14>`
-        - :class:`SecsS07F16 <secsgem.secs.functions.SecsS07F16>`
         - :class:`SecsS07F18 <secsgem.secs.functions.SecsS07F18>`
-        - :class:`SecsS07F24 <secsgem.secs.functions.SecsS07F24>`
-        - :class:`SecsS07F32 <secsgem.secs.functions.SecsS07F32>`
-        - :class:`SecsS07F38 <secsgem.secs.functions.SecsS07F38>`
-        - :class:`SecsS07F40 <secsgem.secs.functions.SecsS07F40>`
-        - :class:`SecsS07F42 <secsgem.secs.functions.SecsS07F42>`
-        - :class:`SecsS07F44 <secsgem.secs.functions.SecsS07F44>`
 
     """
 

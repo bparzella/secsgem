@@ -22,8 +22,7 @@ class DUTMS(DataItemBase):
     """
     Die units of measure.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`

@@ -16,7 +16,8 @@
 """Class for stream 02 function 15."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ECID, ECV
+from secsgem.secs.data_items import ECID
+from secsgem.secs.data_items import ECV
 
 
 class SecsS02F15(SecsStreamFunction):
@@ -43,9 +44,9 @@ class SecsS02F15(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F15([ \
-                {"ECID": 1, "ECV": secsgem.secs.variables.U4(10)}, \
-                {"ECID": "1337", "ECV": "text"}])
+        >>> secsgem.secs.functions.SecsS02F15([
+        ...     {"ECID": 1, "ECV": secsgem.secs.variables.U4(10)},
+        ...     {"ECID": "1337", "ECV": "text"}])
         S2F15 W
           <L [2]
             <L [2]

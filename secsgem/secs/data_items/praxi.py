@@ -22,8 +22,8 @@ class PRAXI(DataItemBase):
     """
     Process axis.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+----------------------------+--------------------------------------------------------+
@@ -50,7 +50,7 @@ class PRAXI(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`
-        - :class:`SecsS12F04 <secsgem.secs.functions.SecsS12F04>`
+        - :class:`SecsS12F03 <secsgem.secs.functions.SecsS12F03>`
 
     """
 

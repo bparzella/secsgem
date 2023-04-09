@@ -16,7 +16,10 @@
 """Class for stream 02 function 44."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import RSPACK, STRID, STRACK, FCNID
+from secsgem.secs.data_items import RSPACK
+from secsgem.secs.data_items import STRID
+from secsgem.secs.data_items import STRACK
+from secsgem.secs.data_items import FCNID
 
 
 class SecsS02F44(SecsStreamFunction):
@@ -25,10 +28,10 @@ class SecsS02F44(SecsStreamFunction):
 
     **Data Items**
 
-    - :class:`RSPACK <secsgem.secs.dataitems.RSPACK>`
-    - :class:`STRID <secsgem.secs.dataitems.STRID>`
-    - :class:`STRACK <secsgem.secs.dataitems.STRACK>`
-    - :class:`FCNID <secsgem.secs.dataitems.FCNID>`
+    - :class:`RSPACK <secsgem.secs.data_items.RSPACK>`
+    - :class:`STRID <secsgem.secs.data_items.STRID>`
+    - :class:`STRACK <secsgem.secs.data_items.STRACK>`
+    - :class:`FCNID <secsgem.secs.data_items.FCNID>`
 
     **Structure**::
 
@@ -52,11 +55,11 @@ class SecsS02F44(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F44({ \
-            "RSPACK": secsgem.secs.data_items.RSPACK.REJECTED, \
-            "DATA": [ \
-                {"STRID": 1, "STRACK": secsgem.secs.data_items.STRACK.NOT_ALLOWED, "FCNID": [10]}, \
-                {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.MSG_INELIGIBLE, "FCNID": [20]}]})
+        >>> secsgem.secs.functions.SecsS02F44({
+        ...     "RSPACK": secsgem.secs.data_items.RSPACK.REJECTED,
+        ...     "DATA": [
+        ...         {"STRID": 1, "STRACK": secsgem.secs.data_items.STRACK.NOT_ALLOWED, "FCNID": [10]},
+        ...         {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.FUNCTION_UNKNOWN, "FCNID": [20]}]})
         S2F44
           <L [2]
             <B 0x1>
@@ -70,7 +73,7 @@ class SecsS02F44(SecsStreamFunction):
               >
               <L [3]
                 <U1 2 >
-                <B 0x4>
+                <B 0x3>
                 <L [1]
                   <U1 20 >
                 >
@@ -79,7 +82,7 @@ class SecsS02F44(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 2

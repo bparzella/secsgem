@@ -22,12 +22,12 @@ class CEED(DataItemBase):
     """
     Collection event or trace enable/disable code.
 
-       :Types: :class:`Boolean <secsgem.secs.variables.Boolean>`
-       :Length: 1
+    :Type: :class:`Boolean <secsgem.secs.variables.Boolean>`
+    :Length: 1
 
     **Values**
         +-------+---------+
-        | Value | State   |
+        | Value |         |
         +=======+=========+
         | True  | Enable  |
         +-------+---------+
@@ -36,7 +36,6 @@ class CEED(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS02F37 <secsgem.secs.functions.SecsS02F37>`
-        - :class:`SecsS17F05 <secsgem.secs.functions.SecsS17F05>`
 
     """
 

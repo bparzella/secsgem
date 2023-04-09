@@ -22,8 +22,8 @@ class DRACK(DataItemBase):
     """
     Define report acknowledge code.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-------------------------------+-----------------------------------------------------------+
@@ -44,6 +44,7 @@ class DRACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS02F34 <secsgem.secs.functions.SecsS02F34>`
+
     """
 
     __type__ = variables.Binary

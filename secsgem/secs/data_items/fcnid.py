@@ -22,8 +22,8 @@ class FCNID(DataItemBase):
     """
     Funcion ID.
 
-    :Types:
-       - :class:`SecsVarU1 <secsgem.secs.variables.SecsVarU1>`
+    :Type: :class:`U1 <secsgem.secs.variables.U1>`
+    :Length: 1
 
     **Used In Function**
         - :class:`SecsS02F43 <secsgem.secs.functions.SecsS02F43>`

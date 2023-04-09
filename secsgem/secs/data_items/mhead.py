@@ -22,8 +22,8 @@ class MHEAD(DataItemBase):
     """
     SECS message header.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 10
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 10
 
     **Used In Function**
         - :class:`SecsS09F01 <secsgem.secs.functions.SecsS09F01>`

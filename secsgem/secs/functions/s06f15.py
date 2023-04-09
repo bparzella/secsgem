@@ -41,7 +41,7 @@ class SecsS06F15(SecsStreamFunction):
           <U2 1337 > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: int
     """
 
     _stream = 6

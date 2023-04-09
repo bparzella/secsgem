@@ -22,8 +22,8 @@ class OFLACK(DataItemBase):
     """
     Acknowledge code for OFFLINE request.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+---------------------+---------------------------------------------+
@@ -36,6 +36,7 @@ class OFLACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS01F16 <secsgem.secs.functions.SecsS01F16>`
+
     """
 
     __type__ = variables.Binary

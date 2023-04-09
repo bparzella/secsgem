@@ -41,7 +41,7 @@ class SecsS06F07(SecsStreamFunction):
           <U1 1 > .
 
     :param value: parameters for this function (see example)
-    :type value: integer
+    :type value: int
     """
 
     _stream = 6

@@ -20,19 +20,19 @@ from .base import DataItemBase
 
 class ACKC5(DataItemBase):
     """
-    Acknowledge code.
+    Acknowledge code for stream 5.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
-        +-------+-------------------+-------------------------------------------------+
-        | Value | Description       | Constant                                        |
-        +=======+===================+=================================================+
-        | 0     | Accepted          | :const:`secsgem.secs.data_items.ACKC5.ACCEPTED` |
-        +-------+-------------------+-------------------------------------------------+
-        | 1-63  | Error             | :const:`secsgem.secs.data_items.ACKC5.ERROR`    |
-        +-------+-------------------+-------------------------------------------------+
+        +-------+-------------+-------------------------------------------------+
+        | Value | Description | Constant                                        |
+        +=======+=============+=================================================+
+        | 0     | Accepted    | :const:`secsgem.secs.data_items.ACKC5.ACCEPTED` |
+        +-------+-------------+-------------------------------------------------+
+        | 1-63  | Error       | :const:`secsgem.secs.data_items.ACKC5.ERROR`    |
+        +-------+-------------+-------------------------------------------------+
 
     **Used In Function**
         - :class:`SecsS05F02 <secsgem.secs.functions.SecsS05F02>`

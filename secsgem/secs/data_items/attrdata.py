@@ -24,42 +24,25 @@ class ATTRDATA(DataItemBase):
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`
-       - :class:`Binary <secsgem.secs.variables.Binary>`
        - :class:`Boolean <secsgem.secs.variables.Boolean>`
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`F8 <secsgem.secs.variables.F8>`
-       - :class:`F4 <secsgem.secs.variables.F4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
 
     **Used In Function**
-        - :class:`SecsS01F20 <secsgem.secs.functions.SecsS01F20>`
-        - :class:`SecsS03F17 <secsgem.secs.functions.SecsS03F17>`
-        - :class:`SecsS03F18 <secsgem.secs.functions.SecsS03F18>`
-        - :class:`SecsS13F14 <secsgem.secs.functions.SecsS13F14>`
-        - :class:`SecsS13F16 <secsgem.secs.functions.SecsS13F16>`
         - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
         - :class:`SecsS14F02 <secsgem.secs.functions.SecsS14F02>`
         - :class:`SecsS14F03 <secsgem.secs.functions.SecsS14F03>`
         - :class:`SecsS14F04 <secsgem.secs.functions.SecsS14F04>`
-        - :class:`SecsS14F09 <secsgem.secs.functions.SecsS14F09>`
-        - :class:`SecsS14F10 <secsgem.secs.functions.SecsS14F10>`
-        - :class:`SecsS14F11 <secsgem.secs.functions.SecsS14F11>`
-        - :class:`SecsS14F12 <secsgem.secs.functions.SecsS14F12>`
-        - :class:`SecsS14F13 <secsgem.secs.functions.SecsS14F13>`
-        - :class:`SecsS14F14 <secsgem.secs.functions.SecsS14F14>`
-        - :class:`SecsS14F15 <secsgem.secs.functions.SecsS14F15>`
-        - :class:`SecsS14F16 <secsgem.secs.functions.SecsS14F16>`
-        - :class:`SecsS14F17 <secsgem.secs.functions.SecsS14F17>`
-        - :class:`SecsS14F18 <secsgem.secs.functions.SecsS14F18>`
-        - :class:`SecsS18F02 <secsgem.secs.functions.SecsS18F02>`
-        - :class:`SecsS18F03 <secsgem.secs.functions.SecsS18F03>`
 
     """
 

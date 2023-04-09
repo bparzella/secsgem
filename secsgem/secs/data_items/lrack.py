@@ -22,8 +22,8 @@ class LRACK(DataItemBase):
     """
     Link report acknowledge code.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-----------------------------+-----------------------------------------------------------+
@@ -46,6 +46,7 @@ class LRACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS02F36 <secsgem.secs.functions.SecsS02F36>`
+
     """
 
     __type__ = variables.Binary

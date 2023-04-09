@@ -22,8 +22,8 @@ class GRNT1(DataItemBase):
     """
     Grant code.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-----------------------+-----------------------------------------------------------+

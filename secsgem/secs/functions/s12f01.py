@@ -16,8 +16,21 @@
 """Class for stream 12 function 01."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID, IDTYP, FNLOC, FFROT, ORLOC, RPSEL, REFP, DUTMS, XDIES, YDIES, ROWCT, COLCT, \
-    NULBC, PRDCT, PRAXI
+from secsgem.secs.data_items import MID
+from secsgem.secs.data_items import IDTYP
+from secsgem.secs.data_items import FNLOC
+from secsgem.secs.data_items import FFROT
+from secsgem.secs.data_items import ORLOC
+from secsgem.secs.data_items import RPSEL
+from secsgem.secs.data_items import REFP
+from secsgem.secs.data_items import DUTMS
+from secsgem.secs.data_items import XDIES
+from secsgem.secs.data_items import YDIES
+from secsgem.secs.data_items import ROWCT
+from secsgem.secs.data_items import COLCT
+from secsgem.secs.data_items import NULBC
+from secsgem.secs.data_items import PRDCT
+from secsgem.secs.data_items import PRAXI
 
 
 class SecsS12F01(SecsStreamFunction):
@@ -51,7 +64,7 @@ class SecsS12F01(SecsStreamFunction):
             IDTYP: B[1]
             FNLOC: U2
             FFROT: U2
-            ORLOC: B
+            ORLOC: B[1]
             RPSEL: U1
             REFP: [
                 DATA: I1/I2/I4/I8
@@ -70,22 +83,22 @@ class SecsS12F01(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS12F01({"MID": "materialID", \
-                "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
-                "FNLOC": 0, \
-                "FFROT": 0, \
-                "ORLOC": secsgem.secs.data_items.ORLOC.UPPER_LEFT, \
-                "RPSEL": 0, \
-                "REFP": [[1,2], [2,3]], \
-                "DUTMS": "unit", \
-                "XDIES": 100, \
-                "YDIES": 100, \
-                "ROWCT": 10, \
-                "COLCT": 10, \
-                "NULBC": "{x}", \
-                "PRDCT": 100, \
-                "PRAXI": secsgem.secs.data_items.PRAXI.ROWS_TOP_INCR, \
-                })
+        >>> secsgem.secs.functions.SecsS12F01({
+        ...     "MID": "materialID",
+        ...     "IDTYP": secsgem.secs.data_items.IDTYP.WAFER,
+        ...     "FNLOC": 0,
+        ...     "FFROT": 0,
+        ...     "ORLOC": secsgem.secs.data_items.ORLOC.UPPER_LEFT,
+        ...     "RPSEL": 0,
+        ...     "REFP": [[1,2], [2,3]],
+        ...     "DUTMS": "unit",
+        ...     "XDIES": 100,
+        ...     "YDIES": 100,
+        ...     "ROWCT": 10,
+        ...     "COLCT": 10,
+        ...     "NULBC": "{x}",
+        ...     "PRDCT": 100,
+        ...     "PRAXI": secsgem.secs.data_items.PRAXI.ROWS_TOP_INCR})
         S12F1 W
           <L [15]
             <A "materialID">

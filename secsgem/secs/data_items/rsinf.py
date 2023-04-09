@@ -23,10 +23,11 @@ class RSINF(DataItemBase):
     Starting location.
 
     :Types:
-       - :class:`I8 <secsgem.secs.variables.I8>`
        - :class:`I1 <secsgem.secs.variables.I1>`
        - :class:`I2 <secsgem.secs.variables.I2>`
        - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+    :Length: 3
 
     **Used In Function**
         - :class:`SecsS12F07 <secsgem.secs.functions.SecsS12F07>`

@@ -16,7 +16,10 @@
 """Class for stream 06 function 16."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID, CEID, RPTID, V
+from secsgem.secs.data_items import DATAID
+from secsgem.secs.data_items import CEID
+from secsgem.secs.data_items import RPTID
+from secsgem.secs.data_items import V
 
 
 class SecsS06F16(SecsStreamFunction):
@@ -52,8 +55,12 @@ class SecsS06F16(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS06F16({"DATAID": 1, "CEID": 1337, "RPT": [{"RPTID": 1000, "V": \
-["VAR", secsgem.secs.variables.U4(100)]}]})
+        >>> secsgem.secs.functions.SecsS06F16({
+        ...     "DATAID": 1,
+        ...     "CEID": 1337,
+        ...     "RPT": [{
+        ...         "RPTID": 1000,
+        ...         "V": ["VAR", secsgem.secs.variables.U4(100)]}]})
         S6F16
           <L [3]
             <U1 1 >
@@ -70,7 +77,7 @@ class SecsS06F16(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 6
@@ -81,7 +88,7 @@ class SecsS06F16(SecsStreamFunction):
         CEID,
         [
             [
-                "RPT",   # name of the list
+                "RPT",
                 RPTID,
                 [V]
             ]

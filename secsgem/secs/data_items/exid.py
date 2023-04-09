@@ -22,8 +22,8 @@ class EXID(DataItemBase):
     """
     Exception identifier.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
+    :Length: 20
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
@@ -33,6 +33,7 @@ class EXID(DataItemBase):
         - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
         - :class:`SecsS05F17 <secsgem.secs.functions.SecsS05F17>`
         - :class:`SecsS05F18 <secsgem.secs.functions.SecsS05F18>`
+
     """
 
     __type__ = variables.String

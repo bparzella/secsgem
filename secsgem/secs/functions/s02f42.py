@@ -16,7 +16,9 @@
 """Class for stream 02 function 42."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import HCACK, CPNAME, CPACK
+from secsgem.secs.data_items import HCACK
+from secsgem.secs.data_items import CPNAME
+from secsgem.secs.data_items import CPACK
 
 
 class SecsS02F42(SecsStreamFunction):
@@ -47,11 +49,11 @@ class SecsS02F42(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F42({ \
-            "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, \
-            "PARAMS": [ \
-                {"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE}, \
-                {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]})
+        >>> secsgem.secs.functions.SecsS02F42({
+        ...     "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND,
+        ...     "PARAMS": [
+        ...         {"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE},
+        ...         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]})
         S2F42
           <L [2]
             <B 0x1>
@@ -68,7 +70,7 @@ class SecsS02F42(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 2
@@ -78,7 +80,7 @@ class SecsS02F42(SecsStreamFunction):
         HCACK,
         [
             [
-                "PARAMS",   # name of the list
+                "PARAMS",
                 CPNAME,
                 CPACK
             ]

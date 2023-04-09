@@ -22,8 +22,8 @@ class HCACK(DataItemBase):
     """
     Host command parameter acknowledge code.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+--------------------------------+-------------------------------------------------------------+
@@ -48,7 +48,6 @@ class HCACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS02F42 <secsgem.secs.functions.SecsS02F42>`
-        - :class:`SecsS02F50 <secsgem.secs.functions.SecsS02F50>`
 
     """
 

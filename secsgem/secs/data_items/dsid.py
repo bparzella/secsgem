@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""DSIG data item."""
+"""DSID data item."""
 from .. import variables
 from .base import DataItemBase
 
@@ -23,20 +23,18 @@ class DSID(DataItemBase):
     Data set ID.
 
     :Types:
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
-        - :class:`SecsS06F03 <secsgem.secs.functions.SecsS06F03>`
         - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`
-        - :class:`SecsS06F09 <secsgem.secs.functions.SecsS06F09>`
 
     """
 

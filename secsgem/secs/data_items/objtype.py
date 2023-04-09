@@ -23,22 +23,15 @@ class OBJTYPE(DataItemBase):
     Class of object identifier.
 
     :Types:
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
-        - :class:`SecsS01F19 <secsgem.secs.functions.SecsS01F19>`
         - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
         - :class:`SecsS14F03 <secsgem.secs.functions.SecsS14F03>`
-        - :class:`SecsS14F06 <secsgem.secs.functions.SecsS14F06>`
-        - :class:`SecsS14F07 <secsgem.secs.functions.SecsS14F07>`
-        - :class:`SecsS14F08 <secsgem.secs.functions.SecsS14F08>`
-        - :class:`SecsS14F25 <secsgem.secs.functions.SecsS14F25>`
-        - :class:`SecsS14F26 <secsgem.secs.functions.SecsS14F26>`
-        - :class:`SecsS14F27 <secsgem.secs.functions.SecsS14F27>`
 
     """
 

@@ -16,8 +16,21 @@
 """Class for stream 12 function 04."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID, IDTYP, FNLOC, ORLOC, RPSEL, REFP, DUTMS, XDIES, YDIES, ROWCT, COLCT, PRDCT, \
-    BCEQU, NULBC, MLCL
+from secsgem.secs.data_items import MID
+from secsgem.secs.data_items import IDTYP
+from secsgem.secs.data_items import FNLOC
+from secsgem.secs.data_items import ORLOC
+from secsgem.secs.data_items import RPSEL
+from secsgem.secs.data_items import REFP
+from secsgem.secs.data_items import DUTMS
+from secsgem.secs.data_items import XDIES
+from secsgem.secs.data_items import YDIES
+from secsgem.secs.data_items import ROWCT
+from secsgem.secs.data_items import COLCT
+from secsgem.secs.data_items import PRDCT
+from secsgem.secs.data_items import BCEQU
+from secsgem.secs.data_items import NULBC
+from secsgem.secs.data_items import MLCL
 
 
 class SecsS12F04(SecsStreamFunction):
@@ -50,7 +63,7 @@ class SecsS12F04(SecsStreamFunction):
             MID: A/B[80]
             IDTYP: B[1]
             FNLOC: U2
-            ORLOC: B
+            ORLOC: B[1]
             RPSEL: U1
             REFP: [
                 DATA: I1/I2/I4/I8
@@ -70,22 +83,22 @@ class SecsS12F04(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS12F04({"MID": "materialID", \
-                "IDTYP": secsgem.secs.data_items.IDTYP.FILM_FRAME, \
-                "FNLOC": 0, \
-                "ORLOC": secsgem.secs.data_items.ORLOC.CENTER_DIE, \
-                "RPSEL": 0, \
-                "REFP": [[1,2], [2,3]], \
-                "DUTMS": "unit", \
-                "XDIES": 100, \
-                "YDIES": 100, \
-                "ROWCT": 10, \
-                "COLCT": 10, \
-                "PRDCT": 100, \
-                "BCEQU": [1, 3, 5, 7], \
-                "NULBC": "{x}", \
-                "MLCL": 0, \
-                })
+        >>> secsgem.secs.functions.SecsS12F04({
+        ...     "MID": "materialID",
+        ...     "IDTYP": secsgem.secs.data_items.IDTYP.FILM_FRAME,
+        ...     "FNLOC": 0,
+        ...     "ORLOC": secsgem.secs.data_items.ORLOC.CENTER_DIE,
+        ...     "RPSEL": 0,
+        ...     "REFP": [[1,2], [2,3]],
+        ...     "DUTMS": "unit",
+        ...     "XDIES": 100,
+        ...     "YDIES": 100,
+        ...     "ROWCT": 10,
+        ...     "COLCT": 10,
+        ...     "PRDCT": 100,
+        ...     "BCEQU": [1, 3, 5, 7],
+        ...     "NULBC": "{x}",
+        ...     "MLCL": 0})
         S12F4
           <L [15]
             <A "materialID">

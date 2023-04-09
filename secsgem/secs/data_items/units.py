@@ -22,14 +22,12 @@ class UNITS(DataItemBase):
     """
     Units identifier.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
         - :class:`SecsS02F30 <secsgem.secs.functions.SecsS02F30>`
-        - :class:`SecsS02F48 <secsgem.secs.functions.SecsS02F48>`
-        - :class:`SecsS07F22 <secsgem.secs.functions.SecsS07F22>`
+
     """
 
     __type__ = variables.String

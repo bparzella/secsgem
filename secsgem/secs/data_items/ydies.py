@@ -23,12 +23,12 @@ class YDIES(DataItemBase):
     Die size/index Y-axis.
 
     :Types:
-       - :class:`F4 <secsgem.secs.variables.F4>`
-       - :class:`F8 <secsgem.secs.variables.F8>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`

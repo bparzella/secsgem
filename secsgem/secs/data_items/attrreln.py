@@ -22,7 +22,7 @@ class ATTRRELN(DataItemBase):
     """
     Attribute relation to attribute of object.
 
-       :Types: :class:`U1 <secsgem.secs.variables.U1>`
+    :Type: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Values**
         +-------+-----------------------+------------------------------------------------------+

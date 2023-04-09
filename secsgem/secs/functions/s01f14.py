@@ -16,7 +16,8 @@
 """Class for stream 01 function 14."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import COMMACK, MDLN
+from secsgem.secs.data_items import COMMACK
+from secsgem.secs.data_items import MDLN
 
 
 class SecsS01F14(SecsStreamFunction):
@@ -28,10 +29,6 @@ class SecsS01F14(SecsStreamFunction):
         This Stream/function has different structures depending on the source.
         See structure definition below for details.
         Be sure to fill the array accordingly.
-
-    **Data Items**
-
-    - :class:`COMMACK <secsgem.secs.data_items.COMMACK>`
 
     **Structure E->H**::
 
@@ -50,11 +47,28 @@ class SecsS01F14(SecsStreamFunction):
             DATA: []
         }
 
+    **Data Items**
+
+    - :class:`COMMACK <secsgem.secs.data_items.COMMACK>`
+    - :class:`MDLN <secsgem.secs.data_items.MDLN>`
+
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F14
+        {
+            COMMACK: B[1]
+            MDLN: [
+                DATA: A[20]
+                ...
+            ]
+        }
+
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS01F14({"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED, \
-                                               "MDLN": ["secsgem", "0.0.6"]})
+        >>> secsgem.secs.functions.SecsS01F14({"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED,
+        ...     "MDLN": ["secsgem", "0.0.6"]})
         S1F14
           <L [2]
             <B 0x0>

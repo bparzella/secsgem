@@ -22,7 +22,7 @@ class RPSEL(DataItemBase):
     """
     Reference point select.
 
-       :Types: :class:`U1 <secsgem.secs.variables.U1>`
+    :Type: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F01 <secsgem.secs.functions.SecsS12F01>`

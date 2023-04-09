@@ -22,8 +22,8 @@ class COMMACK(DataItemBase):
     """
     Establish communications acknowledge.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+-------------------+---------------------------------------------------+
@@ -38,6 +38,7 @@ class COMMACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS01F14 <secsgem.secs.functions.SecsS01F14>`
+
     """
 
     __type__ = variables.Binary

@@ -22,8 +22,8 @@ class PPGNT(DataItemBase):
     """
     Process program grant status.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+------------------------+--------------------------------------------------------+
@@ -46,7 +46,6 @@ class PPGNT(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS07F02 <secsgem.secs.functions.SecsS07F02>`
-        - :class:`SecsS07F30 <secsgem.secs.functions.SecsS07F30>`
 
     """
 

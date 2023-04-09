@@ -22,7 +22,7 @@ class DATLC(DataItemBase):
     """
     Data location.
 
-       :Types: :class:`U1 <secsgem.secs.variables.U1>`
+    :Type: :class:`U1 <secsgem.secs.variables.U1>`
 
     **Used In Function**
         - :class:`SecsS12F19 <secsgem.secs.functions.SecsS12F19>`

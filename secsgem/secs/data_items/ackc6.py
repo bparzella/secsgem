@@ -20,26 +20,22 @@ from .base import DataItemBase
 
 class ACKC6(DataItemBase):
     """
-    Acknowledge code.
+    Acknowledge code for stream 6.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
-        +-------+-------------------+-------------------------------------------------+
-        | Value | Description       | Constant                                        |
-        +=======+===================+============?====================================+
-        | 0     | Accepted          | :const:`secsgem.secs.data_items.ACKC6.ACCEPTED` |
-        +-------+-------------------+-------------------------------------------------+
-        | 1-63  | Error             | :const:`secsgem.secs.data_items.ACKC6.ERROR`    |
-        +-------+-------------------+-------------------------------------------------+
+        +-------+-------------+-------------------------------------------------+
+        | Value | Description | Constant                                        |
+        +=======+=============+=================================================+
+        | 0     | Accepted    | :const:`secsgem.secs.data_items.ACKC6.ACCEPTED` |
+        +-------+-------------+-------------------------------------------------+
+        | 1-63  | Error       | :const:`secsgem.secs.data_items.ACKC6.ERROR`    |
+        +-------+-------------+-------------------------------------------------+
 
     **Used In Function**
-        - :class:`SecsS06F02 <secsgem.secs.functions.SecsS06F02>`
-        - :class:`SecsS06F04 <secsgem.secs.functions.SecsS06F04>`
-        - :class:`SecsS06F10 <secsgem.secs.functions.SecsS06F10>`
         - :class:`SecsS06F12 <secsgem.secs.functions.SecsS06F12>`
-        - :class:`SecsS06F14 <secsgem.secs.functions.SecsS06F14>`
 
     """
 

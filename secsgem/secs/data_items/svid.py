@@ -23,21 +23,21 @@ class SVID(DataItemBase):
     Status variable ID.
 
     :Types:
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
         - :class:`SecsS01F11 <secsgem.secs.functions.SecsS01F11>`
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
-        - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
+
     """
 
     __type__ = variables.Dynamic

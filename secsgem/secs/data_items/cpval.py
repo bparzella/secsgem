@@ -20,29 +20,23 @@ from .base import DataItemBase
 
 class CPVAL(DataItemBase):
     """
-    Command parameter name.
+    Command parameter value.
 
     :Types:
-       - :class:`Binary <secsgem.secs.variables.Binary>`
        - :class:`Boolean <secsgem.secs.variables.Boolean>`
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
 
     **Used In Function**
         - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
-        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
-        - :class:`SecsS04F21 <secsgem.secs.functions.SecsS04F21>`
-        - :class:`SecsS04F29 <secsgem.secs.functions.SecsS04F29>`
-        - :class:`SecsS16F05 <secsgem.secs.functions.SecsS16F05>`
-        - :class:`SecsS16F27 <secsgem.secs.functions.SecsS16F27>`
-        - :class:`SecsS18F13 <secsgem.secs.functions.SecsS18F13>`
 
     """
 

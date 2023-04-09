@@ -22,8 +22,8 @@ class ERACK(DataItemBase):
     """
     Enable/disable event report acknowledge.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+----------------------------+-----------------------------------------------------+

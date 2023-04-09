@@ -22,12 +22,12 @@ class TIME(DataItemBase):
     """
     Time of day.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
+    :Length: 32
 
     **Used In Function**
         - :class:`SecsS02F18 <secsgem.secs.functions.SecsS02F18>`
-        - :class:`SecsS02F31 <secsgem.secs.functions.SecsS02F31>`
+
     """
 
     __type__ = variables.String

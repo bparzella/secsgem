@@ -22,8 +22,8 @@ class CPACK(DataItemBase):
     """
     Command parameter acknowledge code.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Values**
         +-------+------------------------+-------------------------------------------------------------+
@@ -40,6 +40,7 @@ class CPACK(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS02F42 <secsgem.secs.functions.SecsS02F42>`
+
     """
 
     __type__ = variables.Binary

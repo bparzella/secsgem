@@ -16,7 +16,12 @@
 """Class for stream 14 function 04."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJID, ATTRID, ATTRDATA, OBJACK, ERRCODE, ERRTEXT
+from secsgem.secs.data_items import OBJID
+from secsgem.secs.data_items import ATTRID
+from secsgem.secs.data_items import ATTRDATA
+from secsgem.secs.data_items import OBJACK
+from secsgem.secs.data_items import ERRCODE
+from secsgem.secs.data_items import ERRTEXT
 
 
 class SecsS14F04(SecsStreamFunction):
@@ -65,16 +70,16 @@ class SecsS14F04(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS14F04({ \
-            "DATA": [{ \
-                "OBJID": "MAP001", \
-                "ATTRIBS": [ \
-                    {"ATTRID": "OriginLocation", "ATTRDATA": "0"}, \
-                    {"ATTRID": "Rows", "ATTRDATA": 4}, \
-                    {"ATTRID": "Columns", "ATTRDATA": 4}, \
-                    {"ATTRID": "CellStatus", "ATTRDATA": 6}, \
-                    {"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}], \
-                "ERRORS": {"OBJACK": 0}})
+        >>> secsgem.secs.functions.SecsS14F04({
+        ...     "DATA": [{
+        ...         "OBJID": "MAP001",
+        ...         "ATTRIBS": [
+        ...             {"ATTRID": "OriginLocation", "ATTRDATA": "0"},
+        ...             {"ATTRID": "Rows", "ATTRDATA": 4},
+        ...             {"ATTRID": "Columns", "ATTRDATA": 4},
+        ...             {"ATTRID": "CellStatus", "ATTRDATA": 6},
+        ...             {"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}],
+        ...         "ERRORS": {"OBJACK": 0}})
         S14F4
           <L [2]
             <L [1]
@@ -123,7 +128,7 @@ class SecsS14F04(SecsStreamFunction):
                 OBJID,
                 [
                     [
-                        "ATTRIBS",   # name of the list
+                        "ATTRIBS",
                         ATTRID,
                         ATTRDATA
                     ]
@@ -131,11 +136,11 @@ class SecsS14F04(SecsStreamFunction):
             ]
         ],
         [
-            "ERRORS",   # name of the list
+            "ERRORS",
             OBJACK,
             [
                 [
-                    "ERROR",   # name of the list
+                    "ERROR",
                     ERRCODE,
                     ERRTEXT
                 ]

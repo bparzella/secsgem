@@ -16,7 +16,12 @@
 """Class for stream 02 function 30."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ECID, ECNAME, ECMIN, ECMAX, ECDEF, UNITS
+from secsgem.secs.data_items import ECID
+from secsgem.secs.data_items import ECNAME
+from secsgem.secs.data_items import ECMIN
+from secsgem.secs.data_items import ECMAX
+from secsgem.secs.data_items import ECDEF
+from secsgem.secs.data_items import UNITS
 
 
 class SecsS02F30(SecsStreamFunction):
@@ -51,19 +56,19 @@ class SecsS02F30(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F30([ \
-            {"ECID": 1, \
-             "ECNAME": "EC1", \
-             "ECMIN": secsgem.secs.variables.U1(0), \
-             "ECMAX": secsgem.secs.variables.U1(100), \
-             "ECDEF": secsgem.secs.variables.U1(50), \
-             "UNITS": "mm"}, \
-            {"ECID": 1337, \
-             "ECNAME": "EC2", \
-             "ECMIN": "", \
-             "ECMAX": "", \
-             "ECDEF": "", \
-             "UNITS": ""}])
+        >>> secsgem.secs.functions.SecsS02F30([
+        ...     {"ECID": 1,
+        ...       "ECNAME": "EC1",
+        ...       "ECMIN": secsgem.secs.variables.U1(0),
+        ...       "ECMAX": secsgem.secs.variables.U1(100),
+        ...       "ECDEF": secsgem.secs.variables.U1(50),
+        ...       "UNITS": "mm"},
+        ...     {"ECID": 1337,
+        ...       "ECNAME": "EC2",
+        ...       "ECMIN": "",
+        ...       "ECMAX": "",
+        ...       "ECDEF": "",
+        ...       "UNITS": ""}])
         S2F30
           <L [2]
             <L [6]

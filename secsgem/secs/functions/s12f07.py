@@ -16,7 +16,10 @@
 """Class for stream 12 function 07."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID, IDTYP, RSINF, BINLT
+from secsgem.secs.data_items import MID
+from secsgem.secs.data_items import IDTYP
+from secsgem.secs.data_items import RSINF
+from secsgem.secs.data_items import BINLT
 
 
 class SecsS12F07(SecsStreamFunction):
@@ -49,12 +52,12 @@ class SecsS12F07(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS12F07({ \
-            "MID": "materialID", \
-            "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
-            "DATA": [ \
-                {"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]}, \
-                {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
+        >>> secsgem.secs.functions.SecsS12F07({
+        ...     "MID": "materialID",
+        ...     "IDTYP": secsgem.secs.data_items.IDTYP.WAFER,
+        ...     "DATA": [
+        ...         {"RSINF": [1, 2, 3], "BINLT": [1, 2, 3, 4]},
+        ...         {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]})
         S12F7 W
           <L [3]
             <A "materialID">

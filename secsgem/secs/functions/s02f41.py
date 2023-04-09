@@ -16,7 +16,9 @@
 """Class for stream 02 function 41."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import RCMD, CPNAME, CPVAL
+from secsgem.secs.data_items import RCMD
+from secsgem.secs.data_items import CPNAME
+from secsgem.secs.data_items import CPVAL
 
 
 class SecsS02F41(SecsStreamFunction):
@@ -47,8 +49,8 @@ class SecsS02F41(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"}, \
-{"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
+        >>> secsgem.secs.functions.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"},
+        ...     {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]})
         S2F41 W
           <L [2]
             <A "COMMAND">
@@ -65,7 +67,7 @@ class SecsS02F41(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 2
@@ -75,7 +77,7 @@ class SecsS02F41(SecsStreamFunction):
         RCMD,
         [
             [
-                "PARAMS",   # name of the list
+                "PARAMS",
                 CPNAME,
                 CPVAL
             ]

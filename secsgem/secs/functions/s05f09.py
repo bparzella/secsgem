@@ -16,7 +16,11 @@
 """Class for stream 05 function 09."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TIMESTAMP, EXID, EXTYPE, EXMESSAGE, EXRECVRA
+from secsgem.secs.data_items import TIMESTAMP
+from secsgem.secs.data_items import EXID
+from secsgem.secs.data_items import EXTYPE
+from secsgem.secs.data_items import EXMESSAGE
+from secsgem.secs.data_items import EXRECVRA
 
 
 class SecsS05F09(SecsStreamFunction):
@@ -49,12 +53,12 @@ class SecsS05F09(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS05F09({ \
-            "TIMESTAMP": "161006221500", \
-            "EXID": "EX123", \
-            "EXTYPE": "ALARM", \
-            "EXMESSAGE": "Exception", \
-            "EXRECVRA": ["EXRECVRA1", "EXRECVRA2"] })
+        >>> secsgem.secs.functions.SecsS05F09({
+        ...     "TIMESTAMP": "161006221500",
+        ...     "EXID": "EX123",
+        ...     "EXTYPE": "ALARM",
+        ...     "EXMESSAGE": "Exception",
+        ...     "EXRECVRA": ["EXRECVRA1", "EXRECVRA2"] })
         S5F9
           <L [5]
             <A "161006221500">
@@ -68,7 +72,7 @@ class SecsS05F09(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: list
+    :type value: dict
     """
 
     _stream = 5

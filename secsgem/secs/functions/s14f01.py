@@ -16,7 +16,12 @@
 """Class for stream 14 function 01."""
 
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJSPEC, OBJTYPE, OBJID, ATTRID, ATTRDATA, ATTRRELN
+from secsgem.secs.data_items import OBJSPEC
+from secsgem.secs.data_items import OBJTYPE
+from secsgem.secs.data_items import OBJID
+from secsgem.secs.data_items import ATTRID
+from secsgem.secs.data_items import ATTRDATA
+from secsgem.secs.data_items import ATTRRELN
 
 
 class SecsS14F01(SecsStreamFunction):
@@ -60,12 +65,12 @@ class SecsS14F01(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS14F01({ \
-            "OBJSPEC": '', \
-            "OBJTYPE": 'StripMap', \
-            "OBJID": ['MAP001'], \
-            "FILTER": [], \
-            "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']})
+        >>> secsgem.secs.functions.SecsS14F01({
+        ...     "OBJSPEC": '',
+        ...     "OBJTYPE": 'StripMap',
+        ...     "OBJID": ['MAP001'],
+        ...     "FILTER": [],
+        ...     "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']})
         S14F1 W
           <L [5]
             <A>
@@ -96,7 +101,7 @@ class SecsS14F01(SecsStreamFunction):
         [OBJID],
         [
             [
-                "FILTER",   # name of the list
+                "FILTER",
                 ATTRID,
                 ATTRDATA,
                 ATTRRELN
@@ -112,14 +117,3 @@ class SecsS14F01(SecsStreamFunction):
     _is_reply_required = True
 
     _is_multi_block = False
-
-    RELATION = {
-        "EQUAL": 0,
-        "NOTEQUAL": 1,
-        "LESS": 2,
-        "LESSEQUAL": 3,
-        "GREATER": 4,
-        "GREATEREQUAL": 5,
-        "PRESENT": 6,
-        "NOTPRESENT": 7,
-    }

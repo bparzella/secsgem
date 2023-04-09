@@ -47,7 +47,7 @@ class SecsS07F17(SecsStreamFunction):
           > .
 
     :param value: parameters for this function (see example)
-    :type value: dict
+    :type value: list
     """
 
     _stream = 7

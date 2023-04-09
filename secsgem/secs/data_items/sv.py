@@ -24,23 +24,23 @@ class SV(DataItemBase):
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`
-       - :class:`Binary <secsgem.secs.variables.Binary>`
        - :class:`Boolean <secsgem.secs.variables.Boolean>`
-       - :class:`String <secsgem.secs.variables.String>`
-       - :class:`I8 <secsgem.secs.variables.I8>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`I2 <secsgem.secs.variables.I2>`
-       - :class:`I4 <secsgem.secs.variables.I4>`
-       - :class:`F8 <secsgem.secs.variables.F8>`
-       - :class:`F4 <secsgem.secs.variables.F4>`
-       - :class:`U8 <secsgem.secs.variables.U8>`
        - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`U2 <secsgem.secs.variables.U2>`
        - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
+       - :class:`I1 <secsgem.secs.variables.I1>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`F4 <secsgem.secs.variables.F4>`
+       - :class:`F8 <secsgem.secs.variables.F8>`
+       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`Binary <secsgem.secs.variables.Binary>`
 
     **Used In Function**
         - :class:`SecsS01F04 <secsgem.secs.functions.SecsS01F04>`
-        - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
+
     """
 
     __type__ = variables.Dynamic

@@ -22,18 +22,14 @@ class TIMESTAMP(DataItemBase):
     """
     Timestamp.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
+    :Length: 32
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
         - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
         - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
-        - :class:`SecsS15F41 <secsgem.secs.functions.SecsS15F41>`
-        - :class:`SecsS15F44 <secsgem.secs.functions.SecsS15F44>`
-        - :class:`SecsS16F05 <secsgem.secs.functions.SecsS16F05>`
-        - :class:`SecsS16F07 <secsgem.secs.functions.SecsS16F07>`
-        - :class:`SecsS16F09 <secsgem.secs.functions.SecsS16F09>`
+
     """
 
     __type__ = variables.String

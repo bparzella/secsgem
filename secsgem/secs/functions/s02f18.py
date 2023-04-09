@@ -41,7 +41,7 @@ class SecsS02F18(SecsStreamFunction):
           <A "160816205942"> .
 
     :param value: parameters for this function (see example)
-    :type value: ASCII string
+    :type value: bytes
     """
 
     _stream = 2

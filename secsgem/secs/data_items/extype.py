@@ -22,15 +22,12 @@ class EXTYPE(DataItemBase):
     """
     Exception type.
 
-    :Types:
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
         - :class:`SecsS05F09 <secsgem.secs.functions.SecsS05F09>`
         - :class:`SecsS05F11 <secsgem.secs.functions.SecsS05F11>`
-        - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
-        - :class:`SecsS14F02 <secsgem.secs.functions.SecsS14F02>`
-        - :class:`SecsS14F08 <secsgem.secs.functions.SecsS14F08>`
+
     """
 
     __type__ = variables.String

@@ -22,14 +22,12 @@ class TID(DataItemBase):
     """
     Terminal ID.
 
-       :Types: :class:`Binary <secsgem.secs.variables.Binary>`
-       :Length: 1
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
+    :Length: 1
 
     **Used In Function**
         - :class:`SecsS10F01 <secsgem.secs.functions.SecsS10F01>`
         - :class:`SecsS10F03 <secsgem.secs.functions.SecsS10F03>`
-        - :class:`SecsS10F05 <secsgem.secs.functions.SecsS10F05>`
-        - :class:`SecsS10F07 <secsgem.secs.functions.SecsS10F07>`
 
     """
 

@@ -26,8 +26,8 @@ class SecsS01F13(SecsStreamFunction):
     .. caution::
 
         This Stream/function has different structures depending on the source.
-        If it is sent from the eqipment side it has the structure below,
-        if it is sent from the host it is an empty list.
+        If it is sent from the eqipment side it has the structure below, if it
+        is sent from the host it is an empty list.
         Be sure to fill the array accordingly.
 
     **Structure E->H**::
@@ -37,16 +37,29 @@ class SecsS01F13(SecsStreamFunction):
             SOFTREV: A[20]
         }
 
+    **Data Items**
+
+    - :class:`MDLN <secsgem.secs.data_items.MDLN>`
+
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F13
+        [
+            MDLN: A[20]
+            ...
+        ]
+
     **Example**::
 
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS01F13(['secsgem', '0.0.6']) # E->H
+        >>> secsgem.secs.functions.SecsS01F13(["secsgem", "0.0.6"]) # E->H
         S1F13 W
           <L [2]
             <A "secsgem">
             <A "0.0.6">
           > .
-        >>> secsgem.secs.functions.SecsS01F13() #H->E
+        >>> secsgem.secs.functions.SecsS01F13() # H->E
         S1F13 W
           <L> .
 
