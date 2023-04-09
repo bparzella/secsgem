@@ -48,7 +48,7 @@ class Secs{{ data.name }}(SecsStreamFunction):
         >>> import secsgem.secs
         {% for sample in data.samples %}
         >>> secsgem.secs.functions.Secs{{ data.name }}({{ sample.data | py_indent(8) }}){{ sample.comment }}
-        S{{ data.stream }}F{{ data.function }}{{ " W" if data.has_reply }}
+        S{{ data.stream }}F{{ data.function }}{{ " W" if data.is_reply_required }}
     {%- if data.data_items|length > 0 %}
 
 {{ sample.text | indent(8, True) -}}

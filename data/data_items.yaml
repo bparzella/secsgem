@@ -494,6 +494,7 @@ ECNAME:
 
 ECV:
   type:
+    - Array
     - Boolean
     - U1
     - U2

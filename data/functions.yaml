@@ -1138,8 +1138,8 @@ S12F05:
   sample_data: |-
     {
     "MID": "materialID",
-    "IDTYP": secsgem.secs.data_items.IDTYP.WAFER, \
-    "MAPFT": secsgem.secs.data_items.MAPFT.ARRAY, \
+    "IDTYP": secsgem.secs.data_items.IDTYP.WAFER,
+    "MAPFT": secsgem.secs.data_items.MAPFT.ARRAY,
     "MLCL": 0}
 
 S12F06:
