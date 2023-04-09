@@ -1,4 +1,4 @@
 FunctionBase
 ============
 
-.. automodule:: secsgem.secs.functionbase
+.. automodule:: secsgem.secs.functions.base

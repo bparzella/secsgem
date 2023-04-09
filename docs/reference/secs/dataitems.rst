@@ -1,5 +1,5 @@
 Data Items
 ==========
 
-.. automodule:: secsgem.secs.dataitems
+.. automodule:: secsgem.secs.data_items
     :no-inherited-members:
