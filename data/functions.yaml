@@ -408,7 +408,7 @@ S02F44:
     "RSPACK": secsgem.secs.data_items.RSPACK.REJECTED,
     "DATA": [
         {"STRID": 1, "STRACK": secsgem.secs.data_items.STRACK.NOT_ALLOWED, "FCNID": [10]},
-        {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.MSG_INELIGIBLE, "FCNID": [20]}]}
+        {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.FUNCTION_UNKNOWN, "FCNID": [20]}]}
 
 S05F00:
   description: abort transaction stream 5

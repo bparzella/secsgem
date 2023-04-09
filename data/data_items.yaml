@@ -131,14 +131,14 @@ ALED:
 
 ALID:
   type:
-    - I8
-    - I1
-    - I2
-    - I4
-    - U8
     - U1
     - U2
     - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
   description: Alarm ID
 
 ALTX:
@@ -427,16 +427,16 @@ EAC:
 ECDEF:
   type:
     - Boolean
-    - U1
-    - U2
-    - U4
-    - U8
+    - I8
     - I1
     - I2
     - I4
-    - I8
-    - F4
     - F8
+    - F4
+    - U8
+    - U1
+    - U2
+    - U4
     - String
     - Binary
   description: Equipment constant default value
@@ -457,16 +457,16 @@ ECID:
 ECMAX:
   type:
     - Boolean
-    - U1
-    - U2
-    - U4
-    - U8
+    - I8
     - I1
     - I2
     - I4
-    - I8
-    - F4
     - F8
+    - F4
+    - U8
+    - U1
+    - U2
+    - U4
     - String
     - Binary
   description: Equipment constant maximum value
@@ -474,16 +474,16 @@ ECMAX:
 ECMIN:
   type:
     - Boolean
-    - U1
-    - U2
-    - U4
-    - U8
+    - I8
     - I1
     - I2
     - I4
-    - I8
-    - F4
     - F8
+    - F4
+    - U8
+    - U1
+    - U2
+    - U4
     - String
     - Binary
   description: Equipment constant minimum value
@@ -496,16 +496,16 @@ ECV:
   type:
     - Array
     - Boolean
-    - U1
-    - U2
-    - U4
-    - U8
+    - I8
     - I1
     - I2
     - I4
-    - I8
-    - F4
     - F8
+    - F4
+    - U8
+    - U1
+    - U2
+    - U4
     - String
     - Binary
   description: Equipment constant value
@@ -823,14 +823,14 @@ IDTYP:
 
 LENGTH:
   type:
-    - I8
-    - I1
-    - I2
-    - I4
-    - U8
     - U1
     - U2
     - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
   description: Service/process program length
 
 LRACK:
@@ -937,16 +937,16 @@ MID:
 
 MLCL:
   type: 
-    - U8
     - U1
     - U2
     - U4
+    - U8
   description: Message length
 
 NULBC:
   type: 
-    - String
     - U1
+    - String
   description: Column count in dies
 
 OBJACK:
@@ -1132,10 +1132,10 @@ RCMD:
 
 REFP:
   type:
-    - I8
     - I1
     - I2
     - I4
+    - I8
   description: Reference point
 
 ROWCT:
