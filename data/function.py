@@ -208,7 +208,9 @@ class Function:
     def _find_items(self, structure, items):
         if not isinstance(structure, list):
             if structure in self._data_items:
-                items.append(self._data_items[structure])
+                data_item = self._data_items[structure]
+                if data_item not in items:
+                    items.append(data_item)
         else:
             for item in structure:
                 self._find_items(item, items)
