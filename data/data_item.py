@@ -129,7 +129,7 @@ class DataItem:
             return ""
 
         table_data = [
-            ["Value", "Description      ", "Constant"],  # TODO: remove spaces
+            ["Value", "Description", "Constant"],
         ]
         for value_name, value in self._data["values"].items():
             constant = f":const:`secsgem.secs.data_items.{self.name}.{value['constant']}`" \
