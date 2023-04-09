@@ -26,6 +26,10 @@ data_item = {data_item}
 data = secsgem.secs.variables.functions.generate(data_item)
 data.set({sample_value})
 var = secsgem.common.indent_block(repr(data))
+if data is not None:
+    preferred_type = data.preferred_type
+else:
+    preferred_type = None
 """
 
 sample_data_code_empty = """
@@ -37,6 +41,10 @@ data_item = {data_item}
 
 data = secsgem.secs.variables.functions.generate(data_item)
 var = secsgem.common.indent_block(repr(data))
+if data is not None:
+    preferred_type = data.preferred_type
+else:
+    preferred_type = None
 """
 
 class Function:
@@ -72,6 +80,9 @@ class Function:
         self._stream = int(match.group(1))
         self._function = int(match.group(2))
 
+        self._samples = None
+        self._preferred_type = None
+
     @classmethod
     def load_all(cls, root, data_items: typing.Dict[str, DataItem]) -> typing.List["Function"]:
         """Load all function objects."""
@@ -80,7 +91,7 @@ class Function:
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
     @staticmethod
-    def render_list(functions, function_template, target_path):
+    def render_list(functions: typing.List["Function"], function_template, target_path):
         """Render all functions to file."""
         last = None
 
@@ -170,15 +181,19 @@ class Function:
     def _format_struct_as_string(self, structure, indent_level = 0, indent_width = 4):
         indent_text = " " * indent_level
         if isinstance(structure, list):
-            if len(structure) == 1:
+            if len(structure) == 1 and not isinstance(structure[0], list):
                 return f"{indent_text}[{structure[0]}]"
             
             items = [self._format_struct_as_string(item, indent_level + indent_width, indent_width)
                         for item in structure]
-            items_text = '\n'.join(items)
+            items_text = ',\n'.join(items)
             return f"{indent_text}[\n{items_text}\n{indent_text}]"
         
+        if structure not in self._data_items:
+            return f'{indent_text}"{structure}"'
+        
         return f"{indent_text}{structure}"
+        
     
     @property
     def data_items(self) -> typing.List[DataItem]:
@@ -192,7 +207,8 @@ class Function:
 
     def _find_items(self, structure, items):
         if not isinstance(structure, list):
-            items.append(self._data_items[structure])
+            if structure in self._data_items:
+                items.append(self._data_items[structure])
         else:
             for item in structure:
                 self._find_items(item, items)
@@ -217,14 +233,28 @@ class Function:
     @property
     def samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
         """Get samples and result data."""
+        if self._samples is None:
+            self._load_samples()
+        
+        return self._samples
+    
+    @property
+    def preferred_type(self) -> str:
+        """Get preferred type."""
+        if self._samples is None:
+            self._load_samples()
+        
+        return self._preferred_type
+    
+    def _load_samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
         if "sample_data" not in self._data:
-            sample_data =[{"data": ""}]
+            sample_data = [{"data": ""}]
         else:
             sample_data = self._data["sample_data"]
             if isinstance(sample_data, str):
                 sample_data = [{"data": sample_data}]
         
-        samples = []
+        self._samples = []
 
         for sample in sample_data:
             imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
@@ -245,14 +275,13 @@ class Function:
 
             exec(code, glob, loc)
 
-            samples.append({
+            self._samples.append({
                 "data": sample["data"],
                 "comment": f" # {sample['info']}" if "info" in sample else "",
                 "text": loc["var"]
             })
-        
-        return samples
-    
+            self._preferred_type = loc["preferred_type"]
+
     @property
     def extra_help(self) -> str:
         """Get the configured extra help."""

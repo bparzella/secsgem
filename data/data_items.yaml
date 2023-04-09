@@ -917,3 +917,496 @@ MDLN:
   description: Equipment model type
   length: 20
 
+MEXP:
+  type: String
+  description: Message expected
+  length: 6
+
+MHEAD:
+  type: Binary
+  description: SECS message header
+  length: 10
+
+MID:
+  type: 
+    - String
+    - Binary
+  description: Material ID
+  length: 80
+
+MLCL:
+  type: 
+    - U8
+    - U1
+    - U2
+    - U4
+  description: Message length
+
+NULBC:
+  type: 
+    - String
+    - U1
+  description: Column count in dies
+
+OBJACK:
+  type: U1
+  description: Object acknowledgement code
+  length: 1
+  values:
+    0:
+      description: Successful
+      constant: SUCCESSFUL
+    1:
+      description: Error
+      constant: ERROR
+    2-63:
+      description: Reserved
+
+OBJID:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - String
+  description: Object identifier
+
+OBJSPEC:
+  type: String
+  description: Specific object instance
+
+OBJTYPE:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - String
+  description: Class of object identifier
+
+OFLACK:
+  type: Binary
+  description: Acknowledge code for OFFLINE request
+  length: 1
+  values:
+    0:
+      description: OFFLINE Acknowledge
+      constant: ACK
+    1-63:
+      description: Reserved
+
+ONLACK:
+  type: Binary
+  description: Acknowledge code for ONLINE request
+  length: 1
+  values:
+    0:
+      description: ONLINE Accepted
+      constant: ACCEPTED
+    1:
+      description: ONLINE Not allowed
+      constant: NOT_ALLOWED
+    2:
+      description: Already ONLINE
+      constant: ALREADY_ON
+    3-63:
+      description: Reserved
+
+ORLOC:
+  type: Binary
+  description: Origin location
+  length: 1
+  values:
+    0:
+      description: Center die of wafer
+      constant: CENTER_DIE
+    1:
+      description: Upper right
+      constant: UPPER_RIGHT
+    2:
+      description: Upper left
+      constant: UPPER_LEFT
+    3:
+      description: Lower left
+      constant: LOWER_LEFT
+    4:
+      description: Lower right
+      constant: LOWER_RIGHT
+    5-63:
+      description: Reserved, error
+
+PPBODY:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - String
+    - Binary
+  description: Status variable ID
+
+PPGNT:
+  type: Binary
+  description: Process program grant status
+  length: 1
+  values:
+    0:
+      description: OK
+      constant: OK
+    1:
+      description: Already have
+      constant: ALREADY_HAVE
+    2:
+      description: No space
+      constant: NO_SPACE
+    3:
+      description: Invalid PPID
+      constant: INVALID_PPID
+    4:
+      description: Busy, try later
+      constant: BUSY
+    5:
+      description: Will not accept
+      constant: WILL_NOT_ACCEPT
+    6-63:
+      description: Reserved, other errors
+
+PPID:
+  type:
+    - String
+    - Binary
+  description: Process program ID
+  length: 120
+
+PRAXI:
+  type: Binary
+  description: Process axis
+  length: 1
+  values:
+    0:
+      description: Rows, top, increasing
+      constant: ROWS_TOP_INCR
+    1:
+      description: Rows, top, decreasing
+      constant: ROWS_TOP_DECR
+    2:
+      description: Rows, bottom, increasing
+      constant: ROWS_BOT_INCR
+    3:
+      description: Rows, bottom, decreasing
+      constant: ROWS_BOT_DECR
+    4:
+      description: Columns, left, increasing
+      constant: COLS_LEFT_INCR
+    5:
+      description: Columns, left, decreasing
+      constant: COLS_LEFT_DECR
+    6:
+      description: Columns, right, increasing
+      constant: COLS_RIGHT_INCR
+    7:
+      description: Columns, right, decreasing
+      constant: COLS_RIGHT_DECR
+    8-63:
+      description: Error
+
+PRDCT:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+  description: Process die count
+
+RCMD:
+  type:
+    - U1
+    - I1
+    - String
+  description: Remote command
+
+REFP:
+  type:
+    - I8
+    - I1
+    - I2
+    - I4
+  description: Reference point
+
+ROWCT:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+  description: Row count in dies
+
+RPSEL:
+  type: U1
+  description: Reference point select
+
+RPTID:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - String
+  description: Report ID
+
+RSDA:
+  type: Binary
+  description: Request spooled data acknowledge
+  length: 1
+  values:
+    0:
+      description: OK
+      constant: ACK
+    1:
+      description: Denied, busy try later
+      constant: DENIED_BUSY
+    2:
+      description: Denied, spooled data does not exist
+      constant: DENIED_NO_DATA
+    3-63:
+      description: Reserved
+
+RSDC:
+  type: U1
+  description: Request spooled data command
+  length: 1
+  values:
+    0:
+      description: Transmit spooled messages
+      constant: TRANSMIT
+    1:
+      description: Purge spooled messages
+      constant: PURGE
+    2-63:
+      description: Reserved
+
+RSINF:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+  description: Starting location
+  length: 3
+
+RSPACK:
+  type: Binary
+  description: Reset spooling acknowledge
+  length: 1
+  values:
+    0:
+      description: Acknowledge, spooling setup accepted
+      constant: ACK
+    1:
+      description: Spooling setup rejected
+      constant: REJECTED
+    2-63:
+      description: Reserved
+
+SDACK:
+  type: Binary
+  description: Map setup acknowledge
+  length: 1
+  values:
+    0:
+      description: Received Data
+      constant: ACK
+    1-63:
+      description: Error
+
+SDBIN:
+  type: Binary
+  description: Send bin information
+  length: 1
+  values:
+    0:
+      description: Send bin information
+      constant: SEND
+    1:
+      description: Don't send bin infomation
+      constant: DONT_SEND
+    2-63:
+      description: Reserved
+
+SHEAD:
+  type: Binary
+  description: SECS message header
+  length: 10
+
+SOFTREV:
+  type: String
+  description: Software revision
+  length: 20
+
+STRACK:
+  type: Binary
+  description: Spool stream acknowledge
+  length: 1
+  values:
+    1:
+      description: Spooling not allowed for stream
+      constant: NOT_ALLOWED
+    2:
+      description: Stream unknown
+      constant: STREAM_UNKNOWN
+    3:
+      description: Unknown function for stream
+      constant: FUNCTION_UNKNOWN
+    4:
+      description: Secondary function for this stream
+      constant: SECONDARY
+
+STRID:
+  type: U1
+  description: Stream ID
+  length: 1
+
+STRP:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+  description: Starting position
+  length: 2
+
+SV:
+  type:
+    - Array
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+    - Binary
+  description: Status variable value
+
+SVID:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - String
+  description: Status variable ID
+
+SVNAME:
+  type: String
+  description: Status variable name
+ 
+TEXT:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - String
+    - Binary
+  description: Line of characters
+
+TID:
+  type: Binary
+  description: Terminal ID
+  length: 1
+
+TIME:
+  type: String
+  description: Time of day
+  length: 32
+ 
+TIMESTAMP:
+  type: String
+  description: Timestamp
+  length: 32
+
+UNITS:
+  type: String
+  description: Units identifier
+
+V:
+  type:
+    - Array
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+    - Binary
+  description: Variable data
+
+VID:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - String
+  description: Variable ID
+
+XDIES:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - F4
+    - F8
+  description: Die size/index X-axis
+
+XYPOS:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+  description: X/Y coordinate position
+  length: 2
+
+YDIES:
+  type:
+    - U1
+    - U2
+    - U4
+    - U8
+    - F4
+    - F8
+  description: Die size/index Y-axis

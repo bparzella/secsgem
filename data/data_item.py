@@ -25,21 +25,23 @@ class DataItem:
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
     
     @staticmethod
-    def render_list(data_items, data_item_template, target_path):
+    def render_list(data_items, data_item_template, functions, target_path):
         """Render a list of data items."""
         last = None
 
         for data_item in data_items:
             print(f"# generate data item {data_item.name}")
 
-            last = data_item.render(data_item_template, target_path)
+            used_by = [function for function in functions if data_item in function.data_items]
+            last = data_item.render(data_item_template, target_path, used_by)
 
         return last
 
-    def render(self, data_item_template, target_path):
+    def render(self, data_item_template, target_path, used_by):
         """Render the data item file."""
         self._rendered = data_item_template.render(
-            data=self
+            data=self,
+            used_by=used_by
         )
 
         out_path = target_path / self.file_name

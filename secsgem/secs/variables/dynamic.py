@@ -99,6 +99,15 @@ class Dynamic(Base):
 
         return False
 
+    @property
+    def preferred_type(self):
+        """Get the preferred type."""
+        types = []
+        for typ in self.__allowedtypes__:
+            types += typ.preferred_types
+        
+        return types[0]
+
     def set(self, value):
         """
         Set the internal value to the provided value.

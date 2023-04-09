@@ -107,3 +107,8 @@ class Base:
     def is_dynamic(self) -> bool:
         """Check if this instance is Dynamic or derived."""
         return False
+
+    @property
+    def preferred_type(self):
+        """Get the preferred type for this variable."""
+        return self.preferred_types[0]
