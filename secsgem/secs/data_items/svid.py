@@ -37,6 +37,7 @@ class SVID(DataItemBase):
         - :class:`SecsS01F03 <secsgem.secs.functions.SecsS01F03>`
         - :class:`SecsS01F11 <secsgem.secs.functions.SecsS01F11>`
         - :class:`SecsS01F12 <secsgem.secs.functions.SecsS01F12>`
+        - :class:`SecsS02F23 <secsgem.secs.functions.SecsS02F23>`
 
     """
 

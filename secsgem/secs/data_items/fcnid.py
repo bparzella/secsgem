@@ -20,7 +20,7 @@ from .base import DataItemBase
 
 class FCNID(DataItemBase):
     """
-    Funcion ID.
+    Function ID.
 
     :Type: :class:`U1 <secsgem.secs.variables.U1>`
     :Length: 1

@@ -36,6 +36,8 @@ class DATAID(DataItemBase):
     **Used In Function**
         - :class:`SecsS02F33 <secsgem.secs.functions.SecsS02F33>`
         - :class:`SecsS02F35 <secsgem.secs.functions.SecsS02F35>`
+        - :class:`SecsS02F45 <secsgem.secs.functions.SecsS02F45>`
+        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
         - :class:`SecsS06F05 <secsgem.secs.functions.SecsS06F05>`
         - :class:`SecsS06F07 <secsgem.secs.functions.SecsS06F07>`
         - :class:`SecsS06F08 <secsgem.secs.functions.SecsS06F08>`

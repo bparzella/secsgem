@@ -35,6 +35,7 @@ class ACKC6(DataItemBase):
         +-------+-------------+-------------------------------------------------+
 
     **Used In Function**
+        - :class:`SecsS06F02 <secsgem.secs.functions.SecsS06F02>`
         - :class:`SecsS06F12 <secsgem.secs.functions.SecsS06F12>`
 
     """

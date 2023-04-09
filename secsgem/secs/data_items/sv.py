@@ -40,6 +40,7 @@ class SV(DataItemBase):
 
     **Used In Function**
         - :class:`SecsS01F04 <secsgem.secs.functions.SecsS01F04>`
+        - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
 
     """
 

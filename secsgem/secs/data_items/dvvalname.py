@@ -1,5 +1,5 @@
 #####################################################################
-# rcmd.py
+# dvvalname.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,30 +13,20 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""RCMD data item."""
+"""DVVALNAME data item."""
 from .. import variables
 from .base import DataItemBase
 
 
-class RCMD(DataItemBase):
+class DVVALNAME(DataItemBase):
     """
-    Remote command.
+    Data value name.
 
-    :Types:
-       - :class:`U1 <secsgem.secs.variables.U1>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
-        - :class:`SecsS02F21 <secsgem.secs.functions.SecsS02F21>`
-        - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
-        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
+        - :class:`SecsS01F22 <secsgem.secs.functions.SecsS01F22>`
 
     """
 
-    __type__ = variables.Dynamic
-    __allowedtypes__ = [
-        variables.U1,
-        variables.I1,
-        variables.String
-    ]
+    __type__ = variables.String

@@ -1,5 +1,5 @@
 #####################################################################
-# rcmd.py
+# s02f22.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,30 +13,43 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""RCMD data item."""
-from .. import variables
-from .base import DataItemBase
+"""Class for stream 02 function 22."""
+
+from secsgem.secs.functions.base import SecsStreamFunction
+from secsgem.secs.data_items import CMDA
 
 
-class RCMD(DataItemBase):
+class SecsS02F22(SecsStreamFunction):
     """
-    Remote command.
+    Remote command - acknowledge.
 
-    :Types:
-       - :class:`U1 <secsgem.secs.variables.U1>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`String <secsgem.secs.variables.String>`
+    **Data Items**
 
-    **Used In Function**
-        - :class:`SecsS02F21 <secsgem.secs.functions.SecsS02F21>`
-        - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
-        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
+    - :class:`CMDA <secsgem.secs.data_items.CMDA>`
 
+    **Structure**::
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F22
+        CMDA: U1/I1
+
+    **Example**::
+
+        >>> import secsgem.secs
+
+    :param value: parameters for this function (see example)
+    :type value: 
     """
 
-    __type__ = variables.Dynamic
-    __allowedtypes__ = [
-        variables.U1,
-        variables.I1,
-        variables.String
-    ]
+    _stream = 2
+    _function = 22
+
+    _data_format = CMDA
+
+    _to_host = True
+    _to_equipment = False
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = False

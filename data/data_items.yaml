@@ -1,3 +1,7 @@
+ABS:
+  type: Binary
+  description: Any binary string
+
 ACKA:
   type: Boolean
   description: Request success
@@ -237,6 +241,68 @@ CEID:
     - String
   description: Collection event ID
 
+CENAME:
+  type: String
+  description: Collection event Name
+
+CEPACK:
+  type: Binary
+  description: Command enhanced parameter acknowledge
+  values:
+    0:
+      description: No error
+      constant: NO_ERROR
+    1:
+      description: CPNAME name does not exist
+      constant: CPNAME_UNKNOWN
+    2:
+      description: Illegal value for CEPVAL
+      constant: CEPVAL_ILLEGAL_VALUE
+    3:
+      description: Illegal format for CEPVAL
+      constant: CEPVAL_ILLEGAL_FORMAT
+    4:
+      description: CPNAME not valid as used
+      constant: CPNAME_INVALID
+    5-63:
+      description: Reserved
+
+CEPVAL:
+  type:
+    - Array
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+    - Binary
+  description: Command enhanced parameter value
+
+CMDA:
+  type:
+    - U1
+    - I1
+  description: Command acknowledged code
+  values:
+    0:
+      description: Completed or done
+      constant: DONE
+    1:
+      description: Command does not exist
+      constant: COMMAND_UNKNOWN
+    2:
+      description: Cannot perform now
+      constant: NOT_NOW
+    3-63:
+      description: Reserved, equipment specific error
+    
 COLCT:
   type:
     - U1
@@ -369,6 +435,10 @@ DSID:
     - String
   description: Data set ID
 
+DSPER:
+  type: String
+  description: Data sample period
+
 DUTMS:
   type: String
   description: Die units of measure
@@ -403,6 +473,10 @@ DVVAL:
     - String
     - Binary
   description: Data value
+
+DVVALNAME:
+  type: String
+  description: Data value name
 
 EAC:
   type: Binary
@@ -716,7 +790,7 @@ EXTYPE:
 
 FCNID:
   type: U1
-  description: Funcion ID
+  description: Function ID
   length: 1
 
 FFROT:
@@ -833,6 +907,94 @@ LENGTH:
     - I8
   description: Service/process program length
 
+LIMITACK:
+  type: Binary
+  description: Acknowledgement code for variable limit
+  length: 1
+  values:
+    0:
+      description: OK
+      constant: OK
+    1:
+      description: LIMITID does not exist
+      constant: LIMITID_UNKNOWN
+    2:
+      description: UPPERDB > LIMITMAX
+      constant: UPPERDB_MORE_LIMITMAX
+    3:
+      description: LOWERDB < LIMITMIN
+      constant: LOWERDB_LESS_LIMITMIN
+    4:
+      description: UPPERDB < LOWERDB
+      constant: UPPERDB_LESS_LOWERDB
+    5:
+      description: Illegal format UPPER-/LOWERDB
+      constant: ILLEGAL_FORMAT
+    6:
+      description: Illegal ASCII value
+      constant: ASCII_ILLEGAL
+    7:
+      description: Duplicate limit definition
+      constant: DUPLICATE
+    8-63:
+      description: Reserved, equipment specific error
+
+LIMITID:
+  type: Binary
+  description: Limit ID
+  length: 1
+
+LIMITMAX:
+  type:
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+  description: Maximum allowed for limit
+  length: 1
+
+LIMITMIN:
+  type:
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+  description: Minimum allowed for limit
+  length: 1
+
+LOWERDB:
+  type:
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+  description: Limit for variable lower deadband
+  length: 1
+
 LRACK:
   type: Binary
   description: Link report acknowledge code
@@ -858,6 +1020,29 @@ LRACK:
       constant: RPTID_UNKNOWN
     6-63:
       description: Reserved, other errors
+
+LVACK:
+  type: Binary
+  description: Acknowledgement code for variable limit
+  length: 1
+  values:
+    0:
+      description: OK
+      constant: OK
+    1:
+      description: Variable does not exist
+      constant: VARIABLE_UNKNOWN
+    2:
+      description: Variable has no limits
+      constant: NO_LIMITS
+    3:
+      description: Variable repeated
+      constant: DUPLICATE_VARIABLE
+    4:
+      description: Limit value error
+      constant: LIMIT_ERROR
+    5-63:
+      description: Reserved
 
 MAPER:
   type: Binary
@@ -1138,6 +1323,19 @@ REFP:
     - I8
   description: Reference point
 
+REPGSZ:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+    - U1
+    - U2
+    - U4
+    - U8
+    - String
+  description: Report grouping size
+
 ROWCT:
   type:
     - U1
@@ -1247,10 +1445,27 @@ SHEAD:
   description: SECS message header
   length: 10
 
+SMPLN:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+    - U1
+    - U2
+    - U4
+    - U8
+  description: Sample number
+
 SOFTREV:
   type: String
   description: Software revision
   length: 20
+
+STIME:
+  type: String
+  description: Sample time
+  lenght: 32
 
 STRACK:
   type: Binary
@@ -1333,6 +1548,32 @@ TEXT:
     - Binary
   description: Line of characters
 
+TIAACK:
+  type: Binary
+  description: Equipment acknowledgement code
+  length: 1
+  values:
+    0:
+      description: Everything correct
+      constant: OK
+    1:
+      description: Too many SVIDs
+      constant: SVID_EXCEEDED
+    2:
+      description: No more traces allowed
+      constant: TRACES_DENIED
+    3:
+      description: Invalid period
+      constant: INVALID_PERIOD
+    4:
+      description: Unknown SVID
+      constant: SVID_UNKNOWN
+    5:
+      description: Invalid REPGSZ
+      constant: REPGSZ_INVALID
+    6-63:
+      description: Reserved
+
 TID:
   type: Binary
   description: Terminal ID
@@ -1348,9 +1589,52 @@ TIMESTAMP:
   description: Timestamp
   length: 32
 
+TOTSMP:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+    - U1
+    - U2
+    - U4
+    - U8
+    - String
+  description: Total samples
+
+TRID:
+  type:
+    - I1
+    - I2
+    - I4
+    - I8
+    - U1
+    - U2
+    - U4
+    - U8
+    - String
+  description: Trace request ID
+
 UNITS:
   type: String
   description: Units identifier
+
+UPPERDB:
+  type:
+    - Boolean
+    - U1
+    - U2
+    - U4
+    - U8
+    - I1
+    - I2
+    - I4
+    - I8
+    - F4
+    - F8
+    - String
+  description: Limit for variable upper deadband
+  length: 1
 
 V:
   type:
@@ -1382,6 +1666,23 @@ VID:
     - I8
     - String
   description: Variable ID
+
+VLAACK:
+  type: Binary
+  description: Variable limit attribute acknowledgement code
+  length: 1
+  values:
+    0:
+      description: Acknowledgement, command will be performed
+      constant: ACK
+    1:
+      description: Limit attribute definition error
+      constant: LIMIT_DEF_ERROR
+    2:
+      description: Cannot perform now
+      constant: NOT_NOW
+    3-63:
+      description: Reserved, equipment specific error
 
 XDIES:
   type:

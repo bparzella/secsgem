@@ -1,5 +1,5 @@
 #####################################################################
-# rcmd.py
+# smpln.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,30 +13,38 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""RCMD data item."""
+"""SMPLN data item."""
 from .. import variables
 from .base import DataItemBase
 
 
-class RCMD(DataItemBase):
+class SMPLN(DataItemBase):
     """
-    Remote command.
+    Sample number.
 
     :Types:
-       - :class:`U1 <secsgem.secs.variables.U1>`
        - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`String <secsgem.secs.variables.String>`
+       - :class:`I2 <secsgem.secs.variables.I2>`
+       - :class:`I4 <secsgem.secs.variables.I4>`
+       - :class:`I8 <secsgem.secs.variables.I8>`
+       - :class:`U1 <secsgem.secs.variables.U1>`
+       - :class:`U2 <secsgem.secs.variables.U2>`
+       - :class:`U4 <secsgem.secs.variables.U4>`
+       - :class:`U8 <secsgem.secs.variables.U8>`
 
     **Used In Function**
-        - :class:`SecsS02F21 <secsgem.secs.functions.SecsS02F21>`
-        - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
-        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
+        - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
 
     """
 
     __type__ = variables.Dynamic
     __allowedtypes__ = [
-        variables.U1,
         variables.I1,
-        variables.String
+        variables.I2,
+        variables.I4,
+        variables.I8,
+        variables.U1,
+        variables.U2,
+        variables.U4,
+        variables.U8
     ]

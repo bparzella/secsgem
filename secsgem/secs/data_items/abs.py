@@ -1,5 +1,5 @@
 #####################################################################
-# rcmd.py
+# abs.py
 #
 # (c) Copyright 2021, Benjamin Parzella. All rights reserved.
 #
@@ -13,30 +13,21 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""RCMD data item."""
+"""ABS data item."""
 from .. import variables
 from .base import DataItemBase
 
 
-class RCMD(DataItemBase):
+class ABS(DataItemBase):
     """
-    Remote command.
+    Any binary string.
 
-    :Types:
-       - :class:`U1 <secsgem.secs.variables.U1>`
-       - :class:`I1 <secsgem.secs.variables.I1>`
-       - :class:`String <secsgem.secs.variables.String>`
+    :Type: :class:`Binary <secsgem.secs.variables.Binary>`
 
     **Used In Function**
-        - :class:`SecsS02F21 <secsgem.secs.functions.SecsS02F21>`
-        - :class:`SecsS02F41 <secsgem.secs.functions.SecsS02F41>`
-        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
+        - :class:`SecsS02F25 <secsgem.secs.functions.SecsS02F25>`
+        - :class:`SecsS02F26 <secsgem.secs.functions.SecsS02F26>`
 
     """
 
-    __type__ = variables.Dynamic
-    __allowedtypes__ = [
-        variables.U1,
-        variables.I1,
-        variables.String
-    ]
+    __type__ = variables.Binary

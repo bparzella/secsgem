@@ -34,7 +34,14 @@ class VID(DataItemBase):
        - :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
+        - :class:`SecsS01F21 <secsgem.secs.functions.SecsS01F21>`
+        - :class:`SecsS01F22 <secsgem.secs.functions.SecsS01F22>`
+        - :class:`SecsS01F24 <secsgem.secs.functions.SecsS01F24>`
         - :class:`SecsS02F33 <secsgem.secs.functions.SecsS02F33>`
+        - :class:`SecsS02F45 <secsgem.secs.functions.SecsS02F45>`
+        - :class:`SecsS02F46 <secsgem.secs.functions.SecsS02F46>`
+        - :class:`SecsS02F47 <secsgem.secs.functions.SecsS02F47>`
+        - :class:`SecsS02F48 <secsgem.secs.functions.SecsS02F48>`
         - :class:`SecsS06F22 <secsgem.secs.functions.SecsS06F22>`
 
     """

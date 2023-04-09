@@ -192,6 +192,46 @@ S01F18:
   structure: ONLACK
   sample_data: 'secsgem.secs.data_items.ONLACK.ALREADY_ON'
 
+S01F21:
+  description: Data variable namelist request
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: False
+  structure: [VID]
+  sample_data: '[1, "VARIABLEID"]'
+
+S01F22:
+  description: Data variable namelist
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [[VID, DVVALNAME, UNITS]]
+  sample_data: '[{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}]'
+
+S01F23:
+  description: Collection event namelist request
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: False
+  structure: [CEID]
+  sample_data: '[1, "COLLEVTID"]'
+
+S01F24:
+  description: Collection event namelist
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [[CEID, CENAME, [VID]]]
+  sample_data: '[{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}]'
+
 S02F00:
   description: abort transaction stream 2
   to_host: True
@@ -261,6 +301,72 @@ S02F18:
   multi_block: False
   structure: TIME
   sample_data: '"160816205942"'
+
+S02F21:
+  description: Remote command send
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: False
+  multi_block: False
+  structure: RCMD
+  sample_data: '"COMMMAND1"'
+
+S02F22:
+  description: Remote command - acknowledge
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: CMDA
+  sample_data: 'secsgem.secs.data_items.CMDA.DONE'
+
+S02F23:
+  description: Trace initialize
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: True
+  structure: [TRID, DSPER, TOTSMP, REPGSZ, [SVID]]
+  sample_data: |-
+    {
+    "TRID":1,
+    "DSPER":'000010',
+    "TOTSMP":secsgem.secs.variables.U4(10),
+    "REPGSZ":secsgem.secs.variables.U4(1),
+    "SVID":[1002004,400210]}
+
+S02F24:
+  description: Trace initialize - acknowledge
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: TIAACK
+  sample_data: 'secsgem.secs.data_items.TIAACK.SVID_EXCEEDED'
+
+S02F25:
+  description: Loopback diagnostic request
+  to_host: True
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: False
+  structure: ABS
+  sample_data: '"Text"'
+
+S02F26:
+  description: Loopback diagnostic data
+  to_host: True
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: ABS
+  sample_data: '"Text"'
 
 S02F29:
   description: equipment constant namelist - request
@@ -409,6 +515,111 @@ S02F44:
     "DATA": [
         {"STRID": 1, "STRACK": secsgem.secs.data_items.STRACK.NOT_ALLOWED, "FCNID": [10]},
         {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.FUNCTION_UNKNOWN, "FCNID": [20]}]}
+
+S02F45:
+  description: Define variable limit attributes
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: True
+  structure: [DATAID, [[VID, [[LIMITID, [UPPERDB, LOWERDB]]]]]]
+  sample_data: |-
+    {
+    "DATAID": 1, 
+    "DATA": [{
+        "VID": 2,
+        "DATA": [{
+            "LIMITID": 3,
+            "DATA": [30, 20]
+        }]
+    }]}
+
+S02F46:
+  description: Define variable limit attributes - acknowledge
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [VLAACK, [[VID, LVACK, [LIMITID, LIMITACK]]]]
+  sample_data: |-
+    {
+    "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR, 
+    "DATA": [{
+        "VID": 2,
+        "LVACK": secsgem.secs.data_items.LVACK.VARIABLE_UNKNOWN,
+        "DATA": {
+            "LIMITID": 3,
+            "LIMITACK": secsgem.secs.data_items.LIMITACK.ASCII_ILLEGAL
+        }
+    }]}
+
+S02F47:
+  description: Variable limit attribute request
+  to_host: False
+  to_equipment: True
+  reply: True
+  reply_required: True
+  multi_block: False
+  structure: [VID]
+  sample_data: '[1, "VARIABLEID"]'
+
+S02F48:
+  description: Define variable limit attributes - acknowledge
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [[VID, [UNITS, LIMITMIN, LIMITMAX, [[LIMITID, UPPERDB, LOWERDB ]]]]]
+  sample_data: |-
+    [{
+    "VID": 1, 
+    "DATA": {
+        "UNITS": "meters",
+        "LIMITMIN": 10,
+        "LIMITMAX": 20,
+        "DATA": [{
+            "LIMITID": 3,
+            "UPPERDB": 50,
+            "LOWERDB": 5
+        }]
+    }}]
+
+S02F49:
+  description: Enhanced remote command
+  to_host: False
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: True
+  structure: [DATAID, OBJSPEC, RCMD, [["PARAMS", CPNAME, CEPVAL]]]
+  sample_data: |-
+    {
+    "DATAID": 1, 
+    "OBJSPEC": 'test',
+    "RCMD": "COMMAND1", 
+    "PARAMS": [{
+        "CPNAME": "CPARAM",
+        "CEPVAL": "VALUE"
+    }]}
+
+S02F50:
+  description: Enhanced remote command - acknowledge
+  to_host: True
+  to_equipment: False
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: [HCACK, [["PARAMS", CPNAME, CPACK]]]
+  sample_data: |-
+    {
+    "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND,
+    "PARAMS": [
+        {"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE},
+        {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
+
 
 S05F00:
   description: abort transaction stream 5
@@ -644,6 +855,31 @@ S06F00:
   reply: False
   reply_required: False
   multi_block: False
+
+S06F01:
+  description: Trace data send
+  to_host: True
+  to_equipment: False
+  reply: True
+  reply_required: False
+  multi_block: True
+  structure: [TRID, SMPLN, STIME, [SV]]
+  sample_data: |-
+    {
+    "TRID": 1,
+    "SMPLN": 3,
+    "STIME": "TIME",
+    "SV": [1, 4]}
+
+S06F02:
+  description: Trace data - acknowledge
+  to_host: False
+  to_equipment: True
+  reply: False
+  reply_required: False
+  multi_block: False
+  structure: ACKC6
+  sample_data: 'secsgem.secs.data_items.ACKC6.ACCEPTED'
 
 S06F05:
   description: multi block data inquiry

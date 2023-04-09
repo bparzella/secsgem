@@ -25,6 +25,7 @@ class OBJSPEC(DataItemBase):
     :Type: :class:`String <secsgem.secs.variables.String>`
 
     **Used In Function**
+        - :class:`SecsS02F49 <secsgem.secs.functions.SecsS02F49>`
         - :class:`SecsS14F01 <secsgem.secs.functions.SecsS14F01>`
         - :class:`SecsS14F03 <secsgem.secs.functions.SecsS14F03>`
 
