@@ -1,7 +1,7 @@
 #####################################################################
-# dataitems.py
+# __init__.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Data items for functions."""
+"""Data items module initializer."""
 from .base import DataItemBase
 
 from .acka import ACKA
@@ -60,6 +60,7 @@ from .exid import EXID
 from .exmessage import EXMESSAGE
 from .exrecvra import EXRECVRA
 from .extype import EXTYPE
+from .fcnid import FCNID
 from .ffrot import FFROT
 from .fnloc import FNLOC
 from .grant6 import GRANT6
@@ -94,11 +95,16 @@ from .refp import REFP
 from .rowct import ROWCT
 from .rpsel import RPSEL
 from .rptid import RPTID
+from .rsda import RSDA
+from .rsdc import RSDC
 from .rsinf import RSINF
+from .rspack import RSPACK
 from .sdack import SDACK
 from .sdbin import SDBIN
 from .shead import SHEAD
 from .softrev import SOFTREV
+from .strack import STRACK
+from .strid import STRID
 from .strp import STRP
 from .sv import SV
 from .svid import SVID
@@ -113,21 +119,110 @@ from .vid import VID
 from .xdies import XDIES
 from .xypos import XYPOS
 from .ydies import YDIES
-from .fcnid import FCNID
-from .strack import STRACK
-from .strid import STRID
-from .rspack import RSPACK
-from .rsdc import RSDC
-from .rsda import RSDA
 
 __all__ = [
-    "DataItemBase", "ACKA", "ACKC5", "ACKC6", "ACKC7", "ACKC10", "ALCD", "ALED", "ALID", "ALTX", "ATTRDATA", "ATTRID",
-    "ATTRRELN", "BCEQU", "BINLT", "CEED", "CEID", "COLCT", "COMMACK", "CPACK", "CPNAME", "CPVAL", "DATAID",
-    "DATALENGTH", "DATLC", "DRACK", "DSID", "DUTMS", "DVNAME", "DVVAL", "EAC", "ECDEF", "ECID", "ECMAX", "ECMIN",
-    "ECNAME", "ECV", "EDID", "ERACK", "ERRCODE", "ERRTEXT", "EXID", "EXMESSAGE", "EXRECVRA", "EXTYPE", "FFROT",
-    "FNLOC", "GRANT6", "GRNT1", "HCACK", "IDTYP", "LENGTH", "LRACK", "MAPER", "MAPFT", "MDACK", "MDLN", "MEXP",
-    "MHEAD", "MID", "MLCL", "NULBC", "OBJACK", "OBJID", "OBJSPEC", "OBJTYPE", "OFLACK", "ONLACK", "ORLOC", "PPBODY",
-    "PPGNT", "PPID", "PRAXI", "PRDCT", "RCMD", "REFP", "ROWCT", "RPSEL", "RPTID", "RSINF", "SDACK", "SDBIN", "SHEAD",
-    "SOFTREV", "STRP", "SV", "SVID", "SVNAME", "TEXT", "TID", "TIME", "TIMESTAMP", "UNITS", "V", "VID", "XDIES",
-    "XYPOS", "YDIES", "FCNID", "STRACK", "STRID", "RSPACK", "RSDC", "RSDA"
+    "DataItemBase",
+    "ACKA",
+    "ACKC5",
+    "ACKC6",
+    "ACKC7",
+    "ACKC10",
+    "ALCD",
+    "ALED",
+    "ALID",
+    "ALTX",
+    "ATTRDATA",
+    "ATTRID",
+    "ATTRRELN",
+    "BCEQU",
+    "BINLT",
+    "CEED",
+    "CEID",
+    "COLCT",
+    "COMMACK",
+    "CPACK",
+    "CPNAME",
+    "CPVAL",
+    "DATAID",
+    "DATALENGTH",
+    "DATLC",
+    "DRACK",
+    "DSID",
+    "DUTMS",
+    "DVNAME",
+    "DVVAL",
+    "EAC",
+    "ECDEF",
+    "ECID",
+    "ECMAX",
+    "ECMIN",
+    "ECNAME",
+    "ECV",
+    "EDID",
+    "ERACK",
+    "ERRCODE",
+    "ERRTEXT",
+    "EXID",
+    "EXMESSAGE",
+    "EXRECVRA",
+    "EXTYPE",
+    "FCNID",
+    "FFROT",
+    "FNLOC",
+    "GRANT6",
+    "GRNT1",
+    "HCACK",
+    "IDTYP",
+    "LENGTH",
+    "LRACK",
+    "MAPER",
+    "MAPFT",
+    "MDACK",
+    "MDLN",
+    "MEXP",
+    "MHEAD",
+    "MID",
+    "MLCL",
+    "NULBC",
+    "OBJACK",
+    "OBJID",
+    "OBJSPEC",
+    "OBJTYPE",
+    "OFLACK",
+    "ONLACK",
+    "ORLOC",
+    "PPBODY",
+    "PPGNT",
+    "PPID",
+    "PRAXI",
+    "PRDCT",
+    "RCMD",
+    "REFP",
+    "ROWCT",
+    "RPSEL",
+    "RPTID",
+    "RSDA",
+    "RSDC",
+    "RSINF",
+    "RSPACK",
+    "SDACK",
+    "SDBIN",
+    "SHEAD",
+    "SOFTREV",
+    "STRACK",
+    "STRID",
+    "STRP",
+    "SV",
+    "SVID",
+    "SVNAME",
+    "TEXT",
+    "TID",
+    "TIME",
+    "TIMESTAMP",
+    "UNITS",
+    "V",
+    "VID",
+    "XDIES",
+    "XYPOS",
+    "YDIES",
 ]

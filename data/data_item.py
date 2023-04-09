@@ -25,9 +25,12 @@ class DataItem:
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
     
     @staticmethod
-    def render_list(data_items, data_item_template, functions, target_path):
+    def render_list(data_items, env, functions, target_path):
         """Render a list of data items."""
         last = None
+
+        data_item_template = env.get_template('data_items.py.j2')
+        data_item_init_template = env.get_template('data_items_init.py.j2')
 
         for data_item in data_items:
             print(f"# generate data item {data_item.name}")
@@ -35,6 +38,13 @@ class DataItem:
             used_by = [function for function in functions if data_item in function.data_items]
             last = data_item.render(data_item_template, target_path, used_by)
 
+        init_code = data_item_init_template.render(
+            data_items=data_items,
+        )
+
+        out_path = target_path / "__init__.py"
+        out_path.write_text(init_code)
+        
         return last
 
     def render(self, data_item_template, target_path, used_by):
@@ -164,7 +174,12 @@ class DataItem:
     @property
     def file_name(self) -> str:
         """Get the file name."""
-        return f"{self.name.lower()}.py"
+        return f"{self.module_name}.py"
+
+    @property
+    def module_name(self) -> str:
+        """Get the file name."""
+        return self.name.lower()
 
     def _markdown_line_separator(self, lengths, separator="-"):
         line = "+"

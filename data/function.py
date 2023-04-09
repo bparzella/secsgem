@@ -1,4 +1,5 @@
 """Function class definition."""
+import collections
 import re
 import typing
 
@@ -90,15 +91,40 @@ class Function:
         yaml_data = yaml.safe_load(data)
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
-    @staticmethod
-    def render_list(functions: typing.List["Function"], function_template, target_path):
+    @classmethod
+    def render_list(cls, functions: typing.List["Function"], env, target_path):
         """Render all functions to file."""
         last = None
+
+        function_template = env.get_template('functions.py.j2')
+        function_init_template = env.get_template('functions_init.py.j2')
 
         for function in functions:
             last = function.render(function_template, target_path)
         
+        init_code = function_init_template.render(
+            functions=functions,
+            streams_functions=cls.stream_function_dict(functions)
+        )
+
+        out_path = target_path / "__init__.py"
+        out_path.write_text(init_code)
+
         return last
+
+    @staticmethod
+    def stream_function_dict(functions: typing.List["Function"]) -> typing.Dict:
+        """Get streams functions in a dict."""
+        # build the old style streams functions dictionary
+        secs_streams_functions = collections.OrderedDict()
+
+        for function in functions:
+            if function.stream not in secs_streams_functions:
+                secs_streams_functions[function.stream] = collections.OrderedDict()
+
+            secs_streams_functions[function.stream][function.function] = function
+        
+        return secs_streams_functions
 
     def render(self, function_template, target_path):
         """Render a function to file."""
@@ -115,8 +141,13 @@ class Function:
     @property
     def file_name(self) -> str:
         """Get the file name."""
-        return f"s{self._stream:02d}f{self._function:02d}.py"
-    
+        return f"{self.module_name}.py"
+
+    @property
+    def module_name(self) -> str:
+        """Get the file name."""
+        return f"s{self._stream:02d}f{self._function:02d}"
+
     @property
     def name(self) -> str:
         """Get the name."""

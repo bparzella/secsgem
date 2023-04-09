@@ -75,7 +75,7 @@ def run():
 
     DataItem.render_list(
         data_items,
-        env.get_template('data_items.py.j2'),
+        env,
         functions,
         root / ".." / "secsgem" / "secs" / "data_items")
 
@@ -86,7 +86,7 @@ def run():
 
     Function.render_list(
         functions,
-        env.get_template('functions.py.j2'),
+        env,
         root / ".." / "secsgem" / "secs" / "functions")
 
     # subprocess.Popen(["ksdiff", 
