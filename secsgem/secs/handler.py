@@ -15,40 +15,31 @@
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
 
+import copy
 import logging
 import threading
-import copy
 
 import secsgem.hsms
 
 from . import functions
 
 
-class SecsHandler(secsgem.hsms.HsmsHandler):
+class SecsHandler:
     """
     Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
     Inherit from this class and override required functions.
     """
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+    def __init__(self, connection: secsgem.hsms.HsmsHandler):
         """
         Initialize a secs handler.
 
-        :param address: IP address of remote host
-        :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param name: Name of the underlying configuration
-        :type name: string
-        :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        :param connection: connection to use
         """
-        super().__init__(address, port, active, session_id, name, custom_connection_handler)
+        self._connection = connection
+        self._connection.events.hsms_packet_received += self._on_hsms_packet_received
+        self._connection.secs_decode = self.secs_decode
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -57,13 +48,62 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
         self._alarms = {}
         self._remoteCommands = {}
 
+        self._callback_handler = secsgem.common.CallbackHandler()
+        self._callback_handler.target = self
+
         self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
 
+    @classmethod
+    def hsms(cls, address, port, active, session_id, name, custom_connection_handler=None, **kwargs) -> "SecsHandler":
+        """
+        Initialize a secs handler using a hsms connection.
+
+        All arguments will be passed to the HSMS handler.
+        """
+        return cls(
+            secsgem.hsms.HsmsHandler(address, port, active, session_id, name, custom_connection_handler),
+            **kwargs)
+
     @staticmethod
-    def _generate_sf_callback_name(stream, function):
+    def _generate_sf_callback_name(stream: int, function: int) -> str:
         return f"s{stream:02d}f{function:02d}"
 
-    def register_stream_function(self, stream, function, callback):
+    @property
+    def connection(self) -> secsgem.hsms.HsmsHandler:
+        """Get the connection for the handler."""
+        return self._connection
+
+    def enable(self):
+        """Enable the connection."""
+        self.connection.enable()
+
+    def disable(self):
+        """Disable the connection."""
+        self.connection.disable()
+
+    def send_response(self, *args, **kwargs):
+        """Wrapper for connections send_response function."""
+        return self.connection.send_response(*args, **kwargs)
+
+    def send_and_waitfor_response(self, *args, **kwargs):
+        """Wrapper for connections send_and_waitfor_response function."""
+        return self.connection.send_and_waitfor_response(*args, **kwargs)
+
+    def send_stream_function(self, *args, **kwargs):
+        """Wrapper for connections send_stream_function function."""
+        return self.connection.send_stream_function(*args, **kwargs)
+
+    @property
+    def events(self):
+        """Wrapper for connections events."""
+        return self.connection.events
+
+    @property
+    def callbacks(self):
+        """Property for callback handling."""
+        return self._callback_handler
+
+    def register_stream_function(self, stream: int, function: int, callback):
         """
         Register the function callback for stream and function.
 
@@ -96,7 +136,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, False, 0, "test")
+            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
             >>> handler.collection_events[123] = {'name': 'collectionEventName', 'dvids': [1, 5] }
 
         **Key**
@@ -123,7 +163,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, False, 0, "test")
+            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
             >>> handler.data_values[5] = {'name': 'dataValueName', 'ceid': 123 }
 
         **Key**
@@ -150,7 +190,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, True, 0, "test")
+            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
             >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
 
         **Key**
@@ -177,7 +217,7 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
 
         *Example*::
 
-            >>> handler = SecsHandler("127.0.0.1", 5000, True, 0, "test")
+            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
             >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], \
 'ceids': [200, 343]}
 
@@ -228,13 +268,15 @@ class SecsHandler(secsgem.hsms.HsmsHandler):
             self.logger.exception('Callback aborted because of exception, abort sent')
             self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
 
-    def _on_hsms_packet_received(self, packet):
+    def _on_hsms_packet_received(self, data):
         """
         Packet received from hsms layer.
 
-        :param packet: received data packet
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :param data: received data
+        :type data: :class:`secsgem.hsms.HsmsPacket`
         """
+        packet = data["packet"]
+
         # check if callbacks available for this stream and function
         threading.Thread(
             target=self._handle_stream_function, args=(packet, ),

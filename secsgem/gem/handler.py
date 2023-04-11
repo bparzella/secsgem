@@ -25,26 +25,16 @@ import secsgem.secs
 class GemHandler(secsgem.secs.SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+    def __init__(self, connection):
         """
         Initialize a gem handler.
 
         Inherit from this class and override required functions.
 
-        :param address: IP address of remote host
-        :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param name: Name of the underlying configuration
-        :type name: string
-        :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        :param connection: connection to use
         """
-        super().__init__(address, port, active, session_id, name, custom_connection_handler)
+        super().__init__(connection)
+        self._connection.events.hsms_selected += self._on_hsms_select
 
         self.MDLN = "secsgem"  #: model number returned by S01E13/14
         self.SOFTREV = "0.1.0"  #: software version returned by S01E13/14
@@ -107,7 +97,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        data = super()._serialize_data()
+        data = self.connection._serialize_data()  # pylint: disable=protected-access
         data.update({'communicationState': self.communicationState.current,
                      'commDelayTimeout': self.establishCommunicationTimeout,
                      'reportIDCounter': self.reportIDCounter})
@@ -127,13 +117,13 @@ class GemHandler(secsgem.secs.SecsHandler):
 
         self.logger.info("Connection disabled")
 
-    def _on_hsms_packet_received(self, packet):
+    def _on_hsms_packet_received(self, data):
         """
         Packet received from hsms layer.
 
-        :param packet: received data packet
-        :type packet: :class:`secsgem.HsmsPacket`
+        :param data: received event data
         """
+        packet = data["packet"]
         if self.communicationState.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
                 if self.isHost:
@@ -155,7 +145,7 @@ class GemHandler(secsgem.secs.SecsHandler):
                              name=f"secsgem_gemHandler_callback_S{packet.header.stream}F{packet.header.function}"
                              ).start()
 
-    def _on_hsms_select(self):
+    def _on_hsms_select(self, _):
         """Selected received from hsms layer."""
         self.communicationState.select()
 
@@ -176,7 +166,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         """
         self.logger.debug("connectionState -> WAIT_CRA")
 
-        self.waitCRATimer = threading.Timer(self.connection.T3, self._on_wait_cra_timeout)
+        self.waitCRATimer = threading.Timer(self.connection.connection.T3, self._on_wait_cra_timeout)
         self.waitCRATimer.start()
 
         if self.isHost:

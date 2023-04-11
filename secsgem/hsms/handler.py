@@ -83,9 +83,6 @@ class HsmsHandler:
         self._eventProducer = secsgem.common.EventProducer()
         self._eventProducer.targets += self
 
-        self._callback_handler = secsgem.common.CallbackHandler()
-        self._callback_handler.target = self
-
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self.communicationLogger = logging.getLogger("hsms_communication")
 
@@ -133,11 +130,6 @@ class HsmsHandler:
     def events(self):
         """Property for event handling."""
         return self._eventProducer
-
-    @property
-    def callbacks(self):
-        """Property for callback handling."""
-        return self._callback_handler
 
     def get_next_system_counter(self):
         """
@@ -203,10 +195,6 @@ class HsmsHandler:
         """
         # send event
         self.events.fire('hsms_selected', {'connection': self})
-
-        # notify hsms handler of selection
-        if hasattr(self, '_on_hsms_select') and callable(getattr(self, '_on_hsms_select')):
-            self._on_hsms_select()
 
     def _on_linktest_timer(self):
         """Linktest time timed out, so send linktest request."""
@@ -330,12 +318,9 @@ class HsmsHandler:
             if packet.header.system in self._systemQueues:
                 # send packet to request sender
                 self._systemQueues[packet.header.system].put_nowait(packet)
-            # redirect packet to hsms handler
-            elif hasattr(self, '_on_hsms_packet_received') and callable(getattr(self, '_on_hsms_packet_received')):
-                self._on_hsms_packet_received(packet)
             # just log if nobody is interested
             else:
-                self.logger.warning("packet unhandled")
+                self.events.fire("hsms_packet_received", {'connection': self, 'packet': packet})
 
     def _get_queue_for_system(self, system_id):
         """

@@ -25,24 +25,13 @@ from .handler import GemHandler
 class GemHostHandler(GemHandler):
     """Baseclass for creating host models. Inherit from this class and override required functions."""
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+    def __init__(self, connection):
         """
         Initialize a gem host handler.
 
-        :param address: IP address of remote host
-        :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param name: Name of the underlying configuration
-        :type name: string
-        :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
+        :param connection: Connection
         """
-        GemHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+        GemHandler.__init__(self, connection)
 
         self.isHost = True
 

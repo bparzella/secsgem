@@ -32,7 +32,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         self.server = HsmsTestServer()
 
-        self.client = self.__testClass("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = self.__testClass.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()

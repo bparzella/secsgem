@@ -207,40 +207,40 @@ class TestRemoteCommand(unittest.TestCase):
 class TestGemEquipmentHandler(unittest.TestCase):
     def testControlInitialStateDefault(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
 
         self.assertEqual(client.controlState.current, "HOST_OFFLINE")
 
     def testControlInitialStateEquipmentOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="EQUIPMENT_OFFLINE")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.assertEqual(client.controlState.current, "EQUIPMENT_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 1)
 
     def testControlInitialStateHostOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="HOST_OFFLINE")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="HOST_OFFLINE")
 
         self.assertEqual(client.controlState.current, "HOST_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 3)
 
     def testControlInitialStateOnline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
 
         self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
         self.assertEqual(client._get_control_state_id(), 5)
 
     def testControlInitialStateOnlineLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
 
     def testControlRemoteToLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
 
         self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
 
@@ -250,7 +250,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testControlLocalToRemote(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
 
@@ -260,7 +260,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testControlOnlineToOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
 
@@ -270,7 +270,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testSVControlStateOnlineLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
         self.assertEqual(client._get_control_state_id(), 4)
@@ -284,7 +284,7 @@ class TestGemEquipmentHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         self.server = HsmsTestServer()
 
-        self.client = self.__testClass("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = self.__testClass.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
 
         self.server.start()
         self.client.enable()
@@ -298,7 +298,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.gem.GemEquipmentHandler("127.0.0.1", 5000, False, 0, "test", self.server, initial_control_state="EQUIPMENT_OFFLINE")
+        self.client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", self.server, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.server.start()
         self.client.enable()

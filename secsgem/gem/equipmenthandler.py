@@ -55,28 +55,18 @@ RCMD_STOP = "STOP"
 class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None,
+    def __init__(self, connection,
                  initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
         """
         Initialize a gem equipment handler.
 
-        :param address: IP address of remote host
+        :param connection: Base connection
         :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param name: Name of the underlying configuration
-        :type name: string
-        :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
         :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
         "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
         :type initial_control_state: string
         """
-        super().__init__(address, port, active, session_id, name, custom_connection_handler)
+        super().__init__(connection)
 
         self.isHost = False
 
