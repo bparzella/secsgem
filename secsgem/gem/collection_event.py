@@ -14,14 +14,19 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event."""
+import typing
 
-import secsgem.secs
+import secsgem.secs.variables
 
 
 class CollectionEvent:
     """Collection event definition."""
 
-    def __init__(self, ceid, name, data_values, **kwargs):
+    def __init__(self,
+                 ceid: typing.Union[int, str],
+                 name: str,
+                 data_values: typing.List[typing.Union[int, str]],
+                 **kwargs):
         """
         Initialize a collection event.
 
@@ -43,6 +48,8 @@ class CollectionEvent:
         self.ceid = ceid
         self.name = name
         self.data_values = data_values
+
+        self.id_type: typing.Type[secsgem.secs.variables.Base]
 
         if isinstance(self.ceid, int):
             self.id_type = secsgem.secs.variables.U4

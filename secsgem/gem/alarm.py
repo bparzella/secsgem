@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM alarm."""
+import typing
 
 import secsgem.secs
 
@@ -21,7 +22,14 @@ import secsgem.secs
 class Alarm:
     """Alarm definition."""
 
-    def __init__(self, alid, name, text, code, ce_on, ce_off, **kwargs):
+    def __init__(self,
+                 alid: typing.Union[str, int],
+                 name: str,
+                 text: str,
+                 code: int,
+                 ce_on: typing.Union[str, int],
+                 ce_off: typing.Union[str, int],
+                 **kwargs):
         """
         Initialize an alarm.
 
@@ -47,6 +55,8 @@ class Alarm:
         self.enabled = False
         self.set = False
 
+        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        
         if isinstance(self.alid, int):
             self.id_type = secsgem.secs.variables.U4
         else:

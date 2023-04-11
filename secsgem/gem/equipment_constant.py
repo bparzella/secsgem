@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM equipment constant."""
+import typing
 
 import secsgem.secs
 
@@ -21,7 +22,16 @@ import secsgem.secs
 class EquipmentConstant:
     """Equipment constant definition."""
 
-    def __init__(self, ecid, name, min_value, max_value, default_value, unit, value_type, use_callback=True, **kwargs):
+    def __init__(self,
+                 ecid: typing.Union[int, str],
+                 name: str,
+                 min_value: typing.Union[int, float],
+                 max_value: typing.Union[int, float],
+                 default_value: typing.Union[int, float],
+                 unit: str,
+                 value_type: typing.Type[secsgem.secs.variables.Base],
+                 use_callback: bool = True,
+                 **kwargs):
         """
         Initialize an equipment constant.
 
@@ -60,6 +70,8 @@ class EquipmentConstant:
         self.value_type = value_type
         self.use_callback = use_callback
         self.value = default_value
+
+        self.id_type: typing.Type[secsgem.secs.variables.Base]
 
         if isinstance(self.ecid, int):
             self.id_type = secsgem.secs.variables.U4

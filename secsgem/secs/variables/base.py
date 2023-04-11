@@ -28,9 +28,9 @@ class Base:
     format_code = -1
     preferred_types: typing.Optional[typing.List[typing.Type]]
 
-    def __init__(self):
+    def __init__(self, value=None):
         """Initialize a secs variable."""
-        self.value = None
+        self.value = value
 
     def set(self, value):
         """

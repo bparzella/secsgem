@@ -15,7 +15,7 @@
 #####################################################################
 """Wrapper for GEM remote command."""
 
-import secsgem.secs
+from secsgem.secs.variables import U4, String
 
 
 class RemoteCommand:
@@ -46,9 +46,9 @@ class RemoteCommand:
         self.ce_finished = ce_finished
 
         if isinstance(self.rcmd, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = U4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = String
 
         for key, value in kwargs.items():
             setattr(self, key, value)

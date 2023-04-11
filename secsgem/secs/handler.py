@@ -49,10 +49,10 @@ class SecsHandler:
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collectionEvents: typing.Dict[int, CollectionEvent] = {}
-        self._dataValues: typing.Dict[int, DataValue] = {}
-        self._alarms: typing.Dict[int, Alarm] = {}
-        self._remoteCommands: typing.Dict[str, RemoteCommand] = {}
+        self._collectionEvents: typing.Dict[typing.Union[int, str], CollectionEvent] = {}
+        self._dataValues: typing.Dict[typing.Union[int, str], DataValue] = {}
+        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {}
+        self._remoteCommands: typing.Dict[typing.Union[int, str], RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event report."""
+import typing
 
 import secsgem.secs
 
@@ -21,7 +22,10 @@ import secsgem.secs
 class CollectionEventReport:
     """Report definition for registered collection events."""
 
-    def __init__(self, rptid, variables, **kwargs):
+    def __init__(self,
+                 rptid: typing.Union[int, str],
+                 variables: typing.List[typing.Union[int, str]], 
+                 **kwargs):
         """
         Initialize a collection event report.
 
@@ -34,6 +38,8 @@ class CollectionEventReport:
         """
         self.rptid = rptid
         self.vars = variables
+
+        self.id_type: typing.Type[secsgem.secs.variables.Base]
 
         if isinstance(self.rptid, int):
             self.id_type = secsgem.secs.variables.U4

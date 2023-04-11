@@ -14,19 +14,22 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM equipment."""
-
 from datetime import datetime
+import typing
 
 from dateutil.tz import tzlocal
 
 import secsgem.common
+import secsgem.hsms
 import secsgem.secs.variables
 import secsgem.secs.data_items
 
 from .status_variable import StatusVariable
+from .alarm import Alarm
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
+from .data_value import DataValue
 from .equipment_constant import EquipmentConstant
 from .remote_command import RemoteCommand
 from .handler import GemHandler
@@ -55,8 +58,10 @@ RCMD_STOP = "STOP"
 class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
-    def __init__(self, connection,
-                 initial_control_state="ATTEMPT_ONLINE", initial_online_control_state="REMOTE"):
+    def __init__(self,
+                 connection: secsgem.hsms.HsmsHandler,
+                 initial_control_state: str = "ATTEMPT_ONLINE",
+                 initial_online_control_state: str = "REMOTE"):
         """
         Initialize a gem equipment handler.
 
@@ -78,10 +83,10 @@ class GemEquipmentHandler(GemHandler):
 
         self._time_format = 1
 
-        self._data_values = {
+        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {
         }
 
-        self._status_variables = {
+        self._status_variables: typing.Dict[typing.Union[int, str], StatusVariable] = {
             SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", secsgem.secs.variables.String),
             SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", secsgem.secs.variables.Binary),
             SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.variables.Array),
@@ -89,7 +94,7 @@ class GemEquipmentHandler(GemHandler):
             SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", secsgem.secs.variables.Array),
         }
 
-        self._collection_events = {
+        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {
             CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
             CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
             CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
@@ -97,23 +102,23 @@ class GemEquipmentHandler(GemHandler):
             CEID_CMD_STOP_DONE: CollectionEvent(CEID_CMD_STOP_DONE, "CmdStopDone", []),
         }
 
-        self._equipment_constants = {
+        self._equipment_constants: typing.Dict[typing.Union[int, str], EquipmentConstant] = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
                                                                      "sec", secsgem.secs.variables.I2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4),
         }
 
-        self._alarms = {
+        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {
         }
 
-        self._remote_commands = {
+        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {
             RCMD_START: RemoteCommand(RCMD_START, "Start", [], CEID_CMD_START_DONE),
             RCMD_STOP: RemoteCommand(RCMD_STOP, "Stop", [], CEID_CMD_STOP_DONE),
         }
 
-        self._registered_reports = {}
-        self._registered_collection_events = {}
+        self._registered_reports: typing.Dict[typing.Union[int, str], CollectionEventReport] = {}
+        self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
 
         self.controlState = secsgem.common.Fysom({
             'initial': "INIT",
@@ -156,7 +161,7 @@ class GemEquipmentHandler(GemHandler):
             ]
         })
 
-        self.controlState.start()
+        self.controlState.start()  # type: ignore
 
     # control state model
 
@@ -222,7 +227,9 @@ class GemEquipmentHandler(GemHandler):
         self.controlState.switch_online_remote()
         self.onlineControlState = "REMOTE"
 
-    def _on_s01f15(self, handler, packet):
+    def _on_s01f15(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 15, Request offline.
 
@@ -236,12 +243,14 @@ class GemEquipmentHandler(GemHandler):
         OFLACK = 0
 
         if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            self.controlState.remote_offline()
+            self.controlState.remote_offline()  # type: ignore
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
         return self.stream_function(1, 16)(OFLACK)
 
-    def _on_s01f17(self, handler, packet):
+    def _on_s01f17(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 17, Request online.
 
@@ -255,7 +264,7 @@ class GemEquipmentHandler(GemHandler):
         ONLACK = 1
 
         if self.controlState.isstate("HOST_OFFLINE"):
-            self.controlState.remote_online()
+            self.controlState.remote_online()  # type: ignore
             ONLACK = 0
         elif self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
             ONLACK = 2
@@ -265,7 +274,7 @@ class GemEquipmentHandler(GemHandler):
     # data values
 
     @property
-    def data_values(self):
+    def data_values(self) -> typing.Dict[typing.Union[int, str], DataValue]:
         """
         Get list of the data values.
 
@@ -274,7 +283,9 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._data_values
 
-    def on_dv_value_request(self, dvid, dv):
+    def on_dv_value_request(self, 
+                            dvid: secsgem.secs.variables.Base, 
+                            dv: DataValue) -> secsgem.secs.variables.Base:
         """
         Get the data value depending on its configuation.
 
@@ -291,7 +302,7 @@ class GemEquipmentHandler(GemHandler):
 
         return dv.value_type(dv.value)
 
-    def _get_dv_value(self, dv):
+    def _get_dv_value(self, dv: DataValue) -> secsgem.secs.variables.Base:
         """
         Get the data value depending on its configuation.
 
@@ -308,7 +319,7 @@ class GemEquipmentHandler(GemHandler):
     # status variables
 
     @property
-    def status_variables(self):
+    def status_variables(self) -> typing.Dict[typing.Union[int, str], StatusVariable]:
         """
         Get list of the status variables.
 
@@ -317,7 +328,7 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._status_variables
 
-    def on_sv_value_request(self, svid, sv):
+    def on_sv_value_request(self, svid: secsgem.secs.variables.Base, sv: StatusVariable) -> secsgem.secs.variables.Base:
         """
         Get the status variable value depending on its configuation.
 
@@ -334,7 +345,7 @@ class GemEquipmentHandler(GemHandler):
 
         return sv.value_type(sv.value)
 
-    def _get_sv_value(self, sv):
+    def _get_sv_value(self, sv: StatusVariable) -> secsgem.secs.variables.Base:
         """
         Get the status variable value depending on its configuation.
 
@@ -362,7 +373,9 @@ class GemEquipmentHandler(GemHandler):
 
         return sv.value_type(sv.value)
 
-    def _on_s01f03(self, handler, packet):
+    def _on_s01f03(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 3, Equipment status request.
 
@@ -390,7 +403,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(1, 4)(responses)
 
-    def _on_s01f11(self, handler, packet):
+    def _on_s01f11(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 11, SV namelist request.
 
@@ -421,7 +436,7 @@ class GemEquipmentHandler(GemHandler):
     # collection events
 
     @property
-    def collection_events(self):
+    def collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEvent]:
         """
         Get list of the collection events.
 
@@ -431,7 +446,7 @@ class GemEquipmentHandler(GemHandler):
         return self._collection_events
 
     @property
-    def registered_reports(self):
+    def registered_reports(self) -> typing.Dict[typing.Union[int, str], CollectionEventReport]:
         """
         Get list of the subscribed reports.
 
@@ -441,7 +456,7 @@ class GemEquipmentHandler(GemHandler):
         return self._registered_reports
 
     @property
-    def registered_collection_events(self):
+    def registered_collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEventLink]:
         """
         Get list of the subscribed collection events.
 
@@ -451,7 +466,7 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._registered_collection_events
 
-    def trigger_collection_events(self, ceids):
+    def trigger_collection_events(self, ceids: typing.List[typing.Union[int, str]]):
         """
         Triggers the supplied collection events.
 
@@ -469,7 +484,9 @@ class GemEquipmentHandler(GemHandler):
                     self.send_and_waitfor_response(self.stream_function(6, 11)(
                         {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
-    def _on_s02f33(self, handler, packet):
+    def _on_s02f33(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 33, Define Report.
 
@@ -530,7 +547,9 @@ class GemEquipmentHandler(GemHandler):
 
         return result
 
-    def _on_s02f35(self, handler, packet):
+    def _on_s02f35(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 35, Link event report.
 
@@ -582,7 +601,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(2, 36)(LRACK)
 
-    def _on_s02f37(self, handler, packet):
+    def _on_s02f37(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
@@ -604,7 +625,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(2, 38)(ERACK)
 
-    def _on_s06f15(self, handler, packet):
+    def _on_s06f15(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 6, Function 15, event report request.
 
@@ -627,7 +650,7 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
-    def _set_ce_state(self, ceed, ceids):
+    def _set_ce_state(self, ceed: bool, ceids: typing.List[typing.Union[int, str]]) -> bool:
         """
         En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
 
@@ -651,7 +674,7 @@ class GemEquipmentHandler(GemHandler):
 
         return result
 
-    def _build_collection_event(self, ceid):
+    def _build_collection_event(self, ceid: typing.Union[int, str]):
         """
         Build reports for a collection event.
 
@@ -680,7 +703,7 @@ class GemEquipmentHandler(GemHandler):
     # equipment constants
 
     @property
-    def equipment_constants(self):
+    def equipment_constants(self) -> typing.Dict[typing.Union[int, str], EquipmentConstant]:
         """
         The list of the equipments contstants.
 
@@ -689,7 +712,9 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._equipment_constants
 
-    def on_ec_value_request(self, ecid, ec):
+    def on_ec_value_request(self,
+                            ecid: secsgem.secs.variables.Base,
+                            ec: EquipmentConstant) -> secsgem.secs.variables.Base:
         """
         Get the equipment constant value depending on its configuation.
 
@@ -706,7 +731,10 @@ class GemEquipmentHandler(GemHandler):
 
         return ec.value_type(ec.value)
 
-    def on_ec_value_update(self, ecid, ec, value):
+    def on_ec_value_update(self,
+                           ecid: secsgem.secs.variables.Base,
+                           ec: EquipmentConstant, 
+                           value: typing.Union[int, float]):
         """
         Set the equipment constant value depending on its configuation.
 
@@ -723,7 +751,7 @@ class GemEquipmentHandler(GemHandler):
 
         ec.value = value
 
-    def _get_ec_value(self, ec):
+    def _get_ec_value(self, ec: EquipmentConstant) -> secsgem.secs.variables.Base:
         """
         Get the equipment constant value depending on its configuation.
 
@@ -741,7 +769,7 @@ class GemEquipmentHandler(GemHandler):
             return self.on_ec_value_request(ec.id_type(ec.ecid), ec)
         return ec.value_type(ec.value)
 
-    def _set_ec_value(self, ec, value):
+    def _set_ec_value(self, ec: EquipmentConstant, value: typing.Union[int, float]):
         """
         Get the equipment constant value depending on its configuation.
 
@@ -753,14 +781,16 @@ class GemEquipmentHandler(GemHandler):
         if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             self.establishCommunicationTimeout = value
         if ec.ecid == ECID_TIME_FORMAT:
-            self._time_format = value
+            self._time_format = int(value)
 
         if ec.use_callback:
             self.on_ec_value_update(ec.id_type(ec.ecid), ec, value)
         else:
             ec.value = value
 
-    def _on_s02f13(self, handler, packet):
+    def _on_s02f13(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 13, Equipment constant request.
 
@@ -788,7 +818,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(2, 14)(responses)
 
-    def _on_s02f15(self, handler, packet):
+    def _on_s02f15(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 15, Equipment constant send.
 
@@ -819,11 +851,13 @@ class GemEquipmentHandler(GemHandler):
 
         if eac == 0:
             for ec in message:
-                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV)
+                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV.get())
 
         return self.stream_function(2, 16)(eac)
 
-    def _on_s02f29(self, handler, packet):
+    def _on_s02f29(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 29, EC namelist request.
 
@@ -860,7 +894,7 @@ class GemEquipmentHandler(GemHandler):
     # alarms
 
     @property
-    def alarms(self):
+    def alarms(self) -> typing.Dict[typing.Union[int, str], Alarm]:
         """
         Get the list of the alarms.
 
@@ -869,7 +903,7 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._alarms
 
-    def set_alarm(self, alid):
+    def set_alarm(self, alid: typing.Union[int, str]):
         """
         Set the list of the alarms.
 
@@ -894,7 +928,7 @@ class GemEquipmentHandler(GemHandler):
 
         self.trigger_collection_events([self.alarms[alid].ce_on])
 
-    def clear_alarm(self, alid):
+    def clear_alarm(self, alid: typing.Union[int, str]):
         """
         Clear the list of the alarms.
 
@@ -915,7 +949,9 @@ class GemEquipmentHandler(GemHandler):
 
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
-    def _on_s05f03(self, handler, packet):
+    def _on_s05f03(self,
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 3, Alarm en-/disabled.
 
@@ -940,7 +976,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(5, 4)(result)
 
-    def _on_s05f05(self, handler, packet):
+    def _on_s05f05(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 5, Alarm list.
 
@@ -968,7 +1006,9 @@ class GemEquipmentHandler(GemHandler):
 
         return self.stream_function(5, 6)(result)
 
-    def _on_s05f07(self, handler, packet):
+    def _on_s05f07(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 7, Enabled alarm list.
 
@@ -992,7 +1032,7 @@ class GemEquipmentHandler(GemHandler):
     # remote commands
 
     @property
-    def remote_commands(self):
+    def remote_commands(self) -> typing.Dict[typing.Union[int, str], RemoteCommand]:
         """
         Get list of the remote commands.
 
@@ -1001,7 +1041,9 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._remote_commands
 
-    def _on_s02f41(self, handler, packet):
+    def _on_s02f41(self,
+                   handler: secsgem.secs.SecsHandler,
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 41, host command send.
 
@@ -1059,7 +1101,7 @@ class GemEquipmentHandler(GemHandler):
 
     # helpers
 
-    def _get_clock(self):
+    def _get_clock(self) -> str:
         """
         Get the clock depending on configured time format.
 
@@ -1075,7 +1117,7 @@ class GemEquipmentHandler(GemHandler):
 
         return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
-    def _get_control_state_id(self):
+    def _get_control_state_id(self) -> int:
         """
         Get id of the control state for the current control state.
 
@@ -1095,7 +1137,7 @@ class GemEquipmentHandler(GemHandler):
 
         return -1
 
-    def _get_events_enabled(self):
+    def _get_events_enabled(self) -> typing.List[typing.Union[int, str]]:
         """
         List of the enabled collection events.
 
@@ -1110,7 +1152,7 @@ class GemEquipmentHandler(GemHandler):
 
         return enabled_ceid
 
-    def _get_alarms_enabled(self):
+    def _get_alarms_enabled(self) -> typing.List[typing.Union[int, str]]:
         """
         List of the enabled alarms.
 
@@ -1125,7 +1167,7 @@ class GemEquipmentHandler(GemHandler):
 
         return enabled_alarms
 
-    def _get_alarms_set(self):
+    def _get_alarms_set(self) -> typing.List[typing.Union[int, str]]:
         """
         List of the set alarms.
 

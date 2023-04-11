@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM data value."""
+import typing
 
 import secsgem.secs
 
@@ -21,7 +22,12 @@ import secsgem.secs
 class DataValue:
     """Data value definition."""
 
-    def __init__(self, dvid, name, value_type, use_callback=True, **kwargs):
+    def __init__(self,
+                 dvid: typing.Union[int, str],
+                 name: str,
+                 value_type: typing.Type[secsgem.secs.variables.Base],
+                 use_callback: bool = True,
+                 **kwargs):
         """
         Initialize a data value.
 
@@ -48,6 +54,8 @@ class DataValue:
         self.use_callback = use_callback
         self.value = 0
 
+        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        
         if isinstance(self.dvid, int):
             self.id_type = secsgem.secs.variables.U4
         else:
