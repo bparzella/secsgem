@@ -14,10 +14,11 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains callback handling routines."""
+import typing
 
 
 class _CallbackCallWrapper:
-    def __init__(self, handler, name):
+    def __init__(self, handler: "CallbackHandler", name: str):
         self.name = name
         self.handler = handler
 
@@ -32,13 +33,13 @@ class CallbackHandler:
     This handler manages callbacks for events that can happen on a handler for a connection.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the handler."""
-        self._callbacks = {}
-        self.target = None
+        self._callbacks: typing.Dict[str, typing.Callable] = {}
+        self.target: object = None
         self._object_intitialized = True
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value: typing.Callable):
         """
         Set an item as object member.
 
@@ -55,7 +56,7 @@ class CallbackHandler:
         else:
             self._callbacks[name] = value
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> typing.Callable:
         """
         Get a callable function for an event.
 
@@ -80,7 +81,7 @@ class CallbackHandler:
 
             raise StopIteration()
 
-    def __iter__(self):
+    def __iter__(self) -> _CallbacksIter:
         """
         Get an iterator for the callbacks.
 
@@ -88,7 +89,7 @@ class CallbackHandler:
         """
         return self._CallbacksIter(self._callbacks.keys())
 
-    def __contains__(self, callback):
+    def __contains__(self, callback: str) -> bool:
         """
         Check if a callback is present.
 
@@ -104,7 +105,7 @@ class CallbackHandler:
 
         return False
 
-    def _call(self, callback, *args, **kwargs):
+    def _call(self, callback: str, *args, **kwargs) -> typing.Any:
         if callback in self._callbacks:
             return self._callbacks[callback](*args, **kwargs)
 

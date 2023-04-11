@@ -14,13 +14,12 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains helper functions."""
-
 import errno
 import sys
 import types
 
 
-def format_hex(text):
+def format_hex(text: bytes) -> str:
     """
     Return byte arrays (string) formated as hex numbers.
 
@@ -41,7 +40,7 @@ def format_hex(text):
     return ":".join(f"{c:02x}" for c in bytearray(text))
 
 
-def is_windows():
+def is_windows() -> bool:
     """
     Return True if running on windows.
 
@@ -54,7 +53,7 @@ def is_windows():
     return False
 
 
-def function_name(function):
+def function_name(function) -> str:
     """
     Get name of function or method.
 
@@ -67,7 +66,7 @@ def function_name(function):
     return function.__self__.__class__.__name__ + "." + function.__name__
 
 
-def indent_line(line, spaces=2):
+def indent_line(line: str, spaces: int = 2) -> str:
     """
     Indent line by a number of spaces.
 
@@ -78,10 +77,10 @@ def indent_line(line, spaces=2):
     :returns: indented text
     :rtype: string
     """
-    return (' ' * spaces) + line
+    return f"{' ' * spaces}{line}"
 
 
-def indent_block(block, spaces=2):
+def indent_block(block: str, spaces: int = 2) -> str:
     """
     Indent a multiline string by a number of spaces.
 
@@ -93,12 +92,12 @@ def indent_block(block, spaces=2):
     :rtype: string
     """
     lines = block.split('\n')
-    lines = filter(None, lines)
-    lines = map(lambda line, spc=spaces: indent_line(line, spc), lines)
-    return '\n'.join(lines)
+    lines_filter = filter(None, lines)
+    indented_lines = [indent_line(line, spaces) for line in lines_filter]
+    return '\n'.join(indented_lines)
 
 
-def is_errorcode_ewouldblock(errorcode):
+def is_errorcode_ewouldblock(errorcode: int) -> bool:
     """
     Check if the errorcode is a would-block error.
 
