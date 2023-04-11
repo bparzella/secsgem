@@ -14,14 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM remote command."""
+import typing
 
-from secsgem.secs.variables import U4, String
+from secsgem.secs.variables import U4, String, Base
 
 
 class RemoteCommand:
     """Remote command definition."""
 
-    def __init__(self, rcmd, name, params, ce_finished, **kwargs):
+    def __init__(self,
+                 rcmd: typing.Union[int, str],
+                 name: str,
+                 params: typing.List[str],
+                 ce_finished: typing.Union[int, str],
+                 **kwargs):
         """
         Initialize a remote command.
 
@@ -44,6 +50,8 @@ class RemoteCommand:
         self.name = name
         self.params = params
         self.ce_finished = ce_finished
+
+        self.id_type: typing.Type[Base]
 
         if isinstance(self.rcmd, int):
             self.id_type = U4
