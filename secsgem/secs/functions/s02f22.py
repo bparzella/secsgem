@@ -36,9 +36,12 @@ class SecsS02F22(SecsStreamFunction):
     **Example**::
 
         >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS02F22(secsgem.secs.data_items.CMDA.DONE)
+        S2F22
+          <U1 0 > .
 
     :param value: parameters for this function (see example)
-    :type value: 
+    :type value: int
     """
 
     _stream = 2

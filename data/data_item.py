@@ -113,9 +113,9 @@ class DataItem:
     def extra_variables(self) -> str:
         """Get the extra variables of the data item."""
         if len(self.type) == 1:
-            if self.type[0] in ("Binary", "U1"):
-                return self._extra_variables_binary
-        return ""
+            if self.type[0] in ("Boolean"):
+                return ""
+        return self._extra_variables_binary
 
     @property
     def _values_boolean(self) -> str:
@@ -167,6 +167,9 @@ class DataItem:
 
             variables.append(f"{value['constant']} = {val}")
 
+        if len(variables) < 1:
+            return ""
+        
         join_text = '\n    '
         text = f"\n    {join_text.join(variables)}\n"
         return text

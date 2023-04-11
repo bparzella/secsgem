@@ -81,8 +81,8 @@ class Function:
         self._stream = int(match.group(1))
         self._function = int(match.group(2))
 
-        self._samples = None
-        self._preferred_type = None
+        self._samples: typing.Optional[typing.List[typing.Dict[str, typing.Any]]] = None
+        self._preferred_type: typing.Optional[typing.Type] = None
 
     @classmethod
     def load_all(cls, root, data_items: typing.Dict[str, DataItem]) -> typing.List["Function"]:
@@ -116,7 +116,7 @@ class Function:
     def stream_function_dict(functions: typing.List["Function"]) -> typing.Dict:
         """Get streams functions in a dict."""
         # build the old style streams functions dictionary
-        secs_streams_functions = collections.OrderedDict()
+        secs_streams_functions: typing.Dict[int, typing.Dict[int, "Function"]] = collections.OrderedDict()
 
         for function in functions:
             if function.stream not in secs_streams_functions:
@@ -232,7 +232,7 @@ class Function:
         if self.raw_structure is None:
             return []
         
-        items = []
+        items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
         return items
 
@@ -256,8 +256,8 @@ class Function:
 
         code = structure_code.format(imports=imports, data_item=self.structure)
 
-        glob = {}
-        loc = {}
+        glob: typing.Dict[str, typing.Any] = {}
+        loc: typing.Dict[str, typing.Any] = {}
 
         exec(code, glob, loc)
 
@@ -267,19 +267,19 @@ class Function:
     def samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
         """Get samples and result data."""
         if self._samples is None:
-            self._load_samples()
+            self._samples, self._preferred_type = self._load_samples()
         
         return self._samples
     
     @property
-    def preferred_type(self) -> str:
+    def preferred_type(self) -> typing.Optional[typing.Type]:
         """Get preferred type."""
         if self._samples is None:
-            self._load_samples()
+            self._samples, self._preferred_type = self._load_samples()
         
         return self._preferred_type
     
-    def _load_samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
+    def _load_samples(self) -> typing.Tuple[typing.List[typing.Dict[str, typing.Any]], typing.Optional[typing.Type]]:
         if "sample_data" not in self._data:
             sample_data = [{"data": ""}]
         else:
@@ -287,7 +287,8 @@ class Function:
             if isinstance(sample_data, str):
                 sample_data = [{"data": sample_data}]
         
-        self._samples = []
+        samples = []
+        preferred_type = None
 
         for sample in sample_data:
             imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
@@ -303,17 +304,19 @@ class Function:
                     data_item=self.structure,
                     sample_value=sample["data"])
 
-            glob = {}
-            loc = {}
+            glob: typing.Dict[str, typing.Any] = {}
+            loc: typing.Dict[str, typing.Any] = {}
 
             exec(code, glob, loc)
 
-            self._samples.append({
+            samples.append({
                 "data": sample["data"],
                 "comment": f" # {sample['info']}" if "info" in sample else "",
                 "text": loc["var"]
             })
-            self._preferred_type = loc["preferred_type"]
+            preferred_type = loc["preferred_type"]
+
+        return samples, preferred_type
 
     @property
     def extra_help(self) -> str:

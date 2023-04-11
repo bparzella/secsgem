@@ -49,3 +49,7 @@ class CMDA(DataItemBase):
         variables.U1,
         variables.I1
     ]
+
+    DONE = 0
+    COMMAND_UNKNOWN = 1
+    NOT_NOW = 2
