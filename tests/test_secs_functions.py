@@ -47,7 +47,7 @@ class testSecsFunctionNoData:
         function.decode(b"")
 
 
-class testSecsFunctionSingleVariable(object):
+class testSecsFunctionSingleVariable:
     cls = None
 
     # test constructor

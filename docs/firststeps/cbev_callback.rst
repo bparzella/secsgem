@@ -49,7 +49,7 @@ These methods don't need to be implemented on the handler itself.
 Another object can also be registered using the callbacks member names of the handler.
 The :code:`_on_<callback_name>` methods are then searched in that object::
 
-    class TestClass(object):
+    class TestClass:
         def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
             return ACKC5.ACCEPTED
     

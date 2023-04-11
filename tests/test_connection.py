@@ -22,7 +22,7 @@ import datetime
 import secsgem.hsms
 
 
-class HsmsTestConnection(object):
+class HsmsTestConnection:
     """
     Connection class for single connection from hsmsMultiPassiveServer.
 
@@ -114,7 +114,7 @@ class HsmsTestConnection(object):
         self.connected = False
 
 
-class HsmsTestServer(object):
+class HsmsTestServer:
     """Server class for testing."""
 
     def __init__(self, _=-1):

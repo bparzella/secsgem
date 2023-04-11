@@ -42,7 +42,7 @@ These methods don't need to be implemented on the handler itself.
 Other objects can also be registered using the event member names of the handler.
 The :code:`_on_event_<event_name>` and :code:`_on_event` methods are then searched in that object::
 
-    class TestClass(object):
+    class TestClass:
         def _on_event_hsms_selected(self, connection):
             pass
     

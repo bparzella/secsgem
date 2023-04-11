@@ -23,7 +23,7 @@ import secsgem.gem
 
 from test_connection import HsmsTestServer
 
-class GemHandlerPassiveGroup(object):
+class GemHandlerPassiveGroup:
     def __init__(self):
         #hide warnings
         self.client = None

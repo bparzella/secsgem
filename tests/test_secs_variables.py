@@ -1851,7 +1851,7 @@ class TestSecsVarU4(unittest.TestCase):
         self.assertEqual(secsvar.get(), [123, 234, 345])
 
 
-class GoodBadLists(object):
+class GoodBadLists:
     _type = None
     goodValues = []
     badValues = []
