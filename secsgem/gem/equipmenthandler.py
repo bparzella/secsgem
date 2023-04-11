@@ -779,7 +779,7 @@ class GemEquipmentHandler(GemHandler):
         :type value: :class:`secsgem.secs.variables.Base`
         """
         if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            self.establishCommunicationTimeout = value
+            self.establishCommunicationTimeout = int(value)
         if ec.ecid == ECID_TIME_FORMAT:
             self._time_format = int(value)
 

@@ -14,9 +14,10 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM host."""
-
 import collections
+import typing
 
+import secsgem.hsms
 import secsgem.secs
 
 from .handler import GemHandler
@@ -25,7 +26,7 @@ from .handler import GemHandler
 class GemHostHandler(GemHandler):
     """Baseclass for creating host models. Inherit from this class and override required functions."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: secsgem.hsms.HsmsHandler):
         """
         Initialize a gem host handler.
 
@@ -35,9 +36,9 @@ class GemHostHandler(GemHandler):
 
         self.isHost = True
 
-        self.reportSubscriptions = {}
+        self.reportSubscriptions: typing.Dict[typing.Union[int, str], typing.List[typing.Union[int, str]]] = {}
 
-    def clear_collection_events(self):
+    def clear_collection_events(self) -> None:
         """Clear all collection events."""
         self.logger.info("Clearing collection events")
 
@@ -50,7 +51,10 @@ class GemHostHandler(GemHandler):
         # delete all reports
         self.disable_ceid_reports()
 
-    def subscribe_collection_event(self, ceid, dvs, report_id=None):
+    def subscribe_collection_event(self,
+                                   ceid: typing.Union[int, str],
+                                   dvs: typing.List[typing.Union[int, str]],
+                                   report_id: typing.Optional[typing.Union[int, str]] = None):
         """
         Subscribe to a collection event.
 
@@ -81,7 +85,9 @@ class GemHostHandler(GemHandler):
         # enable collection event
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
-    def send_remote_command(self, rcmd, params):
+    def send_remote_command(self,
+                            rcmd: typing.Union[int, str],
+                            params: typing.List[str]):
         """
         Send a remote command.
 
@@ -104,7 +110,8 @@ class GemHostHandler(GemHandler):
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(s2f41))
 
-    def delete_process_programs(self, ppids):
+    def delete_process_programs(self,
+                                ppids: typing.List[typing.Union[int, str]]):
         """
         Delete a list of process program.
 
@@ -116,14 +123,14 @@ class GemHostHandler(GemHandler):
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
 
-    def get_process_program_list(self):
+    def get_process_program_list(self) -> secsgem.secs.SecsStreamFunction:
         """Get process program list."""
         self.logger.info("Get process program list")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
-    def go_online(self):
+    def go_online(self) -> typing.Optional[str]:
         """Set control state to online."""
         self.logger.info("Go online")
 
@@ -134,14 +141,14 @@ class GemHostHandler(GemHandler):
 
         return resp.get()
 
-    def go_offline(self):
+    def go_offline(self) -> typing.Optional[str]:
         """Set control state to offline."""
         self.logger.info("Go offline")
 
         # send remote command
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
-    def enable_alarm(self, alid):
+    def enable_alarm(self, alid: typing.Union[int, str]):
         """
         Enable alarm.
 
@@ -153,7 +160,7 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
 
-    def disable_alarm(self, alid):
+    def disable_alarm(self, alid: typing.Union[int, str]):
         """
         Disable alarm.
 
@@ -165,7 +172,8 @@ class GemHostHandler(GemHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
 
-    def list_alarms(self, alids=None):
+    def list_alarms(self, 
+                    alids: typing.Optional[typing.List[typing.Union[int, str]]] = None):
         """
         List alarms.
 
@@ -190,7 +198,9 @@ class GemHostHandler(GemHandler):
         del handler, ALID, ALCD, ALTX  # unused variables
         return secsgem.secs.data_items.ACKC5.ACCEPTED
 
-    def _on_s05f01(self, handler, packet):
+    def _on_s05f01(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 1, Alarm request.
 
@@ -208,7 +218,9 @@ class GemHostHandler(GemHandler):
 
         return self.stream_function(5, 2)(result)
 
-    def _on_s06f11(self, handler, packet):
+    def _on_s06f11(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 6, Function 11, Establish Communication Request.
 
@@ -240,7 +252,9 @@ class GemHostHandler(GemHandler):
         del handler, TID, TEXT  # unused variables
         return secsgem.secs.data_items.ACKC10.ACCEPTED
 
-    def _on_s10f01(self, handler, packet):
+    def _on_s10f01(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 10, Function 1, Terminal Request.
 

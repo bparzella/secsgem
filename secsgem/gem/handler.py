@@ -14,18 +14,19 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
-
 import logging
 import threading
+import typing
 
 import secsgem.common
+import secsgem.hsms
 import secsgem.secs
 
 
 class GemHandler(secsgem.secs.SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
-    def __init__(self, connection):
+    def __init__(self, connection: secsgem.hsms.HsmsHandler):
         """
         Initialize a gem handler.
 
@@ -84,13 +85,13 @@ class GemHandler(secsgem.secs.SecsHandler):
 
         self.reportIDCounter = 1000
 
-        self.waitEventList = []
+        self.waitEventList: typing.List[threading.Event] = []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__} {str(self._serialize_data())}"
 
-    def _serialize_data(self):
+    def _serialize_data(self)-> typing.Dict[str, typing.Any]:
         """
         Get serialized data.
 
@@ -103,21 +104,21 @@ class GemHandler(secsgem.secs.SecsHandler):
                      'reportIDCounter': self.reportIDCounter})
         return data
 
-    def enable(self):
+    def enable(self) -> None:
         """Enable the connection."""
         self.connection.enable()
-        self.communicationState.enable()
+        self.communicationState.enable()  # type: ignore
 
         self.logger.info("Connection enabled")
 
-    def disable(self):
+    def disable(self) -> None:
         """Disable the connection."""
         self.connection.disable()
-        self.communicationState.disable()
+        self.communicationState.disable()  # type: ignore
 
         self.logger.info("Connection disabled")
 
-    def _on_hsms_packet_received(self, data):
+    def _on_hsms_packet_received(self, data: typing.Dict[str, typing.Any]):
         """
         Packet received from hsms layer.
 
@@ -135,9 +136,9 @@ class GemHandler(secsgem.secs.SecsHandler):
                                                                     "MDLN": [self.MDLN, self.SOFTREV]}),
                                        packet.header.system)
 
-                self.communicationState.s1f13received()
+                self.communicationState.s1f13received()  # type: ignore
             elif packet.header.stream == 1 and packet.header.function == 14:
-                self.communicationState.s1f14received()
+                self.communicationState.s1f14received()  # type: ignore
         elif self.communicationState.isstate('WAIT_DELAY'):
             pass
         elif self.communicationState.isstate('COMMUNICATING'):
@@ -231,7 +232,7 @@ class GemHandler(secsgem.secs.SecsHandler):
             # update communication state
             self.communicationState.communicationfail()
 
-    def on_commack_requested(self):
+    def on_commack_requested(self) -> int:
         """
         Get the acknowledgement code for the connection request.
 
@@ -242,7 +243,9 @@ class GemHandler(secsgem.secs.SecsHandler):
         """
         return 0
 
-    def send_process_program(self, ppid, ppbody):
+    def send_process_program(self,
+                             ppid: typing.Union[int, str],
+                             ppbody: str):
         """
         Send a process program.
 
@@ -257,7 +260,8 @@ class GemHandler(secsgem.secs.SecsHandler):
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
             {"PPID": ppid, "PPBODY": ppbody}))).get()
 
-    def request_process_program(self, ppid):
+    def request_process_program(self, 
+                                ppid: typing.Union[int, str]) -> typing.Tuple[typing.Union[int, str], str]:
         """
         Request a process program.
 
@@ -270,7 +274,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
         return s7f6.PPID.get(), s7f6.PPBODY.get()
 
-    def waitfor_communicating(self, timeout=None):
+    def waitfor_communicating(self, timeout: typing.Optional[float] = None) -> bool:
         """
         Wait until connection gets into communicating state. Returns immediately if state is communicating.
 
@@ -292,7 +296,9 @@ class GemHandler(secsgem.secs.SecsHandler):
 
         return result
 
-    def _on_s01f01(self, handler, packet):
+    def _on_s01f01(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 1, Are You There.
 
@@ -308,7 +314,9 @@ class GemHandler(secsgem.secs.SecsHandler):
 
         return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
 
-    def _on_s01f13(self, handler, packet):
+    def _on_s01f13(self, 
+                   handler: secsgem.secs.SecsHandler, 
+                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 13, Establish Communication Request.
 
