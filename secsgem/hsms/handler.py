@@ -14,11 +14,11 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains class to create model for hsms endpoints."""
-
-import random
-import threading
 import logging
 import queue
+import random
+import threading
+import typing
 
 import secsgem.common
 
@@ -94,6 +94,8 @@ class HsmsHandler:
 
         self.connected = False
 
+        self._secs_decode = None
+
         # system id counter
         self.systemCounter = random.randint(0, (2 ** 32) - 1)
 
@@ -130,6 +132,16 @@ class HsmsHandler:
     def events(self):
         """Property for event handling."""
         return self._eventProducer
+
+    @property
+    def secs_decode(self) -> typing.Optional[typing.Callable[[HsmsPacket], typing.Any]]:
+        """Get secs decode."""
+        return self._secs_decode
+
+    @secs_decode.setter
+    def secs_decode(self, value: typing.Optional[typing.Callable[[HsmsPacket], typing.Any]]):
+        """Get secs decode."""
+        self._secs_decode = value
 
     def get_next_system_counter(self):
         """
@@ -298,8 +310,8 @@ class HsmsHandler:
         if packet.header.sType > 0:
             self.__handle_hsms_requests(packet)
         else:
-            if hasattr(self, 'secs_decode') and callable(getattr(self, 'secs_decode')):
-                message = self.secs_decode(packet)
+            if callable(self._secs_decode):
+                message = self._secs_decode(packet)
                 self.communicationLogger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
             else:
                 self.communicationLogger.info("< %s", packet, extra=self._get_log_extra())

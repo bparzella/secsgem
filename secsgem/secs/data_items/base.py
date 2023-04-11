@@ -15,6 +15,7 @@
 #####################################################################
 # pylint: disable=non-parent-init-called
 """Data item base class."""
+import typing
 
 from .. import variables
 
@@ -35,8 +36,8 @@ class DataItemBase(metaclass=DataItemMeta):
     It provides type and output handling.
     """
 
-    __type__ = None
-    __allowedtypes__ = None
+    __type__: typing.Optional[typing.Type[variables.Base]] = None
+    __allowedtypes__: typing.Optional[typing.List[typing.Type[variables.Base]]] = None
     __count__ = -1
 
     def __init__(self, value=None):

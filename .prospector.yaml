@@ -24,3 +24,6 @@ ignore-paths:
   - data/templates
   - docs
   - samples
+
+mypy:
+  run: true

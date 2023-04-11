@@ -14,9 +14,13 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Base class for for SECS stream and functions."""
+import typing
 
 import secsgem.common
+from ..data_items import DataItemBase
 from ..variables import functions
+
+DataItemRecursive = typing.Union[typing.Type[DataItemBase], typing.Iterable["DataItemRecursive"]]
 
 
 class StructureDisplayingMeta(type):
@@ -39,7 +43,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
     _stream = 0
     _function = 0
 
-    _data_format = None
+    _data_format: typing.Optional[DataItemRecursive] = None
 
     _to_host = True
     _to_equipment = True

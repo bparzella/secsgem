@@ -14,14 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
-
 import copy
 import logging
 import threading
+import typing
 
 import secsgem.hsms
 
 from . import functions
+
+if typing.TYPE_CHECKING:
+    from ..gem.collection_event import CollectionEvent
+    from ..gem.data_value import DataValue
+    from ..gem.alarm import Alarm
+    from ..gem.remote_command import RemoteCommand
 
 
 class SecsHandler:
@@ -43,10 +49,10 @@ class SecsHandler:
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collectionEvents = {}
-        self._dataValues = {}
-        self._alarms = {}
-        self._remoteCommands = {}
+        self._collectionEvents: typing.Dict[int, CollectionEvent] = {}
+        self._dataValues: typing.Dict[int, DataValue] = {}
+        self._alarms: typing.Dict[int, Alarm] = {}
+        self._remoteCommands: typing.Dict[str, RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self

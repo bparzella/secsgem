@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS variable base type."""
+import typing
 
 
 class Base:
@@ -25,6 +26,7 @@ class Base:
     """
 
     format_code = -1
+    preferred_types: typing.Optional[typing.List[typing.Type]]
 
     def __init__(self):
         """Initialize a secs variable."""
