@@ -24,6 +24,7 @@ class DataItemMeta(type):
     """Meta class for data items."""
 
     def __new__(mcs, name, bases, attrs):
+        """Meta class creation."""
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
         return type.__new__(mcs, name, bases, attrs)

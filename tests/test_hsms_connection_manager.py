@@ -40,7 +40,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
         server = HsmsTestServer()
         manager = secsgem.hsms.HsmsConnectionManager()
 
-        manager._testServerObject = server
+        manager._test_server_object = server
 
         manager.add_peer("test", "127.0.0.1", 1234, False, 0)
 
@@ -53,7 +53,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
         server = HsmsTestServer()
         manager = secsgem.hsms.HsmsConnectionManager()
 
-        manager._testServerObject = server
+        manager._test_server_object = server
 
         manager.add_peer("test", "127.0.0.1", 1234, True, 0)
 
@@ -65,7 +65,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
         server = HsmsTestServer()
         manager = secsgem.hsms.HsmsConnectionManager()
 
-        manager._testServerObject = server
+        manager._test_server_object = server
 
         manager.add_peer("test", "127.0.0.1", 1234, True, 0)
 

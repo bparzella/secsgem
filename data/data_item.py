@@ -23,7 +23,7 @@ class DataItem:
         data = (root / "data_items.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
-    
+
     @staticmethod
     def render_list(data_items, env, functions, target_path):
         """Render a list of data items."""
@@ -44,7 +44,7 @@ class DataItem:
 
         out_path = target_path / "__init__.py"
         out_path.write_text(init_code)
-        
+
         return last
 
     def render(self, data_item_template, target_path, used_by):
@@ -68,7 +68,7 @@ class DataItem:
         """Get the type of the data item."""
         if not isinstance(self._data["type"], list):
             return [self._data["type"]]
-        
+
         return self._data["type"]
 
     @property
@@ -76,10 +76,10 @@ class DataItem:
         """Check if this is a single type object."""
         if not isinstance(self._data["type"], list):
             return True
-    
+
         if len(self._data["type"]) == 1:
             return True
-        
+
         return False
 
     @property
@@ -92,7 +92,7 @@ class DataItem:
         """Get the help of the data item."""
         if "help" not in self._data:
             return ""
-        
+
         return self._data["help"]
 
     @property
@@ -106,7 +106,7 @@ class DataItem:
         if len(self.type) == 1:
             if self.type[0] == "Boolean":
                 return self._values_boolean
-            
+
         return self._values_binary
 
     @property
@@ -169,7 +169,7 @@ class DataItem:
 
         if len(variables) < 1:
             return ""
-        
+
         join_text = '\n    '
         text = f"\n    {join_text.join(variables)}\n"
         return text

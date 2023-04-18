@@ -8,8 +8,12 @@ import markupsafe
 from data_item import DataItem
 from function import Function
 
+
 def py_indent(
-    s: str, width: typing.Union[int, str] = 4, first: bool = False, blank: bool = False
+    text: str,
+    width: typing.Union[int, str] = 4,
+    first: bool = False,
+    blank: bool = False
 ) -> str:
     """
     Return a copy of the string with each line indented by 4 spaces.
@@ -35,27 +39,27 @@ def py_indent(
 
     newline = "\n"
 
-    if isinstance(s, markupsafe.Markup):
+    if isinstance(text, markupsafe.Markup):
         indention = markupsafe.Markup(indention)
         newline = markupsafe.Markup(newline)
 
-    s += newline  # this quirk is necessary for splitlines method
+    text += newline  # this quirk is necessary for splitlines method
 
     if blank:
-        rv = (newline + indention).join(s.splitlines())
+        result = (newline + indention).join(text.splitlines())
     else:
-        lines = s.splitlines()
-        rv = lines.pop(0)
+        lines = text.splitlines()
+        result = lines.pop(0)
 
         if lines:
-            rv += newline + newline.join(
+            result += newline + newline.join(
                 indention + "...     " + line if line else line for line in lines
             )
 
     if first:
-        rv = indention + rv
+        result = indention + result
 
-    return rv
+    return result
 
 
 def run():

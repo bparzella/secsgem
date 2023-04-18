@@ -19,7 +19,7 @@ import typing
 import secsgem.secs
 
 
-class Alarm:
+class Alarm:  # pylint: disable=too-many-instance-attributes
     """Alarm definition."""
 
     def __init__(self,
@@ -56,7 +56,7 @@ class Alarm:
         self.set = False
 
         self.id_type: typing.Type[secsgem.secs.variables.Base]
-        
+
         if isinstance(self.alid, int):
             self.id_type = secsgem.secs.variables.U4
         else:

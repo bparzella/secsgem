@@ -31,7 +31,7 @@ if typing.TYPE_CHECKING:
     from ..gem.remote_command import RemoteCommand
 
 
-class SecsHandler:
+class SecsHandler:  # pylint: disable=too-many-instance-attributes
     """
     Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
@@ -50,10 +50,10 @@ class SecsHandler:
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collectionEvents: typing.Dict[typing.Union[int, str], CollectionEvent] = {}
-        self._dataValues: typing.Dict[typing.Union[int, str], DataValue] = {}
+        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {}
+        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {}
         self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {}
-        self._remoteCommands: typing.Dict[typing.Union[int, str], RemoteCommand] = {}
+        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
@@ -161,7 +161,7 @@ class SecsHandler:
                 Data values for the collection event (list of integers)
 
         """
-        return self._collectionEvents
+        return self._collection_events
 
     @property
     def data_values(self):
@@ -188,7 +188,7 @@ class SecsHandler:
                 Collection event the data value is used for (integer)
 
         """
-        return self._dataValues
+        return self._data_values
 
     @property
     def alarms(self):
@@ -253,7 +253,7 @@ class SecsHandler:
                 Collection events ids the remote command might return (list of integers)
 
         """
-        return self._remoteCommands
+        return self._remote_commands
 
     def _handle_stream_function(self, packet):
         sf_callback_index = self._generate_sf_callback_name(packet.header.stream, packet.header.function)
@@ -436,9 +436,9 @@ class SecsHandler:
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if ceid in self._collectionEvents:
-            if "name" in self._collectionEvents[ceid]:
-                return self._collectionEvents[ceid]["name"]
+        if ceid in self._collection_events:
+            if "name" in self._collection_events[ceid]:
+                return self._collection_events[ceid]["name"]
 
         return ""
 
@@ -451,9 +451,9 @@ class SecsHandler:
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if dvid in self._dataValues:
-            if "name" in self._dataValues[dvid]:
-                return self._dataValues[dvid]["name"]
+        if dvid in self._data_values:
+            if "name" in self._data_values[dvid]:
+                return self._data_values[dvid]["name"]
 
         return ""
 

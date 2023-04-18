@@ -22,7 +22,7 @@ import secsgem.common
 import secsgem.secs
 
 
-class GemHandler(secsgem.secs.SecsHandler):
+class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance-attributes
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
     def __init__(self, connection: secsgem.common.Protocol):
@@ -36,16 +36,16 @@ class GemHandler(secsgem.secs.SecsHandler):
         super().__init__(connection)
         self._protocol.events.hsms_selected += self._on_hsms_select
 
-        self.MDLN = "secsgem"  #: model number returned by S01E13/14
-        self.SOFTREV = "0.1.0"  #: software version returned by S01E13/14
+        self._mdln = "secsgem"  #: model number returned by S01E13/14
+        self._softrev = "0.1.0"  #: software version returned by S01E13/14
 
-        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self.isHost = True
+        self._is_host = True
 
         # not going to HOST_INITIATED_CONNECT because fysom doesn't support two states.
         # but there is a transistion to get out of EQUIPMENT_INITIATED_CONNECT when the HOST_INITIATED_CONNECT happens
-        self.communicationState = secsgem.common.Fysom({
+        self._communication_state = secsgem.common.Fysom({
             'initial': 'DISABLED',  # 1
             'events': [
                 {'name': 'enable', 'src': 'DISABLED', 'dst': 'ENABLED'},  # 2
@@ -78,17 +78,22 @@ class GemHandler(secsgem.secs.SecsHandler):
             ]
         })
 
-        self.waitCRATimer = None
-        self.commDelayTimer = None
-        self.establishCommunicationTimeout = 10
+        self._wait_cra_timer = None
+        self._comm_delay_timer = None
+        self._establish_communication_timeout = 10
 
-        self.reportIDCounter = 1000
+        self._report_id_counter = 1000
 
-        self.waitEventList: typing.List[threading.Event] = []
+        self._wait_event_list: typing.List[threading.Event] = []
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__} {str(self.serialize_data())}"
+
+    @property
+    def communication_state(self) -> secsgem.common.Fysom:
+        """Get the communication state model."""
+        return self._communication_state
 
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
@@ -98,24 +103,24 @@ class GemHandler(secsgem.secs.SecsHandler):
         :rtype: dict
         """
         data = self.protocol.serialize_data()
-        data.update({'communicationState': self.communicationState.current,
-                     'commDelayTimeout': self.establishCommunicationTimeout,
-                     'reportIDCounter': self.reportIDCounter})
+        data.update({'communicationState': self._communication_state.current,
+                     'commDelayTimeout': self._establish_communication_timeout,
+                     'reportIDCounter': self._report_id_counter})
         return data
 
     def enable(self) -> None:
         """Enable the connection."""
         self.protocol.enable()
-        self.communicationState.enable()  # type: ignore
+        self._communication_state.enable()  # type: ignore
 
-        self.logger.info("Connection enabled")
+        self._logger.info("Connection enabled")
 
     def disable(self) -> None:
         """Disable the connection."""
         self.protocol.disable()
-        self.communicationState.disable()  # type: ignore
+        self._communication_state.disable()  # type: ignore
 
-        self.logger.info("Connection disabled")
+        self._logger.info("Connection disabled")
 
     def _on_hsms_packet_received(self, data: typing.Dict[str, typing.Any]):
         """
@@ -124,38 +129,38 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: received event data
         """
         packet = data["packet"]
-        if self.communicationState.isstate('WAIT_CRA'):
+        if self._communication_state.isstate('WAIT_CRA'):
             if packet.header.stream == 1 and packet.header.function == 13:
-                if self.isHost:
+                if self._is_host:
                     self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
                                                                     "MDLN": []}),
                                        packet.header.system)
                 else:
                     self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                                                    "MDLN": [self.MDLN, self.SOFTREV]}),
+                                                                    "MDLN": [self._mdln, self._softrev]}),
                                        packet.header.system)
 
-                self.communicationState.s1f13received()  # type: ignore
+                self._communication_state.s1f13received()  # type: ignore
             elif packet.header.stream == 1 and packet.header.function == 14:
-                self.communicationState.s1f14received()  # type: ignore
-        elif self.communicationState.isstate('WAIT_DELAY'):
+                self._communication_state.s1f14received()  # type: ignore
+        elif self._communication_state.isstate('WAIT_DELAY'):
             pass
-        elif self.communicationState.isstate('COMMUNICATING'):
+        elif self._communication_state.isstate('COMMUNICATING'):
             threading.Thread(target=self._handle_stream_function, args=(packet, ),
                              name=f"secsgem_gemHandler_callback_S{packet.header.stream}F{packet.header.function}"
                              ).start()
 
     def _on_hsms_select(self, _):
         """Selected received from hsms layer."""
-        self.communicationState.select()
+        self._communication_state.select()
 
     def _on_wait_cra_timeout(self):
         """Linktest time timed out, so send linktest request."""
-        self.communicationState.communicationreqfail()
+        self._communication_state.communicationreqfail()
 
     def _on_wait_comm_delay_timeout(self):
         """Linktest time timed out, so send linktest request."""
-        self.communicationState.delayexpired()
+        self._communication_state.delayexpired()
 
     def _on_state_wait_cra(self, _):
         """
@@ -164,15 +169,15 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: event attributes
         :type data: object
         """
-        self.logger.debug("connectionState -> WAIT_CRA")
+        self._logger.debug("connectionState -> WAIT_CRA")
 
-        self.waitCRATimer = threading.Timer(self.protocol.connection.T3, self._on_wait_cra_timeout)
-        self.waitCRATimer.start()
+        self._wait_cra_timer = threading.Timer(self.protocol.timeouts.t3, self._on_wait_cra_timeout)
+        self._wait_cra_timer.start()
 
-        if self.isHost:
+        if self._is_host:
             self.send_stream_function(self.stream_function(1, 13)())
         else:
-            self.send_stream_function(self.stream_function(1, 13)([self.MDLN, self.SOFTREV]))
+            self.send_stream_function(self.stream_function(1, 13)([self._mdln, self._softrev]))
 
     def _on_state_wait_delay(self, _):
         """
@@ -181,10 +186,11 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: event attributes
         :type data: object
         """
-        self.logger.debug("connectionState -> WAIT_DELAY")
+        self._logger.debug("connectionState -> WAIT_DELAY")
 
-        self.commDelayTimer = threading.Timer(self.establishCommunicationTimeout, self._on_wait_comm_delay_timeout)
-        self.commDelayTimer.start()
+        self._comm_delay_timer = threading.Timer(self._establish_communication_timeout,
+                                                 self._on_wait_comm_delay_timeout)
+        self._comm_delay_timer.start()
 
     def _on_state_leave_wait_cra(self, _):
         """
@@ -193,8 +199,8 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: event attributes
         :type data: object
         """
-        if self.waitCRATimer is not None:
-            self.waitCRATimer.cancel()
+        if self._wait_cra_timer is not None:
+            self._wait_cra_timer.cancel()
 
     def _on_state_leave_wait_delay(self, _):
         """
@@ -203,8 +209,8 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: event attributes
         :type data: object
         """
-        if self.commDelayTimer is not None:
-            self.commDelayTimer.cancel()
+        if self._comm_delay_timer is not None:
+            self._comm_delay_timer.cancel()
 
     def _on_state_communicating(self, _):
         """
@@ -213,23 +219,23 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param data: event attributes
         :type data: object
         """
-        self.logger.debug("connectionState -> COMMUNICATING")
+        self._logger.debug("connectionState -> COMMUNICATING")
 
         self.events.fire("handler_communicating", {'handler': self})
 
-        for event in self.waitEventList:
+        for event in self._wait_event_list:
             event.set()
 
     def on_connection_closed(self, connection):
         """Handle connection was closed event."""
-        self.logger.info("Connection was closed")
+        self._logger.info("Connection was closed")
 
         # call parent handlers
         super().on_connection_closed(connection)
 
-        if self.communicationState.current == "COMMUNICATING":
+        if self._communication_state.current == "COMMUNICATING":
             # update communication state
-            self.communicationState.communicationfail()
+            self._communication_state.communicationfail()
 
     def on_commack_requested(self) -> int:
         """
@@ -254,7 +260,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         :type ppbody: string
         """
         # send remote command
-        self.logger.info("Send process program %s", ppid)
+        self._logger.info("Send process program %s", ppid)
 
         return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
             {"PPID": ppid, "PPBODY": ppbody}))).get()
@@ -267,7 +273,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param ppid: Transferred process programs ID
         :type ppid: string
         """
-        self.logger.info("Request process program %s", ppid)
+        self._logger.info("Request process program %s", ppid)
 
         # send remote command
         s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
@@ -283,15 +289,15 @@ class GemHandler(secsgem.secs.SecsHandler):
         :rtype: bool
         """
         event = threading.Event()
-        self.waitEventList.append(event)
+        self._wait_event_list.append(event)
 
-        if self.communicationState.isstate("COMMUNICATING"):
-            self.waitEventList.remove(event)
+        if self._communication_state.isstate("COMMUNICATING"):
+            self._wait_event_list.remove(event)
             return True
 
         result = event.wait(timeout)
 
-        self.waitEventList.remove(event)
+        self._wait_event_list.remove(event)
 
         return result
 
@@ -308,10 +314,10 @@ class GemHandler(secsgem.secs.SecsHandler):
         """
         del handler, packet  # unused parameters
 
-        if self.isHost:
+        if self._is_host:
             return self.stream_function(1, 2)()
 
-        return self.stream_function(1, 2)([self.MDLN, self.SOFTREV])
+        return self.stream_function(1, 2)([self._mdln, self._softrev])
 
     def _on_s01f13(self, 
                    handler: secsgem.secs.SecsHandler, 
@@ -326,8 +332,8 @@ class GemHandler(secsgem.secs.SecsHandler):
         """
         del handler, packet  # unused parameters
 
-        if self.isHost:
+        if self._is_host:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
 
         return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                            "MDLN": [self.MDLN, self.SOFTREV]})
+                                            "MDLN": [self._mdln, self._softrev]})

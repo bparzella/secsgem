@@ -55,7 +55,7 @@ class DataValue:
         self.value = 0
 
         self.id_type: typing.Type[secsgem.secs.variables.Base]
-        
+
         if isinstance(self.dvid, int):
             self.id_type = secsgem.secs.variables.U4
         else:

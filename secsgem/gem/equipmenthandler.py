@@ -54,7 +54,7 @@ RCMD_START = "START"
 RCMD_STOP = "STOP"
 
 
-class GemEquipmentHandler(GemHandler):
+class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
@@ -72,13 +72,13 @@ class GemEquipmentHandler(GemHandler):
         """
         super().__init__(connection)
 
-        self.isHost = False
+        self._is_host = False
 
-        self.initialControlStates = ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-        self.initialControlState = initial_control_state
+        self._initial_control_states = ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+        self._initial_control_state = initial_control_state
 
-        self.onlineControlStates = ["LOCAL", "REMOTE"]
-        self.onlineControlState = initial_online_control_state
+        self._online_control_states = ["LOCAL", "REMOTE"]
+        self._online_control_state = initial_online_control_state
 
         self._time_format = 1
 
@@ -119,7 +119,7 @@ class GemEquipmentHandler(GemHandler):
         self._registered_reports: typing.Dict[typing.Union[int, str], CollectionEventReport] = {}
         self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
 
-        self.controlState = secsgem.common.Fysom({
+        self._control_state = secsgem.common.Fysom({
             'initial': "INIT",
             'events': [
                 {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1
@@ -160,46 +160,51 @@ class GemEquipmentHandler(GemHandler):
             ]
         })
 
-        self.controlState.start()  # type: ignore
+        self._control_state.start()  # type: ignore
+
+    @property
+    def control_state(self) -> secsgem.common.Fysom:
+        """Get control state."""
+        return self._control_state
 
     # control state model
 
     def _on_control_state_control(self, _):
-        if self.initialControlState == "ONLINE":
-            self.controlState.initial_online()
+        if self._initial_control_state == "ONLINE":
+            self._control_state.initial_online()
         else:
-            self.controlState.initial_offline()
+            self._control_state.initial_offline()
 
     def _on_control_state_offline(self, _):
-        if self.initialControlState == "EQUIPMENT_OFFLINE":
-            self.controlState.initial_equipment_offline()
-        elif self.initialControlState == "ATTEMPT_ONLINE":
-            self.controlState.initial_attempt_online()
-        elif self.initialControlState == "HOST_OFFLINE":
-            self.controlState.initial_host_offline()
+        if self._initial_control_state == "EQUIPMENT_OFFLINE":
+            self._control_state.initial_equipment_offline()
+        elif self._initial_control_state == "ATTEMPT_ONLINE":
+            self._control_state.initial_attempt_online()
+        elif self._initial_control_state == "HOST_OFFLINE":
+            self._control_state.initial_host_offline()
 
     def _on_control_state_attempt_online(self, _):
-        if not self.communicationState.isstate("COMMUNICATING"):
-            self.controlState.attempt_online_fail_host_offline()
+        if not self._communication_state.isstate("COMMUNICATING"):
+            self._control_state.attempt_online_fail_host_offline()
             return
 
         response = self.are_you_there()
 
         if response is None:
-            self.controlState.attempt_online_fail_host_offline()
+            self._control_state.attempt_online_fail_host_offline()
             return
 
         if response.header.stream != 1 or response.header.function != 2:
-            self.controlState.attempt_online_fail_host_offline()
+            self._control_state.attempt_online_fail_host_offline()
             return
 
-        self.controlState.attempt_online_success()
+        self._control_state.attempt_online_success()
 
     def _on_control_state_online(self, _):
-        if self.onlineControlState == "REMOTE":
-            self.controlState.initial_online_remote()
+        if self._online_control_state == "REMOTE":
+            self._control_state.initial_online_remote()
         else:
-            self.controlState.initial_online_local()
+            self._control_state.initial_online_local()
 
     def _on_control_state_initial_online_local(self, _):
         self.trigger_collection_events([CEID_CONTROL_STATE_LOCAL])
@@ -209,22 +214,22 @@ class GemEquipmentHandler(GemHandler):
 
     def control_switch_online(self):
         """Operator switches to online control state."""
-        self.controlState.switch_online()
+        self._control_state.switch_online()
 
     def control_switch_offline(self):
         """Operator switches to offline control state."""
-        self.controlState.switch_offline()
+        self._control_state.switch_offline()
         self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
     def control_switch_online_local(self):
         """Operator switches to the local online control state."""
-        self.controlState.switch_online_local()
-        self.onlineControlState = "LOCAL"
+        self._control_state.switch_online_local()
+        self._online_control_state = "LOCAL"
 
     def control_switch_online_remote(self):
         """Operator switches to the local online control state."""
-        self.controlState.switch_online_remote()
-        self.onlineControlState = "REMOTE"
+        self._control_state.switch_online_remote()
+        self._online_control_state = "REMOTE"
 
     def _on_s01f15(self, 
                    handler: secsgem.secs.SecsHandler, 
@@ -239,13 +244,13 @@ class GemEquipmentHandler(GemHandler):
         """
         del handler, packet  # unused parameters
 
-        OFLACK = 0
+        oflack = 0
 
-        if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            self.controlState.remote_offline()  # type: ignore
+        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            self._control_state.remote_offline()  # type: ignore
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
-        return self.stream_function(1, 16)(OFLACK)
+        return self.stream_function(1, 16)(oflack)
 
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
@@ -260,15 +265,15 @@ class GemEquipmentHandler(GemHandler):
         """
         del handler, packet  # unused parameters
 
-        ONLACK = 1
+        onlack = 1
 
-        if self.controlState.isstate("HOST_OFFLINE"):
-            self.controlState.remote_online()  # type: ignore
-            ONLACK = 0
-        elif self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            ONLACK = 2
+        if self._control_state.isstate("HOST_OFFLINE"):
+            self._control_state.remote_online()  # type: ignore
+            onlack = 0
+        elif self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            onlack = 2
 
-        return self.stream_function(1, 18)(ONLACK)
+        return self.stream_function(1, 18)(onlack)
 
     # data values
 
@@ -283,8 +288,8 @@ class GemEquipmentHandler(GemHandler):
         return self._data_values
 
     def on_dv_value_request(self, 
-                            dvid: secsgem.secs.variables.Base, 
-                            dv: DataValue) -> secsgem.secs.variables.Base:
+                            data_value_id: secsgem.secs.variables.Base, 
+                            data_value: DataValue) -> secsgem.secs.variables.Base:
         """
         Get the data value depending on its configuation.
 
@@ -297,11 +302,11 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
-        del dvid  # unused variable
+        del data_value_id  # unused variable
 
-        return dv.value_type(dv.value)
+        return data_value.value_type(data_value.value)
 
-    def _get_dv_value(self, dv: DataValue) -> secsgem.secs.variables.Base:
+    def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:
         """
         Get the data value depending on its configuation.
 
@@ -310,10 +315,10 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
-        if dv.use_callback:
-            return self.on_dv_value_request(dv.id_type(dv.dvid), dv)
+        if data_value.use_callback:
+            return self.on_dv_value_request(data_value.id_type(data_value.dvid), data_value)
 
-        return dv.value_type(dv.value)
+        return data_value.value_type(data_value.value)
 
     # status variables
 
@@ -327,7 +332,9 @@ class GemEquipmentHandler(GemHandler):
         """
         return self._status_variables
 
-    def on_sv_value_request(self, svid: secsgem.secs.variables.Base, sv: StatusVariable) -> secsgem.secs.variables.Base:
+    def on_sv_value_request(self,
+                            svid: secsgem.secs.variables.Base,
+                            status_variable: StatusVariable) -> secsgem.secs.variables.Base:
         """
         Get the status variable value depending on its configuation.
 
@@ -342,9 +349,9 @@ class GemEquipmentHandler(GemHandler):
         """
         del svid  # unused variable
 
-        return sv.value_type(sv.value)
+        return status_variable.value_type(status_variable.value)
 
-    def _get_sv_value(self, sv: StatusVariable) -> secsgem.secs.variables.Base:
+    def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
         """
         Get the status variable value depending on its configuation.
 
@@ -353,24 +360,26 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
-        if sv.svid == SVID_CLOCK:
-            return sv.value_type(self._get_clock())
-        if sv.svid == SVID_CONTROL_STATE:
-            return sv.value_type(self._get_control_state_id())
-        if sv.svid == SVID_EVENTS_ENABLED:
+        if status_variable.svid == SVID_CLOCK:
+            result = status_variable.value_type(self._get_clock())
+        elif status_variable.svid == SVID_CONTROL_STATE:
+            result = status_variable.value_type(self._get_control_state_id())
+        elif status_variable.svid == SVID_EVENTS_ENABLED:
             events = self._get_events_enabled()
-            return sv.value_type(secsgem.secs.data_items.SV, events)
-        if sv.svid == SVID_ALARMS_ENABLED:
+            result = status_variable.value_type(secsgem.secs.data_items.SV, events)
+        elif status_variable.svid == SVID_ALARMS_ENABLED:
             alarms = self._get_alarms_enabled()
-            return sv.value_type(secsgem.secs.data_items.SV, alarms)
-        if sv.svid == SVID_ALARMS_SET:
+            result = status_variable.value_type(secsgem.secs.data_items.SV, alarms)
+        elif status_variable.svid == SVID_ALARMS_SET:
             alarms = self._get_alarms_set()
-            return sv.value_type(secsgem.secs.data_items.SV, alarms)
+            result = status_variable.value_type(secsgem.secs.data_items.SV, alarms)
+        else:
+            if status_variable.use_callback:
+                result = self.on_sv_value_request(status_variable.id_type(status_variable.svid), status_variable)
+            else:
+                result = status_variable.value_type(status_variable.value)
 
-        if sv.use_callback:
-            return self.on_sv_value_request(sv.id_type(sv.svid), sv)
-
-        return sv.value_type(sv.value)
+        return result
 
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
@@ -390,15 +399,15 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for svid, sv in self._status_variables.items():
-                responses.append(self._get_sv_value(sv))
+            for status_variable_id, status_variable in self._status_variables.items():
+                responses.append(self._get_sv_value(status_variable))
         else:
-            for svid in message:
-                if svid not in self._status_variables:
+            for status_variable_id in message:
+                if status_variable_id not in self._status_variables:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.SV, []))
                 else:
-                    sv = self._status_variables[svid]
-                    responses.append(self._get_sv_value(sv))
+                    status_variable = self._status_variables[status_variable_id]
+                    responses.append(self._get_sv_value(status_variable))
 
         return self.stream_function(1, 4)(responses)
 
@@ -420,15 +429,19 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for svid, sv in self._status_variables.items():
-                responses.append({"SVID": sv.svid, "SVNAME": sv.name, "UNITS": sv.unit})
+            for status_variable_id, status_variable in self._status_variables.items():
+                responses.append({"SVID": status_variable.svid,
+                                  "SVNAME": status_variable.name,
+                                  "UNITS": status_variable.unit})
         else:
-            for svid in message:
-                if svid not in self._status_variables:
-                    responses.append({"SVID": svid, "SVNAME": "", "UNITS": ""})
+            for status_variable_id in message:
+                if status_variable_id not in self._status_variables:
+                    responses.append({"SVID": status_variable_id, "SVNAME": "", "UNITS": ""})
                 else:
-                    sv = self._status_variables[svid]
-                    responses.append({"SVID": sv.svid, "SVNAME": sv.name, "UNITS": sv.unit})
+                    status_variable = self._status_variables[status_variable_id]
+                    responses.append({"SVID": status_variable.svid,
+                                      "SVNAME": status_variable.name,
+                                      "UNITS": status_variable.unit})
 
         return self.stream_function(1, 12)(responses)
 
@@ -504,20 +517,20 @@ class GemEquipmentHandler(GemHandler):
         # 3  = Denied. At least one RPTID already defined.
         # 4  = Denied. At least VID does not exist.
         # >4 = Other errors
-        DRACK = 0
+        drack = 0
 
         # pre check message for errors
         for report in message.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
-                DRACK = 3
+                drack = 3
             else:
                 for vid in report.VID:
                     if (vid not in self._data_values) and (vid not in self._status_variables):
-                        DRACK = 4
+                        drack = 4
 
-        result = self.stream_function(2, 34)(DRACK)
+        result = self.stream_function(2, 34)(drack)
 
-        if DRACK != 0:
+        if drack != 0:
             return result
 
         # no data -> remove all reports and links
@@ -526,7 +539,7 @@ class GemEquipmentHandler(GemHandler):
             self._registered_reports.clear()
 
             return result
-        
+
         for report in message.DATA:
             # no vids -> remove this reports and links
             if not report.VID:
@@ -568,22 +581,22 @@ class GemEquipmentHandler(GemHandler):
         # 4  = Denied. At least one CEID does not exist
         # 5  = Denied. At least one RPTID does not exist
         # >5 = Other errors
-        LRACK = 0
+        lrack = 0
 
         # pre check message for errors
         for event in message.DATA:
             if event.CEID.get() not in self._collection_events:
-                LRACK = 4
+                lrack = 4
             for rptid in event.RPTID:
                 if event.CEID.get() in self._registered_collection_events:
-                    ce = self._registered_collection_events[event.CEID.get()]
-                    if rptid.get() in ce.reports:
-                        LRACK = 3
+                    collection_event = self._registered_collection_events[event.CEID.get()]
+                    if rptid.get() in collection_event.reports:
+                        lrack = 3
                 if rptid.get() not in self._registered_reports:
-                    LRACK = 5
+                    lrack = 5
 
         # pre check okay
-        if LRACK == 0:
+        if lrack == 0:
             for event in message.DATA:
                 # no report ids, remove all links for collection event
                 if not event.RPTID:
@@ -591,14 +604,14 @@ class GemEquipmentHandler(GemHandler):
                         del self._registered_collection_events[event.CEID.get()]
                 else:
                     if event.CEID.get() in self._registered_collection_events:
-                        ce = self._registered_collection_events[event.CEID.get()]
+                        collection_event = self._registered_collection_events[event.CEID.get()]
                         for rptid in event.RPTID.get():
-                            ce.reports.append(rptid)
+                            collection_event.reports.append(rptid)
                     else:
                         self._registered_collection_events[event.CEID.get()] = \
                             CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
 
-        return self.stream_function(2, 36)(LRACK)
+        return self.stream_function(2, 36)(lrack)
 
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
@@ -617,12 +630,12 @@ class GemEquipmentHandler(GemHandler):
 
         # 0  = Accepted
         # 1  = Denied. At least one CEID does not exist
-        ERACK = 0
+        erack = 0
 
         if not self._set_ce_state(message.CEED.get(), message.CEID.get()):
-            ERACK = 1
+            erack = 1
 
-        return self.stream_function(2, 38)(ERACK)
+        return self.stream_function(2, 38)(erack)
 
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
@@ -689,11 +702,11 @@ class GemEquipmentHandler(GemHandler):
             variables = []
             for var in report.vars:
                 if var in self._status_variables:
-                    v = self._get_sv_value(self._status_variables[var])
-                    variables.append(v)
+                    value = self._get_sv_value(self._status_variables[var])
+                    variables.append(value)
                 elif var in self._data_values:
-                    v = self._get_dv_value(self._data_values[var])
-                    variables.append(v)
+                    value = self._get_dv_value(self._data_values[var])
+                    variables.append(value)
 
             reports.append({"RPTID": rptid, "V": variables})
 
@@ -712,8 +725,8 @@ class GemEquipmentHandler(GemHandler):
         return self._equipment_constants
 
     def on_ec_value_request(self,
-                            ecid: secsgem.secs.variables.Base,
-                            ec: EquipmentConstant) -> secsgem.secs.variables.Base:
+                            equipment_constant_id: secsgem.secs.variables.Base,
+                            equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
         """
         Get the equipment constant value depending on its configuation.
 
@@ -726,13 +739,13 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
-        del ecid  # unused variable
+        del equipment_constant_id  # unused variable
 
-        return ec.value_type(ec.value)
+        return equipment_constant.value_type(equipment_constant.value)
 
     def on_ec_value_update(self,
-                           ecid: secsgem.secs.variables.Base,
-                           ec: EquipmentConstant, 
+                           equipment_constant_id: secsgem.secs.variables.Base,
+                           equipment_constant: EquipmentConstant, 
                            value: typing.Union[int, float]):
         """
         Set the equipment constant value depending on its configuation.
@@ -746,11 +759,11 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.Base`
         """
-        del ecid  # unused variable
+        del equipment_constant_id  # unused variable
 
-        ec.value = value
+        equipment_constant.value = value
 
-    def _get_ec_value(self, ec: EquipmentConstant) -> secsgem.secs.variables.Base:
+    def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
         """
         Get the equipment constant value depending on its configuation.
 
@@ -759,16 +772,16 @@ class GemEquipmentHandler(GemHandler):
         :returns: The value encoded in the corresponding type
         :rtype: :class:`secsgem.secs.variables.Base`
         """
-        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            return ec.value_type(self.establishCommunicationTimeout)
-        if ec.ecid == ECID_TIME_FORMAT:
-            return ec.value_type(self._time_format)
+        if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
+            return equipment_constant.value_type(self._establish_communication_timeout)
+        if equipment_constant.ecid == ECID_TIME_FORMAT:
+            return equipment_constant.value_type(self._time_format)
 
-        if ec.use_callback:
-            return self.on_ec_value_request(ec.id_type(ec.ecid), ec)
-        return ec.value_type(ec.value)
+        if equipment_constant.use_callback:
+            return self.on_ec_value_request(equipment_constant.id_type(equipment_constant.ecid), equipment_constant)
+        return equipment_constant.value_type(equipment_constant.value)
 
-    def _set_ec_value(self, ec: EquipmentConstant, value: typing.Union[int, float]):
+    def _set_ec_value(self, equipment_constant: EquipmentConstant, value: typing.Union[int, float]):
         """
         Get the equipment constant value depending on its configuation.
 
@@ -777,15 +790,15 @@ class GemEquipmentHandler(GemHandler):
         :param value: The value encoded in the corresponding type
         :type value: :class:`secsgem.secs.variables.Base`
         """
-        if ec.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            self.establishCommunicationTimeout = int(value)
-        if ec.ecid == ECID_TIME_FORMAT:
+        if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
+            self._establish_communication_timeout = int(value)
+        if equipment_constant.ecid == ECID_TIME_FORMAT:
             self._time_format = int(value)
 
-        if ec.use_callback:
-            self.on_ec_value_update(ec.id_type(ec.ecid), ec, value)
+        if equipment_constant.use_callback:
+            self.on_ec_value_update(equipment_constant.id_type(equipment_constant.ecid), equipment_constant, value)
         else:
-            ec.value = value
+            equipment_constant.value = value
 
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
@@ -805,15 +818,15 @@ class GemEquipmentHandler(GemHandler):
         responses = []
 
         if len(message) == 0:
-            for ecid, ec in self._equipment_constants.items():
-                responses.append(self._get_ec_value(ec))
+            for equipment_constant_id, equipment_constant in self._equipment_constants.items():
+                responses.append(self._get_ec_value(equipment_constant))
         else:
-            for ecid in message:
-                if ecid not in self._equipment_constants:
+            for equipment_constant_id in message:
+                if equipment_constant_id not in self._equipment_constants:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
                 else:
-                    ec = self._equipment_constants[ecid]
-                    responses.append(self._get_ec_value(ec))
+                    equipment_constant = self._equipment_constants[equipment_constant_id]
+                    responses.append(self._get_ec_value(equipment_constant))
 
         return self.stream_function(2, 14)(responses)
 
@@ -834,23 +847,23 @@ class GemEquipmentHandler(GemHandler):
 
         eac = 0
 
-        for ec in message:
-            if ec.ECID not in self._equipment_constants:
+        for equipment_constant in message:
+            if equipment_constant.ECID not in self._equipment_constants:
                 eac = 1
             else:
-                constant = self.equipment_constants[ec.ECID.get()]
+                constant = self.equipment_constants[equipment_constant.ECID.get()]
 
                 if constant.min_value is not None:
-                    if ec.ECV.get() < constant.min_value:
+                    if equipment_constant.ECV.get() < constant.min_value:
                         eac = 3
 
                 if constant.max_value is not None:
-                    if ec.ECV.get() > constant.max_value:
+                    if equipment_constant.ECV.get() > constant.max_value:
                         eac = 3
 
         if eac == 0:
-            for ec in message:
-                self._set_ec_value(self._equipment_constants[ec.ECID], ec.ECV.get())
+            for equipment_constant in message:
+                self._set_ec_value(self._equipment_constants[equipment_constant.ECID], equipment_constant.ECV.get())
 
         return self.stream_function(2, 16)(eac)
 
@@ -971,7 +984,7 @@ class GemEquipmentHandler(GemHandler):
         if alid not in self._alarms:
             result = secsgem.secs.data_items.ACKC5.ERROR
         else:
-            self.alarms[alid].enabled = (message.ALED.get() == secsgem.secs.data_items.ALED.ENABLE)
+            self.alarms[alid].enabled = message.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
 
         return self.stream_function(5, 4)(result)
 
@@ -1063,16 +1076,16 @@ class GemEquipmentHandler(GemHandler):
         rcmd_callback_name = "rcmd_" + rcmd_name
 
         if rcmd_name not in self._remote_commands:
-            self.logger.info("remote command %s not registered", rcmd_name)
+            self._logger.info("remote command %s not registered", rcmd_name)
             return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
         if rcmd_callback_name not in self._callback_handler:
-            self.logger.warning("callback for remote command %s not available", rcmd_name)
+            self._logger.warning("callback for remote command %s not available", rcmd_name)
             return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
         for param in message.PARAMS:
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
-                self.logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
+                self._logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.PARAMETER_INVALID,
                                                     "PARAMS": []})
 
@@ -1093,10 +1106,10 @@ class GemEquipmentHandler(GemHandler):
         return None
 
     def _on_rcmd_START(self):
-        self.logger.warning("remote command START not implemented, this is required for GEM compliance")
+        self._logger.warning("remote command START not implemented, this is required for GEM compliance")
 
     def _on_rcmd_STOP(self):
-        self.logger.warning("remote command STOP not implemented, this is required for GEM compliance")
+        self._logger.warning("remote command STOP not implemented, this is required for GEM compliance")
 
     # helpers
 
@@ -1123,15 +1136,15 @@ class GemEquipmentHandler(GemHandler):
         :returns: control state
         :rtype: integer
         """
-        if self.controlState.isstate("EQUIPMENT_OFFLINE"):
+        if self._control_state.isstate("EQUIPMENT_OFFLINE"):
             return 1
-        if self.controlState.isstate("ATTEMPT_ONLINE"):
+        if self._control_state.isstate("ATTEMPT_ONLINE"):
             return 2
-        if self.controlState.isstate("HOST_OFFLINE"):
+        if self._control_state.isstate("HOST_OFFLINE"):
             return 3
-        if self.controlState.isstate("ONLINE_LOCAL"):
+        if self._control_state.isstate("ONLINE_LOCAL"):
             return 4
-        if self.controlState.isstate("ONLINE_REMOTE"):
+        if self._control_state.isstate("ONLINE_REMOTE"):
             return 5
 
         return -1
@@ -1187,8 +1200,8 @@ class GemEquipmentHandler(GemHandler):
         super().on_connection_closed(connection)
 
         # update control state
-        if self.controlState.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            self.controlState.switch_offline()
+        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+            self._control_state.switch_offline()
 
-        if self.controlState.current in ["EQUIPMENT_OFFLINE"]:
-            self.controlState.switch_online()
+        if self._control_state.current in ["EQUIPMENT_OFFLINE"]:
+            self._control_state.switch_online()

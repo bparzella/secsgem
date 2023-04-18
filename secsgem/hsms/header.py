@@ -19,6 +19,7 @@ import struct
 
 import secsgem.common
 
+
 class HsmsHeader(secsgem.common.Header):
     """
     Generic HSMS header.
@@ -84,7 +85,7 @@ require_response:False})
     def require_response(self) -> bool:
         """Get require response flag."""
         return self._require_response
-    
+
     @property
     def p_type(self) -> int:
         """Get P-type."""

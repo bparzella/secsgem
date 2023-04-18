@@ -19,7 +19,7 @@ import typing
 import secsgem.secs
 
 
-class EquipmentConstant:
+class EquipmentConstant:  # pylint: disable=too-many-instance-attributes
     """Equipment constant definition."""
 
     def __init__(self,

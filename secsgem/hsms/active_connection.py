@@ -50,11 +50,11 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         self.enabled = False
 
         # reconnect thread required for active connection
-        self.connectionThread = None
-        self.stopConnectionThread = False
+        self.connection_thread = None
+        self.stop_connection_thread = False
 
         # flag if this is the first connection since enable
-        self.firstConnection = True
+        self.first_connection = True
 
     def _on_hsms_connection_close(self, data):
         """
@@ -74,7 +74,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         # only start if not already enabled
         if not self.enabled:
             # reset first connection to eliminate reconnection timeout
-            self.firstConnection = True
+            self.first_connection = True
 
             # mark connection as enabled
             self.enabled = True
@@ -94,11 +94,11 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             self.enabled = False
 
             # stop connection thread if it is running
-            if self.connectionThread and self.connectionThread.is_alive():
-                self.stopConnectionThread = True
+            if self.connection_thread and self.connection_thread.is_alive():
+                self.stop_connection_thread = True
 
             # wait for connection thread to stop
-            while self.stopConnectionThread:
+            while self.stop_connection_thread:
                 time.sleep(0.2)
 
             # disconnect super class
@@ -117,17 +117,17 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             time.sleep(0.2)
 
             # check if connection was disabled
-            if self.stopConnectionThread:
-                self.stopConnectionThread = False
+            if self.stop_connection_thread:
+                self.stop_connection_thread = False
                 return False
 
         return True
 
     def __start_connect_thread(self):
-        self.connectionThread = threading.Thread(
+        self.connection_thread = threading.Thread(
             target=self.__connect_thread,
-            name=f"secsgem_HsmsActiveConnection_connectThread_{self.remoteAddress}")
-        self.connectionThread.start()
+            name=f"secsgem_HsmsActiveConnection_connectThread_{self._remote_address}")
+        self.connection_thread.start()
 
     def __connect_thread(self):
         """
@@ -136,15 +136,15 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         .. warning:: Do not call this directly, for internal use only.
         """
         # wait for timeout if this is not the first connection
-        if not self.firstConnection:
-            if not self.__idle(self.T5):
+        if not self.first_connection:
+            if not self.__idle(self.timeouts.t5):
                 return
 
-        self.firstConnection = False
+        self.first_connection = False
 
         # try to connect to remote
         while not self.__connect():
-            if not self.__idle(self.T5):
+            if not self.__idle(self.timeouts.t5):
                 return
 
     def __connect(self):
@@ -155,22 +155,22 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         :rtype: boolean
         """
         # create socket
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # setup socket
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-        self.logger.debug("connecting to %s:%d", self.remoteAddress, self.remotePort)
+        self._logger.debug("connecting to %s:%d", self._remote_address, self._remote_port)
 
         # try to connect socket
         try:
-            self.sock.connect((self.remoteAddress, self.remotePort))
+            self._sock.connect((self._remote_address, self._remote_port))
         except socket.error:
-            self.logger.debug("connecting to %s:%d failed", self.remoteAddress, self.remotePort)
+            self._logger.debug("connecting to %s:%d failed", self._remote_address, self._remote_port)
             return False
 
         # make socket nonblocking
-        self.sock.setblocking(0)
+        self._sock.setblocking(0)
 
         # start the receiver thread
         self._start_receiver()

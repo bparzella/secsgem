@@ -22,7 +22,7 @@ import typing
 
 import secsgem.common
 
-from .connection import HSMS_STYPES
+from .connection import HSMS_STYPES, HsmsConnection
 from .active_connection import HsmsActiveConnection
 from .passive_connection import HsmsPassiveConnection
 from .packet import HsmsPacket
@@ -39,7 +39,8 @@ from .connectionstatemachine import ConnectionStateMachine
 
 from ..secs.functions.base import SecsStreamFunction
 
-class HsmsProtocol(secsgem.common.Protocol):
+
+class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instance-attributes
     """
     Baseclass for creating Host/Equipment models.
 
@@ -83,48 +84,68 @@ class HsmsProtocol(secsgem.common.Protocol):
         """
         super().__init__()
 
-        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-        self.communicationLogger = logging.getLogger("hsms_communication")
+        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._communication_logger = logging.getLogger("hsms_communication")
 
-        self.address = address
-        self.port = port
-        self.active = active
-        self.session_id = session_id
-        self.name = name
+        self._address = address
+        self._port = port
+        self._active = active
+        self._session_id = session_id
+        self._name = name
 
-        self.connected = False
+        self._connected = False
 
         # system id counter
-        self.systemCounter = random.randint(0, (2 ** 32) - 1)
+        self._system_counter = random.randint(0, (2 ** 32) - 1)
 
         # repeating linktest variables
-        self.linktestTimer = None
-        self.linktestTimeout = 30
+        self._linktest_timer = None
+        self._linktest_timeout = 30
 
         # select request thread for active connections, to avoid blocking state changes
-        self.selectReqThread = None
+        self._select_req_thread = None
 
         # response queues
-        self._systemQueues = {}
+        self._system_queues = {}
 
         # hsms connection state fsm
-        self.connectionState = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
-                                                       "on_exit_CONNECTED": self._on_state_disconnect,
-                                                       "on_enter_CONNECTED_SELECTED": self._on_state_select})
+        self._connection_state = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
+                                                         "on_exit_CONNECTED": self._on_state_disconnect,
+                                                         "on_enter_CONNECTED_SELECTED": self._on_state_select})
 
         # setup connection
-        if self.active:
+        if self._active:
             if custom_connection_handler is None:
-                self.connection = HsmsActiveConnection(self.address, self.port, self.session_id, self)
+                self._connection = HsmsActiveConnection(self._address, self._port, self._session_id, self)
             else:
-                self.connection = custom_connection_handler.create_connection(self.address, self.port,
-                                                                              self.session_id, self)
+                self._connection = custom_connection_handler.create_connection(self._address, self._port,
+                                                                               self._session_id, self)
         else:
             if custom_connection_handler is None:
-                self.connection = HsmsPassiveConnection(self.address, self.port, self.session_id, self)
+                self._connection = HsmsPassiveConnection(self._address, self._port, self._session_id, self)
             else:
-                self.connection = custom_connection_handler.create_connection(self.address, self.port,
-                                                                              self.session_id, self)
+                self._connection = custom_connection_handler.create_connection(self._address, self._port,
+                                                                               self._session_id, self)
+
+    @property
+    def timeouts(self) -> secsgem.common.Timeouts:
+        """Property for timeout."""
+        return self._connection.timeouts
+
+    @property
+    def name(self) -> str:
+        """Property for name."""
+        return self._name
+
+    @property
+    def connection(self) -> HsmsConnection:
+        """Property for connection."""
+        return self._connection
+
+    @property
+    def connection_state(self) -> HsmsConnection:
+        """Property for connection state."""
+        return self._connection_state
 
     def get_next_system_counter(self):
         """
@@ -133,23 +154,23 @@ class HsmsProtocol(secsgem.common.Protocol):
         :returns: System for the next command
         :rtype: integer
         """
-        self.systemCounter += 1
+        self._system_counter += 1
 
-        if self.systemCounter > ((2 ** 32) - 1):
-            self.systemCounter = 0
+        if self._system_counter > ((2 ** 32) - 1):
+            self._system_counter = 0
 
-        return self.systemCounter
+        return self._system_counter
 
     def _send_select_req_thread(self):
         response = self.send_select_req()
         if response is None:
-            self.logger.warning("select request failed")
+            self._logger.warning("select request failed")
 
     def _start_linktest_timer(self):
-        self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
-        self.linktestTimer.daemon = True  # kill thread automatically on main program termination
-        self.linktestTimer.name = "secsgem_hsmsProtocol_linktestTimer"
-        self.linktestTimer.start()
+        self._linktest_timer = threading.Timer(self._linktest_timeout, self._on_linktest_timer)
+        self._linktest_timer.daemon = True  # kill thread automatically on main program termination
+        self._linktest_timer.name = "secsgem_hsmsProtocol_linktestTimer"
+        self._linktest_timer.start()
 
     def _on_state_connect(self):
         """
@@ -162,11 +183,12 @@ class HsmsProtocol(secsgem.common.Protocol):
         self._start_linktest_timer()
 
         # start select process if connection is active
-        if self.active:
-            self.selectReqThread = threading.Thread(target=self._send_select_req_thread,
-                                                    name="secsgem_hsmsProtocol_sendSelectReqThread")
-            self.selectReqThread.daemon = True  # kill thread automatically on main program termination
-            self.selectReqThread.start()
+        if self._active:
+            self._select_req_thread = threading.Thread(
+                target=self._send_select_req_thread,
+                name="secsgem_hsmsProtocol_sendSelectReqThread")
+            self._select_req_thread.daemon = True  # kill thread automatically on main program termination
+            self._select_req_thread.start()
 
     def _on_state_disconnect(self):
         """
@@ -176,10 +198,10 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type data: object
         """
         # stop linktest timer
-        if self.linktestTimer:
-            self.linktestTimer.cancel()
+        if self._linktest_timer:
+            self._linktest_timer.cancel()
 
-        self.linktestTimer = None
+        self._linktest_timer = None
 
     def _on_state_select(self):
         """
@@ -201,10 +223,10 @@ class HsmsProtocol(secsgem.common.Protocol):
 
     def on_connection_established(self, _):
         """Handle connection was established event."""
-        self.connected = True
+        self._connected = True
 
         # update connection state
-        self.connectionState.connect()
+        self._connection_state.connect()
 
         self.events.fire("hsms_connected", {'connection': self})
 
@@ -216,70 +238,70 @@ class HsmsProtocol(secsgem.common.Protocol):
     def on_connection_closed(self, _):
         """Handle connection was closed event."""
         # update connection state
-        self.connected = False
-        self.connectionState.disconnect()
+        self._connected = False
+        self._connection_state.disconnect()
 
         self.events.fire("hsms_disconnected", {'connection': self})
 
     def __handle_hsms_requests(self, packet):
-        self.communicationLogger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
+        self._communication_logger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+                                        extra=self._get_log_extra())
 
         # check if it is a select request
         if packet.header.s_type == 0x01:
             # if we are disconnecting send reject else send response
-            if self.connection.disconnecting:
+            if self._connection.disconnecting:
                 self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_select_rsp(packet.header.system)
 
                 # update connection state
-                self.connectionState.select()
+                self._connection_state.select()
 
         # check if it is a select response
         elif packet.header.s_type == 0x02:
             # update connection state
-            self.connectionState.select()
+            self._connection_state.select()
 
-            if packet.header.system in self._systemQueues:
+            if packet.header.system in self._system_queues:
                 # send packet to request sender
-                self._systemQueues[packet.header.system].put_nowait(packet)
+                self._system_queues[packet.header.system].put_nowait(packet)
 
             # what to do if no sender for request waiting?
 
         # check if it is a deselect request
         elif packet.header.s_type == 0x03:
             # if we are disconnecting send reject else send response
-            if self.connection.disconnecting:
+            if self._connection.disconnecting:
                 self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_deselect_rsp(packet.header.system)
                 # update connection state
-                self.connectionState.deselect()
+                self._connection_state.deselect()
 
         # check if it is a deselect response
         elif packet.header.s_type == 0x04:
             # update connection state
-            self.connectionState.deselect()
+            self._connection_state.deselect()
 
-            if packet.header.system in self._systemQueues:
+            if packet.header.system in self._system_queues:
                 # send packet to request sender
-                self._systemQueues[packet.header.system].put_nowait(packet)
+                self._system_queues[packet.header.system].put_nowait(packet)
 
             # what to do if no sender for request waiting?
 
         # check if it is a linktest request
         elif packet.header.s_type == 0x05:
             # if we are disconnecting send reject else send response
-            if self.connection.disconnecting:
+            if self._connection.disconnecting:
                 self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_linktest_rsp(packet.header.system)
 
         else:
-            if packet.header.system in self._systemQueues:
+            if packet.header.system in self._system_queues:
                 # send packet to request sender
-                self._systemQueues[packet.header.system].put_nowait(packet)
+                self._system_queues[packet.header.system].put_nowait(packet)
 
             # what to do if no sender for request waiting?
 
@@ -295,24 +317,25 @@ class HsmsProtocol(secsgem.common.Protocol):
         else:
             if callable(self._secs_decode):
                 message = self._secs_decode(packet)
-                self.communicationLogger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
+                self._communication_logger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
             else:
-                self.communicationLogger.info("< %s", packet, extra=self._get_log_extra())
+                self._communication_logger.info("< %s", packet, extra=self._get_log_extra())
 
-            if not self.connectionState.is_CONNECTED_SELECTED():
-                self.logger.warning("received message when not selected")
+            if not self._connection_state.is_CONNECTED_SELECTED():
+                self._logger.warning("received message when not selected")
 
                 out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.s_type, 4))
-                self.communicationLogger.info("> %s\n  %s", out_packet, HSMS_STYPES[out_packet.header.s_type],
-                                              extra=self._get_log_extra())
-                self.connection.send_packet(out_packet)
+                self._communication_logger.info(
+                    "> %s\n  %s", out_packet, HSMS_STYPES[out_packet.header.s_type],
+                    extra=self._get_log_extra())
+                self._connection.send_packet(out_packet)
 
                 return
 
             # someone is waiting for this message
-            if packet.header.system in self._systemQueues:
+            if packet.header.system in self._system_queues:
                 # send packet to request sender
-                self._systemQueues[packet.header.system].put_nowait(packet)
+                self._system_queues[packet.header.system].put_nowait(packet)
             # just log if nobody is interested
             else:
                 self.events.fire("hsms_packet_received", {'connection': self, 'packet': packet})
@@ -326,8 +349,8 @@ class HsmsProtocol(secsgem.common.Protocol):
         :returns: queue to receive responses with
         :rtype: queue.Queue
         """
-        self._systemQueues[system_id] = queue.Queue()
-        return self._systemQueues[system_id]
+        self._system_queues[system_id] = queue.Queue()
+        return self._system_queues[system_id]
 
     def _remove_queue(self, system_id):
         """
@@ -336,7 +359,7 @@ class HsmsProtocol(secsgem.common.Protocol):
         :param system_id: system id to remove
         :type system_id: int
         """
-        del self._systemQueues[system_id]
+        del self._system_queues[system_id]
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
@@ -349,16 +372,16 @@ class HsmsProtocol(secsgem.common.Protocol):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'address': self.address, 'port': self.port, 'active': self.active, 'session_id': self.session_id,
-                'name': self.name, 'connected': self.connected}
+        return {'address': self._address, 'port': self._port, 'active': self._active, 'session_id': self._session_id,
+                'name': self._name, 'connected': self._connected}
 
     def enable(self):
         """Enable the connection."""
-        self.connection.enable()
+        self._connection.enable()
 
     def disable(self):
         """Disable the connection."""
-        self.connection.disable()
+        self._connection.disable()
 
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
         """
@@ -369,12 +392,12 @@ class HsmsProtocol(secsgem.common.Protocol):
         """
         out_packet = HsmsPacket(
             HsmsStreamFunctionHeader(self.get_next_system_counter(), function.stream, function.function,
-                                     function.is_reply_required, self.session_id),
+                                     function.is_reply_required, self._session_id),
             function.encode())
 
-        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
-        return self.connection.send_packet(out_packet)
+        return self._connection.send_packet(out_packet)
 
     def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Packet]:
         """
@@ -390,18 +413,18 @@ class HsmsProtocol(secsgem.common.Protocol):
         response_queue = self._get_queue_for_system(system_id)
 
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, function.stream, function.function, True,
-                                                         self.session_id),
+                                                         self._session_id),
                                 function.encode())
 
-        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
-        if not self.connection.send_packet(out_packet):
-            self.logger.error("Sending packet failed")
+        if not self._connection.send_packet(out_packet):
+            self._logger.error("Sending packet failed")
             self._remove_queue(system_id)
             return None
 
         try:
-            response = response_queue.get(True, self.connection.T3)
+            response = response_queue.get(True, self.timeouts.t3)
         except queue.Empty:
             response = None
 
@@ -419,12 +442,12 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type system: integer
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False,
-                                                         self.session_id),
+                                                         self._session_id),
                                 function.encode())
 
-        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
-        return self.connection.send_packet(out_packet)
+        return self._connection.send_packet(out_packet)
 
     def send_select_req(self):
         """
@@ -438,15 +461,16 @@ class HsmsProtocol(secsgem.common.Protocol):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsSelectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
 
-        if not self.connection.send_packet(packet):
+        if not self._connection.send_packet(packet):
             self._remove_queue(system_id)
             return None
 
         try:
-            response = response_queue.get(True, self.connection.T6)
+            response = response_queue.get(True, self.timeouts.t6)
         except queue.Empty:
             response = None
 
@@ -462,9 +486,10 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsSelectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
-        return self.connection.send_packet(packet)
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
+        return self._connection.send_packet(packet)
 
     def send_linktest_req(self):
         """
@@ -478,15 +503,16 @@ class HsmsProtocol(secsgem.common.Protocol):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
 
-        if not self.connection.send_packet(packet):
+        if not self._connection.send_packet(packet):
             self._remove_queue(system_id)
             return None
 
         try:
-            response = response_queue.get(True, self.connection.T6)
+            response = response_queue.get(True, self.timeouts.t6)
         except queue.Empty:
             response = None
 
@@ -502,9 +528,10 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
-        return self.connection.send_packet(packet)
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
+        return self._connection.send_packet(packet)
 
     def send_deselect_req(self):
         """
@@ -518,15 +545,15 @@ class HsmsProtocol(secsgem.common.Protocol):
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+                                        extra=self._get_log_extra())
 
-        if not self.connection.send_packet(packet):
+        if not self._connection.send_packet(packet):
             self._remove_queue(system_id)
             return None
 
         try:
-            response = response_queue.get(True, self.connection.T6)
+            response = response_queue.get(True, self.timeouts.t6)
         except queue.Empty:
             response = None
 
@@ -542,9 +569,10 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
-        return self.connection.send_packet(packet)
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
+        return self._connection.send_packet(packet)
 
     def send_reject_rsp(self, system_id, s_type, reason):
         """
@@ -558,19 +586,21 @@ class HsmsProtocol(secsgem.common.Protocol):
         :type reason: integer
         """
         packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
-        return self.connection.send_packet(packet)
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
+        return self._connection.send_packet(packet)
 
     def send_separate_req(self):
         """Send a Separate Request to the remote host."""
         system_id = self.get_next_system_counter()
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
-                                      extra=self._get_log_extra())
+        self._communication_logger.info(
+            "> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
+            extra=self._get_log_extra())
 
-        if not self.connection.send_packet(packet):
+        if not self._connection.send_packet(packet):
             return None
 
         return system_id
@@ -578,4 +608,4 @@ class HsmsProtocol(secsgem.common.Protocol):
     # helpers
 
     def _get_log_extra(self):
-        return {"address": self.address, "port": self.port, "session_id": self.session_id, "remoteName": self.name}
+        return {"address": self._address, "port": self._port, "session_id": self._session_id, "remoteName": self._name}

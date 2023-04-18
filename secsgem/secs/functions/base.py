@@ -31,7 +31,7 @@ class StructureDisplayingMeta(type):
         return cls.get_format()
 
 
-class SecsStreamFunction(metaclass=StructureDisplayingMeta):
+class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=too-many-instance-attributes
     """
     Secs stream and function base class.
 
@@ -193,7 +193,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         """
         if self.data is None:
             return None
-        
+
         return self.data.get()
 
     @classmethod

@@ -56,12 +56,12 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         self._bind_ip = bind_ip
 
         # initially not enabled
-        self.enabled = False
+        self._enabled = False
 
         # reconnect thread required for passive connection
-        self.serverThread = None
-        self.stopServerThread = False
-        self.serverSock = None
+        self._server_thread = None
+        self._stop_server_thread = False
+        self._server_sock = None
 
     def _on_hsms_connection_close(self, data):
         """
@@ -69,7 +69,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
         This is required to initiate the reconnect if the connection is still enabled
         """
-        if self.enabled:
+        if self._enabled:
             self.__start_server_thread()
 
     def enable(self):
@@ -79,9 +79,9 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         Starts the connection process to the passive remote.
         """
         # only start if not already enabled
-        if not self.enabled:
+        if not self._enabled:
             # mark connection as enabled
-            self.enabled = True
+            self._enabled = True
 
             # start the connection thread
             self.__start_server_thread()
@@ -93,28 +93,29 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         Stops all connection attempts, and closes the connection
         """
         # only stop if enabled
-        if self.enabled:
+        if self._enabled:
             # mark connection as disabled
-            self.enabled = False
+            self._enabled = False
 
             # stop connection thread if it is running
-            if self.serverThread and self.serverThread.is_alive():
-                self.stopServerThread = True
+            if self._server_thread and self._server_thread.is_alive():
+                self._stop_server_thread = True
 
-                if self.serverSock:
-                    self.serverSock.close()
+                if self._server_sock:
+                    self._server_sock.close()
 
                 # wait for connection thread to stop
-                while self.stopServerThread:
+                while self._stop_server_thread:
                     time.sleep(0.2)
 
             # disconnect super class
             self.disconnect()
 
     def __start_server_thread(self):
-        self.serverThread = threading.Thread(target=self.__server_thread,
-                                             name=f"secsgem_HsmsPassiveConnection_serverThread_{self.remoteAddress}")
-        self.serverThread.start()
+        self._server_thread = threading.Thread(
+            target=self.__server_thread,
+            name=f"secsgem_HsmsPassiveConnection_serverThread_{self._remote_address}")
+        self._server_thread.start()
 
     def __server_thread(self):
         """
@@ -122,17 +123,17 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        self.serverSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         if not secsgem.common.is_windows():
-            self.serverSock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self._server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self.serverSock.bind((self._bind_ip, self.remotePort))
-        self.serverSock.listen(1)
+        self._server_sock.bind((self._bind_ip, self._remote_port))
+        self._server_sock.listen(1)
 
-        while not self.stopServerThread:
+        while not self._stop_server_thread:
             try:
-                select_result = select.select([self.serverSock], [], [], self.select_timeout)
+                select_result = select.select([self._server_sock], [], [], self.select_timeout)
             except Exception:  # pylint: disable=broad-except
                 continue
 
@@ -140,24 +141,24 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
                 # select timed out
                 continue
 
-            accept_result = self.serverSock.accept()
+            accept_result = self._server_sock.accept()
             if accept_result is None:
                 continue
 
-            (self.sock, (_, _)) = accept_result
+            (self._sock, (_, _)) = accept_result
 
             # setup socket
-            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
             # make socket nonblocking
-            self.sock.setblocking(0)
+            self._sock.setblocking(0)
 
             # start the receiver thread
             self._start_receiver()
 
-            self.serverSock.shutdown(socket.SHUT_RDWR)
-            self.serverSock.close()
+            self._server_sock.shutdown(socket.SHUT_RDWR)
+            self._server_sock.close()
 
             return
 
-        self.stopServerThread = False
+        self._stop_server_thread = False

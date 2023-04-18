@@ -28,7 +28,7 @@ class HsmsConnectionManager:
 
     def __init__(self):
         """Initialize a hsms connection manager."""
-        self._eventProducer = secsgem.common.EventProducer()
+        self._event_producer = secsgem.common.EventProducer()
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -38,12 +38,12 @@ class HsmsConnectionManager:
 
         self.stopping = False
 
-        self._testServerObject = None
+        self._test_server_object = None
 
     @property
     def events(self):
         """Property for event handling."""
-        return self._eventProducer
+        return self._event_producer
 
     def has_connection_to(self, index):
         """
@@ -80,7 +80,7 @@ class HsmsConnectionManager:
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        if self._testServerObject:
+        if self._test_server_object:
             return
 
         required_ports = []
@@ -93,17 +93,17 @@ class HsmsConnectionManager:
                 if handler.port not in required_ports:
                     required_ports.append(handler.port)
 
-        for serverPort, server in self.servers.items():
-            if serverPort not in required_ports:
-                self.logger.debug("stopping server on port %d", serverPort)
+        for server_port, server in self.servers.items():
+            if server_port not in required_ports:
+                self.logger.debug("stopping server on port %d", server_port)
                 server.stop()
-                del self.servers[serverPort]
+                del self.servers[server_port]
 
-        for requiredPort in required_ports:
-            if requiredPort not in self.servers:
-                self.logger.debug("starting server on port %d", requiredPort)
-                self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
-                self.servers[requiredPort].start()
+        for required_port in required_ports:
+            if required_port not in self.servers:
+                self.logger.debug("starting server on port %d", required_port)
+                self.servers[required_port] = HsmsMultiPassiveServer(required_port)
+                self.servers[required_port].start()
 
     def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsProtocol):
         """
@@ -128,18 +128,18 @@ class HsmsConnectionManager:
 
         self._update_required_servers(port)
 
-        if self._testServerObject:
+        if self._test_server_object:
             if active:
-                handler = connection_handler(address, port, active, session_id, name, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._test_server_object)
             else:
-                handler = connection_handler(address, port, active, session_id, name, self._testServerObject)
+                handler = connection_handler(address, port, active, session_id, name, self._test_server_object)
         else:  # pragma: no cover
             if active:
                 handler = connection_handler(address, port, active, session_id, name)
             else:
                 handler = connection_handler(address, port, active, session_id, name, self.servers[port])
 
-        handler._eventProducer += self._eventProducer
+        handler._event_producer += self._event_producer
         handler.enable()
 
         self.handlers[connection_id] = handler

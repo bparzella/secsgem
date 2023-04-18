@@ -8,7 +8,7 @@ import yaml
 from data_item import DataItem
 
 
-structure_code = """
+STRUCTURE_CODE = """
 import secsgem.secs
 {imports}
 
@@ -17,7 +17,7 @@ data_item = {data_item}
 var = secsgem.secs.variables.functions.get_format(data_item)
 """
 
-sample_data_code = """
+SAMPLE_DATA_CODE = """
 import secsgem.secs
 import secsgem.common
 {imports}
@@ -33,7 +33,7 @@ else:
     preferred_type = None
 """
 
-sample_data_code_empty = """
+SAMPLE_DATA_CODE_EMPTY = """
 import secsgem.secs
 import secsgem.common
 {imports}
@@ -48,7 +48,8 @@ else:
     preferred_type = None
 """
 
-class Function:
+
+class Function:  # pylint: disable=too-many-instance-attributes
     """Function configuration from yaml."""
 
     sf_regex = re.compile(r"[sS](\d+)[fF](\d+)")
@@ -77,7 +78,7 @@ class Function:
         match = self.sf_regex.match(self._name)
         if not match:
             raise ValueError(f"Function name not valid {name}")
-        
+
         self._stream = int(match.group(1))
         self._function = int(match.group(2))
 
@@ -101,7 +102,7 @@ class Function:
 
         for function in functions:
             last = function.render(function_template, target_path)
-        
+
         init_code = function_init_template.render(
             functions=functions,
             streams_functions=cls.stream_function_dict(functions)
@@ -123,7 +124,7 @@ class Function:
                 secs_streams_functions[function.stream] = collections.OrderedDict()
 
             secs_streams_functions[function.stream][function.function] = function
-        
+
         return secs_streams_functions
 
     def render(self, function_template, target_path):
@@ -152,7 +153,7 @@ class Function:
     def name(self) -> str:
         """Get the name."""
         return self._name
-    
+
     @property
     def stream(self) -> int:
         """Get the stream number."""
@@ -172,22 +173,22 @@ class Function:
     def to_host(self) -> bool:
         """Get the to_host flag."""
         return self._data["to_host"]
-    
+
     @property
     def to_equipment(self) -> bool:
         """Get the to_equipment flag."""
         return self._data["to_equipment"]
-    
+
     @property
     def has_reply(self) -> bool:
         """Get the reply flag."""
         return self._data["reply"]
-    
+
     @property
     def is_reply_required(self) -> bool:
         """Get the reply_required flag."""
         return self._data["reply_required"]
-    
+
     @property
     def is_multi_block(self) -> bool:
         """Get the multi_block flag."""
@@ -198,7 +199,7 @@ class Function:
         """Get the raw, textual structure."""
         if "structure" not in self._data:
             return None
-        
+
         return self._data["structure"]
 
     @property
@@ -206,32 +207,31 @@ class Function:
         """Get the python structure."""
         if self.raw_structure is None:
             return "None"
-        
+
         return self._format_struct_as_string(self.raw_structure)
-    
-    def _format_struct_as_string(self, structure, indent_level = 0, indent_width = 4):
+
+    def _format_struct_as_string(self, structure, indent_level=0, indent_width=4):
         indent_text = " " * indent_level
         if isinstance(structure, list):
             if len(structure) == 1 and not isinstance(structure[0], list):
                 return f"{indent_text}[{structure[0]}]"
-            
+
             items = [self._format_struct_as_string(item, indent_level + indent_width, indent_width)
-                        for item in structure]
+                     for item in structure]
             items_text = ',\n'.join(items)
             return f"{indent_text}[\n{items_text}\n{indent_text}]"
-        
+
         if structure not in self._data_items:
             return f'{indent_text}"{structure}"'
-        
+
         return f"{indent_text}{structure}"
-        
-    
+
     @property
     def data_items(self) -> typing.List[DataItem]:
         """Get the data items used."""
         if self.raw_structure is None:
             return []
-        
+
         items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
         return items
@@ -251,34 +251,34 @@ class Function:
         """Get the output of the data structure."""
         if self.raw_structure is None:
             return "Header only"
-        
+
         imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
 
-        code = structure_code.format(imports=imports, data_item=self.structure)
+        code = STRUCTURE_CODE.format(imports=imports, data_item=self.structure)
 
         glob: typing.Dict[str, typing.Any] = {}
         loc: typing.Dict[str, typing.Any] = {}
 
-        exec(code, glob, loc)
+        exec(code, glob, loc)  # pylint: disable=exec-used
 
         return loc["var"]
-    
+
     @property
     def samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
         """Get samples and result data."""
         if self._samples is None:
             self._samples, self._preferred_type = self._load_samples()
-        
+
         return self._samples
-    
+
     @property
     def preferred_type(self) -> typing.Optional[typing.Type]:
         """Get preferred type."""
         if self._samples is None:
             self._samples, self._preferred_type = self._load_samples()
-        
+
         return self._preferred_type
-    
+
     def _load_samples(self) -> typing.Tuple[typing.List[typing.Dict[str, typing.Any]], typing.Optional[typing.Type]]:
         if "sample_data" not in self._data:
             sample_data = [{"data": ""}]
@@ -286,7 +286,7 @@ class Function:
             sample_data = self._data["sample_data"]
             if isinstance(sample_data, str):
                 sample_data = [{"data": sample_data}]
-        
+
         samples = []
         preferred_type = None
 
@@ -294,12 +294,12 @@ class Function:
             imports = "\n".join([f"from secsgem.secs.data_items import {item.name}" for item in self.data_items])
 
             if not sample["data"]:
-                code = sample_data_code_empty.format(
+                code = SAMPLE_DATA_CODE_EMPTY.format(
                     imports=imports,
                     data_item=self.structure,
                     sample_value=sample["data"])
             else:
-                code = sample_data_code.format(
+                code = SAMPLE_DATA_CODE.format(
                     imports=imports,
                     data_item=self.structure,
                     sample_value=sample["data"])
@@ -307,7 +307,7 @@ class Function:
             glob: typing.Dict[str, typing.Any] = {}
             loc: typing.Dict[str, typing.Any] = {}
 
-            exec(code, glob, loc)
+            exec(code, glob, loc)  # pylint: disable=exec-used
 
             samples.append({
                 "data": sample["data"],
@@ -323,5 +323,5 @@ class Function:
         """Get the configured extra help."""
         if "extra_help" not in self._data:
             return ""
-        
+
         return self._data["extra_help"]

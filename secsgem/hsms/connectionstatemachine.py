@@ -40,16 +40,16 @@ class ConnectionStateMachine:
 
         self.states = [STATE_NOT_CONNECTED,
                        {
-                            'name': STATE_CONNECTED,
-                            'on_enter': self._on_enter_CONNECTED,
-                            'on_exit': self._on_exit_CONNECTED,
-                            'children': [
-                                STATE_NOT_SELECTED,
-                                {
-                                    'name': STATE_SELECTED,
-                                    'on_enter': self._on_enter_CONNECTED_SELECTED
-                                }
-                            ]
+                           'name': STATE_CONNECTED,
+                           'on_enter': self._on_enter_CONNECTED,
+                           'on_exit': self._on_exit_CONNECTED,
+                           'children': [
+                               STATE_NOT_SELECTED,
+                               {
+                                   'name': STATE_SELECTED,
+                                   'on_enter': self._on_enter_CONNECTED_SELECTED
+                               }
+                           ]
                        }]
 
         # transition 1

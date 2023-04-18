@@ -99,7 +99,7 @@ class TestCollectionEventLink(unittest.TestCase):
         ce = secsgem.gem.CollectionEvent(123, "TestCollectionEvent", [123, "DV123"])
         cel = secsgem.gem.CollectionEventLink(ce, [1000], param1="param1", param2=2)
 
-        self.assertEqual(cel.ce, ce)
+        self.assertEqual(cel.collection_event, ce)
         self.assertEqual(cel.enabled, False)
         self.assertEqual(cel.reports, [1000])
         self.assertEqual(cel.param1, "param1")
@@ -209,70 +209,70 @@ class TestGemEquipmentHandler(unittest.TestCase):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
 
-        self.assertEqual(client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(client.control_state.current, "HOST_OFFLINE")
 
     def testControlInitialStateEquipmentOffline(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="EQUIPMENT_OFFLINE")
 
-        self.assertEqual(client.controlState.current, "EQUIPMENT_OFFLINE")
+        self.assertEqual(client.control_state.current, "EQUIPMENT_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 1)
 
     def testControlInitialStateHostOffline(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="HOST_OFFLINE")
 
-        self.assertEqual(client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(client.control_state.current, "HOST_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 3)
 
     def testControlInitialStateOnline(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
 
-        self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(client.control_state.current, "ONLINE_REMOTE")
         self.assertEqual(client._get_control_state_id(), 5)
 
     def testControlInitialStateOnlineLocal(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
-        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
     def testControlRemoteToLocal(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
 
-        self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(client.control_state.current, "ONLINE_REMOTE")
 
         client.control_switch_online_local()
 
-        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
     def testControlLocalToRemote(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
-        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
         client.control_switch_online_remote()
 
-        self.assertEqual(client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(client.control_state.current, "ONLINE_REMOTE")
 
     def testControlOnlineToOffline(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
-        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
         client.control_switch_offline()
 
-        self.assertEqual(client.controlState.current, "EQUIPMENT_OFFLINE")
+        self.assertEqual(client.control_state.current, "EQUIPMENT_OFFLINE")
 
-    def testSVControlStateOnlineLocal(self):
+    def testSVcontrol_stateOnlineLocal(self):
         server = HsmsTestServer()
         client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
-        self.assertEqual(client.controlState.current, "ONLINE_LOCAL")
+        self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
         self.assertEqual(client._get_control_state_id(), 4)
 
 
@@ -333,7 +333,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
     def testControlConnectDenied(self):
         self.establishCommunication()
@@ -349,7 +349,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertEqual(self.client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(self.client.control_state.current, "HOST_OFFLINE")
 
     def testControlRequestOffline(self):
         self.establishCommunication()
@@ -365,7 +365,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F15()))
@@ -382,7 +382,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertEqual(function.get(), 0)
 
-        self.assertEqual(self.client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(self.client.control_state.current, "HOST_OFFLINE")
 
     def testControlRequestOnline(self):
         self.establishCommunication()
@@ -398,7 +398,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F15()))
@@ -411,7 +411,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 16)
 
-        self.assertEqual(self.client.controlState.current, "HOST_OFFLINE")
+        self.assertEqual(self.client.control_state.current, "HOST_OFFLINE")
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F17()))
@@ -428,7 +428,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertEqual(function.get(), 0)
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
     def testControlRequestOnlineWhileOnline(self):
         self.establishCommunication()
@@ -444,7 +444,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F17()))
@@ -461,7 +461,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertEqual(function.get(), 2)
 
-        self.assertEqual(self.client.controlState.current, "ONLINE_REMOTE")
+        self.assertEqual(self.client.control_state.current, "ONLINE_REMOTE")
 
     def setupTestStatusVariables(self, use_callback=False):
         self.client.status_variables.update({

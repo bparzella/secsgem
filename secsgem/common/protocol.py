@@ -25,6 +25,7 @@ from .packet import Packet
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
 
+
 class Protocol(abc.ABC):
     """Abstract base class for a protocol."""
 
@@ -32,15 +33,21 @@ class Protocol(abc.ABC):
         """Initialize protocol base object."""
         super().__init__()
 
-        self._eventProducer = EventProducer()
-        self._eventProducer.targets += self
+        self._event_producer = EventProducer()
+        self._event_producer.targets += self
 
         self._secs_decode: typing.Optional[typing.Callable[[Packet], typing.Any]] = None
 
     @property
     def events(self):
         """Property for event handling."""
-        return self._eventProducer
+        return self._event_producer
+
+    @property
+    @abc.abstractmethod
+    def timeouts(self):
+        """Property for timeout."""
+        raise NotImplementedError("Protocol.timeouts missing implementation")
 
     @property
     def secs_decode(self) -> typing.Optional[typing.Callable[[Packet], typing.Any]]:

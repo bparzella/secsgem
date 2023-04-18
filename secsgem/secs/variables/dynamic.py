@@ -105,7 +105,7 @@ class Dynamic(Base):
         types = []
         for typ in self.__allowedtypes__:
             types += typ.preferred_types
-        
+
         return types[0]
 
     def set(self, value):

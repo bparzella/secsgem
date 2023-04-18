@@ -55,17 +55,17 @@ class GemHandlerPassiveGroup:
         print(self.client)    # cover repr and serialize_data
 
     def testEnableDisable(self):
-        self.assertEqual(self.client.communicationState.current, "NOT_COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "NOT_COMMUNICATING")
 
         self.server.stop()
         self.client.disable()
 
-        self.assertEqual(self.client.communicationState.current, "DISABLED")
+        self.assertEqual(self.client.communication_state.current, "DISABLED")
 
         self.server.start()
         self.client.enable()
 
-        self.assertEqual(self.client.communicationState.current, "NOT_COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "NOT_COMMUNICATING")
 
     def testConnection(self):
         self.server.simulate_connect()
@@ -79,7 +79,7 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.s_type, 0x02)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
+        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
 
     def establishCommunication(self):
         self.server.simulate_connect()
@@ -105,7 +105,7 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.s_type, 0x02)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
+        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
 
         packet = self.server.expect_packet(function=13)
 
@@ -115,11 +115,11 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0d)
 
-        self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
+        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
 
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS01F14([0])))
 
-        self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
 
     def testSendingS01F13(self):
         self.server.simulate_connect()
@@ -133,7 +133,7 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.s_type, 0x02)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
+        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
 
         s01f13ReceivedPacket = self.server.expect_packet(function=13)
 
@@ -143,12 +143,12 @@ class GemHandlerPassiveGroup:
         self.assertEqual(s01f13ReceivedPacket.header.stream, 0x01)
         self.assertEqual(s01f13ReceivedPacket.header.function, 0x0d)
 
-        self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
+        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F13()))
 
-        self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -158,11 +158,11 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0e)
 
-        self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
 
         self.server.simulate_packet(self.server.generate_stream_function_packet(s01f13ReceivedPacket.header.system, secsgem.secs.functions.SecsS01F14([0])))
 
-        self.assertEqual(self.client.communicationState.current, "COMMUNICATING")
+        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
 
     def testAreYouThereHandler(self):
         self.establishCommunication()

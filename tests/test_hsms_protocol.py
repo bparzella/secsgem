@@ -36,14 +36,14 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.client.disable()
 
     def testSystemCounterWrapping(self):
-        self.client.systemCounter = ((2 ** 32) - 1)
+        self.client._system_counter = ((2 ** 32) - 1)
 
         self.assertEqual(self.client.get_next_system_counter(), 0)
 
     def testLinktestTimer(self):
         self.client.disable()
         
-        self.client.linktestTimeout = 0.1
+        self.client._linktest_timeout = 0.1
         self.client.enable()
 
         self.server.simulate_connect()
@@ -79,7 +79,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         # set the connection to disconnecting by brute force
-        self.client.connection.disconnecting = True
+        self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
@@ -124,7 +124,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.session_id, 0xffff)
 
         # set the connection to disconnecting by brute force
-        self.client.connection.disconnecting = True
+        self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
@@ -139,7 +139,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         # set the connection to disconnecting by brute force
-        self.client.connection.disconnecting = True
+        self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
@@ -236,7 +236,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.assertEqual(packet.header.session_id, 0xffff)
 
         # set the connection to disconnecting by brute force
-        self.client.connection.disconnecting = True
+        self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
@@ -251,7 +251,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.server.simulate_connect()
 
         # set the connection to disconnecting by brute force
-        self.client.connection.disconnecting = True
+        self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
@@ -327,28 +327,28 @@ class TestHsmsProtocolActive(unittest.TestCase):
     def testPacketSendingTimeout(self):
         self.server.simulate_connect()
 
-        self.client.connection.T3 = 0.1
+        self.client.timeouts.t3 = 0.1
 
         self.assertEqual(self.client.send_and_waitfor_response(secsgem.secs.functions.SecsS01F01()), None)
 
     def testSelectReqSendingTimeout(self):
         self.server.simulate_connect()
 
-        self.client.connection.T6 = 0.1
+        self.client.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_select_req(), None)
 
     def testLinktestReqSendingTimeout(self):
         self.server.simulate_connect()
 
-        self.client.connection.T6 = 0.1
+        self.client.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_linktest_req(), None)
 
     def testDeelectReqSendingTimeout(self):
         self.server.simulate_connect()
 
-        self.client.connection.T6 = 0.1
+        self.client.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_deselect_req(), None)
 

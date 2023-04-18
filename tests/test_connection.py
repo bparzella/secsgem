@@ -19,6 +19,7 @@ import logging
 
 import datetime
 
+import secsgem.common
 import secsgem.hsms
 
 
@@ -43,75 +44,73 @@ class HsmsTestConnection:
 
     """
 
-    T3 = 10
-    T6 = 5
-    T7 = 10
-
     def __init__(self, address, port=5000, session_id=0, delegate=None):
-        self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         # initially not enabled
-        self.address = address
-        self.port = port
-        self.session_id = session_id
-        self.delegate = delegate
+        self._address = address
+        self._port = port
+        self._session_id = session_id
+        self._delegate = delegate
 
-        self.enabled = False
+        self._enabled = False
 
         self.disconnecting = False
 
-        self.systemCounter = 0
+        self._system_counter = 0
 
-        self.connected = False
+        self._connected = False
 
-        self.failSend = False
+        self._fail_send = False
 
-        self.packets = []
+        self._packets = []
+
+        self.timeouts = secsgem.common.Timeouts()
 
     def simulate_connect(self):
         # send connection enabled event
-        if self.delegate and hasattr(self.delegate, 'on_connection_established') and callable(getattr(self.delegate, 'on_connection_established')):
-            self.delegate.on_connection_established(self)
+        if self._delegate and hasattr(self._delegate, 'on_connection_established') and callable(getattr(self._delegate, 'on_connection_established')):
+            self._delegate.on_connection_established(self)
 
-        self.connected = True
+        self._connected = True
 
     def simulate_disconnect(self):
         self.disconnect()
 
     def simulate_packet(self, packet):
-        if self.delegate and hasattr(self.delegate, 'on_connection_packet_received') and callable(getattr(self.delegate, 'on_connection_packet_received')):
-            self.delegate.on_connection_packet_received(self, packet)
+        if self._delegate and hasattr(self._delegate, 'on_connection_packet_received') and callable(getattr(self._delegate, 'on_connection_packet_received')):
+            self._delegate.on_connection_packet_received(self, packet)
 
     def enable(self):
-        self.enabled = True
+        self._enabled = True
 
     def disable(self):
-        self.enabled = False
+        self._enabled = False
 
     def get_next_system_counter(self):
-        self.systemCounter += 1
-        return self.systemCounter
+        self._system_counter += 1
+        return self._system_counter
 
     def send_packet(self, packet):
-        if self.failSend:
+        if self._fail_send:
             return False
 
-        self.logger.info("> %s", packet)
-        self.packets.append(packet)
+        self._logger.info("> %s", packet)
+        self._packets.append(packet)
 
         return True
 
     def disconnect(self):
-        if self.connected:
+        if self._connected:
             # notify listeners of disconnection
-            if self.delegate and hasattr(self.delegate, 'on_connection_before_closed') and callable(getattr(self.delegate, 'on_connection_before_closed')):
-                self.delegate.on_connection_before_closed(self)
+            if self._delegate and hasattr(self._delegate, 'on_connection_before_closed') and callable(getattr(self._delegate, 'on_connection_before_closed')):
+                self._delegate.on_connection_before_closed(self)
 
             # notify listeners of disconnection
-            if self.delegate and hasattr(self.delegate, 'on_connection_closed') and callable(getattr(self.delegate, 'on_connection_closed')):
-                self.delegate.on_connection_closed(self)
+            if self._delegate and hasattr(self._delegate, 'on_connection_closed') and callable(getattr(self._delegate, 'on_connection_closed')):
+                self._delegate.on_connection_closed(self)
 
-        self.connected = False
+        self._connected = False
 
 
 class HsmsTestServer:
@@ -147,13 +146,13 @@ class HsmsTestServer:
         self.connection.simulate_disconnect()
 
     def fail_next_send(self):
-        self.connection.failSend = True
+        self.connection._fail_send = True
 
     def expect_packet(self, system_id=None, s_type=None, stream=None, function=None, timeout=5):
         end_time = datetime.datetime.now() + datetime.timedelta(seconds=timeout)
 
         while True:
-            for packet in self.connection.packets:
+            for packet in self.connection._packets:
                 match = False
                 if system_id is not None and packet.header.system == system_id:
                     match = True
@@ -168,7 +167,7 @@ class HsmsTestServer:
                     match = True
 
                 if match:
-                    self.connection.packets.remove(packet)
+                    self.connection._packets.remove(packet)
                     return packet
 
                 if datetime.datetime.now() > end_time:

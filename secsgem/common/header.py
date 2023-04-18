@@ -16,6 +16,7 @@
 """header base class."""
 import abc
 
+
 class Header(abc.ABC):
     """Abstract base class for a packet header."""
 
@@ -36,7 +37,7 @@ class Header(abc.ABC):
         self._stream = stream
         self._function = function
         self._system = system
-    
+
     @property
     def session_id(self) -> int:
         """Get session id."""

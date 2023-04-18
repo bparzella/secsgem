@@ -616,14 +616,14 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.server.simulate_packet(packet)
 
     def testGetCeidName(self):
-        self.client._collectionEvents = {
+        self.client._collection_events = {
             0: {"name": "CollectionEvent0", "description": "Collection event #0", "dvids": []},
         }
 
         self.assertEqual(self.client.get_ceid_name(0), "CollectionEvent0")
 
     def testGetCeidNameMissingName(self):
-        self.client._collectionEvents = {
+        self.client._collection_events = {
             0: {"description": "Collection event #0", "dvids": []},
         }
 
@@ -633,14 +633,14 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(self.client.get_ceid_name(0), "")
 
     def testGetDvidName(self):
-        self.client._dataValues = {
+        self.client._data_values = {
             0: {"name": "DataValue0", "description": "Data Value #0"},
         }
 
         self.assertEqual(self.client.get_dvid_name(0), "DataValue0")
 
     def testGetDvidNameMissingName(self):
-        self.client._dataValues = {
+        self.client._data_values = {
             0: {"description": "Data Value #0"},
         }
 

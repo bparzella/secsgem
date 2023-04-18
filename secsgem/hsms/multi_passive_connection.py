@@ -63,11 +63,11 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         del address  # unused parameter
 
         # setup socket
-        self.sock = sock
-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self._sock = sock
+        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         # make socket nonblocking
-        self.sock.setblocking(0)
+        self._sock.setblocking(0)
 
         # start the receiver thread
         self._start_receiver()
@@ -87,5 +87,5 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         Stops all connection attempts, and closes the connection
         """
         self.enabled = False
-        if self.connected:
+        if self._connected:
             self.disconnect()

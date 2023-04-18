@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# timeouts.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,17 +13,23 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains helper functions."""
-
-from .callbacks import CallbackHandler
-from .events import EventProducer
-from .fysom import Fysom
-from .header import Header
-from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
-from .packet import Packet
-from .protocol import Protocol
-from .timeouts import Timeouts
+"""timout class."""
 
 
-__all__ = ["CallbackHandler", "EventProducer", "Fysom", "format_hex", "function_name", "indent_block", "is_windows",
-           "is_errorcode_ewouldblock", "Protocol", "Packet", "Header", "Timeouts"]
+class Timeouts:
+    """Timeouts."""
+
+    T3 = 45.0
+    T5 = 10.0
+    T6 = 5.0
+
+    def __init__(self) -> None:
+        """Timout initializer."""
+        # Reply Timeout
+        self.t3 = self.T3  # pylint: disable=invalid-name
+
+        # Connect Separation Time
+        self.t5 = self.T5  # pylint: disable=invalid-name
+
+        # Control Transaction Timeout
+        self.t6 = self.T6  # pylint: disable=invalid-name
