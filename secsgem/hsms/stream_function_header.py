@@ -25,7 +25,7 @@ class HsmsStreamFunctionHeader(HsmsHeader):
     Header for message with SType 0.
     """
 
-    def __init__(self, system, stream, function, require_response, session_id):
+    def __init__(self, system: int, stream: int, function: int, require_response: bool, session_id: int):
         """
         Initialize a stream function secs header.
 
@@ -45,14 +45,7 @@ class HsmsStreamFunctionHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
-            HsmsStreamFunctionHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, \
-system:0x00000016, requireResponse:True})
+            HsmsStreamFunctionHeader({session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, \
+system:0x00000016, require_response:True})
         """
-        HsmsHeader.__init__(self, system, session_id)
-        self.sessionID = session_id
-        self.requireResponse = require_response
-        self.stream = stream
-        self.function = function
-        self.pType = 0x00
-        self.sType = 0x00
-        self.system = system
+        super().__init__(system, session_id, stream, function, require_response, 0x00, 0x00)

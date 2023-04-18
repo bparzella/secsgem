@@ -71,7 +71,7 @@ class HsmsConnection:  # pragma: no cover
         :param session_id: session / device ID to use for connection
         :type session_id: integer
         :param delegate: target for messages
-        :type delegate: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
+        :type delegate: inherited from :class:`secsgem.hsms.protocol.HsmsProtocol`
         """
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -79,7 +79,7 @@ class HsmsConnection:  # pragma: no cover
         self.active = active
         self.remoteAddress = address
         self.remotePort = port
-        self.sessionID = session_id
+        self.session_id = session_id
         self.delegate = delegate
 
         # connection socket
@@ -109,13 +109,13 @@ class HsmsConnection:  # pragma: no cover
             'active': self.active,
             'remoteAddress': self.remoteAddress,
             'remotePort': self.remotePort,
-            'sessionID': self.sessionID,
+            'session_id': self.session_id,
             'connected': self.connected}
 
     def __str__(self):
         """Get the contents of this object as a string."""
         return f"{('Active' if self.active else 'Passive')} connection to {self.remoteAddress}:{str(self.remotePort)}" \
-               f" sessionID={str(self.sessionID)}"
+               f" session_id={str(self.session_id)}"
 
     def _start_receiver(self):
         """
@@ -169,7 +169,7 @@ class HsmsConnection:  # pragma: no cover
         # clear disconnecting flag, no selects coming any more
         self.disconnecting = False
 
-    def send_packet(self, packet):
+    def send_packet(self, packet) -> bool:
         """
         Send the ASCII coded packet to the remote host.
 

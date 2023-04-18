@@ -16,7 +16,7 @@
 """module imports."""
 
 from .connectionmanager import HsmsConnectionManager
-from .handler import HsmsHandler
+from .protocol import HsmsProtocol
 from .packet import HsmsPacket
 from .stream_function_header import HsmsStreamFunctionHeader
 from .separate_req_header import HsmsSeparateReqHeader
@@ -29,6 +29,6 @@ from .select_rsp_header import HsmsSelectRspHeader
 from .select_req_header import HsmsSelectReqHeader
 from .header import HsmsHeader
 
-__all__ = ["HsmsConnectionManager", "HsmsHandler", "HsmsPacket", "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader",
+__all__ = ["HsmsConnectionManager", "HsmsProtocol", "HsmsPacket", "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader",
            "HsmsRejectReqHeader", "HsmsLinktestRspHeader", "HsmsLinktestReqHeader", "HsmsDeselectRspHeader",
            "HsmsDeselectReqHeader", "HsmsSelectRspHeader", "HsmsSelectReqHeader", "HsmsHeader"]

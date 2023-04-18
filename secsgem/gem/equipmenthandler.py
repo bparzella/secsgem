@@ -20,7 +20,6 @@ import typing
 from dateutil.tz import tzlocal
 
 import secsgem.common
-import secsgem.hsms
 import secsgem.secs.variables
 import secsgem.secs.data_items
 
@@ -59,7 +58,7 @@ class GemEquipmentHandler(GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
-                 connection: secsgem.hsms.HsmsHandler,
+                 connection: secsgem.common.Protocol,
                  initial_control_state: str = "ATTEMPT_ONLINE",
                  initial_online_control_state: str = "REMOTE"):
         """
@@ -229,14 +228,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f15(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 15, Request offline.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler, packet  # unused parameters
 
@@ -250,14 +249,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 17, Request online.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler, packet  # unused parameters
 
@@ -375,14 +374,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 3, Equipment status request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -405,14 +404,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s01f11(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 11, SV namelist request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -486,14 +485,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f33(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 33, Define Report.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -549,14 +548,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f35(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 35, Link event report.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -603,14 +602,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -627,14 +626,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 6, Function 15, event report request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -790,14 +789,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 13, Equipment constant request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -820,14 +819,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 15, Equipment constant send.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -857,14 +856,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f29(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 29, EC namelist request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -951,14 +950,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f03(self,
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 3, Alarm en-/disabled.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -978,14 +977,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f05(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 5, Alarm list.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -1008,14 +1007,14 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s05f07(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 7, Enabled alarm list.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler, packet  # unused parameters
 
@@ -1043,7 +1042,7 @@ class GemEquipmentHandler(GemHandler):
 
     def _on_s02f41(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 41, host command send.
 
@@ -1052,9 +1051,9 @@ class GemEquipmentHandler(GemHandler):
         Then we run the actual remote command callback and signal success with the matching collection event.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 

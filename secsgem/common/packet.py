@@ -1,7 +1,7 @@
 #####################################################################
-# testExample.py
+# packet.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,26 +13,17 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+"""packet base class."""
+import abc
 
-import unittest
-
-import secsgem.gem
-
-
-class TestExampleSecsGem(unittest.TestCase):
-    def setUp(self):
-        self.handler = secsgem.gem.GemHandler.hsms("10.211.55.33", 5000, False, 0, "test")
-
-        self.handler.enable()
-        self.handler.waitfor_communicating()
-
-    def tearDown(self):
-        self.handler.disable()
-
-    def testLinktest(self):
-        result_packet = self.handler.send_linktest_req()
-
-        self.assertEqual(result_packet.header.s_type, 6)
-        self.assertEqual(result_packet.header.session_id, 65535)
+from .header import Header
 
 
+class Packet(abc.ABC):
+    """Abstract base class for a packet."""
+
+    @property
+    @abc.abstractmethod
+    def header(self) -> Header:
+        """Get the header."""
+        raise NotImplementedError("Packet.header missing implementation")

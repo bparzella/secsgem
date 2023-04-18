@@ -1,4 +1,4 @@
-Handler
-=======
+Protocol
+========
 
-.. autoclass:: secsgem.hsms.handler.HsmsHandler
+.. autoclass:: secsgem.hsms.protocol.HsmsProtocol

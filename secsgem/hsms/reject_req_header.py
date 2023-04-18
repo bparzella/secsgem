@@ -31,7 +31,7 @@ class HsmsRejectReqHeader(HsmsHeader):
 
         :param system: message ID
         :type system: integer
-        :param s_type: sType of rejected message
+        :param s_type: s_type of rejected message
         :type s_type: integer
         :param reason: reason for rejection
         :type reason: integer
@@ -41,12 +41,7 @@ class HsmsRejectReqHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsRejectReqHeader(17, 3, 4)
-            HsmsRejectReqHeader({sessionID:0xffff, stream:03, function:04, pType:0x00, sType:0x07, system:0x00000011, \
-requireResponse:False})
+            HsmsRejectReqHeader({session_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, \
+system:0x00000011, require_response:False})
         """
-        HsmsHeader.__init__(self, system, 0xFFFF)
-        self.requireResponse = False
-        self.stream = s_type
-        self.function = reason
-        self.pType = 0x00
-        self.sType = 0x07
+        super().__init__(system, 0xFFFF, s_type, reason, False, 0x00, 0x07)

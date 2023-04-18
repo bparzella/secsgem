@@ -17,15 +17,24 @@
 
 import struct
 
+import secsgem.common
 
-class HsmsHeader:
+class HsmsHeader(secsgem.common.Header):
     """
     Generic HSMS header.
 
     Base for different specific headers
     """
 
-    def __init__(self, system, session_id):
+    def __init__(
+            self, 
+            system: int, 
+            session_id: int, 
+            stream: int = 0, 
+            function: int = 0,
+            requires_response: bool = False,
+            p_type: int = 0x00,
+            s_type: int = 0x01):
         """
         Initialize a hsms header.
 
@@ -33,36 +42,58 @@ class HsmsHeader:
         :type system: integer
         :param session_id: device / session ID
         :type session_id: integer
+        :param stream: stream
+        :type stream: integer
+        :param function: function
+        :type function: integer
+        :param requires_response: is response required
+        :type requires_response: bool
+        :param p_type: P-Type
+        :type p_type: integer
+        :param s_type: S-Type
+        :type s_type: integer
 
         **Example**::
 
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsHeader(3, 100)
-            HsmsHeader({sessionID:0x0064, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, \
-requireResponse:False})
+            HsmsHeader({session_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
+require_response:False})
         """
-        self.sessionID = session_id
-        self.requireResponse = False
-        self.stream = 0x00
-        self.function = 0x00
-        self.pType = 0x00
-        self.sType = 0x01
-        self.system = system
+        super().__init__(system, session_id, stream, function)
+        self._require_response = requires_response
+        self._p_type = p_type
+        self._s_type = s_type
 
     def __str__(self):
         """Generate string representation for an object of this class."""
-        return f'{{sessionID:0x{self.sessionID:04x}, ' \
+        return f'{{session_id:0x{self.session_id:04x}, ' \
                f'stream:{self.stream:02d}, ' \
                f'function:{self.function:02d}, ' \
-               f'pType:0x{self.pType:02x}, ' \
-               f'sType:0x{self.sType:02x}, ' \
+               f'p_type:0x{self.p_type:02x}, ' \
+               f's_type:0x{self.s_type:02x}, ' \
                f'system:0x{self.system:08x}, ' \
-               f'requireResponse:{self.requireResponse!r}}}'
+               f'require_response:{self.require_response!r}}}'
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__}({self.__str__()})"
+
+    @property
+    def require_response(self) -> bool:
+        """Get require response flag."""
+        return self._require_response
+    
+    @property
+    def p_type(self) -> int:
+        """Get P-type."""
+        return self._p_type
+
+    @property
+    def s_type(self) -> int:
+        """Get S-type."""
+        return self._s_type
 
     def encode(self):
         """
@@ -82,7 +113,15 @@ requireResponse:False})
 
         """
         header_stream = self.stream
-        if self.requireResponse:
+        if self.require_response:
             header_stream |= 0b10000000
 
-        return struct.pack(">HBBBBL", self.sessionID, header_stream, self.function, self.pType, self.sType, self.system)
+        return struct.pack(
+            ">HBBBBL",
+            self.session_id,
+            header_stream,
+            self.function,
+            self.p_type,
+            self.s_type,
+            self.system
+        )

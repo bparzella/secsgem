@@ -52,7 +52,7 @@ class GemHandlerPassiveGroup:
     def testConstructor(self):
         self.assertIsNotNone(self.client)
 
-        print(self.client)    # cover repr and _serialize_data
+        print(self.client)    # cover repr and serialize_data
 
     def testEnableDisable(self):
         self.assertEqual(self.client.communicationState.current, "NOT_COMMUNICATING")
@@ -76,8 +76,8 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x02)
-        self.assertEqual(packet.header.sessionID, 0xffff)
+        self.assertEqual(packet.header.s_type, 0x02)
+        self.assertEqual(packet.header.session_id, 0xffff)
 
         self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
 
@@ -102,16 +102,16 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x02)
-        self.assertEqual(packet.header.sessionID, 0xffff)
+        self.assertEqual(packet.header.s_type, 0x02)
+        self.assertEqual(packet.header.session_id, 0xffff)
 
         self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
 
         packet = self.server.expect_packet(function=13)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0d)
 
@@ -130,16 +130,16 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x02)
-        self.assertEqual(packet.header.sessionID, 0xffff)
+        self.assertEqual(packet.header.s_type, 0x02)
+        self.assertEqual(packet.header.session_id, 0xffff)
 
         self.assertEqual(self.client.communicationState.current, "WAIT_CRA")
 
         s01f13ReceivedPacket = self.server.expect_packet(function=13)
 
         self.assertIsNot(s01f13ReceivedPacket, None)
-        self.assertEqual(s01f13ReceivedPacket.header.sType, 0x00)
-        self.assertEqual(s01f13ReceivedPacket.header.sessionID, 0x0)
+        self.assertEqual(s01f13ReceivedPacket.header.s_type, 0x00)
+        self.assertEqual(s01f13ReceivedPacket.header.session_id, 0x0)
         self.assertEqual(s01f13ReceivedPacket.header.stream, 0x01)
         self.assertEqual(s01f13ReceivedPacket.header.function, 0x0d)
 
@@ -153,8 +153,8 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0e)
 
@@ -173,8 +173,8 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 2)
 
@@ -187,8 +187,8 @@ class GemHandlerPassiveGroup:
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 14)
 
@@ -225,8 +225,8 @@ class GemHandlerPassiveGroup:
         self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 3)
 
@@ -253,8 +253,8 @@ class GemHandlerPassiveGroup:
         self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.sType, 0x00)
-        self.assertEqual(packet.header.sessionID, 0x0)
+        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 5)
 

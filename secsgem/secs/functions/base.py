@@ -110,7 +110,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):
         function = f"S{self.stream}F{self.function}"
         if self.data is None:
             return f"{function}{' W' if self._is_reply_required else ''} ."
-        data = f"{self.data.__repr__()}"
+        data = f"{self.data}"
 
         return f"{function}{' W' if self._is_reply_required else ''}\n{secsgem.common.indent_block(data)} ."
 

@@ -14,20 +14,24 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains hsms packet class."""
+from __future__ import annotations
 
 import struct
+import typing
+
+import secsgem.common
 
 from .header import HsmsHeader
 
 
-class HsmsPacket:
+class HsmsPacket(secsgem.common.Packet):
     """
     Class for hsms packet.
 
     Contains all required data and functions.
     """
 
-    def __init__(self, header=None, data=b""):
+    def __init__(self, header: typing.Optional[HsmsHeader] = None, data: bytes = b""):
         """
         Initialize a hsms packet.
 
@@ -41,27 +45,29 @@ class HsmsPacket:
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
-            HsmsPacket({'header': HsmsLinktestReqHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, \
-sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
+            HsmsPacket({'header': HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, \
+s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         """
-        if header is None:
-            self.header = HsmsHeader(0, 0)
-        else:
-            self.header = header
+        self._header = HsmsHeader(0, 0) if header is None else header
 
         self.data = data
 
-    def __str__(self):
+    @property
+    def header(self) -> HsmsHeader:
+        """Get the header."""
+        return self._header
+
+    def __str__(self) -> str:
         """Generate string representation for an object of this class."""
         data = "'header': " + self.header.__str__()
         return data
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__}" \
                f"({{'header': {self.header.__repr__()}, 'data': '{self.data.decode('utf-8')}'}})"
 
-    def encode(self):
+    def encode(self) -> bytes:
         """
         Encode packet data to hsms packet.
 
@@ -85,7 +91,7 @@ sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
         return struct.pack(">L", length) + headerdata + self.data
 
     @staticmethod
-    def decode(text):
+    def decode(text: bytes) -> HsmsPacket:
         r"""
         Decode byte array hsms packet to HsmsPacket object.
 
@@ -103,19 +109,21 @@ sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
             >>>
             >>> secsgem.hsms.HsmsPacket.decode(packetData)
-            HsmsPacket({'header': HsmsHeader({sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x05, system:0x00000002, requireResponse:False}), 'data': ''})
+            HsmsPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         """   # noqa pylint: disable=line-too-long
         data_length = len(text) - 14
         data_length_text = str(data_length) + "s"
 
         res = struct.unpack(">LHBBBBL" + data_length_text, text)
 
-        result = HsmsPacket(HsmsHeader(res[6], res[1]))
-        result.header.requireResponse = (((res[2] & 0b10000000) >> 7) == 1)
-        result.header.stream = res[2] & 0b01111111
-        result.header.function = res[3]
-        result.header.pType = res[4]
-        result.header.sType = res[5]
-        result.data = res[7]
+        result = HsmsPacket(HsmsHeader(
+            res[6], 
+            res[1],
+            res[2] & 0b01111111,
+            res[3],
+            (((res[2] & 0b10000000) >> 7) == 1),
+            res[4],
+            res[5]
+        ), res[7])
 
         return result

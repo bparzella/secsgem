@@ -53,8 +53,8 @@ Example::
     >>> conn = secsgem.HsmsActiveConnection('10.211.55.33', 5000, 0, delegate)
     >>> conn.enable()
     Connection established
-    Packet received header: {sessionID:0x0000, stream:00, function:04, pType:0x00, sType:0x07, system:0x00000000, requireResponse:0}
-    Packet received header: {sessionID:0x0000, stream:00, function:01, pType:0x00, sType:0x07, system:0x00000000, requireResponse:0}
+    Packet received header: {session_id:0x0000, stream:00, function:04, p_type:0x00, s_type:0x07, system:0x00000000, require_response:0}
+    Packet received header: {session_id:0x0000, stream:00, function:01, p_type:0x00, s_type:0x07, system:0x00000000, require_response:0}
     Connection about to be terminated
     Connection terminated
     >>> conn.disable()
@@ -71,8 +71,8 @@ Example::
     >>> conn = secsgem.HsmsPassiveConnection('10.211.55.33', 5000, 0, delegate)
     >>> conn.enable()
     Connection established
-    Packet received header: {sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000001, requireResponse:0}
-    Packet received header: {sessionID:0x0000, stream:00, function:03, pType:0x00, sType:0x07, system:0x00000000, requireResponse:0}
+    Packet received header: {session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000001, require_response:0}
+    Packet received header: {session_id:0x0000, stream:00, function:03, p_type:0x00, s_type:0x07, system:0x00000000, require_response:0}
     Connection about to be terminated
     Connection terminated
     >>> conn.disable()
@@ -92,8 +92,8 @@ Example::
     >>> conn.enable()
     >>> server.start()
     Connection established
-    Packet received header: {sessionID:0xffff, stream:00, function:00, pType:0x00, sType:0x01, system:0x00000003, requireResponse:0}
-    Packet received header: {sessionID:0x0000, stream:00, function:03, pType:0x00, sType:0x07, system:0x00000000, requireResponse:0}
+    Packet received header: {session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, require_response:0}
+    Packet received header: {session_id:0x0000, stream:00, function:03, p_type:0x00, s_type:0x07, system:0x00000000, require_response:0}
     Connection about to be terminated
     Connection terminated
     >>> conn.disable()
@@ -109,8 +109,8 @@ It creates and removes :class:`secsgem.hsms.connections.HsmsActiveConnection` an
     >>> handler=manager.add_peer("connection", '10.211.55.33', 5000, False, 0)
     >>> handler.enable()
     >>> handler.send_linktest_req()
-    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 13, 'sessionID': 65535, 'requireResponse': False, 'sType': 6}), 'data': ''})
+    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 13, 'session_id': 65535, 'require_response': False, 's_type': 6}), 'data': ''})
     >>> handler.disable()
     >>> manager.stop()
 
-Connection manager works with :doc:`handlers <handler>` which take care of a lot of the required communication on the matching level (:class:`secsgem.hsms.handler.HsmsHandler`, :class:`secsgem.secs.handler.SecsHandler` and :class:`secsgem.gem.handler.GemHandler`).
+Connection manager works with :doc:`handlers <handler>` which take care of a lot of the required communication on the matching level (:class:`secsgem.hsms.protocol.HsmsProtocol`, :class:`secsgem.secs.handler.SecsHandler` and :class:`secsgem.gem.handler.GemHandler`).

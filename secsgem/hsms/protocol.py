@@ -37,8 +37,9 @@ from .separate_req_header import HsmsSeparateReqHeader
 from .stream_function_header import HsmsStreamFunctionHeader
 from .connectionstatemachine import ConnectionStateMachine
 
+from ..secs.functions.base import SecsStreamFunction
 
-class HsmsHandler:
+class HsmsProtocol(secsgem.common.Protocol):
     """
     Baseclass for creating Host/Equipment models.
 
@@ -70,7 +71,7 @@ class HsmsHandler:
             def onConnect(event, data):
                 print "Connected"
 
-            client = secsgem.hsms.HsmsHandler("10.211.55.33", 5000, True, 0, "test")
+            client = secsgem.hsms.HsmsProtocol("10.211.55.33", 5000, True, 0, "test")
             client.events.hsms_connected += onConnect
 
             client.enable()
@@ -80,8 +81,7 @@ class HsmsHandler:
             client.disable()
 
         """
-        self._eventProducer = secsgem.common.EventProducer()
-        self._eventProducer.targets += self
+        super().__init__()
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self.communicationLogger = logging.getLogger("hsms_communication")
@@ -89,12 +89,10 @@ class HsmsHandler:
         self.address = address
         self.port = port
         self.active = active
-        self.sessionID = session_id
+        self.session_id = session_id
         self.name = name
 
         self.connected = False
-
-        self._secs_decode = None
 
         # system id counter
         self.systemCounter = random.randint(0, (2 ** 32) - 1)
@@ -117,31 +115,16 @@ class HsmsHandler:
         # setup connection
         if self.active:
             if custom_connection_handler is None:
-                self.connection = HsmsActiveConnection(self.address, self.port, self.sessionID, self)
+                self.connection = HsmsActiveConnection(self.address, self.port, self.session_id, self)
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port,
-                                                                              self.sessionID, self)
+                                                                              self.session_id, self)
         else:
             if custom_connection_handler is None:
-                self.connection = HsmsPassiveConnection(self.address, self.port, self.sessionID, self)
+                self.connection = HsmsPassiveConnection(self.address, self.port, self.session_id, self)
             else:
                 self.connection = custom_connection_handler.create_connection(self.address, self.port,
-                                                                              self.sessionID, self)
-
-    @property
-    def events(self):
-        """Property for event handling."""
-        return self._eventProducer
-
-    @property
-    def secs_decode(self) -> typing.Optional[typing.Callable[[HsmsPacket], typing.Any]]:
-        """Get secs decode."""
-        return self._secs_decode
-
-    @secs_decode.setter
-    def secs_decode(self, value: typing.Optional[typing.Callable[[HsmsPacket], typing.Any]]):
-        """Get secs decode."""
-        self._secs_decode = value
+                                                                              self.session_id, self)
 
     def get_next_system_counter(self):
         """
@@ -165,7 +148,7 @@ class HsmsHandler:
     def _start_linktest_timer(self):
         self.linktestTimer = threading.Timer(self.linktestTimeout, self._on_linktest_timer)
         self.linktestTimer.daemon = True  # kill thread automatically on main program termination
-        self.linktestTimer.name = "secsgem_hsmsHandler_linktestTimer"
+        self.linktestTimer.name = "secsgem_hsmsProtocol_linktestTimer"
         self.linktestTimer.start()
 
     def _on_state_connect(self):
@@ -181,7 +164,7 @@ class HsmsHandler:
         # start select process if connection is active
         if self.active:
             self.selectReqThread = threading.Thread(target=self._send_select_req_thread,
-                                                    name="secsgem_hsmsHandler_sendSelectReqThread")
+                                                    name="secsgem_hsmsProtocol_sendSelectReqThread")
             self.selectReqThread.daemon = True  # kill thread automatically on main program termination
             self.selectReqThread.start()
 
@@ -239,14 +222,14 @@ class HsmsHandler:
         self.events.fire("hsms_disconnected", {'connection': self})
 
     def __handle_hsms_requests(self, packet):
-        self.communicationLogger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
 
         # check if it is a select request
-        if packet.header.sType == 0x01:
+        if packet.header.s_type == 0x01:
             # if we are disconnecting send reject else send response
             if self.connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
+                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_select_rsp(packet.header.system)
 
@@ -254,7 +237,7 @@ class HsmsHandler:
                 self.connectionState.select()
 
         # check if it is a select response
-        elif packet.header.sType == 0x02:
+        elif packet.header.s_type == 0x02:
             # update connection state
             self.connectionState.select()
 
@@ -265,17 +248,17 @@ class HsmsHandler:
             # what to do if no sender for request waiting?
 
         # check if it is a deselect request
-        elif packet.header.sType == 0x03:
+        elif packet.header.s_type == 0x03:
             # if we are disconnecting send reject else send response
             if self.connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
+                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_deselect_rsp(packet.header.system)
                 # update connection state
                 self.connectionState.deselect()
 
         # check if it is a deselect response
-        elif packet.header.sType == 0x04:
+        elif packet.header.s_type == 0x04:
             # update connection state
             self.connectionState.deselect()
 
@@ -286,10 +269,10 @@ class HsmsHandler:
             # what to do if no sender for request waiting?
 
         # check if it is a linktest request
-        elif packet.header.sType == 0x05:
+        elif packet.header.s_type == 0x05:
             # if we are disconnecting send reject else send response
             if self.connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.sType, 4)
+                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
             else:
                 self.send_linktest_rsp(packet.header.system)
 
@@ -307,7 +290,7 @@ class HsmsHandler:
         :param packet: received data packet
         :type packet: :class:`secsgem.hsms.HsmsPacket`
         """
-        if packet.header.sType > 0:
+        if packet.header.s_type > 0:
             self.__handle_hsms_requests(packet)
         else:
             if callable(self._secs_decode):
@@ -319,8 +302,8 @@ class HsmsHandler:
             if not self.connectionState.is_CONNECTED_SELECTED():
                 self.logger.warning("received message when not selected")
 
-                out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.sType, 4))
-                self.communicationLogger.info("> %s\n  %s", out_packet, HSMS_STYPES[out_packet.header.sType],
+                out_packet = HsmsPacket(HsmsRejectReqHeader(packet.header.system, packet.header.s_type, 4))
+                self.communicationLogger.info("> %s\n  %s", out_packet, HSMS_STYPES[out_packet.header.s_type],
                                               extra=self._get_log_extra())
                 self.connection.send_packet(out_packet)
 
@@ -357,16 +340,16 @@ class HsmsHandler:
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        return f"{self.__class__.__name__} {str(self._serialize_data())}"
+        return f"{self.__class__.__name__} {str(self.serialize_data())}"
 
-    def _serialize_data(self):
+    def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
         Return data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'address': self.address, 'port': self.port, 'active': self.active, 'sessionID': self.sessionID,
+        return {'address': self.address, 'port': self.port, 'active': self.active, 'session_id': self.session_id,
                 'name': self.name, 'connected': self.connected}
 
     def enable(self):
@@ -377,7 +360,7 @@ class HsmsHandler:
         """Disable the connection."""
         self.connection.disable()
 
-    def send_stream_function(self, packet):
+    def send_stream_function(self, function: SecsStreamFunction) -> bool:
         """
         Send the packet and wait for the response.
 
@@ -385,15 +368,15 @@ class HsmsHandler:
         :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
         """
         out_packet = HsmsPacket(
-            HsmsStreamFunctionHeader(self.get_next_system_counter(), packet.stream, packet.function,
-                                     packet.is_reply_required, self.sessionID),
-            packet.encode())
+            HsmsStreamFunctionHeader(self.get_next_system_counter(), function.stream, function.function,
+                                     function.is_reply_required, self.session_id),
+            function.encode())
 
-        self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
+        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
         return self.connection.send_packet(out_packet)
 
-    def send_and_waitfor_response(self, packet):
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Packet]:
         """
         Send the packet and wait for the response.
 
@@ -406,11 +389,11 @@ class HsmsHandler:
 
         response_queue = self._get_queue_for_system(system_id)
 
-        out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True,
-                                                         self.sessionID),
-                                packet.encode())
+        out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, function.stream, function.function, True,
+                                                         self.session_id),
+                                function.encode())
 
-        self.communicationLogger.info("> %s\n%s", out_packet, packet, extra=self._get_log_extra())
+        self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
 
         if not self.connection.send_packet(out_packet):
             self.logger.error("Sending packet failed")
@@ -426,7 +409,7 @@ class HsmsHandler:
 
         return response
 
-    def send_response(self, function, system):
+    def send_response(self, function: SecsStreamFunction, system: int) -> bool:
         """
         Send response function for system.
 
@@ -436,7 +419,7 @@ class HsmsHandler:
         :type system: integer
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False,
-                                                         self.sessionID),
+                                                         self.session_id),
                                 function.encode())
 
         self.communicationLogger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
@@ -455,7 +438,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsSelectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -479,7 +462,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsSelectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -495,7 +478,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsLinktestReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -519,7 +502,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsLinktestRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -535,7 +518,7 @@ class HsmsHandler:
         response_queue = self._get_queue_for_system(system_id)
 
         packet = HsmsPacket(HsmsDeselectReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -559,7 +542,7 @@ class HsmsHandler:
         :type system_id: integer
         """
         packet = HsmsPacket(HsmsDeselectRspHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -575,7 +558,7 @@ class HsmsHandler:
         :type reason: integer
         """
         packet = HsmsPacket(HsmsRejectReqHeader(system_id, s_type, reason))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
         return self.connection.send_packet(packet)
 
@@ -584,7 +567,7 @@ class HsmsHandler:
         system_id = self.get_next_system_counter()
 
         packet = HsmsPacket(HsmsSeparateReqHeader(system_id))
-        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.sType],
+        self.communicationLogger.info("> %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                       extra=self._get_log_extra())
 
         if not self.connection.send_packet(packet):
@@ -595,4 +578,4 @@ class HsmsHandler:
     # helpers
 
     def _get_log_extra(self):
-        return {"address": self.address, "port": self.port, "sessionID": self.sessionID, "remoteName": self.name}
+        return {"address": self.address, "port": self.port, "session_id": self.session_id, "remoteName": self.name}

@@ -5,7 +5,7 @@ A HSMS packet :class:`secsgem.hsms.HsmsPacket` consists of a header :class:`secs
 The string contains the additional data encoded as ASCII characters for transmission over TCP. The additional data is only required for a stream/function packet.
 
     >>> secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
-    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5}), 'data': ''})
+    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 2, 'session_id': 65535, 'require_response': False, 's_type': 5}), 'data': ''})
 
 Every header has a system id to match the response to a certain request.
 The system id is the first parameter to the headers constructor.
@@ -20,7 +20,7 @@ HSMS packet objects can encode themselves with the :func:`secsgem.hsms.HsmsPacke
 The other way around, a HSMS packet object can be created from the ASCII string with the :func:`secsgem.hsms.HsmsPacket.decode` function.
 
     >>> secsgem.hsms.HsmsPacket.decode(packetData)
-    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5}), 'data': ''})
+    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 2, 'session_id': 65535, 'require_response': False, 's_type': 5}), 'data': ''})
 
 There are classes inherited from :class:`secsgem.hsms.HsmsHeader` for all HSMS packet types available:
 
@@ -52,7 +52,7 @@ Select Request
 Establish HSMS communication
 
     >>> secsgem.hsms.HsmsSelectReqHeader(14)
-    secsgem.hsms.HsmsSelectReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 14, 'sessionID': 65535, 'requireResponse': False, 'sType': 1})
+    secsgem.hsms.HsmsSelectReqHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 14, 'session_id': 65535, 'require_response': False, 's_type': 1})
 
 
 Select Response
@@ -61,7 +61,7 @@ Select Response
 Result of select request
 
     >>> secsgem.hsms.HsmsSelectRspHeader(24)
-    secsgem.hsms.HsmsSelectRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 24, 'sessionID': 65535, 'requireResponse': False, 'sType': 2})
+    secsgem.hsms.HsmsSelectRspHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 24, 'session_id': 65535, 'require_response': False, 's_type': 2})
 
 
 Deselect Request
@@ -70,7 +70,7 @@ Deselect Request
 Grateful close HSMS communication before disconnecting
 
     >>> secsgem.hsms.HsmsDeselectReqHeader(1)
-    secsgem.hsms.HsmsDeselectReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 1, 'sessionID': 65535, 'requireResponse': False, 'sType': 3})
+    secsgem.hsms.HsmsDeselectReqHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 1, 'session_id': 65535, 'require_response': False, 's_type': 3})
 
 
 Deselect Response
@@ -79,7 +79,7 @@ Deselect Response
 Result of deselect request
 
     >>> secsgem.hsms.HsmsDeselectRspHeader(1)
-    secsgem.hsms.HsmsDeselectRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 1, 'sessionID': 65535, 'requireResponse': False, 'sType': 4})
+    secsgem.hsms.HsmsDeselectRspHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 1, 'session_id': 65535, 'require_response': False, 's_type': 4})
 
 
 Linktest Request
@@ -88,7 +88,7 @@ Linktest Request
 Check the HSMS connection link is good
 
     >>> secsgem.hsms.HsmsLinktestReqHeader(2)
-    secsgem.hsms.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 2, 'sessionID': 65535, 'requireResponse': False, 'sType': 5})
+    secsgem.hsms.HsmsLinktestReqHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 2, 'session_id': 65535, 'require_response': False, 's_type': 5})
 
 
 Linktest Response
@@ -97,7 +97,7 @@ Linktest Response
 Result of linktest request
 
     >>> secsgem.hsms.HsmsLinktestRspHeader(10)
-    secsgem.hsms.HsmsLinktestRspHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 10, 'sessionID': 65535, 'requireResponse': False, 'sType': 6})
+    secsgem.hsms.HsmsLinktestRspHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 10, 'session_id': 65535, 'require_response': False, 's_type': 6})
 
 
 Reject Request
@@ -106,7 +106,7 @@ Reject Request
 Response to unsupported HSMS message
 
     >>> secsgem.hsms.HsmsRejectReqHeader(17, 3, 4)
-    secsgem.hsms.HsmsRejectReqHeader({'function': 4, 'stream': 3, 'pType': 0, 'system': 17, 'sessionID': 65535, 'requireResponse': False, 'sType': 7})
+    secsgem.hsms.HsmsRejectReqHeader({'function': 4, 'stream': 3, 'p_type': 0, 'system': 17, 'session_id': 65535, 'require_response': False, 's_type': 7})
 
 
 Separate Request
@@ -115,7 +115,7 @@ Separate Request
 Immediate termination of the HSMS connection
 
     >>> secsgem.hsms.HsmsSeparateReqHeader(17)
-    secsgem.hsms.HsmsSeparateReqHeader({'function': 0, 'stream': 0, 'pType': 0, 'system': 17, 'sessionID': 65535, 'requireResponse': False, 'sType': 9})
+    secsgem.hsms.HsmsSeparateReqHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 17, 'session_id': 65535, 'require_response': False, 's_type': 9})
 
 
 Data Message
@@ -124,4 +124,4 @@ Data Message
 Secs stream and function message
 
     >>> secsgem.hsms.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
-    secsgem.hsms.HsmsStreamFunctionHeader({'function': 1, 'stream': 1, 'pType': 0, 'system': 22, 'sessionID': 100, 'requireResponse': True, 'sType': 0})
+    secsgem.hsms.HsmsStreamFunctionHeader({'function': 1, 'stream': 1, 'p_type': 0, 'system': 22, 'session_id': 100, 'require_response': True, 's_type': 0})

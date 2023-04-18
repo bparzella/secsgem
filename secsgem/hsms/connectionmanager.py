@@ -19,7 +19,7 @@ import logging
 
 import secsgem.common
 
-from .handler import HsmsHandler
+from .protocol import HsmsProtocol
 from .multi_passive_server import HsmsMultiPassiveServer
 
 
@@ -105,7 +105,7 @@ class HsmsConnectionManager:
                 self.servers[requiredPort] = HsmsMultiPassiveServer(requiredPort)
                 self.servers[requiredPort].start()
 
-    def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsHandler):
+    def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsProtocol):
         """
         Add a new connection.
 
@@ -120,7 +120,7 @@ class HsmsConnectionManager:
         :param session_id: session / device ID of peer
         :type session_id: integer
         :param connection_handler: Model handling this connection
-        :type connection_handler: inherited from :class:`secsgem.hsms.handler.HsmsHandler`
+        :type connection_handler: inherited from :class:`secsgem.hsms.protocol.HsmsProtocol`
         """
         self.logger.debug("new remote %s at %s:%d", name, address, port)
 

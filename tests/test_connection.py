@@ -35,7 +35,7 @@ class HsmsTestConnection:
     :param session_id: session / device ID to use for connection
     :type session_id: integer
     :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.HsmsHandler.HsmsHandler`
+    :type delegate: inherited from :class:`secsgem.hsms.HsmsHandler`
 
     **Example**::
 
@@ -53,7 +53,7 @@ class HsmsTestConnection:
         # initially not enabled
         self.address = address
         self.port = port
-        self.sessionID = session_id
+        self.session_id = session_id
         self.delegate = delegate
 
         self.enabled = False
@@ -158,7 +158,7 @@ class HsmsTestServer:
                 if system_id is not None and packet.header.system == system_id:
                     match = True
 
-                if s_type is not None and packet.header.sType == s_type:
+                if s_type is not None and packet.header.s_type == s_type:
                     match = True
 
                 if stream is not None and packet.header.stream == stream:

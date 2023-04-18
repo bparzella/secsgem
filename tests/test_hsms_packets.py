@@ -36,11 +36,11 @@ class TestHsmsSelectReqHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 1)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 1)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsSelectRspHeader(unittest.TestCase):
@@ -61,11 +61,11 @@ class TestHsmsSelectRspHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 2)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 2)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsDeselectReqHeader(unittest.TestCase):
@@ -86,11 +86,11 @@ class TestHsmsDeselectReqHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 3)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 3)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsDeselectRspHeader(unittest.TestCase):
@@ -111,11 +111,11 @@ class TestHsmsDeselectRspHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 4)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 4)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsLinktestReqHeader(unittest.TestCase):
@@ -136,11 +136,11 @@ class TestHsmsLinktestReqHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 5)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 5)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsLinktestRspHeader(unittest.TestCase):
@@ -161,11 +161,11 @@ class TestHsmsLinktestRspHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 6)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 6)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsRejectReqHeader(unittest.TestCase):
@@ -186,11 +186,11 @@ class TestHsmsRejectReqHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 1)
         self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 7)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 7)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsSeparateReqHeader(unittest.TestCase):
@@ -211,11 +211,11 @@ class TestHsmsSeparateReqHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 0)
         self.assertEqual(packet.header.stream, 0)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 9)
-        self.assertEqual(packet.header.requireResponse, False)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 9)
+        self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 0xFFFF)
+        self.assertEqual(packet.header.session_id, 0xFFFF)
 
 
 class TestHsmsStreamFunctionHeader(unittest.TestCase):
@@ -236,11 +236,11 @@ class TestHsmsStreamFunctionHeader(unittest.TestCase):
         self.assertIsInstance(packet.header, secsgem.hsms.HsmsHeader)
         self.assertEqual(packet.header.function, 1)
         self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.pType, 0)
-        self.assertEqual(packet.header.sType, 0)
-        self.assertEqual(packet.header.requireResponse, True)
+        self.assertEqual(packet.header.p_type, 0)
+        self.assertEqual(packet.header.s_type, 0)
+        self.assertEqual(packet.header.require_response, True)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.sessionID, 100)
+        self.assertEqual(packet.header.session_id, 100)
 
 
 class TestHsmsPacket(unittest.TestCase):
@@ -253,9 +253,9 @@ class TestHsmsPacket(unittest.TestCase):
     def testRepr(self):
         packet = secsgem.hsms.HsmsPacket.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
 
-        assert packet.__repr__() == "HsmsPacket({'header': HsmsHeader({sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x0000007b, requireResponse:True}), 'data': ''})"
+        assert packet.__repr__() == "HsmsPacket({'header': HsmsHeader({session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True}), 'data': ''})"
 
     def testStr(self):
         packet = secsgem.hsms.HsmsPacket.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
 
-        assert str(packet) == "'header': {sessionID:0x0064, stream:01, function:01, pType:0x00, sType:0x00, system:0x0000007b, requireResponse:True}"
+        assert str(packet) == "'header': {session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True}"

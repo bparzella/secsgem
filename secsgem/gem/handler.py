@@ -13,20 +13,19 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Handler for GEM commands. Used in combination with :class:`secsgem.HsmsHandler.HsmsConnectionManager`."""
+"""Handler for GEM commands. Used in combination with :class:`secsgem.hsms.HsmsConnectionManager`."""
 import logging
 import threading
 import typing
 
 import secsgem.common
-import secsgem.hsms
 import secsgem.secs
 
 
 class GemHandler(secsgem.secs.SecsHandler):
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
-    def __init__(self, connection: secsgem.hsms.HsmsHandler):
+    def __init__(self, connection: secsgem.common.Protocol):
         """
         Initialize a gem handler.
 
@@ -35,7 +34,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         :param connection: connection to use
         """
         super().__init__(connection)
-        self._connection.events.hsms_selected += self._on_hsms_select
+        self._protocol.events.hsms_selected += self._on_hsms_select
 
         self.MDLN = "secsgem"  #: model number returned by S01E13/14
         self.SOFTREV = "0.1.0"  #: software version returned by S01E13/14
@@ -89,16 +88,16 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
-        return f"{self.__class__.__name__} {str(self._serialize_data())}"
+        return f"{self.__class__.__name__} {str(self.serialize_data())}"
 
-    def _serialize_data(self)-> typing.Dict[str, typing.Any]:
+    def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
         Get serialized data.
 
         :returns: data to serialize for this object
         :rtype: dict
         """
-        data = self.connection._serialize_data()  # pylint: disable=protected-access
+        data = self.protocol.serialize_data()
         data.update({'communicationState': self.communicationState.current,
                      'commDelayTimeout': self.establishCommunicationTimeout,
                      'reportIDCounter': self.reportIDCounter})
@@ -106,14 +105,14 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def enable(self) -> None:
         """Enable the connection."""
-        self.connection.enable()
+        self.protocol.enable()
         self.communicationState.enable()  # type: ignore
 
         self.logger.info("Connection enabled")
 
     def disable(self) -> None:
         """Disable the connection."""
-        self.connection.disable()
+        self.protocol.disable()
         self.communicationState.disable()  # type: ignore
 
         self.logger.info("Connection disabled")
@@ -167,7 +166,7 @@ class GemHandler(secsgem.secs.SecsHandler):
         """
         self.logger.debug("connectionState -> WAIT_CRA")
 
-        self.waitCRATimer = threading.Timer(self.connection.connection.T3, self._on_wait_cra_timeout)
+        self.waitCRATimer = threading.Timer(self.protocol.connection.T3, self._on_wait_cra_timeout)
         self.waitCRATimer.start()
 
         if self.isHost:
@@ -298,14 +297,14 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def _on_s01f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 1, Are You There.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler, packet  # unused parameters
 
@@ -316,14 +315,14 @@ class GemHandler(secsgem.secs.SecsHandler):
 
     def _on_s01f13(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 13, Establish Communication Request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler, packet  # unused parameters
 

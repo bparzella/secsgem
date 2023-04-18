@@ -17,7 +17,7 @@
 import collections
 import typing
 
-import secsgem.hsms
+import secsgem.common
 import secsgem.secs
 
 from .handler import GemHandler
@@ -26,7 +26,7 @@ from .handler import GemHandler
 class GemHostHandler(GemHandler):
     """Baseclass for creating host models. Inherit from this class and override required functions."""
 
-    def __init__(self, connection: secsgem.hsms.HsmsHandler):
+    def __init__(self, connection: secsgem.common.Protocol):
         """
         Initialize a gem host handler.
 
@@ -200,34 +200,34 @@ class GemHostHandler(GemHandler):
 
     def _on_s05f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 1, Alarm request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         s5f1 = self.secs_decode(packet)
 
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
         self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX,
-                                            "handler": self.connection, 'peer': self})
+                                            "handler": self.protocol, 'peer': self})
 
         return self.stream_function(5, 2)(result)
 
     def _on_s06f11(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 6, Function 11, Establish Communication Request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         del handler  # unused parameters
 
@@ -243,7 +243,7 @@ class GemHostHandler(GemHandler):
                 values.append({"dvid": s, "value": report_values[i], "name": self.get_dvid_name(s)})
 
             data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values,
-                    "name": self.get_ceid_name(message.CEID), "handler": self.connection, 'peer': self}
+                    "name": self.get_ceid_name(message.CEID), "handler": self.protocol, 'peer': self}
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)
@@ -254,19 +254,19 @@ class GemHostHandler(GemHandler):
 
     def _on_s10f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.hsms.HsmsPacket) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 10, Function 1, Terminal Request.
 
         :param handler: handler the message was received on
-        :type handler: :class:`secsgem.hsms.handler.HsmsHandler`
+        :type handler: :class:`secsgem.secs.SecsHandler`
         :param packet: complete message received
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        :type packet: :class:`secsgem.common.Packet`
         """
         s10f1 = self.secs_decode(packet)
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
-        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.connection,
+        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol,
                                                'peer': self})
 
         return self.stream_function(10, 2)(result)
