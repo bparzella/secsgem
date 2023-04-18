@@ -18,7 +18,7 @@ from .. import variables
 from .base import DataItemBase
 
 
-class V(DataItemBase):
+class V(DataItemBase):  # pylint: disable=invalid-name
     """
     Variable data.
 

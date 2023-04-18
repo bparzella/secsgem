@@ -243,7 +243,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         self.events.fire("hsms_disconnected", {'connection': self})
 
-    def __handle_hsms_requests(self, packet):
+    def __handle_hsms_requests(self, packet):  # noqa: MC0001
         self._communication_logger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                         extra=self._get_log_extra())
 

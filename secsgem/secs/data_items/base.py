@@ -23,7 +23,7 @@ from .. import variables
 class DataItemMeta(type):
     """Meta class for data items."""
 
-    def __new__(mcs, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):  # noqa: N804
         """Meta class creation."""
         if name != "DataItemBase":
             bases += (attrs["__type__"], )

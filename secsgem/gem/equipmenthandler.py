@@ -13,6 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
+# pylint: disable=too-many-lines
 """Handler for GEM equipment."""
 from datetime import datetime
 import typing
@@ -496,7 +497,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                     self.send_and_waitfor_response(self.stream_function(6, 11)(
                         {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
-    def _on_s02f33(self,
+    def _on_s02f33(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
                    packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
@@ -559,7 +560,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return result
 
-    def _on_s02f35(self,
+    def _on_s02f35(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
                    packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
@@ -1105,10 +1106,10 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return None
 
-    def _on_rcmd_START(self):
+    def _on_rcmd_START(self):  # noqa: N802
         self._logger.warning("remote command START not implemented, this is required for GEM compliance")
 
-    def _on_rcmd_STOP(self):
+    def _on_rcmd_STOP(self):  # noqa: N802
         self._logger.warning("remote command STOP not implemented, this is required for GEM compliance")
 
     # helpers

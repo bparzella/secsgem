@@ -41,13 +41,13 @@ class ConnectionStateMachine:
         self.states = [STATE_NOT_CONNECTED,
                        {
                            'name': STATE_CONNECTED,
-                           'on_enter': self._on_enter_CONNECTED,
-                           'on_exit': self._on_exit_CONNECTED,
+                           'on_enter': self._on_enter_connected,
+                           'on_exit': self._on_exit_connected,
                            'children': [
                                STATE_NOT_SELECTED,
                                {
                                    'name': STATE_SELECTED,
-                                   'on_enter': self._on_enter_CONNECTED_SELECTED
+                                   'on_enter': self._on_enter_connected_selected
                                }
                            ]
                        }]
@@ -64,14 +64,14 @@ class ConnectionStateMachine:
         self.machine.add_transition('deselect', STATE_CONNECTED_SELECTED, STATE_CONNECTED_NOT_SELECTED)  # transition 5
         self.machine.add_transition('timeoutT7', STATE_CONNECTED_NOT_SELECTED, STATE_NOT_CONNECTED)  # transition 6
 
-    def _on_enter_CONNECTED(self):
+    def _on_enter_connected(self):
         if "on_enter_CONNECTED" in self.callbacks:
             self.callbacks["on_enter_CONNECTED"]()
 
-    def _on_exit_CONNECTED(self):
+    def _on_exit_connected(self):
         if "on_exit_CONNECTED" in self.callbacks:
             self.callbacks["on_exit_CONNECTED"]()
 
-    def _on_enter_CONNECTED_SELECTED(self):
+    def _on_enter_connected_selected(self):
         if "on_enter_CONNECTED_SELECTED" in self.callbacks:
             self.callbacks["on_enter_CONNECTED_SELECTED"]()

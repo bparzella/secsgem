@@ -230,7 +230,7 @@ class Fysom:  # pragma: no cover
         """Check if transition is not possible."""
         return not self.can(event)
 
-    def _apply(self, cfg):
+    def _apply(self, cfg):  # noqa: MC0001
         init = cfg['initial'] if 'initial' in cfg else None
         if isinstance(init, (str, bytes)):
             init = {'state': init}
@@ -276,7 +276,7 @@ class Fysom:  # pragma: no cover
             self.src = src
             self.dst = dst
 
-    def _build_event(self, event):
+    def _build_event(self, event):  # noqa: MC0001
         def function(**kwargs):
             evt = event
 
@@ -300,11 +300,11 @@ class Fysom:  # pragma: no cover
 
                     def _tran():
                         delattr(self, 'transition')
-                        self.current = dst
+                        self.current = dst  # pylint: disable=attribute-defined-outside-init
                         self._enter_state(event_object)
                         self._change_state(event_object)
                         self._after_event(event_object)
-                    self.transition = _tran
+                    self.transition = _tran  # pylint: disable=attribute-defined-outside-init
 
                 if self._leave_state(event_object) is not False:
                     if hasattr(self, 'transition'):
