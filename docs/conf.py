@@ -14,6 +14,7 @@
 
 import sys
 import os
+import os.path
 
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -30,29 +31,39 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 
+sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "extensions")))
+
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'myst_parser',
+    'py_exec',
+    'sphinx_autodoc_typehints',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
+}
 
 # The master toctree document.
 master_doc = 'index'
 
 # General information about the project.
 project = u'secsgem'
-copyright = u'2015-2021, Benjamin Parzella'
+copyright = u'2015-2023, Benjamin Parzella'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
