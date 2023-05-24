@@ -38,13 +38,15 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
     Inherit from this class and override required functions.
     """
 
-    def __init__(self, connection: secsgem.common.Protocol):
+    def __init__(self, settings: secsgem.common.Settings):
         """
         Initialize a secs handler.
 
-        :param connection: connection to use
+        Args:
+            settings: settings defining protocol and connection
+
         """
-        self._protocol = connection
+        self._protocol = settings.protocol
         self._protocol.events.hsms_packet_received += self._on_hsms_packet_received
         self._protocol.secs_decode = self.secs_decode
 
@@ -59,17 +61,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         self._callback_handler.target = self
 
         self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
-
-    @classmethod
-    def hsms(cls, address, port, active, session_id, name, custom_connection_handler=None, **kwargs) -> "SecsHandler":
-        """
-        Initialize a secs handler using a hsms connection.
-
-        All arguments will be passed to the HSMS handler.
-        """
-        return cls(
-            secsgem.hsms.HsmsProtocol(address, port, active, session_id, name, custom_connection_handler),
-            **kwargs)
 
     @staticmethod
     def _generate_sf_callback_name(stream: int, function: int) -> str:
@@ -143,7 +134,8 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.collection_events[123] = {'name': 'collectionEventName', 'dvids': [1, 5] }
 
         **Key**
@@ -170,7 +162,8 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.data_values[5] = {'name': 'dataValueName', 'ceid': 123 }
 
         **Key**
@@ -197,7 +190,8 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
 
         **Key**
@@ -224,7 +218,8 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], \
 'ceids': [200, 343]}
 

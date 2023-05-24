@@ -14,15 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Hsms passive connection."""
+from __future__ import annotations
 
 import select
 import socket
 import threading
 import time
+import typing
 
 import secsgem.common
 
 from .connection import HsmsConnection
+
+if typing.TYPE_CHECKING:
+    from .settings import HsmsSettings
 
 
 class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
@@ -33,18 +38,13 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     After the connection is established the listening socket is closed.
     """
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None, bind_ip=''):
+    def __init__(self, settings: HsmsSettings, delegate=None):
         """
         Initialize a passive hsms connection.
 
-        :param address: IP address of target host
-        :type address: string
-        :param port: TCP port of target host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: object
+        Args:
+            settings: protocol and communication settings
+            delegate: target for messages
 
         **Example**::
 
@@ -52,8 +52,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
-        self._bind_ip = bind_ip
+        HsmsConnection.__init__(self, settings, delegate)
 
         # initially not enabled
         self._enabled = False
@@ -114,7 +113,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     def __start_server_thread(self):
         self._server_thread = threading.Thread(
             target=self.__server_thread,
-            name=f"secsgem_HsmsPassiveConnection_serverThread_{self._remote_address}")
+            name=f"secsgem_HsmsPassiveConnection_serverThread_{self._settings.address}")
         self._server_thread.start()
 
     def __server_thread(self):
@@ -128,7 +127,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         if not secsgem.common.is_windows():
             self._server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self._server_sock.bind((self._bind_ip, self._remote_port))
+        self._server_sock.bind((self._settings.address, self._settings.port))
         self._server_sock.listen(1)
 
         while not self._stop_server_thread:

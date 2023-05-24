@@ -21,6 +21,7 @@ import unittest.mock
 from dateutil.tz import tzlocal
 from dateutil.parser import parse
 
+import secsgem.hsms
 import secsgem.secs
 import secsgem.gem
 
@@ -207,13 +208,15 @@ class TestRemoteCommand(unittest.TestCase):
 class TestGemEquipmentHandler(unittest.TestCase):
     def testControlInitialStateDefault(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE, name="test")
+        client = secsgem.gem.GemEquipmentHandler(settings, server)
 
         self.assertEqual(client.control_state.current, "HOST_OFFLINE")
 
     def testControlInitialStateEquipmentOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="EQUIPMENT_OFFLINE")
+        settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE, name="test")
+        client = secsgem.gem.GemEquipmentHandler(settings, server, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.assertEqual(client.control_state.current, "EQUIPMENT_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 1)

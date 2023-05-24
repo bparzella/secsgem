@@ -15,6 +15,8 @@
 #####################################################################
 """module imports."""
 
+from secsgem.common.settings import DeviceType
+
 from .connectionmanager import HsmsConnectionManager
 from .protocol import HsmsProtocol
 from .packet import HsmsPacket
@@ -28,7 +30,12 @@ from .deselect_req_header import HsmsDeselectReqHeader
 from .select_rsp_header import HsmsSelectRspHeader
 from .select_req_header import HsmsSelectReqHeader
 from .header import HsmsHeader
+from .settings import HsmsSettings, HsmsConnectMode
 
-__all__ = ["HsmsConnectionManager", "HsmsProtocol", "HsmsPacket", "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader",
-           "HsmsRejectReqHeader", "HsmsLinktestRspHeader", "HsmsLinktestReqHeader", "HsmsDeselectRspHeader",
-           "HsmsDeselectReqHeader", "HsmsSelectRspHeader", "HsmsSelectReqHeader", "HsmsHeader"]
+__all__ = ["HsmsConnectionManager",
+           "HsmsProtocol",
+           "HsmsPacket",
+           "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
+           "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
+           "HsmsSelectReqHeader", "HsmsHeader",
+           "HsmsSettings", "HsmsConnectMode", "DeviceType"]

@@ -59,7 +59,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
-                 connection: secsgem.common.Protocol,
+                 settings: secsgem.common.Settings,
                  initial_control_state: str = "ATTEMPT_ONLINE",
                  initial_online_control_state: str = "REMOTE"):
         """
@@ -71,7 +71,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
         :type initial_control_state: string
         """
-        super().__init__(connection)
+        super().__init__(settings)
 
         self._is_host = False
 

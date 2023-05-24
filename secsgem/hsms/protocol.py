@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains class to create model for hsms endpoints."""
+from __future__ import annotations
+
 import logging
 import queue
 import random
@@ -36,8 +38,14 @@ from .reject_req_header import HsmsRejectReqHeader
 from .separate_req_header import HsmsSeparateReqHeader
 from .stream_function_header import HsmsStreamFunctionHeader
 from .connectionstatemachine import ConnectionStateMachine
+from .settings import HsmsConnectMode
 
 from ..secs.functions.base import SecsStreamFunction
+
+
+if typing.TYPE_CHECKING:
+    from .settings import HsmsSettings
+    from .multi_passive_server import HsmsMultiPassiveServer
 
 
 class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instance-attributes
@@ -48,31 +56,30 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     Inherit from this class and override required functions.
     """
 
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
+    def __init__(self,
+                 settings: HsmsSettings,
+                 custom_connection_handler: typing.Optional[HsmsMultiPassiveServer] = None):
         """
         Initialize hsms handler.
 
-        :param address: IP address of remote host
-        :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param name: Name of the underlying configuration
-        :type name: string
-        :param custom_connection_handler: object for connection handling (ie multi server)
-        :type custom_connection_handler: :class:`secsgem.hsms.HsmsMultiPassiveServer`
+        Args:
+            settings: protocol and communication settings
+            custom_connection_handler: object for connection handling (ie multi server)
 
         **Example**::
 
             import secsgem.hsms
 
+            settings = secsgem.hsms.HsmsSettings(
+                address="10.211.55.33",
+                port=5000,
+                active=secsgem.hsms.HsmsConnectMode.ACTIVE,
+                name="test"
+            )
             def onConnect(event, data):
-                print "Connected"
+                print ("Connected")
 
-            client = secsgem.hsms.HsmsProtocol("10.211.55.33", 5000, True, 0, "test")
+            client = secsgem.hsms.HsmsProtocol(settings)
             client.events.hsms_connected += onConnect
 
             client.enable()
@@ -82,16 +89,18 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
             client.disable()
 
         """
-        super().__init__()
+        super().__init__(settings)
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self._communication_logger = logging.getLogger("hsms_communication")
 
+        """
         self._address = address
         self._port = port
         self._active = active
         self._session_id = session_id
         self._name = name
+        """
 
         self._connected = False
 
@@ -106,26 +115,26 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         self._select_req_thread = None
 
         # response queues
-        self._system_queues = {}
+        self._system_queues: typing.Dict[int, HsmsPacket] = {}
 
         # hsms connection state fsm
         self._connection_state = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
                                                          "on_exit_CONNECTED": self._on_state_disconnect,
                                                          "on_enter_CONNECTED_SELECTED": self._on_state_select})
 
+        self._connection: HsmsConnection
+
         # setup connection
-        if self._active:
+        if self._settings.connect_mode == HsmsConnectMode.ACTIVE:
             if custom_connection_handler is None:
-                self._connection = HsmsActiveConnection(self._address, self._port, self._session_id, self)
+                self._connection = HsmsActiveConnection(self._settings, self)
             else:
-                self._connection = custom_connection_handler.create_connection(self._address, self._port,
-                                                                               self._session_id, self)
+                self._connection = custom_connection_handler.create_connection(self._settings, self)
         else:
             if custom_connection_handler is None:
-                self._connection = HsmsPassiveConnection(self._address, self._port, self._session_id, self)
+                self._connection = HsmsPassiveConnection(self._settings, self)
             else:
-                self._connection = custom_connection_handler.create_connection(self._address, self._port,
-                                                                               self._session_id, self)
+                self._connection = custom_connection_handler.create_connection(self._settings, self)
 
     @property
     def timeouts(self) -> secsgem.common.Timeouts:
@@ -135,7 +144,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     @property
     def name(self) -> str:
         """Property for name."""
-        return self._name
+        return self._settings.name
 
     @property
     def connection(self) -> HsmsConnection:
@@ -143,7 +152,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         return self._connection
 
     @property
-    def connection_state(self) -> HsmsConnection:
+    def connection_state(self) -> ConnectionStateMachine:
         """Property for connection state."""
         return self._connection_state
 
@@ -243,7 +252,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         self.events.fire("hsms_disconnected", {'connection': self})
 
-    def __handle_hsms_requests(self, packet):  # noqa: MC0001
+    def __handle_hsms_requests(self, packet: HsmsPacket):  # noqa: MC0001
         self._communication_logger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                         extra=self._get_log_extra())
 
@@ -372,8 +381,14 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'address': self._address, 'port': self._port, 'active': self._active, 'session_id': self._session_id,
-                'name': self._name, 'connected': self._connected}
+        return {
+            'address': self._settings.address,
+            'port': self._settings.port,
+            'connect_mode': self._settings.connect_mode,
+            'session_id': self._settings.session_id,
+            'name': self.name,
+            'connected': self._connected
+        }
 
     def enable(self):
         """Enable the connection."""
@@ -392,7 +407,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         """
         out_packet = HsmsPacket(
             HsmsStreamFunctionHeader(self.get_next_system_counter(), function.stream, function.function,
-                                     function.is_reply_required, self._session_id),
+                                     function.is_reply_required, self._settings.session_id),
             function.encode())
 
         self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
@@ -413,7 +428,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         response_queue = self._get_queue_for_system(system_id)
 
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system_id, function.stream, function.function, True,
-                                                         self._session_id),
+                                                         self._settings.session_id),
                                 function.encode())
 
         self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
@@ -442,7 +457,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :type system: integer
         """
         out_packet = HsmsPacket(HsmsStreamFunctionHeader(system, function.stream, function.function, False,
-                                                         self._session_id),
+                                                         self._settings.session_id),
                                 function.encode())
 
         self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())

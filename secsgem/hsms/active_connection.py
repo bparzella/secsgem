@@ -14,29 +14,29 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Hsms active connection."""
+from __future__ import annotations
 
 import socket
 import threading
 import time
+import typing
 
 from .connection import HsmsConnection
+
+if typing.TYPE_CHECKING:
+    from .settings import HsmsSettings
 
 
 class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
     """Client class for single active (outgoing) connection."""
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None):
+    def __init__(self, settings: HsmsSettings, delegate=None):
         """
         Initialize a active hsms connection.
 
-        :param address: IP address of target host
-        :type address: string
-        :param port: TCP port of target host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: object
+        Args:
+            settings: protocol and communication settings
+            delegate: target for messages
 
         **Example**::
 
@@ -44,7 +44,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
+        HsmsConnection.__init__(self, settings, delegate)
 
         # initially not enabled
         self.enabled = False
@@ -126,7 +126,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
     def __start_connect_thread(self):
         self.connection_thread = threading.Thread(
             target=self.__connect_thread,
-            name=f"secsgem_HsmsActiveConnection_connectThread_{self._remote_address}")
+            name=f"secsgem_HsmsActiveConnection_connectThread_{self._settings.address}")
         self.connection_thread.start()
 
     def __connect_thread(self):
@@ -160,13 +160,13 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         # setup socket
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-        self._logger.debug("connecting to %s:%d", self._remote_address, self._remote_port)
+        self._logger.debug("connecting to %s:%d", self._settings.address, self._settings.port)
 
         # try to connect socket
         try:
-            self._sock.connect((self._remote_address, self._remote_port))
+            self._sock.connect((self._settings.address, self._settings.port))
         except socket.error:
-            self._logger.debug("connecting to %s:%d failed", self._remote_address, self._remote_port)
+            self._logger.debug("connecting to %s:%d failed", self._settings.address, self._settings.port)
             return False
 
         # make socket nonblocking

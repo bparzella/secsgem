@@ -23,15 +23,18 @@ from .events import EventProducer
 from .packet import Packet
 
 if typing.TYPE_CHECKING:
+    from .settings import Settings
     from ..secs.functions.base import SecsStreamFunction
 
 
 class Protocol(abc.ABC):
     """Abstract base class for a protocol."""
 
-    def __init__(self) -> None:
-        """Initialize protocol base object."""
+    def __init__(self, settings: Settings) -> None:
+        """Initialize protocol base object."""        
         super().__init__()
+
+        self._settings = settings
 
         self._event_producer = EventProducer()
         self._event_producer.targets += self

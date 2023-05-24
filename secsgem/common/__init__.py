@@ -22,8 +22,9 @@ from .header import Header
 from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
 from .packet import Packet
 from .protocol import Protocol
+from .settings import Settings, DeviceType
 from .timeouts import Timeouts
 
 
 __all__ = ["CallbackHandler", "EventProducer", "Fysom", "format_hex", "function_name", "indent_block", "is_windows",
-           "is_errorcode_ewouldblock", "Protocol", "Packet", "Header", "Timeouts"]
+           "is_errorcode_ewouldblock", "Protocol", "Packet", "Header", "Timeouts", "Settings", "DeviceType"]

@@ -14,16 +14,22 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains objects and functions to create and handle hsms connection."""
+from __future__ import annotations
 
 import logging
 import select
 import struct
 import time
 import threading
+import typing
 
 import secsgem.common
 
 from .packet import HsmsPacket
+
+if typing.TYPE_CHECKING:
+    from .settings import HsmsSettings
+
 
 # TODO: timeouts (T7, T8)
 
@@ -49,28 +55,19 @@ class HsmsConnection:  # pragma: no cover # pylint: disable=too-many-instance-at
     send_block_size = 1024 * 1024
     """ Block size for outbound data ."""
 
-    def __init__(self, active, address, port, session_id=0, delegate=None):
+    def __init__(self, settings: HsmsSettings, delegate=None):
         """
         Initialize a hsms connection.
 
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param address: IP address of remote host
-        :type address: string
-        :param port: TCP port of remote host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: inherited from :class:`secsgem.hsms.protocol.HsmsProtocol`
+        Args:
+            settings: protocol and communication settings
+            delegate: target for messages
+
         """
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        # set parameters
-        self._active = active
-        self._remote_address = address
-        self._remote_port = port
-        self._session_id = session_id
+        self._settings = settings
+
         self._delegate = delegate
 
         # connection socket
@@ -89,12 +86,10 @@ class HsmsConnection:  # pragma: no cover # pylint: disable=too-many-instance-at
         # flag set during disconnection
         self._disconnecting = False
 
-        self._timeouts = secsgem.common.Timeouts()
-
     @property
     def timeouts(self) -> secsgem.common.Timeouts:
         """Get connection timeouts."""
-        return self._timeouts
+        return self._settings.timeouts
 
     @property
     def disconnecting(self) -> bool:
@@ -109,17 +104,17 @@ class HsmsConnection:  # pragma: no cover # pylint: disable=too-many-instance-at
         :rtype: dict
         """
         return {
-            'active': self._active,
-            'remoteAddress': self._remote_address,
-            'remotePort': self._remote_port,
-            'session_id': self._session_id,
+            'connect_mode': self._settings.connect_mode,
+            'remoteAddress': self._settings.address,
+            'remotePort': self._settings.port,
+            'session_id': self._settings.session_id,
             'connected': self._connected}
 
     def __str__(self):
         """Get the contents of this object as a string."""
-        return f"{('Active' if self._active else 'Passive')} connection to " \
-               f"{self._remote_address}:{str(self._remote_port)}" \
-               f" session_id={str(self._session_id)}"
+        return f"{self._settings.connect_mode} connection to " \
+               f"{self._settings.address}:{str(self._settings.port)}" \
+               f" session_id={str(self._settings.session_id)}"
 
     def _start_receiver(self):
         """
@@ -137,7 +132,7 @@ class HsmsConnection:  # pragma: no cover # pylint: disable=too-many-instance-at
 
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(),
-                         name=f"secsgem_hsmsConnection_receiver_{self._remote_address}:{self._remote_port}").start()
+                         name=f"secsgem_hsmsConnection_receiver_{self._settings.address}:{self._settings.port}").start()
 
         # wait until thread is running
         while not self._thread_running:
