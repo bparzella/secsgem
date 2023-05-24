@@ -528,14 +528,14 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "prospector"
-version = "1.10.0"
+version = "1.10.1"
 description = "Prospector is a tool to analyse Python code by aggregating the result of other tools."
 category = "dev"
 optional = false
 python-versions = ">=3.7.2,<4.0"
 files = [
-    {file = "prospector-1.10.0-py3-none-any.whl", hash = "sha256:ee7faf1fefcb3535212ae57b53c6cb3a10fc8ca70c9c605d24b6b3a61a5132aa"},
-    {file = "prospector-1.10.0.tar.gz", hash = "sha256:25a58b5b843d25c2c6710e2811472a8a2ac43a22dddcb5a375490c8b974e5c77"},
+    {file = "prospector-1.10.1-py3-none-any.whl", hash = "sha256:1d290e655ed20c0a4a321d05a4bda91ca3f031dd3cc864654fbfeab3595511d8"},
+    {file = "prospector-1.10.1.tar.gz", hash = "sha256:952d12642af3fdca5a13f4cf55eace05de6e7e3a9c86ed6d0e651f66f8d84a1e"},
 ]
 
 [package.dependencies]
@@ -1103,4 +1103,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7.2"
-content-hash = "1481a3d3a5a4690734297ec55d3cacd756c6a31b0e4a2e22180facb9785b95ec"
+content-hash = "cfaaa308a21993b3717a20a5624707e6f4fa09fa64fddc20c3160b425772ab9a"
