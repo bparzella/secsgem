@@ -1,0 +1,24 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run tests",
+            "type": "shell",
+            "command": "poetry run pytest"
+        },
+        {
+            "label": "Run prospector",
+            "type": "shell",
+            "command": "poetry run prospector",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run sphinx-autobuild",
+            "type": "shell",
+            "command": "poetry run sphinx-autobuild ${workspaceFolder}/docs ${workspaceFolder}/build/doc --watch ${workspaceFolder}/secsgem --open-browser",
+            "problemMatcher": []
+        }
+    ]
+  }
