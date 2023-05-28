@@ -72,6 +72,14 @@ class DataItem:
         return self._data["type"]
 
     @property
+    def linter_message(self) -> str:
+        """Get the linter message of the data item."""
+        if "linter_message" not in self._data:
+            return ""
+
+        return self._data["linter_message"]
+
+    @property
     def single_type(self) -> bool:
         """Check if this is a single type object."""
         if not isinstance(self._data["type"], list):

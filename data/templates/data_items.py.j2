@@ -18,7 +18,7 @@ from .. import variables
 from .base import DataItemBase
 
 
-class {{ data.name }}(DataItemBase):
+class {{ data.name }}(DataItemBase):{{ data.linter_message }}
     """
     {{ data.description }}.
 
