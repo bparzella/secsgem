@@ -46,7 +46,7 @@ HSMS_STYPES = {
 """Names for hsms header SType."""
 
 
-class HsmsConnection:  # pragma: no cover # pylint: disable=too-many-instance-attributes
+class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: disable=too-many-instance-attributes
     """Connection class used for active and passive hsms connections."""
 
     select_timeout = 0.5

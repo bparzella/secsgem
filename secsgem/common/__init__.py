@@ -16,6 +16,7 @@
 """Contains helper functions."""
 
 from .callbacks import CallbackHandler
+from .connection import Connection
 from .events import EventProducer
 from .fysom import Fysom
 from .header import Header
@@ -26,5 +27,13 @@ from .settings import Settings, DeviceType
 from .timeouts import Timeouts
 
 
-__all__ = ["CallbackHandler", "EventProducer", "Fysom", "format_hex", "function_name", "indent_block", "is_windows",
-           "is_errorcode_ewouldblock", "Protocol", "Packet", "Header", "Timeouts", "Settings", "DeviceType"]
+__all__ = ["CallbackHandler",
+           "Connection",
+           "EventProducer",
+           "Fysom",
+           "Header",
+           "format_hex", "function_name", "indent_block", "is_windows", "is_errorcode_ewouldblock",
+           "Packet",
+           "Protocol",
+           "Settings", "DeviceType",
+           "Timeouts"]

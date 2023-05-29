@@ -27,7 +27,7 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler(self.server.settings)
 
         self.server.start()
         self.client.enable()
@@ -73,9 +73,9 @@ class TestSecsConnectionStateModelPassive(unittest.TestCase):
 
 class TestSecsConnectionStateModelActive(unittest.TestCase):
     def setUp(self):
-        self.server = HsmsTestServer()
+        self.server = HsmsTestServer(secsgem.hsms.HsmsConnectMode.ACTIVE)
 
-        self.client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler(self.server.settings)
 
         self.server.start()
         self.client.enable()

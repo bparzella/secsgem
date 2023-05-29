@@ -230,7 +230,7 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.PPID.get(), ppid)
         self.assertEqual(function.PPBODY.get(), ppbody)
@@ -258,7 +258,7 @@ class GemHandlerPassiveGroup:
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 5)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), ppid)
 
@@ -270,7 +270,7 @@ class TestGemHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         self.server = HsmsTestServer()
 
-        self.client = self.__testClass.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = self.__testClass(self.server.settings)
 
         self.server.start()
         self.client.enable()

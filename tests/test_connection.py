@@ -1,7 +1,7 @@
 #####################################################################
 # test_connection.py
 #
-# (c) Copyright 2013-2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,13 +14,16 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains class for connection test."""
-
-import logging
+from __future__ import annotations
 
 import datetime
+import logging
+import typing
 
 import secsgem.common
+import secsgem.common.settings
 import secsgem.hsms
+from secsgem.hsms.protocol import HsmsProtocol
 
 
 class HsmsTestConnection:
@@ -44,13 +47,10 @@ class HsmsTestConnection:
 
     """
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None):
+    def __init__(self, settings: HsmsTestServerSettings, delegate: object):
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        # initially not enabled
-        self._address = address
-        self._port = port
-        self._session_id = session_id
+        self._settings = settings
         self._delegate = delegate
 
         self._enabled = False
@@ -64,8 +64,6 @@ class HsmsTestConnection:
         self._fail_send = False
 
         self._packets = []
-
-        self.timeouts = secsgem.common.Timeouts()
 
     def simulate_connect(self):
         # send connection enabled event
@@ -113,21 +111,64 @@ class HsmsTestConnection:
         self._connected = False
 
 
+class HsmsTestServerSettings(secsgem.common.Settings):
+    """Test class settings."""
+
+    @classmethod
+    def _attributes(cls) -> typing.List[secsgem.common.settings.Setting]:
+        """Get the available settings for the class."""
+        return super()._attributes() + [
+            secsgem.common.settings.Setting("server", None, "Server for connection"),
+            secsgem.common.settings.Setting("connect_mode", secsgem.hsms.HsmsConnectMode.ACTIVE, "Hsms connect mode"),
+            secsgem.common.settings.Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
+            secsgem.common.settings.Setting("port", 5000, "TCP port of remote host"),
+            secsgem.common.settings.Setting("session_id", 0, "session / device ID to use for connection")
+        ]
+
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._last_protocol = None
+
+    def create_protocol(self) -> HsmsProtocol:
+        """Protocol class for this configuration."""
+        self._last_protocol = HsmsProtocol(self)
+
+        return self._last_protocol
+
+    def create_connection(self) -> HsmsTestConnection:
+        """Connection class for this configuration."""
+        return self.server.create_connection(self, self._last_protocol)
+
+    @property
+    def name(self) -> str:
+        """Name of this configuration."""
+        return f"HSMS-TestServerSettings"
+    
+    @property
+    def is_active(self) -> bool:
+        return self.connect_mode == secsgem.hsms.HsmsConnectMode.ACTIVE
+
+
 class HsmsTestServer:
     """Server class for testing."""
 
-    def __init__(self, _=-1):
+    def __init__(self, connect_mode: secsgem.hsms.HsmsConnectMode = secsgem.hsms.HsmsConnectMode.PASSIVE):
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
         self.connection = None
+        self.connect_mode = connect_mode
 
-    def create_connection(self, address, port=5000, session_id=0, delegate=None):
-        connection = HsmsTestConnection(address, port, session_id, delegate)
+    def create_connection(self, settings: HsmsTestServerSettings, protocol: typing.Optional[HsmsProtocol]):
+        connection = HsmsTestConnection(settings, protocol)
         connection.handler = self
 
         self.connection = connection
 
         return connection
+
+    @property
+    def settings(self) -> HsmsTestServerSettings:
+        return HsmsTestServerSettings(server=self, connect_mode=self.connect_mode)
 
     def start(self):
         self.logger.debug("server started")

@@ -26,7 +26,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.hsms.HsmsProtocol("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = self.server.settings.create_protocol()
 
         self.server.start()
         self.client.enable()
@@ -170,9 +170,9 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
 
 class TestHsmsProtocolActive(unittest.TestCase):
     def setUp(self):
-        self.server = HsmsTestServer()
+        self.server = HsmsTestServer(secsgem.hsms.HsmsConnectMode.ACTIVE)
 
-        self.client = secsgem.hsms.HsmsProtocol("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = self.server.settings.create_protocol()
 
         self.server.start()
         self.client.enable()

@@ -35,10 +35,9 @@ class HsmsPacket(secsgem.common.Packet):
         """
         Initialize a hsms packet.
 
-        :param header: header used for this packet
-        :type header: :class:`secsgem.hsms.HsmsHeader` and derived
-        :param data: data part used for streams and functions (SType 0)
-        :type data: string
+        Args:
+            header: header used for this packet
+            data: data part used for streams and functions (SType 0)
 
         **Example**::
 
@@ -47,15 +46,21 @@ class HsmsPacket(secsgem.common.Packet):
             >>> secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
             HsmsPacket({'header': HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, \
 s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
+
         """
         self._header = HsmsHeader(0, 0) if header is None else header
 
-        self.data = data
+        self._data = data
 
     @property
     def header(self) -> HsmsHeader:
         """Get the header."""
         return self._header
+
+    @property
+    def data(self) -> bytes:
+        """Get the data."""
+        return self._data
 
     def __str__(self) -> str:
         """Generate string representation for an object of this class."""

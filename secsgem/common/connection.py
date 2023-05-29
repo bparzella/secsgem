@@ -1,5 +1,5 @@
 #####################################################################
-# packet.py
+# connection.py
 #
 # (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
@@ -13,23 +13,8 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""packet base class."""
-import abc
-
-from .header import Header
+"""Connection base function."""
 
 
-class Packet(abc.ABC):
-    """Abstract base class for a packet."""
-
-    @property
-    @abc.abstractmethod
-    def header(self) -> Header:
-        """Get the header."""
-        raise NotImplementedError("Packet.header missing implementation")
-
-    @property
-    @abc.abstractmethod
-    def data(self) -> bytes:
-        """Get the header."""
-        raise NotImplementedError("Packet.data missing implementation")
+class Connection:
+    """Base class for connection."""

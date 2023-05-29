@@ -20,6 +20,9 @@ import enum
 import typing
 
 from secsgem.common.settings import Setting, Settings
+from .active_connection import HsmsActiveConnection
+from .connection import HsmsConnection
+from .passive_connection import HsmsPassiveConnection
 
 if typing.TYPE_CHECKING:
     from secsgem.common.protocol import Protocol
@@ -48,6 +51,8 @@ class HsmsSettings(Settings):
         >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
         >>> settings.device_type
         <DeviceType.EQUIPMENT: 0>
+        >>> settings.address
+        '127.0.0.1'
 
     .. exec::
         import secsgem.hsms.settings
@@ -65,14 +70,24 @@ class HsmsSettings(Settings):
             Setting("session_id", 0, "session / device ID to use for connection")
         ]
 
-    @property
-    def protocol(self) -> Protocol:
+    def create_protocol(self) -> Protocol:
         """Protocol class for this configuration."""
         from .protocol import HsmsProtocol  # pylint: disable=import-outside-toplevel
 
         return HsmsProtocol(self)
 
+    def create_connection(self) -> HsmsConnection:
+        """Connection class for this configuration."""
+        if self.connect_mode == HsmsConnectMode.ACTIVE:
+            return HsmsActiveConnection(self)
+        return HsmsPassiveConnection(self)
+
     @property
     def name(self) -> str:
         """Name of this configuration."""
         return f"HSMS-{self.connect_mode}_{self.address}:{self.port}"
+
+    @property
+    def is_active(self) -> bool:
+        """Check if connection is active."""
+        return self.connect_mode == HsmsConnectMode.ACTIVE

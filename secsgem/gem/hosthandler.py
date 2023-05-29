@@ -26,13 +26,15 @@ from .handler import GemHandler
 class GemHostHandler(GemHandler):
     """Baseclass for creating host models. Inherit from this class and override required functions."""
 
-    def __init__(self, connection: secsgem.common.Protocol):
+    def __init__(self, settings: secsgem.common.Settings):
         """
         Initialize a gem host handler.
 
-        :param connection: Connection
+        Args:
+            settings: communication settings
+
         """
-        GemHandler.__init__(self, connection)
+        GemHandler.__init__(self, settings)
 
         self.is_host = True
 
@@ -108,7 +110,7 @@ class GemHostHandler(GemHandler):
                 s2f41.PARAMS.append({"CPNAME": param, "CPVAL": params[param]})
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(s2f41))
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(s2f41))
 
     def delete_process_programs(self,
                                 ppids: typing.List[typing.Union[int, str]]):
@@ -121,21 +123,23 @@ class GemHostHandler(GemHandler):
         self._logger.info("Delete process programs %s", ppids)
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
 
     def get_process_program_list(self) -> secsgem.secs.SecsStreamFunction:
         """Get process program list."""
         self._logger.info("Get process program list")
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
     def go_online(self) -> typing.Optional[str]:
         """Set control state to online."""
         self._logger.info("Go online")
 
         # send remote command
-        resp = self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 17)()))
+        resp = self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 17)()))
         if resp is None:
             return None
 
@@ -146,7 +150,8 @@ class GemHostHandler(GemHandler):
         self._logger.info("Go offline")
 
         # send remote command
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
     def enable_alarm(self, alid: typing.Union[int, str]):
         """
@@ -157,7 +162,7 @@ class GemHostHandler(GemHandler):
         """
         self._logger.info("Enable alarm %d", alid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
 
     def disable_alarm(self, alid: typing.Union[int, str]):
@@ -169,7 +174,7 @@ class GemHostHandler(GemHandler):
         """
         self._logger.info("Disable alarm %d", alid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
 
     def list_alarms(self, 
@@ -186,13 +191,15 @@ class GemHostHandler(GemHandler):
         else:
             self._logger.info("List alarms %s", alids)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
 
     def list_enabled_alarms(self):
         """List enabled alarms."""
         self._logger.info("List all enabled alarms")
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
 
     def _on_alarm_received(self, handler, alarm_id, alarm_code, alarm_text):
         del handler, alarm_id, alarm_code, alarm_text  # unused variables
@@ -209,7 +216,7 @@ class GemHostHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.common.Packet`
         """
-        s5f1 = self.secs_decode(packet)
+        s5f1 = self.settings.streams_functions.decode(packet)
 
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
@@ -231,7 +238,7 @@ class GemHostHandler(GemHandler):
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         for report in message.RPT:
             report_dvs = self.report_subscriptions[report.RPTID.get()]
@@ -265,7 +272,7 @@ class GemHostHandler(GemHandler):
         :param packet: complete message received
         :type packet: :class:`secsgem.common.Packet`
         """
-        s10f1 = self.secs_decode(packet)
+        s10f1 = self.settings.streams_functions.decode(packet)
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
         self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol,

@@ -31,6 +31,11 @@ class StructureDisplayingMeta(type):
         return cls.get_format()
 
 
+class _ClassProperty(property):
+    def __get__(self, owner_self, owner_cls):
+        return self.fget(owner_cls)
+
+
 class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=too-many-instance-attributes
     """
     Secs stream and function base class.
@@ -86,10 +91,6 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
         :type value: various
         """
         self.data = functions.generate(self._data_format)
-
-        # copy public members from private ones
-        self.stream = self._stream
-        self.function = self._function
 
         self.data_format = self._data_format
         self.to_host = self._to_host
@@ -208,3 +209,13 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
             return functions.get_format(cls._data_format)
 
         return "Header only"
+
+    @_ClassProperty
+    def stream(self) -> int:
+        """Get the stream number of this function."""
+        return self._stream
+
+    @_ClassProperty
+    def function(self) -> int:
+        """Get the function number of this function."""
+        return self._function

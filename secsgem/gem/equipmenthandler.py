@@ -395,7 +395,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         responses = []
 
@@ -425,7 +425,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         responses = []
 
@@ -510,7 +510,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         # 0  = Accept
         # 1  = Denied. Insufficient space.
@@ -573,7 +573,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         # 0  = Accepted
         # 1  = Denied. Insufficient space
@@ -627,7 +627,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         # 0  = Accepted
         # 1  = Denied. At least one CEID does not exist
@@ -651,7 +651,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         ceid = message.get()
 
@@ -814,7 +814,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         responses = []
 
@@ -844,7 +844,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         eac = 0
 
@@ -881,7 +881,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         responses = []
 
@@ -975,7 +975,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         # 0  = Accepted
         # 1  = Error
@@ -1002,7 +1002,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         result = []
 
@@ -1071,7 +1071,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        message = self.settings.streams_functions.decode(packet)
 
         rcmd_name = message.RCMD.get()
         rcmd_callback_name = "rcmd_" + rcmd_name

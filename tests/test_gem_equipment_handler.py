@@ -208,42 +208,40 @@ class TestRemoteCommand(unittest.TestCase):
 class TestGemEquipmentHandler(unittest.TestCase):
     def testControlInitialStateDefault(self):
         server = HsmsTestServer()
-        settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE, name="test")
-        client = secsgem.gem.GemEquipmentHandler(settings, server)
+        client = secsgem.gem.GemEquipmentHandler(server.settings)
 
         self.assertEqual(client.control_state.current, "HOST_OFFLINE")
 
     def testControlInitialStateEquipmentOffline(self):
         server = HsmsTestServer()
-        settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE, name="test")
-        client = secsgem.gem.GemEquipmentHandler(settings, server, initial_control_state="EQUIPMENT_OFFLINE")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.assertEqual(client.control_state.current, "EQUIPMENT_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 1)
 
     def testControlInitialStateHostOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="HOST_OFFLINE")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="HOST_OFFLINE")
 
         self.assertEqual(client.control_state.current, "HOST_OFFLINE")
         self.assertEqual(client._get_control_state_id(), 3)
 
     def testControlInitialStateOnline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE")
 
         self.assertEqual(client.control_state.current, "ONLINE_REMOTE")
         self.assertEqual(client._get_control_state_id(), 5)
 
     def testControlInitialStateOnlineLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
     def testControlRemoteToLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE")
 
         self.assertEqual(client.control_state.current, "ONLINE_REMOTE")
 
@@ -253,7 +251,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testControlLocalToRemote(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
@@ -263,7 +261,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testControlOnlineToOffline(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
 
@@ -273,7 +271,7 @@ class TestGemEquipmentHandler(unittest.TestCase):
 
     def testSVcontrol_stateOnlineLocal(self):
         server = HsmsTestServer()
-        client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", server, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
+        client = secsgem.gem.GemEquipmentHandler(server.settings, initial_control_state="ONLINE", initial_online_control_state="LOCAL")
 
         self.assertEqual(client.control_state.current, "ONLINE_LOCAL")
         self.assertEqual(client._get_control_state_id(), 4)
@@ -287,7 +285,7 @@ class TestGemEquipmentHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         self.server = HsmsTestServer()
 
-        self.client = self.__testClass.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = self.__testClass(self.server.settings)
 
         self.server.start()
         self.client.enable()
@@ -301,7 +299,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.gem.GemEquipmentHandler.hsms("127.0.0.1", 5000, False, 0, "test", self.server, initial_control_state="EQUIPMENT_OFFLINE")
+        self.client = secsgem.gem.GemEquipmentHandler(self.server.settings, initial_control_state="EQUIPMENT_OFFLINE")
 
         self.server.start()
         self.client.enable()
@@ -381,7 +379,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 16)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), 0)
 
@@ -427,7 +425,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 18)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), 0)
 
@@ -460,7 +458,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 18)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), 2)
 
@@ -487,7 +485,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 12)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def testStatusVariableNameListAll(self):
         self.setupTestStatusVariables()
@@ -552,7 +550,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 4)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def testStatusVariableAll(self):
         self.setupTestStatusVariables()
@@ -767,7 +765,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 34)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendCELinkReport(self, dataid=100, ceid=50, rptid=[1000], empty_data=False):
         if not empty_data:
@@ -786,7 +784,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 36)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendCEEnableReport(self, enable=True, ceid=[50]):
         system_id = self.server.get_next_system_counter()
@@ -800,7 +798,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 38)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendAlarmEnable(self, enable=True, alid=25):
         system_id = self.server.get_next_system_counter()
@@ -815,7 +813,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 4)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendCERequestReport(self, ceid=50):
         system_id = self.server.get_next_system_counter()
@@ -829,7 +827,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 16)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def testCollectionEventRegisterReport(self):
         self.setupTestDataValues()
@@ -1253,7 +1251,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
         self.assertEqual(function.CEID.get(), 50)
@@ -1281,7 +1279,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 30)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendECRequest(self, ecid=[]):
         system_id = self.server.get_next_system_counter()
@@ -1295,7 +1293,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 14)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def sendECUpdate(self, data):
         system_id = self.server.get_next_system_counter()
@@ -1309,7 +1307,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 16)
 
-        return self.client.secs_decode(packet)
+        return self.client.settings.streams_functions.decode(packet)
 
     def testEquipmentConstantNameListAll(self):
         self.setupTestEquipmentConstants()
@@ -1572,7 +1570,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 1)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.ALCD.get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY | secsgem.secs.data_items.ALCD.ALARM_SET)
         self.assertEqual(function.ALID.get(), 25)
@@ -1618,7 +1616,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 1)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.ALCD.get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(function.ALID.get(), 25)
@@ -1949,7 +1947,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 6)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(len(function), 2)
 
@@ -1980,7 +1978,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 6)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(len(function), 1)
 
@@ -2008,7 +2006,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 8)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(len(function), 1)
 
@@ -2046,7 +2044,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
@@ -2061,7 +2059,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
         self.assertEqual(function.CEID.get(), 5001)
@@ -2082,7 +2080,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.INVALID_COMMAND)
@@ -2102,7 +2100,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.INVALID_COMMAND)
@@ -2127,7 +2125,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.PARAMETER_INVALID)
@@ -2156,7 +2154,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
@@ -2171,7 +2169,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
         self.assertEqual(function.CEID.get(), secsgem.gem.CEID_CMD_START_DONE)
@@ -2198,7 +2196,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
         self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
@@ -2213,7 +2211,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
         self.assertEqual(function.CEID.get(), secsgem.gem.CEID_CMD_STOP_DONE)

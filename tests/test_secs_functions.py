@@ -18,6 +18,7 @@ import unittest
 import pytest
 
 from secsgem.secs.functions import *
+from secsgem.secs.functions._all import secs_streams_functions
 
 
 class testSecsFunctionNoData:
@@ -314,21 +315,11 @@ class testFunctionBase(unittest.TestCase):
 
 
 def generate_stream_list():
-    streams = []
-    for stream in secs_streams_functions:
-        for function in secs_streams_functions[stream]:
-            streams.append((stream, secs_streams_functions[stream][function]))
-
-    return streams
+    return [(function.stream, function) for function in secs_streams_functions]
 
 
 def generate_function_list():
-    streams = []
-    for stream in secs_streams_functions:
-        for function in secs_streams_functions[stream]:
-            streams.append((function, secs_streams_functions[stream][function]))
-
-    return streams
+    return [(function.function, function) for function in secs_streams_functions]
 
 
 @pytest.mark.parametrize("stream,cls", generate_stream_list())

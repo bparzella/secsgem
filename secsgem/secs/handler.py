@@ -14,15 +14,12 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.hsms.HsmsConnectionManager`."""
-import copy
 import logging
 import threading
 import typing
 
 import secsgem.common
 import secsgem.hsms
-
-from . import functions
 
 if typing.TYPE_CHECKING:
     from ..gem.collection_event import CollectionEvent
@@ -46,9 +43,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
             settings: settings defining protocol and connection
 
         """
-        self._protocol = settings.protocol
+        self.settings = settings
+
+        self._protocol = settings.create_protocol()
         self._protocol.events.hsms_packet_received += self._on_hsms_packet_received
-        self._protocol.secs_decode = self.secs_decode
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -59,8 +57,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
-
-        self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
 
     @staticmethod
     def _generate_sf_callback_name(stream: int, function: int) -> str:
@@ -310,7 +306,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         packet = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(packet)
 
     def request_svs(self, svs):
         """
@@ -325,7 +321,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         packet = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(packet)
 
     def request_sv(self, sv_id):
         """
@@ -353,7 +349,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
             ecs = []
         packet = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(packet)
 
     def request_ecs(self, ecs):
         """
@@ -368,7 +364,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         packet = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(packet)
 
     def request_ec(self, ec_id):
         """
@@ -469,37 +465,4 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         :return: matching stream and function class
         :rtype: secsSxFx class
         """
-        if stream not in self.secs_streams_functions:
-            self.logger.warning("unknown function S%02dF%02d", stream, function)
-            return None
-
-        if function not in self.secs_streams_functions[stream]:
-            self.logger.warning("unknown function S%02dF%02d", stream, function)
-            return None
-
-        return self.secs_streams_functions[stream][function]
-
-    def secs_decode(self, packet):
-        """
-        Get object of decoded stream and function class, or None if no class is available.
-
-        :param packet: packet to get object for
-        :type packet: :class:`secsgem.common.Packet`
-        :return: matching stream and function object
-        :rtype: secsSxFx object
-        """
-        if packet is None:
-            return None
-
-        if packet.header.stream not in self.secs_streams_functions:
-            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-            return None
-
-        if packet.header.function not in self.secs_streams_functions[packet.header.stream]:
-            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-            return None
-
-        function = self.secs_streams_functions[packet.header.stream][packet.header.function]()
-        function.decode(packet.data)
-
-        return function
+        return self.settings.streams_functions.function(stream, function)

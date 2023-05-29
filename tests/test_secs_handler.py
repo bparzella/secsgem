@@ -26,11 +26,11 @@ from test_connection import HsmsTestServer
 class TestSecsHandler(unittest.TestCase):
     def testSecsDecode(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         packet = server.generate_stream_function_packet(0, secsgem.secs.functions.SecsS01F02(["MDLN", "SOFTREV"]))
 
-        function = client.secs_decode(packet)
+        function = client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.stream, 1)
         self.assertEqual(function.function, 2)
@@ -39,33 +39,33 @@ class TestSecsHandler(unittest.TestCase):
 
     def testSecsDecodeNone(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
-        function = client.secs_decode(None)
+        function = client.settings.streams_functions.decode(None)
 
         self.assertIsNone(function)
 
     def testSecsDecodeInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         packet = secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsHeader(0, 0, 99))
-        function = client.secs_decode(packet)
+        function = client.settings.streams_functions.decode(packet)
 
         self.assertIsNone(function)
 
     def testSecsDecodeInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         packet = secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsHeader(0, 0, 99))
-        function = client.secs_decode(packet)
+        function = client.settings.streams_functions.decode(packet)
 
         self.assertIsNone(function)
     
     def testStreamFunction(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         function = client.stream_function(1, 1)
 
@@ -73,7 +73,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testStreamFunctionInvalidStream(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         function = client.stream_function(99, 1)
 
@@ -81,7 +81,7 @@ class TestSecsHandler(unittest.TestCase):
 
     def testStreamFunctionInvalidFunction(self):
         server = HsmsTestServer()
-        client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", server)
+        client = secsgem.secs.SecsHandler(server.settings)
 
         function = client.stream_function(1, 99)
 
@@ -92,7 +92,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def setUp(self):
         self.server = HsmsTestServer()
 
-        self.client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler(self.server.settings)
 
         self.server.start()
         self.client.enable()
@@ -228,7 +228,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function["CEED"], False)
         self.assertEqual(function["CEID"].get(), [])
@@ -256,7 +256,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"].get(), [])
@@ -284,7 +284,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [])
 
@@ -311,7 +311,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -338,7 +338,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -365,7 +365,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -392,7 +392,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [])
 
@@ -420,7 +420,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -448,7 +448,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -475,7 +475,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -502,7 +502,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [{'ECID': 1, 'ECV': u'1337'}])
 
@@ -529,7 +529,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.get(), [{'ECV': 1337, 'ECID': 1}])
 
@@ -557,7 +557,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.secs_decode(packet)
+        function = self.client.settings.streams_functions.decode(packet)
 
         self.assertEqual(function.TID.get(), 0)
         self.assertEqual(function.TEXT.get(), "Hello World")
@@ -691,9 +691,9 @@ class TestSecsHandlerPassive(unittest.TestCase):
 
 class TestSecsHandlerActive(unittest.TestCase):
     def setUp(self):
-        self.server = HsmsTestServer()
+        self.server = HsmsTestServer(secsgem.hsms.HsmsConnectMode.ACTIVE)
 
-        self.client = secsgem.secs.SecsHandler.hsms("127.0.0.1", 5000, True, 0, "test", self.server)
+        self.client = secsgem.secs.SecsHandler(self.server.settings)
 
         self.server.start()
         self.client.enable()

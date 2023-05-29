@@ -23,6 +23,7 @@ import typing
 from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
+    from .connection import Connection
     from .protocol import Protocol
 
 
@@ -84,14 +85,6 @@ class Settings(abc.ABC):
 
     These attributes can be initialized in the constructor and accessed as property.
 
-    **Example**::
-
-        >>> import secsgem.common
-        >>>
-        >>> settings = secsgem.common.Settings(device_type=secsgem.common.DeviceType.EQUIPMENT)
-        >>> settings.device_type
-        <DeviceType.EQUIPMENT: 0>
-
     .. exec::
         import secsgem.common.settings
 
@@ -106,6 +99,7 @@ class Settings(abc.ABC):
         return [
             Setting("timeouts", None, "Communication timeout", Timeouts),
             Setting("device_type", DeviceType.HOST, "Device type"),
+            Setting("streams_functions", None, "Container with streams/functions")
         ]
 
     @classmethod
@@ -140,11 +134,19 @@ class Settings(abc.ABC):
 
             self._data[attribute.name] = value
 
-    @property
+        if self._data["streams_functions"] is None:
+            from secsgem.secs.functions import StreamsFunctions  # pylint: disable=import-outside-toplevel
+            self._data["streams_functions"] = StreamsFunctions()
+
     @abc.abstractmethod
-    def protocol(self) -> Protocol:
+    def create_protocol(self) -> Protocol:
         """Protocol class for this configuration."""
         raise NotImplementedError(f"property 'protocol' is not implemented for '{self.__class__.__name__}'")
+
+    @abc.abstractmethod
+    def create_connection(self) -> Connection:
+        """Connection class for this configuration."""
+        raise NotImplementedError(f"property 'connection' is not implemented for '{self.__class__.__name__}'")
 
     @property
     @abc.abstractmethod
@@ -195,8 +197,7 @@ class ExistingProtocolSettings(Settings):
             Setting("existing_protocol", None, "Existing protocol"),
         ]
 
-    @property
-    def protocol(self) -> Protocol:
+    def create_protocol(self) -> Protocol:
         """Protocol class for this configuration."""
         return self.existing_protocol
 

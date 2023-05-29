@@ -25,7 +25,7 @@ import secsgem.secs
 class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance-attributes
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
-    def __init__(self, connection: secsgem.common.Protocol):
+    def __init__(self, settings: secsgem.common.Settings):
         """
         Initialize a gem handler.
 
@@ -33,7 +33,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         :param connection: connection to use
         """
-        super().__init__(connection)
+        super().__init__(settings)
         self._protocol.events.hsms_selected += self._on_hsms_select
 
         self._mdln = "secsgem"  #: model number returned by S01E13/14
@@ -262,7 +262,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         # send remote command
         self._logger.info("Send process program %s", ppid)
 
-        return self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
             {"PPID": ppid, "PPBODY": ppbody}))).get()
 
     def request_process_program(self, 
@@ -276,7 +276,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         self._logger.info("Request process program %s", ppid)
 
         # send remote command
-        s7f6 = self.secs_decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
+        s7f6 = self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
         return s7f6.PPID.get(), s7f6.PPBODY.get()
 
     def waitfor_communicating(self, timeout: typing.Optional[float] = None) -> bool:
