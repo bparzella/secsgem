@@ -1,7 +1,7 @@
 #####################################################################
-# __init__.py
+# _all.py
 #
-# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,19 +13,16 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Module init for SECS stream and functions."""
-from .base import SecsStreamFunction
-from .streams_functions import StreamsFunctions
-
+"""List of all SECS stream and functions."""
 {% for function in functions %}
 from .{{ function.module_name }} import Secs{{ function.name }}
 {% endfor %}
 
-__all__ = [
-    "SecsStreamFunction", 
-    "StreamsFunctions",
-{% for function in functions %}
-    "Secs{{ function.name }}",
+secs_streams_functions = [
+{% for stream_id, stream in streams_functions.items() %}
+    {% for function_id, function in stream.items() %}
+    Secs{{ function.name }},
+    {% endfor %}
 {% endfor %}
 ]
 

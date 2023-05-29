@@ -99,6 +99,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         function_template = env.get_template('functions.py.j2')
         function_init_template = env.get_template('functions_init.py.j2')
+        function_all_template = env.get_template('functions_all.py.j2')
 
         for function in functions:
             last = function.render(function_template, target_path)
@@ -110,6 +111,14 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         out_path = target_path / "__init__.py"
         out_path.write_text(init_code)
+
+        all_code = function_all_template.render(
+            functions=functions,
+            streams_functions=cls.stream_function_dict(functions)
+        )
+
+        out_path = target_path / "_all.py"
+        out_path.write_text(all_code)
 
         return last
 
