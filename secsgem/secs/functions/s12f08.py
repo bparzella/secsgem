@@ -33,7 +33,7 @@ class SecsS12F08(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS12F08
         MDACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F08(secsgem.secs.data_items.MDACK.ABORT_MAP)

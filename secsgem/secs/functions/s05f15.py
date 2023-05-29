@@ -51,7 +51,7 @@ class SecsS05F15(SecsStreamFunction):
             }
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F15({

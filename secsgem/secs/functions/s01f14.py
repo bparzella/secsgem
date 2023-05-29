@@ -64,7 +64,7 @@ class SecsS01F14(SecsStreamFunction):
             ]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F14({"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED,

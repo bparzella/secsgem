@@ -33,7 +33,7 @@ class SecsS12F12(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS12F12
         MDACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F12(secsgem.secs.data_items.MDACK.FORMAT_ERROR)

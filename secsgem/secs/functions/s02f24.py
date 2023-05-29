@@ -33,7 +33,7 @@ class SecsS02F24(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F24
         TIAACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F24(secsgem.secs.data_items.TIAACK.SVID_EXCEEDED)

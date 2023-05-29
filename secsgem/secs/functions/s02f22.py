@@ -33,7 +33,7 @@ class SecsS02F22(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F22
         CMDA: U1/I1
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F22(secsgem.secs.data_items.CMDA.DONE)

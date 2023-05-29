@@ -38,7 +38,7 @@ class SecsS06F05(SecsStreamFunction):
             DATALENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F05({"DATAID": 1, "DATALENGTH": 1337})

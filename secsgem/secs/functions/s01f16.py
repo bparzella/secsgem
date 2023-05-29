@@ -33,7 +33,7 @@ class SecsS01F16(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS01F16
         OFLACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F16(secsgem.secs.data_items.OFLACK.ACK)

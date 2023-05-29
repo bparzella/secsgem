@@ -80,7 +80,7 @@ class SecsS12F01(SecsStreamFunction):
             PRAXI: B[1]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F01({

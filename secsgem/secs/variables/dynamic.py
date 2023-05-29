@@ -115,7 +115,7 @@ class Dynamic(Base):
         In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.Base` class,
         to avoid confusion.
 
-        **Example**::
+        Example:
 
             >>> import secsgem.secs
             >>>

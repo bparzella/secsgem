@@ -33,7 +33,7 @@ class SecsS06F06(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS06F06
         GRANT6: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F06(secsgem.secs.data_items.GRANT6.BUSY)

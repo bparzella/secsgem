@@ -33,7 +33,7 @@ class SecsS02F21(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F21
         RCMD: U1/I1/A
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F21("COMMMAND1")

@@ -33,7 +33,7 @@ class SecsS05F17(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS05F17
         EXID: A[20]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F17("EX123")

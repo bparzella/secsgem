@@ -14,7 +14,30 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Connection base function."""
+import abc
+
+from .packet import Packet
 
 
-class Connection:
-    """Base class for connection."""
+class Connection(abc.ABC):
+    """Abstract base class for a connection."""
+
+    @property
+    @abc.abstractmethod
+    def disconnecting(self) -> bool:
+        """Get the disconnecting flag."""
+        raise NotImplementedError("Connection.disconnecting missing implementation")
+
+    @abc.abstractmethod
+    def send_packet(self, packet: Packet) -> bool:
+        """
+        Send a packet to the remote.
+
+        Args:
+            packet: packet to be transmitted
+
+        Returns:
+            True if succeeded, False if failed
+
+        """
+        raise NotImplementedError("Connection.send_packet missing implementation")

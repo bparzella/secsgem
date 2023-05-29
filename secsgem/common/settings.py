@@ -135,7 +135,7 @@ class Settings(abc.ABC):
             self._data[attribute.name] = value
 
         if self._data["streams_functions"] is None:
-            from secsgem.secs.functions import StreamsFunctions  # pylint: disable=import-outside-toplevel
+            from secsgem.secs.functions import StreamsFunctions  # pylint: disable=import-outside-toplevel,cyclic-import
             self._data["streams_functions"] = StreamsFunctions()
 
     @abc.abstractmethod
@@ -176,7 +176,7 @@ class ExistingProtocolSettings(Settings):
 
     These attributes can be initialized in the constructor and accessed as property.
 
-    **Example**::
+    Example:
 
         >>> import secsgem.hsms
         >>>

@@ -33,7 +33,7 @@ class SecsS07F18(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS07F18
         ACKC7: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F18(secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED)

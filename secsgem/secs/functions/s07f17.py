@@ -36,7 +36,7 @@ class SecsS07F17(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F17(["program1", "program2"])

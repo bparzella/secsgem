@@ -44,7 +44,7 @@ class SecsS12F05(SecsStreamFunction):
             MLCL: U1/U2/U4/U8
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F05({

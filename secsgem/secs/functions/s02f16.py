@@ -33,7 +33,7 @@ class SecsS02F16(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F16
         EAC: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F16(secsgem.secs.data_items.EAC.BUSY)

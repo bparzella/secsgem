@@ -44,7 +44,7 @@ class SecsS05F11(SecsStreamFunction):
             EXMESSAGE: A
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F11({

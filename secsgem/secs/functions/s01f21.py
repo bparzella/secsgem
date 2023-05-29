@@ -36,7 +36,7 @@ class SecsS01F21(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F21([1, "VARIABLEID"])

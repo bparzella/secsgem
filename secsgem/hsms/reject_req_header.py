@@ -36,7 +36,7 @@ class HsmsRejectReqHeader(HsmsHeader):
         :param reason: reason for rejection
         :type reason: integer
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>>

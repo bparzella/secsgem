@@ -33,7 +33,7 @@ class SecsS06F15(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS06F15
         CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F15(1337)

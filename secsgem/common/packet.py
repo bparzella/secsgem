@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """packet base class."""
+from __future__ import annotations
+
 import abc
 
 from .header import Header
@@ -33,3 +35,28 @@ class Packet(abc.ABC):
     def data(self) -> bytes:
         """Get the header."""
         raise NotImplementedError("Packet.data missing implementation")
+
+    @abc.abstractmethod
+    def encode(self) -> bytes:
+        """
+        Encode packet object to transmittable bytes.
+
+        Returns:
+            byte-encoded packet
+
+        """
+        raise NotImplementedError("Packet.encode missing implementation")
+
+    @staticmethod
+    @abc.abstractmethod
+    def decode(data: bytes) -> Packet:
+        """Decode byte array hsms packet to HsmsPacket object.
+
+        Args:
+            data: byte-encode packet data
+
+        Returns
+            received packet object
+
+        """
+        raise NotImplementedError("Packet.decode missing implementation")

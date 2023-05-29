@@ -38,7 +38,7 @@ class SecsS07F06(SecsStreamFunction):
             PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F06({"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")})

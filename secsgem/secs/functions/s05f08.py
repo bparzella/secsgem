@@ -44,7 +44,7 @@ class SecsS05F08(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F08([

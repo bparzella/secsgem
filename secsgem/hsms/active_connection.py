@@ -38,7 +38,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             settings: protocol and communication settings
             delegate: target for messages
 
-        **Example**::
+        Example:
 
             # TODO: create example
 
@@ -155,7 +155,7 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         :rtype: boolean
         """
         # create socket
-        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # setup socket
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)

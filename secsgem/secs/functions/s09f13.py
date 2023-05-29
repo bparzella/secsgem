@@ -38,7 +38,7 @@ class SecsS09F13(SecsStreamFunction):
             EDID: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F13({"MEXP": "S01E01", "EDID": "data"})

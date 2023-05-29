@@ -41,7 +41,7 @@ class HsmsTestConnection:
     :param delegate: target for messages
     :type delegate: inherited from :class:`secsgem.hsms.HsmsHandler`
 
-    **Example**::
+    Example:
 
         # TODO: create example
 

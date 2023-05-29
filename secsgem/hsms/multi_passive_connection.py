@@ -40,7 +40,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         :param delegate: target for messages
         :type delegate: object
 
-        **Example**::
+        Example:
 
             # TODO: create example
 
@@ -63,7 +63,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         del address  # unused parameter
 
         # setup socket
-        self._sock = sock
+        self.__sock = sock
         self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         # make socket nonblocking

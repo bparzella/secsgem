@@ -62,7 +62,7 @@ class SecsS14F01(SecsStreamFunction):
             ]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F01({

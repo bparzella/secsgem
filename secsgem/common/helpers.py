@@ -23,7 +23,7 @@ def format_hex(text: bytes) -> str:
     """
     Return byte arrays (string) formated as hex numbers.
 
-    **Example**::
+    Example:
 
         >>> import secsgem.common
         >>>

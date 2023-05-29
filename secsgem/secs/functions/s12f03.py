@@ -59,7 +59,7 @@ class SecsS12F03(SecsStreamFunction):
             NULBC: U1/A
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F03({

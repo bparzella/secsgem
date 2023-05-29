@@ -46,7 +46,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             settings: protocol and communication settings
             delegate: target for messages
 
-        **Example**::
+        Example:
 
             # TODO: create example
 
@@ -144,7 +144,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             if accept_result is None:
                 continue
 
-            (self._sock, (_, _)) = accept_result
+            (self.__sock, (_, _)) = accept_result
 
             # setup socket
             self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)

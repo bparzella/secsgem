@@ -41,7 +41,7 @@ class SecsS05F01(SecsStreamFunction):
             ALTX: A[120]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F01({

@@ -38,7 +38,7 @@ class SecsS01F11(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F11([1, 1337])

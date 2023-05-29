@@ -33,7 +33,7 @@ class SecsS09F01(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS09F01
         MHEAD: B[10]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F01("HEADERDATA")

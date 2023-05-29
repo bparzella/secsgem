@@ -33,7 +33,7 @@ class SecsS07F02(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS07F02
         PPGNT: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F02(secsgem.secs.data_items.PPGNT.OK)

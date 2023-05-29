@@ -33,7 +33,7 @@ class SecsS05F04(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS05F04
         ACKC5: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F04(secsgem.secs.data_items.ACKC5.ACCEPTED)

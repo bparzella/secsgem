@@ -33,7 +33,7 @@ class SecsS07F05(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS07F05
         PPID: A/B[120]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F05("program")

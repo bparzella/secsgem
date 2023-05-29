@@ -42,7 +42,7 @@ class HsmsMultiPassiveServer:  # pragma: no cover  # pylint: disable=too-many-in
         :param port: TCP port to listen on
         :type port: integer
 
-        **Example**::
+        Example:
 
             # TODO: create example
 

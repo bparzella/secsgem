@@ -44,7 +44,7 @@ class HsmsSettings(Settings):
 
     These attributes can be initialized in the constructor and accessed as property.
 
-    **Example**::
+    Example:
 
         >>> import secsgem.hsms
         >>>

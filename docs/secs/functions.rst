@@ -3,7 +3,7 @@ Functions
 
 A function is inherited from :class:`secsgem.secs.functionbase.SecsStreamFunction`.
 
-**Example**::
+Example:
 
     class SecsS02F33(SecsStreamFunction):
         _stream = 2

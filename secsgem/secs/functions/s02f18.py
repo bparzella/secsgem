@@ -33,7 +33,7 @@ class SecsS02F18(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F18
         TIME: A[32]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F18("160816205942")

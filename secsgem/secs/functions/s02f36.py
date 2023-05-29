@@ -33,7 +33,7 @@ class SecsS02F36(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F36
         LRACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.CEID_UNKNOWN)

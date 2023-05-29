@@ -28,7 +28,7 @@ class SecsS00F00(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS00F00
         Header only
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS00F00()

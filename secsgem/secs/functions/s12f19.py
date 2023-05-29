@@ -38,7 +38,7 @@ class SecsS12F19(SecsStreamFunction):
             DATLC: U1
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F19({"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0})

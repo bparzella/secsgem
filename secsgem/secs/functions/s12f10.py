@@ -33,7 +33,7 @@ class SecsS12F10(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS12F10
         MDACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F10(secsgem.secs.data_items.MDACK.ACK)

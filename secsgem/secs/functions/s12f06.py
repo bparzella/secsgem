@@ -33,7 +33,7 @@ class SecsS12F06(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS12F06
         GRNT1: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F06(secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN)

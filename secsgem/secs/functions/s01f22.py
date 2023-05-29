@@ -44,7 +44,7 @@ class SecsS01F22(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F22([{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}])

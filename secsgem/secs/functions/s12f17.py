@@ -41,7 +41,7 @@ class SecsS12F17(SecsStreamFunction):
             SDBIN: B[1]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F17({

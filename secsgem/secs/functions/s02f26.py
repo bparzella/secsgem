@@ -33,7 +33,7 @@ class SecsS02F26(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F26
         ABS: B
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F26("Text")

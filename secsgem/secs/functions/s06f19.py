@@ -33,7 +33,7 @@ class SecsS06F19(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS06F19
         RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F19(secsgem.secs.variables.U4(1337))

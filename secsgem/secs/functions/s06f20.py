@@ -36,7 +36,7 @@ class SecsS06F20(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F20(["ASD", 1337])

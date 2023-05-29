@@ -38,7 +38,7 @@ class SecsS12F13(SecsStreamFunction):
             IDTYP: B[1]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F13({"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER})

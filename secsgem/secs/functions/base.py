@@ -62,7 +62,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
         """
         Initialize a stream function object.
 
-        **Example**::
+        Example:
 
             class SecsS02F30(SecsStreamFunction):
                 _stream = 2

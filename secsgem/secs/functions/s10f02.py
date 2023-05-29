@@ -33,7 +33,7 @@ class SecsS10F02(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS10F02
         ACKC10: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F02(secsgem.secs.data_items.ACKC10.ACCEPTED)

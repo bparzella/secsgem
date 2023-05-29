@@ -33,7 +33,7 @@ class SecsS02F38(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F38
         ERACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F38(secsgem.secs.data_items.ERACK.CEID_UNKNOWN)

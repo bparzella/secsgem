@@ -33,7 +33,7 @@ class SecsS12F02(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS12F02
         SDACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F02(secsgem.secs.data_items.SDACK.ACK)

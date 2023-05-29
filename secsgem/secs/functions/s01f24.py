@@ -47,7 +47,7 @@ class SecsS01F24(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F24([{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}])

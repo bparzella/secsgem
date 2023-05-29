@@ -33,7 +33,7 @@ class SecsS06F23(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS06F23
         RSDC: U1[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F23(secsgem.secs.data_items.RSDC.PURGE)

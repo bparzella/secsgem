@@ -39,7 +39,7 @@ class HsmsPacket(secsgem.common.Packet):
             header: header used for this packet
             data: data part used for streams and functions (SType 0)
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>>
@@ -76,10 +76,10 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         """
         Encode packet data to hsms packet.
 
-        :returns: encoded packet
-        :rtype: string
+        Returns:
+            byte-encoded packet
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>> import secsgem.common
@@ -96,14 +96,17 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         return struct.pack(">L", length) + headerdata + self.data
 
     @staticmethod
-    def decode(text: bytes) -> HsmsPacket:
+    def decode(data: bytes) -> HsmsPacket:
         r"""
         Decode byte array hsms packet to HsmsPacket object.
 
-        :returns: received packet object
-        :rtype: :class:`secsgem.hsms.HsmsPacket`
+        Args:
+            data: byte-encode packet data
+        
+        Returns:
+            received packet object
 
-        **Example**::
+        Example:
 
             >>> import secsgem.common
             >>> import secsgem.hsms
@@ -116,10 +119,10 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
             >>> secsgem.hsms.HsmsPacket.decode(packetData)
             HsmsPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         """   # noqa pylint: disable=line-too-long
-        data_length = len(text) - 14
+        data_length = len(data) - 14
         data_length_text = str(data_length) + "s"
 
-        res = struct.unpack(">LHBBBBL" + data_length_text, text)
+        res = struct.unpack(">LHBBBBL" + data_length_text, data)
 
         result = HsmsPacket(HsmsHeader(
             res[6], 

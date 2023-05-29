@@ -33,7 +33,7 @@ class SecsS07F04(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS07F04
         ACKC7: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW)

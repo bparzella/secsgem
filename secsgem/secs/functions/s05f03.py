@@ -38,7 +38,7 @@ class SecsS05F03(SecsStreamFunction):
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F03({"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100})

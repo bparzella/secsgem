@@ -36,7 +36,7 @@ class SecsS02F14(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F14([secsgem.secs.variables.U1(1), "text"])

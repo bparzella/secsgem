@@ -2,6 +2,7 @@ Packets
 =======
 
 .. autoclass:: secsgem.hsms.HsmsPacket
+    :members:
 .. autoclass:: secsgem.hsms.HsmsHeader
 .. autoclass:: secsgem.hsms.HsmsStreamFunctionHeader
 .. autoclass:: secsgem.hsms.HsmsSelectReqHeader

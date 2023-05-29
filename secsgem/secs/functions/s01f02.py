@@ -50,7 +50,7 @@ class SecsS01F02(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F02(["secsgem", "0.0.6"]) # E->H

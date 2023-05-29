@@ -33,7 +33,7 @@ class SecsS01F18(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS01F18
         ONLACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F18(secsgem.secs.data_items.ONLACK.ALREADY_ON)

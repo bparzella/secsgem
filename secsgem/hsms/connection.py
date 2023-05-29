@@ -28,22 +28,11 @@ import secsgem.common
 from .packet import HsmsPacket
 
 if typing.TYPE_CHECKING:
+    import socket
+
     from .settings import HsmsSettings
 
-
 # TODO: timeouts (T7, T8)
-
-HSMS_STYPES = {
-    1: "Select.req",
-    2: "Select.rsp",
-    3: "Deselect.req",
-    4: "Deselect.rsp",
-    5: "Linktest.req",
-    6: "Linktest.rsp",
-    7: "Reject.req",
-    9: "Separate.req"
-}
-"""Names for hsms header SType."""
 
 
 class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: disable=too-many-instance-attributes
@@ -71,7 +60,7 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
         self._delegate = delegate
 
         # connection socket
-        self._sock = None
+        self.__sock: typing.Optional[socket.socket] = None
 
         # buffer for received data
         self._receive_buffer = b""
@@ -85,6 +74,13 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
 
         # flag set during disconnection
         self._disconnecting = False
+
+    @property
+    def _sock(self) -> socket.socket:
+        if self.__sock is None:
+            raise ConnectionError(f"Hsms socket is not connected: {self}")
+
+        return self.__sock
 
     @property
     def timeouts(self) -> secsgem.common.Timeouts:
@@ -168,12 +164,16 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
         # clear disconnecting flag, no selects coming any more
         self._disconnecting = False
 
-    def send_packet(self, packet) -> bool:
+    def send_packet(self, packet: secsgem.common.Packet) -> bool:
         """
-        Send the ASCII coded packet to the remote host.
+        Send a packet to the remote host.
 
-        :param packet: encoded data to be transmitted
-        :type packet: string / byte array
+        Args:
+            packet: packet to be transmitted
+
+        Returns:
+            True if succeeded, False if failed
+
         """
         # encode the packet
         data = packet.encode()

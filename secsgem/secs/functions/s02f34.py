@@ -33,7 +33,7 @@ class SecsS02F34(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS02F34
         DRACK: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.INVALID_FORMAT)

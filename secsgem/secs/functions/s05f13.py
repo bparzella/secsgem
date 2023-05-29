@@ -38,7 +38,7 @@ class SecsS05F13(SecsStreamFunction):
             EXRECVRA: A[40]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F13({"EXID": "EX123", "EXRECVRA": "EXRECVRA2"})

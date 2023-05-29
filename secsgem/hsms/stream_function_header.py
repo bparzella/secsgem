@@ -40,7 +40,7 @@ class HsmsStreamFunctionHeader(HsmsHeader):
         :param session_id: device / session ID
         :type session_id: integer
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>>

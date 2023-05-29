@@ -32,7 +32,7 @@ class HsmsDeselectReqHeader(HsmsHeader):
         :param system: message ID
         :type system: integer
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>>

@@ -36,7 +36,7 @@ class SecsS01F23(SecsStreamFunction):
             ...
         ]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F23([1, "COLLEVTID"])

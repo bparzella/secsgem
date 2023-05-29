@@ -44,7 +44,7 @@ class SecsS12F16(SecsStreamFunction):
             BINLT: U1/A
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F16({

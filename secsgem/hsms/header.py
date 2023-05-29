@@ -16,8 +16,22 @@
 """Header for the hsms packets."""
 
 import struct
+import enum
 
 import secsgem.common
+
+
+class HsmsSType(enum.Enum):
+    """HSMS SType enum."""
+
+    SELECT_REQ = 1
+    SELECT_RSP = 2
+    DESELECT_REQ = 3
+    DESELECT_RSP = 4
+    LINKTEST_REQ = 5
+    LINKTEST_RSP = 6
+    REJECT_REQ = 7
+    SEPARATE_REQ = 9
 
 
 class HsmsHeader(secsgem.common.Header):
@@ -54,7 +68,7 @@ class HsmsHeader(secsgem.common.Header):
         :param s_type: S-Type
         :type s_type: integer
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>>
@@ -96,6 +110,11 @@ require_response:False})
         """Get S-type."""
         return self._s_type
 
+    @property
+    def s_type_enum(self) -> HsmsSType:
+        """Get S-type as enum."""
+        return HsmsSType(self._s_type)
+
     def encode(self):
         """
         Encode header to hsms packet.
@@ -103,7 +122,7 @@ require_response:False})
         :returns: encoded header
         :rtype: string
 
-        **Example**::
+        Example:
 
             >>> import secsgem.hsms
             >>> import secsgem.common

@@ -33,7 +33,7 @@ class SecsS10F04(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS10F04
         ACKC10: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F04(secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE)

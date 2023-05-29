@@ -41,7 +41,7 @@ class SecsS02F37(SecsStreamFunction):
             ]
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F37({"CEED": True, "CEID": [1337]})

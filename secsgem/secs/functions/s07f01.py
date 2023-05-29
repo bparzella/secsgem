@@ -38,7 +38,7 @@ class SecsS07F01(SecsStreamFunction):
             LENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F01({"PPID": "program", "LENGTH": 4})

@@ -24,8 +24,8 @@ import typing
 
 import secsgem.common
 
-from .connection import HSMS_STYPES
 from .packet import HsmsPacket
+from .header import HsmsSType
 from .select_req_header import HsmsSelectReqHeader
 from .select_rsp_header import HsmsSelectRspHeader
 from .deselect_req_header import HsmsDeselectReqHeader
@@ -44,6 +44,19 @@ if typing.TYPE_CHECKING:
     from .settings import HsmsSettings
 
 
+HSMS_STYPES = {
+    1: "Select.req",
+    2: "Select.rsp",
+    3: "Deselect.req",
+    4: "Deselect.rsp",
+    5: "Linktest.req",
+    6: "Linktest.rsp",
+    7: "Reject.req",
+    9: "Separate.req"
+}
+"""Names for hsms header SType."""
+
+
 class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instance-attributes
     """
     Baseclass for creating Host/Equipment models.
@@ -59,7 +72,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         Args:
             settings: protocol and communication settings
 
-        **Example**::
+        Example:
 
             import secsgem.hsms
 
@@ -101,7 +114,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         self._select_req_thread = None
 
         # response queues
-        self._system_queues: typing.Dict[int, HsmsPacket] = {}
+        self._system_queues: typing.Dict[int, queue.Queue[HsmsPacket]] = {}
 
         # hsms connection state fsm
         self._connection_state = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
@@ -233,67 +246,57 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         self.events.fire("hsms_disconnected", {'connection': self})
 
-    def __handle_hsms_requests(self, packet: HsmsPacket):  # noqa: MC0001
+    def __handle_hsms_requests_select_req(self, packet: HsmsPacket):
+        if self._connection.disconnecting:
+            self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
+        else:
+            self.send_select_rsp(packet.header.system)
+
+            self._connection_state.select()
+
+    def __handle_hsms_requests_select_rsp(self, packet: HsmsPacket):
+        self._connection_state.select()
+
+        if packet.header.system in self._system_queues:
+            self._system_queues[packet.header.system].put_nowait(packet)
+
+    def __handle_hsms_requests_deselect_req(self, packet: HsmsPacket):
+        if self._connection.disconnecting:
+            self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
+        else:
+            self.send_deselect_rsp(packet.header.system)
+
+            self._connection_state.deselect()
+
+    def __handle_hsms_requests_deselect_rsp(self, packet: HsmsPacket):
+        self._connection_state.deselect()
+
+        if packet.header.system in self._system_queues:
+            self._system_queues[packet.header.system].put_nowait(packet)
+
+    def __handle_hsms_requests_linktest_req(self, packet: HsmsPacket):
+        if self._connection.disconnecting:
+            self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
+        else:
+            self.send_linktest_rsp(packet.header.system)
+
+    def __handle_hsms_requests(self, packet: HsmsPacket):
         self._communication_logger.info("< %s\n  %s", packet, HSMS_STYPES[packet.header.s_type],
                                         extra=self._get_log_extra())
 
-        # check if it is a select request
-        if packet.header.s_type == 0x01:
-            # if we are disconnecting send reject else send response
-            if self._connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
-            else:
-                self.send_select_rsp(packet.header.system)
-
-                # update connection state
-                self._connection_state.select()
-
-        # check if it is a select response
-        elif packet.header.s_type == 0x02:
-            # update connection state
-            self._connection_state.select()
-
-            if packet.header.system in self._system_queues:
-                # send packet to request sender
-                self._system_queues[packet.header.system].put_nowait(packet)
-
-            # what to do if no sender for request waiting?
-
-        # check if it is a deselect request
-        elif packet.header.s_type == 0x03:
-            # if we are disconnecting send reject else send response
-            if self._connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
-            else:
-                self.send_deselect_rsp(packet.header.system)
-                # update connection state
-                self._connection_state.deselect()
-
-        # check if it is a deselect response
-        elif packet.header.s_type == 0x04:
-            # update connection state
-            self._connection_state.deselect()
-
-            if packet.header.system in self._system_queues:
-                # send packet to request sender
-                self._system_queues[packet.header.system].put_nowait(packet)
-
-            # what to do if no sender for request waiting?
-
-        # check if it is a linktest request
-        elif packet.header.s_type == 0x05:
-            # if we are disconnecting send reject else send response
-            if self._connection.disconnecting:
-                self.send_reject_rsp(packet.header.system, packet.header.s_type, 4)
-            else:
-                self.send_linktest_rsp(packet.header.system)
-
+        if packet.header.s_type_enum == HsmsSType.SELECT_REQ:
+            self.__handle_hsms_requests_select_req(packet)
+        elif packet.header.s_type == HsmsSType.SELECT_RSP:
+            self.__handle_hsms_requests_select_rsp(packet)
+        elif packet.header.s_type == HsmsSType.DESELECT_REQ:
+            self.__handle_hsms_requests_deselect_req(packet)
+        elif packet.header.s_type == HsmsSType.DESELECT_RSP:
+            self.__handle_hsms_requests_deselect_rsp(packet)
+        elif packet.header.s_type == HsmsSType.LINKTEST_REQ:
+            self.__handle_hsms_requests_linktest_req(packet)
         else:
             if packet.header.system in self._system_queues:
-                # send packet to request sender
                 self._system_queues[packet.header.system].put_nowait(packet)
-
-            # what to do if no sender for request waiting?
 
     def on_connection_packet_received(self, _, packet):
         """

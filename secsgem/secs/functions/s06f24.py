@@ -33,7 +33,7 @@ class SecsS06F24(SecsStreamFunction):
         >>> secsgem.secs.functions.SecsS06F24
         RSDA: B[1]
 
-    **Example**::
+    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F24(secsgem.secs.data_items.RSDA.ACK)
