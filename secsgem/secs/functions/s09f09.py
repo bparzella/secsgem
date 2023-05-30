@@ -23,25 +23,23 @@ class SecsS09F09(SecsStreamFunction):
     """
     transaction timer timeout.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`SHEAD <secsgem.secs.data_items.SHEAD>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F09
         SHEAD: B[10]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F09("HEADERDATA")
         S9F9
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`SHEAD <secsgem.secs.data_items.SHEAD>`
+
     """
 
     _stream = 9

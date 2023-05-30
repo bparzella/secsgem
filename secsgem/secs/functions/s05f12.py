@@ -22,20 +22,16 @@ class SecsS05F12(SecsStreamFunction):
     """
     exception clear - confirm.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F12
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F12()
         S5F12 .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 5

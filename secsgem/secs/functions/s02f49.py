@@ -27,15 +27,10 @@ class SecsS02F49(SecsStreamFunction):
     """
     Enhanced remote command.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
-    - :class:`RCMD <secsgem.secs.data_items.RCMD>`
-    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
-    - :class:`CEPVAL <secsgem.secs.data_items.CEPVAL>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49
@@ -51,8 +46,6 @@ class SecsS02F49(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49({
@@ -76,8 +69,13 @@ class SecsS02F49(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+        - :class:`RCMD <secsgem.secs.data_items.RCMD>`
+        - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+        - :class:`CEPVAL <secsgem.secs.data_items.CEPVAL>`
+
     """
 
     _stream = 2

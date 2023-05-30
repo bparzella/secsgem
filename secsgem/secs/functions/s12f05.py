@@ -26,14 +26,10 @@ class SecsS12F05(SecsStreamFunction):
     """
     map transmit inquire.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
-    - :class:`MLCL <secsgem.secs.data_items.MLCL>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F05
@@ -43,8 +39,6 @@ class SecsS12F05(SecsStreamFunction):
             MAPFT: B[1]
             MLCL: U1/U2/U4/U8
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F05({
@@ -60,8 +54,12 @@ class SecsS12F05(SecsStreamFunction):
             <U1 0 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
+        - :class:`MLCL <secsgem.secs.data_items.MLCL>`
+
     """
 
     _stream = 12

@@ -23,25 +23,23 @@ class SecsS02F36(SecsStreamFunction):
     """
     link event report - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`LRACK <secsgem.secs.data_items.LRACK>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F36
         LRACK: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.CEID_UNKNOWN)
         S2F36
           <B 0x4> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`LRACK <secsgem.secs.data_items.LRACK>`
+
     """
 
     _stream = 2

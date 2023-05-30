@@ -25,13 +25,10 @@ class SecsS02F33(SecsStreamFunction):
     """
     define report.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
-    - :class:`VID <secsgem.secs.data_items.VID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F33
@@ -48,8 +45,6 @@ class SecsS02F33(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F33({"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]},
@@ -75,8 +70,11 @@ class SecsS02F33(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+        - :class:`VID <secsgem.secs.data_items.VID>`
+
     """
 
     _stream = 2

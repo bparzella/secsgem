@@ -4,7 +4,7 @@ SECS
 .. toctree::
 
    secs/variables
-   secs/dataitems
+   secs/data_items.md
    secs/functionbase
-   secs/functions
+   secs/functions.md
    secs/handler

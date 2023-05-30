@@ -24,12 +24,10 @@ class SecsS12F19(SecsStreamFunction):
     """
     map error report - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MAPER <secsgem.secs.data_items.MAPER>`
-    - :class:`DATLC <secsgem.secs.data_items.DATLC>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F19
@@ -37,8 +35,6 @@ class SecsS12F19(SecsStreamFunction):
             MAPER: B[1]
             DATLC: U1
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F19({"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0})
@@ -48,8 +44,10 @@ class SecsS12F19(SecsStreamFunction):
             <U1 0 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MAPER <secsgem.secs.data_items.MAPER>`
+        - :class:`DATLC <secsgem.secs.data_items.DATLC>`
+
     """
 
     _stream = 12

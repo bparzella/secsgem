@@ -27,15 +27,10 @@ class SecsS02F46(SecsStreamFunction):
     """
     Define variable limit attributes - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VLAACK <secsgem.secs.data_items.VLAACK>`
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`LVACK <secsgem.secs.data_items.LVACK>`
-    - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
-    - :class:`LIMITACK <secsgem.secs.data_items.LIMITACK>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F46
@@ -53,8 +48,6 @@ class SecsS02F46(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F46({
@@ -82,8 +75,13 @@ class SecsS02F46(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`VLAACK <secsgem.secs.data_items.VLAACK>`
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`LVACK <secsgem.secs.data_items.LVACK>`
+        - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
+        - :class:`LIMITACK <secsgem.secs.data_items.LIMITACK>`
+
     """
 
     _stream = 2

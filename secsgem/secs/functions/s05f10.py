@@ -22,20 +22,16 @@ class SecsS05F10(SecsStreamFunction):
     """
     exception post - confirm.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F10
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F10()
         S5F10 .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 5

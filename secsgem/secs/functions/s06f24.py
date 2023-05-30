@@ -23,25 +23,23 @@ class SecsS06F24(SecsStreamFunction):
     """
     Request spooled data acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`RSDA <secsgem.secs.data_items.RSDA>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F24
         RSDA: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F24(secsgem.secs.data_items.RSDA.ACK)
         S6F24
           <B 0x0> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`RSDA <secsgem.secs.data_items.RSDA>`
+
     """
 
     _stream = 6

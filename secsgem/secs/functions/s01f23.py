@@ -23,11 +23,10 @@ class SecsS01F23(SecsStreamFunction):
     """
     Collection event namelist request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F23
@@ -35,8 +34,6 @@ class SecsS01F23(SecsStreamFunction):
             CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F23([1, "COLLEVTID"])
@@ -46,8 +43,9 @@ class SecsS01F23(SecsStreamFunction):
             <A "COLLEVTID">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+
     """
 
     _stream = 1

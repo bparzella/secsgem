@@ -23,11 +23,10 @@ class SecsS05F05(SecsStreamFunction):
     """
     list alarms - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ALID <secsgem.secs.data_items.ALID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F05
@@ -35,8 +34,6 @@ class SecsS05F05(SecsStreamFunction):
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F05([100, 200])
@@ -46,8 +43,9 @@ class SecsS05F05(SecsStreamFunction):
             <U1 200 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`ALID <secsgem.secs.data_items.ALID>`
+
     """
 
     _stream = 5

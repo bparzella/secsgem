@@ -29,17 +29,10 @@ class SecsS02F48(SecsStreamFunction):
     """
     Define variable limit attributes - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
-    - :class:`LIMITMIN <secsgem.secs.data_items.LIMITMIN>`
-    - :class:`LIMITMAX <secsgem.secs.data_items.LIMITMAX>`
-    - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
-    - :class:`UPPERDB <secsgem.secs.data_items.UPPERDB>`
-    - :class:`LOWERDB <secsgem.secs.data_items.LOWERDB>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F48
@@ -62,8 +55,6 @@ class SecsS02F48(SecsStreamFunction):
             }
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F48([{
@@ -97,8 +88,15 @@ class SecsS02F48(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`UNITS <secsgem.secs.data_items.UNITS>`
+        - :class:`LIMITMIN <secsgem.secs.data_items.LIMITMIN>`
+        - :class:`LIMITMAX <secsgem.secs.data_items.LIMITMAX>`
+        - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
+        - :class:`UPPERDB <secsgem.secs.data_items.UPPERDB>`
+        - :class:`LOWERDB <secsgem.secs.data_items.LOWERDB>`
+
     """
 
     _stream = 2

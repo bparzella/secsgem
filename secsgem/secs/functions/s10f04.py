@@ -23,25 +23,23 @@ class SecsS10F04(SecsStreamFunction):
     """
     terminal single - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ACKC10 <secsgem.secs.data_items.ACKC10>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F04
         ACKC10: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F04(secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE)
         S10F4
           <B 0x2> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ACKC10 <secsgem.secs.data_items.ACKC10>`
+
     """
 
     _stream = 10

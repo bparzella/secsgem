@@ -1,0 +1,11 @@
+# Functions
+
+{% for stream_id, stream in streams_functions.items() %}
+    {% for function_id, function in stream.items() %}
+```{eval-rst}
+.. autoclass:: secsgem.secs.functions.Secs{{ function.name }}
+    :members:
+```
+    {% endfor %}
+{% endfor %}
+

@@ -23,25 +23,23 @@ class SecsS02F22(SecsStreamFunction):
     """
     Remote command - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`CMDA <secsgem.secs.data_items.CMDA>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F22
         CMDA: U1/I1
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F22(secsgem.secs.data_items.CMDA.DONE)
         S2F22
           <U1 0 > .
 
-    :param value: parameters for this function (see example)
-    :type value: int
+    Data Items:
+        - :class:`CMDA <secsgem.secs.data_items.CMDA>`
+
     """
 
     _stream = 2

@@ -23,25 +23,23 @@ class SecsS06F19(SecsStreamFunction):
     """
     individual report request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F19
         RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F19(secsgem.secs.variables.U4(1337))
         S6F19 W
           <U4 1337 > .
 
-    :param value: parameters for this function (see example)
-    :type value: int
+    Data Items:
+        - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+
     """
 
     _stream = 6

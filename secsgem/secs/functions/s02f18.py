@@ -23,25 +23,23 @@ class SecsS02F18(SecsStreamFunction):
     """
     date and time - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TIME <secsgem.secs.data_items.TIME>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F18
         TIME: A[32]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F18("160816205942")
         S2F18
           <A "160816205942"> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`TIME <secsgem.secs.data_items.TIME>`
+
     """
 
     _stream = 2

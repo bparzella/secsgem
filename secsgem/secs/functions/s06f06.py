@@ -23,25 +23,23 @@ class SecsS06F06(SecsStreamFunction):
     """
     multi block data grant.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`GRANT6 <secsgem.secs.data_items.GRANT6>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F06
         GRANT6: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F06(secsgem.secs.data_items.GRANT6.BUSY)
         S6F6
           <B 0x1> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`GRANT6 <secsgem.secs.data_items.GRANT6>`
+
     """
 
     _stream = 6

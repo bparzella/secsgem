@@ -23,25 +23,23 @@ class SecsS02F16(SecsStreamFunction):
     """
     new equipment constant - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`EAC <secsgem.secs.data_items.EAC>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F16
         EAC: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F16(secsgem.secs.data_items.EAC.BUSY)
         S2F16
           <B 0x2> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`EAC <secsgem.secs.data_items.EAC>`
+
     """
 
     _stream = 2

@@ -24,12 +24,10 @@ class SecsS07F06(SecsStreamFunction):
     """
     process program - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-    - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F06
@@ -37,8 +35,6 @@ class SecsS07F06(SecsStreamFunction):
             PPID: A/B[120]
             PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F06({"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")})
@@ -48,8 +44,10 @@ class SecsS07F06(SecsStreamFunction):
             <B 0x64 0x61 0x74 0x61>
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+        - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
+
     """
 
     _stream = 7

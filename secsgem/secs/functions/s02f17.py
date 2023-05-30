@@ -22,20 +22,16 @@ class SecsS02F17(SecsStreamFunction):
     """
     date and time - request.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F17
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F17()
         S2F17 W .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 2

@@ -23,25 +23,23 @@ class SecsS05F02(SecsStreamFunction):
     """
     alarm report - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ACKC5 <secsgem.secs.data_items.ACKC5>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F02
         ACKC5: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED)
         S5F2
           <B 0x0> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ACKC5 <secsgem.secs.data_items.ACKC5>`
+
     """
 
     _stream = 5

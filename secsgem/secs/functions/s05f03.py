@@ -24,12 +24,10 @@ class SecsS05F03(SecsStreamFunction):
     """
     en-/disable alarm - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ALED <secsgem.secs.data_items.ALED>`
-    - :class:`ALID <secsgem.secs.data_items.ALID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F03
@@ -37,8 +35,6 @@ class SecsS05F03(SecsStreamFunction):
             ALED: B[1]
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F03({"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100})
@@ -48,8 +44,10 @@ class SecsS05F03(SecsStreamFunction):
             <U1 100 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`ALED <secsgem.secs.data_items.ALED>`
+        - :class:`ALID <secsgem.secs.data_items.ALID>`
+
     """
 
     _stream = 5

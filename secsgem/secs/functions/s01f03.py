@@ -23,11 +23,10 @@ class SecsS01F03(SecsStreamFunction):
     """
     Selected equipment status - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`SVID <secsgem.secs.data_items.SVID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F03
@@ -35,8 +34,6 @@ class SecsS01F03(SecsStreamFunction):
             SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F03([1, "1337", 12])
@@ -47,8 +44,9 @@ class SecsS01F03(SecsStreamFunction):
             <U1 12 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`SVID <secsgem.secs.data_items.SVID>`
+
     """
 
     _stream = 1

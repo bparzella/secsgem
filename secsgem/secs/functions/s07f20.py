@@ -23,11 +23,10 @@ class SecsS07F20(SecsStreamFunction):
     """
     current equipment process program - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F20
@@ -35,8 +34,6 @@ class SecsS07F20(SecsStreamFunction):
             PPID: A/B[120]
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F20(["program1", "program2"])
@@ -46,8 +43,9 @@ class SecsS07F20(SecsStreamFunction):
             <A "program2">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+
     """
 
     _stream = 7

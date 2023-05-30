@@ -24,12 +24,10 @@ class SecsS06F22(SecsStreamFunction):
     """
     annotated individual report data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`V <secsgem.secs.data_items.V>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F22
@@ -40,8 +38,6 @@ class SecsS06F22(SecsStreamFunction):
             }
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F22([{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}])
@@ -57,8 +53,10 @@ class SecsS06F22(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`V <secsgem.secs.data_items.V>`
+
     """
 
     _stream = 6

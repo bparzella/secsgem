@@ -23,25 +23,23 @@ class SecsS07F04(SecsStreamFunction):
     """
     process program - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F04
         ACKC7: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW)
         S7F4
           <B 0x3> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
+
     """
 
     _stream = 7

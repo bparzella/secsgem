@@ -23,25 +23,23 @@ class SecsS02F24(SecsStreamFunction):
     """
     Trace initialize - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TIAACK <secsgem.secs.data_items.TIAACK>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F24
         TIAACK: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F24(secsgem.secs.data_items.TIAACK.SVID_EXCEEDED)
         S2F24
           <B 0x1> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`TIAACK <secsgem.secs.data_items.TIAACK>`
+
     """
 
     _stream = 2

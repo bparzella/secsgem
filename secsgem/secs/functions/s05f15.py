@@ -27,15 +27,10 @@ class SecsS05F15(SecsStreamFunction):
     """
     exception recover complete - notify.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
-    - :class:`EXID <secsgem.secs.data_items.EXID>`
-    - :class:`ACKA <secsgem.secs.data_items.ACKA>`
-    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F15
@@ -50,8 +45,6 @@ class SecsS05F15(SecsStreamFunction):
                 }
             }
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F15({
@@ -76,8 +69,13 @@ class SecsS05F15(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
+        - :class:`EXID <secsgem.secs.data_items.EXID>`
+        - :class:`ACKA <secsgem.secs.data_items.ACKA>`
+        - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+        - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
+
     """
 
     _stream = 5

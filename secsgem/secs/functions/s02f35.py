@@ -25,13 +25,10 @@ class SecsS02F35(SecsStreamFunction):
     """
     link event report.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F35
@@ -49,8 +46,6 @@ class SecsS02F35(SecsStreamFunction):
             ]
         }
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F35({"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]})
         S2F35 W
@@ -67,8 +62,11 @@ class SecsS02F35(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+
     """
 
     _stream = 2

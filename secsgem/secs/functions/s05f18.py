@@ -26,14 +26,10 @@ class SecsS05F18(SecsStreamFunction):
     """
     exception recover abort - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`EXID <secsgem.secs.data_items.EXID>`
-    - :class:`ACKA <secsgem.secs.data_items.ACKA>`
-    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F18
@@ -47,8 +43,6 @@ class SecsS05F18(SecsStreamFunction):
                 }
             }
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F18({
@@ -70,8 +64,12 @@ class SecsS05F18(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`EXID <secsgem.secs.data_items.EXID>`
+        - :class:`ACKA <secsgem.secs.data_items.ACKA>`
+        - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+        - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
+
     """
 
     _stream = 5

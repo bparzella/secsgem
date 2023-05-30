@@ -22,20 +22,16 @@ class SecsS01F15(SecsStreamFunction):
     """
     request offline.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F15
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F15()
         S1F15 W .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 1

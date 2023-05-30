@@ -25,13 +25,10 @@ class SecsS01F24(SecsStreamFunction):
     """
     Collection event namelist.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`CENAME <secsgem.secs.data_items.CENAME>`
-    - :class:`VID <secsgem.secs.data_items.VID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F24
@@ -47,8 +44,6 @@ class SecsS01F24(SecsStreamFunction):
             ...
         ]
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F24([{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}])
         S1F24
@@ -63,8 +58,11 @@ class SecsS01F24(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`CENAME <secsgem.secs.data_items.CENAME>`
+        - :class:`VID <secsgem.secs.data_items.VID>`
+
     """
 
     _stream = 1

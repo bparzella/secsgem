@@ -26,14 +26,10 @@ class SecsS06F16(SecsStreamFunction):
     """
     event report data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
-    - :class:`V <secsgem.secs.data_items.V>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F16
@@ -51,8 +47,6 @@ class SecsS06F16(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F16({
@@ -76,8 +70,12 @@ class SecsS06F16(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+        - :class:`V <secsgem.secs.data_items.V>`
+
     """
 
     _stream = 6

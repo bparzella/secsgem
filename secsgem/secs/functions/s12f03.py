@@ -31,19 +31,10 @@ class SecsS12F03(SecsStreamFunction):
     """
     map setup data - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
-    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
-    - :class:`FFROT <secsgem.secs.data_items.FFROT>`
-    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
-    - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
-    - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
-    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F03
@@ -58,8 +49,6 @@ class SecsS12F03(SecsStreamFunction):
             BCEQU: U1/A
             NULBC: U1/A
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F03({
@@ -85,8 +74,17 @@ class SecsS12F03(SecsStreamFunction):
             <A "{x}">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`MAPFT <secsgem.secs.data_items.MAPFT>`
+        - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+        - :class:`FFROT <secsgem.secs.data_items.FFROT>`
+        - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+        - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
+        - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
+        - :class:`NULBC <secsgem.secs.data_items.NULBC>`
+
     """
 
     _stream = 12

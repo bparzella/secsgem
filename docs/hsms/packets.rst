@@ -27,23 +27,23 @@ There are classes inherited from :class:`secsgem.hsms.HsmsHeader` for all HSMS p
 +----------------------+--------------------------------------------------------+-------+
 | Type                 | Class                                                  | SType |
 +======================+========================================================+=======+
-| `Select Request`_    | :class:`secsgem.hsms.HsmsSelectReqHeader`      | 1     |
+| `Select Request`_    | :class:`secsgem.hsms.HsmsSelectReqHeader`              | 1     |
 +----------------------+--------------------------------------------------------+-------+
-| `Select Response`_   | :class:`secsgem.hsms.HsmsSelectRspHeader`      | 2     |
+| `Select Response`_   | :class:`secsgem.hsms.HsmsSelectRspHeader`              | 2     |
 +----------------------+--------------------------------------------------------+-------+
-| `Deselect Request`_  | :class:`secsgem.hsms.HsmsDeselectReqHeader`    | 3     |
+| `Deselect Request`_  | :class:`secsgem.hsms.HsmsDeselectReqHeader`            | 3     |
 +----------------------+--------------------------------------------------------+-------+
-| `Deselect Response`_ | :class:`secsgem.hsms.HsmsDeselectRspHeader`    | 4     |
+| `Deselect Response`_ | :class:`secsgem.hsms.HsmsDeselectRspHeader`            | 4     |
 +----------------------+--------------------------------------------------------+-------+
-| `Linktest Request`_  | :class:`secsgem.hsms.HsmsLinktestReqHeader`    | 5     |
+| `Linktest Request`_  | :class:`secsgem.hsms.HsmsLinktestReqHeader`            | 5     |
 +----------------------+--------------------------------------------------------+-------+
-| `Linktest Response`_ | :class:`secsgem.hsms.HsmsLinktestRspHeader`    | 6     |
+| `Linktest Response`_ | :class:`secsgem.hsms.HsmsLinktestRspHeader`            | 6     |
 +----------------------+--------------------------------------------------------+-------+
-| `Reject Request`_    | :class:`secsgem.hsms.HsmsRejectReqHeader`      | 7     |
+| `Reject Request`_    | :class:`secsgem.hsms.HsmsRejectReqHeader`              | 7     |
 +----------------------+--------------------------------------------------------+-------+
-| `Separate Request`_  | :class:`secsgem.hsms.HsmsSeparateReqHeader`    | 9     |
+| `Separate Request`_  | :class:`secsgem.hsms.HsmsSeparateReqHeader`            | 9     |
 +----------------------+--------------------------------------------------------+-------+
-| `Data Message`_      | :class:`secsgem.hsms.HsmsStreamFunctionHeader` | 0     |
+| `Data Message`_      | :class:`secsgem.hsms.HsmsStreamFunctionHeader`         | 0     |
 +----------------------+--------------------------------------------------------+-------+
 
 Select Request

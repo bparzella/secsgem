@@ -23,25 +23,23 @@ class SecsS12F08(SecsStreamFunction):
     """
     map data type 1 - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MDACK <secsgem.secs.data_items.MDACK>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F08
         MDACK: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F08(secsgem.secs.data_items.MDACK.ABORT_MAP)
         S12F8
           <B 0x3> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`MDACK <secsgem.secs.data_items.MDACK>`
+
     """
 
     _stream = 12

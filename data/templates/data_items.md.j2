@@ -1,0 +1,9 @@
+# Data Items
+
+{% for data_item in data_items %}
+```{eval-rst}
+.. autoclass:: secsgem.secs.data_items.{{ data_item.name }}
+    :members:
+```
+{% endfor %}
+

@@ -23,25 +23,23 @@ class SecsS06F12(SecsStreamFunction):
     """
     event report - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ACKC6 <secsgem.secs.data_items.ACKC6>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F12
         ACKC6: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F12(secsgem.secs.data_items.ACKC6.ACCEPTED)
         S6F12
           <B 0x0> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ACKC6 <secsgem.secs.data_items.ACKC6>`
+
     """
 
     _stream = 6

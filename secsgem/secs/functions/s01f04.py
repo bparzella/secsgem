@@ -23,11 +23,10 @@ class SecsS01F04(SecsStreamFunction):
     """
     selected equipment status - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`SV <secsgem.secs.data_items.SV>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F04
@@ -35,8 +34,6 @@ class SecsS01F04(SecsStreamFunction):
             SV: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F04([secsgem.secs.variables.U1(1), "text", secsgem.secs.variables.U4(1337)])
@@ -47,8 +44,9 @@ class SecsS01F04(SecsStreamFunction):
             <U4 1337 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`SV <secsgem.secs.data_items.SV>`
+
     """
 
     _stream = 1

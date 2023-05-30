@@ -23,25 +23,23 @@ class SecsS02F25(SecsStreamFunction):
     """
     Loopback diagnostic request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ABS <secsgem.secs.data_items.ABS>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F25
         ABS: B
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F25("Text")
         S2F25 W
           <B 0x54 0x65 0x78 0x74> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ABS <secsgem.secs.data_items.ABS>`
+
     """
 
     _stream = 2

@@ -23,11 +23,10 @@ class SecsS02F14(SecsStreamFunction):
     """
     equipment constant - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ECV <secsgem.secs.data_items.ECV>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F14
@@ -35,8 +34,6 @@ class SecsS02F14(SecsStreamFunction):
             ECV: L/BOOLEAN/I8/I1/I2/I4/F8/F4/U8/U1/U2/U4/A/B
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F14([secsgem.secs.variables.U1(1), "text"])
@@ -46,8 +43,9 @@ class SecsS02F14(SecsStreamFunction):
             <A "text">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`ECV <secsgem.secs.data_items.ECV>`
+
     """
 
     _stream = 2

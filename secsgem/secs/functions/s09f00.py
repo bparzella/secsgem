@@ -22,20 +22,16 @@ class SecsS09F00(SecsStreamFunction):
     """
     abort transaction stream 9.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F00
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F00()
         S9F0 .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 9

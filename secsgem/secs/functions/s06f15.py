@@ -23,25 +23,23 @@ class SecsS06F15(SecsStreamFunction):
     """
     event report request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F15
         CEID: U1/U2/U4/U8/I1/I2/I4/I8/A
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F15(1337)
         S6F15 W
           <U2 1337 > .
 
-    :param value: parameters for this function (see example)
-    :type value: int
+    Data Items:
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+
     """
 
     _stream = 6

@@ -26,14 +26,10 @@ class SecsS12F14(SecsStreamFunction):
     """
     map data type 1.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`RSINF <secsgem.secs.data_items.RSINF>`
-    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F14
@@ -48,8 +44,6 @@ class SecsS12F14(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F14({
@@ -74,8 +68,12 @@ class SecsS12F14(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`RSINF <secsgem.secs.data_items.RSINF>`
+        - :class:`BINLT <secsgem.secs.data_items.BINLT>`
+
     """
 
     _stream = 12

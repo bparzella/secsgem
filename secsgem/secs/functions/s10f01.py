@@ -24,12 +24,10 @@ class SecsS10F01(SecsStreamFunction):
     """
     terminal - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TID <secsgem.secs.data_items.TID>`
-    - :class:`TEXT <secsgem.secs.data_items.TEXT>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F01
@@ -37,8 +35,6 @@ class SecsS10F01(SecsStreamFunction):
             TID: B[1]
             TEXT: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F01({"TID": 0, "TEXT": "hello?"})
@@ -48,8 +44,10 @@ class SecsS10F01(SecsStreamFunction):
             <A "hello?">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`TID <secsgem.secs.data_items.TID>`
+        - :class:`TEXT <secsgem.secs.data_items.TEXT>`
+
     """
 
     _stream = 10

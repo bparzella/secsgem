@@ -23,25 +23,23 @@ class SecsS02F34(SecsStreamFunction):
     """
     define report - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DRACK <secsgem.secs.data_items.DRACK>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F34
         DRACK: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.INVALID_FORMAT)
         S2F34
           <B 0x2> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`DRACK <secsgem.secs.data_items.DRACK>`
+
     """
 
     _stream = 2

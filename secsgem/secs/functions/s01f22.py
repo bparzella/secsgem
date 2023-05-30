@@ -25,13 +25,10 @@ class SecsS01F22(SecsStreamFunction):
     """
     Data variable namelist.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`DVVALNAME <secsgem.secs.data_items.DVVALNAME>`
-    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F22
@@ -44,8 +41,6 @@ class SecsS01F22(SecsStreamFunction):
             ...
         ]
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F22([{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}])
         S1F22
@@ -57,8 +52,11 @@ class SecsS01F22(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`DVVALNAME <secsgem.secs.data_items.DVVALNAME>`
+        - :class:`UNITS <secsgem.secs.data_items.UNITS>`
+
     """
 
     _stream = 1

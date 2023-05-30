@@ -23,11 +23,10 @@ class SecsS06F20(SecsStreamFunction):
     """
     individual report data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`V <secsgem.secs.data_items.V>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F20
@@ -35,8 +34,6 @@ class SecsS06F20(SecsStreamFunction):
             V: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
             ...
         ]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F20(["ASD", 1337])
@@ -46,8 +43,9 @@ class SecsS06F20(SecsStreamFunction):
             <U2 1337 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`V <secsgem.secs.data_items.V>`
+
     """
 
     _stream = 6

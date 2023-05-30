@@ -24,12 +24,10 @@ class SecsS02F37(SecsStreamFunction):
     """
     en-/disable event report.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`CEED <secsgem.secs.data_items.CEED>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F37
@@ -41,8 +39,6 @@ class SecsS02F37(SecsStreamFunction):
             ]
         }
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F37({"CEED": True, "CEID": [1337]})
         S2F37 W
@@ -53,8 +49,10 @@ class SecsS02F37(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`CEED <secsgem.secs.data_items.CEED>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+
     """
 
     _stream = 2

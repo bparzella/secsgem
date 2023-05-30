@@ -22,20 +22,16 @@ class SecsS05F07(SecsStreamFunction):
     """
     list enabled alarms - request.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F07
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F07()
         S5F7 W .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 5

@@ -22,20 +22,16 @@ class SecsS07F19(SecsStreamFunction):
     """
     current equipment process program - request.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F19
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F19()
         S7F19 W .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 7

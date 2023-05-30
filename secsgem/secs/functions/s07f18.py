@@ -23,25 +23,23 @@ class SecsS07F18(SecsStreamFunction):
     """
     delete process program - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F18
         ACKC7: B[1]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F18(secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED)
         S7F18
           <B 0x5> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ACKC7 <secsgem.secs.data_items.ACKC7>`
+
     """
 
     _stream = 7

@@ -22,20 +22,16 @@ class SecsS00F00(SecsStreamFunction):
     """
     Hsms communication.
 
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS00F00
         Header only
 
-    Example:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS00F00()
         S0F0 .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 0

@@ -23,25 +23,23 @@ class SecsS05F17(SecsStreamFunction):
     """
     exception recover abort - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`EXID <secsgem.secs.data_items.EXID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F17
         EXID: A[20]
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F17("EX123")
         S5F17 W
           <A "EX123"> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`EXID <secsgem.secs.data_items.EXID>`
+
     """
 
     _stream = 5

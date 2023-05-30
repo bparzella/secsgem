@@ -24,12 +24,10 @@ class SecsS06F05(SecsStreamFunction):
     """
     multi block data inquiry.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`DATALENGTH <secsgem.secs.data_items.DATALENGTH>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F05
@@ -37,8 +35,6 @@ class SecsS06F05(SecsStreamFunction):
             DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A
             DATALENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F05({"DATAID": 1, "DATALENGTH": 1337})
@@ -48,8 +44,10 @@ class SecsS06F05(SecsStreamFunction):
             <U2 1337 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`DATALENGTH <secsgem.secs.data_items.DATALENGTH>`
+
     """
 
     _stream = 6

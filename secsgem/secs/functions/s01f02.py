@@ -23,6 +23,32 @@ class SecsS01F02(SecsStreamFunction):
     """
     on line data.
 
+    Args:
+        value: parameters for this function (see example)
+
+    Examples:
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F02
+        [
+            MDLN: A[20]
+            ...
+        ]
+
+        >>> import secsgem.secs
+        >>> secsgem.secs.functions.SecsS01F02(["secsgem", "0.0.6"]) # E->H
+        S1F2
+          <L [2]
+            <A "secsgem">
+            <A "0.0.6">
+          > .
+        >>> secsgem.secs.functions.SecsS01F02() # H->E
+        S1F2
+          <L> .
+
+    Data Items:
+        - :class:`MDLN <secsgem.secs.data_items.MDLN>`
+
     .. caution::
 
         This Stream/function has different structures depending on the source.
@@ -37,34 +63,6 @@ class SecsS01F02(SecsStreamFunction):
             SOFTREV: A[20]
         }
 
-    **Data Items**
-
-    - :class:`MDLN <secsgem.secs.data_items.MDLN>`
-
-    **Structure**::
-
-        >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS01F02
-        [
-            MDLN: A[20]
-            ...
-        ]
-
-    Example:
-
-        >>> import secsgem.secs
-        >>> secsgem.secs.functions.SecsS01F02(["secsgem", "0.0.6"]) # E->H
-        S1F2
-          <L [2]
-            <A "secsgem">
-            <A "0.0.6">
-          > .
-        >>> secsgem.secs.functions.SecsS01F02() # H->E
-        S1F2
-          <L> .
-
-    :param value: parameters for this function (see example)
-    :type value: list
     """
 
     _stream = 1

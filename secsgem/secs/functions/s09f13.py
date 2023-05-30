@@ -24,12 +24,10 @@ class SecsS09F13(SecsStreamFunction):
     """
     conversation timeout.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MEXP <secsgem.secs.data_items.MEXP>`
-    - :class:`EDID <secsgem.secs.data_items.EDID>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F13
@@ -37,8 +35,6 @@ class SecsS09F13(SecsStreamFunction):
             MEXP: A[6]
             EDID: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F13({"MEXP": "S01E01", "EDID": "data"})
@@ -48,8 +44,10 @@ class SecsS09F13(SecsStreamFunction):
             <A "data">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MEXP <secsgem.secs.data_items.MEXP>`
+        - :class:`EDID <secsgem.secs.data_items.EDID>`
+
     """
 
     _stream = 9

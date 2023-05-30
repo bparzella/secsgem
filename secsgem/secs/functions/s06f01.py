@@ -26,14 +26,10 @@ class SecsS06F01(SecsStreamFunction):
     """
     Trace data send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TRID <secsgem.secs.data_items.TRID>`
-    - :class:`SMPLN <secsgem.secs.data_items.SMPLN>`
-    - :class:`STIME <secsgem.secs.data_items.STIME>`
-    - :class:`SV <secsgem.secs.data_items.SV>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F01
@@ -46,8 +42,6 @@ class SecsS06F01(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F01({
@@ -66,8 +60,12 @@ class SecsS06F01(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`TRID <secsgem.secs.data_items.TRID>`
+        - :class:`SMPLN <secsgem.secs.data_items.SMPLN>`
+        - :class:`STIME <secsgem.secs.data_items.STIME>`
+        - :class:`SV <secsgem.secs.data_items.SV>`
+
     """
 
     _stream = 6

@@ -28,16 +28,10 @@ class SecsS14F01(SecsStreamFunction):
     """
     GetAttr request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
-    - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
-    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
-    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
-    - :class:`ATTRRELN <secsgem.secs.data_items.ATTRRELN>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F01
@@ -61,8 +55,6 @@ class SecsS14F01(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F01({
@@ -88,8 +80,14 @@ class SecsS14F01(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+        - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
+        - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+        - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+        - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+        - :class:`ATTRRELN <secsgem.secs.data_items.ATTRRELN>`
+
     """
 
     _stream = 14

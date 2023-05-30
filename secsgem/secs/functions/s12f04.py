@@ -37,25 +37,10 @@ class SecsS12F04(SecsStreamFunction):
     """
     map setup data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
-    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
-    - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
-    - :class:`REFP <secsgem.secs.data_items.REFP>`
-    - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
-    - :class:`XDIES <secsgem.secs.data_items.XDIES>`
-    - :class:`YDIES <secsgem.secs.data_items.YDIES>`
-    - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
-    - :class:`COLCT <secsgem.secs.data_items.COLCT>`
-    - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
-    - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
-    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
-    - :class:`MLCL <secsgem.secs.data_items.MLCL>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F04
@@ -79,8 +64,6 @@ class SecsS12F04(SecsStreamFunction):
             NULBC: U1/A
             MLCL: U1/U2/U4/U8
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F04({
@@ -121,8 +104,23 @@ class SecsS12F04(SecsStreamFunction):
             <U1 0 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+        - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+        - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
+        - :class:`REFP <secsgem.secs.data_items.REFP>`
+        - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
+        - :class:`XDIES <secsgem.secs.data_items.XDIES>`
+        - :class:`YDIES <secsgem.secs.data_items.YDIES>`
+        - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
+        - :class:`COLCT <secsgem.secs.data_items.COLCT>`
+        - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
+        - :class:`BCEQU <secsgem.secs.data_items.BCEQU>`
+        - :class:`NULBC <secsgem.secs.data_items.NULBC>`
+        - :class:`MLCL <secsgem.secs.data_items.MLCL>`
+
     """
 
     _stream = 12

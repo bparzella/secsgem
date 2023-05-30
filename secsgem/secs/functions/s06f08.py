@@ -27,15 +27,10 @@ class SecsS06F08(SecsStreamFunction):
     """
     data transfer data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`DSID <secsgem.secs.data_items.DSID>`
-    - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
-    - :class:`DVVAL <secsgem.secs.data_items.DVVAL>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F08
@@ -56,8 +51,6 @@ class SecsS06F08(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F08({
@@ -89,8 +82,13 @@ class SecsS06F08(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`DSID <secsgem.secs.data_items.DSID>`
+        - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
+        - :class:`DVVAL <secsgem.secs.data_items.DVVAL>`
+
     """
 
     _stream = 6

@@ -27,15 +27,10 @@ class SecsS14F03(SecsStreamFunction):
     """
     SetAttr request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
-    - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
-    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
-    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
-
-    **Structure**::
+    Examples:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F03
@@ -54,8 +49,6 @@ class SecsS14F03(SecsStreamFunction):
                 ...
             ]
         }
-
-    Example:
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F03({
@@ -80,8 +73,13 @@ class SecsS14F03(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+        - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
+        - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+        - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+        - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+
     """
 
     _stream = 14
