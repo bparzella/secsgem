@@ -21,11 +21,11 @@ import typing
 
 from secsgem.common.settings import Setting, Settings
 from .active_connection import HsmsActiveConnection
-from .connection import HsmsConnection
 from .passive_connection import HsmsPassiveConnection
 
 if typing.TYPE_CHECKING:
     from secsgem.common.protocol import Protocol
+    from secsgem.common.connection import Connection
 
 
 class HsmsConnectMode(enum.Enum):
@@ -45,7 +45,6 @@ class HsmsSettings(Settings):
     These attributes can be initialized in the constructor and accessed as property.
 
     Example:
-
         >>> import secsgem.hsms
         >>>
         >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
@@ -58,6 +57,7 @@ class HsmsSettings(Settings):
         import secsgem.hsms.settings
 
         secsgem.hsms.settings.HsmsSettings._attributes_help()
+
     """
 
     @classmethod
@@ -76,7 +76,7 @@ class HsmsSettings(Settings):
 
         return HsmsProtocol(self)
 
-    def create_connection(self) -> HsmsConnection:
+    def create_connection(self) -> Connection:
         """Connection class for this configuration."""
         if self.connect_mode == HsmsConnectMode.ACTIVE:
             return HsmsActiveConnection(self)

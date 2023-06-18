@@ -26,7 +26,7 @@ import secsgem.hsms
 from secsgem.hsms.protocol import HsmsProtocol
 
 
-class HsmsTestConnection:
+class HsmsTestConnection(secsgem.common.Connection):
     """
     Connection class for single connection from hsmsMultiPassiveServer.
 

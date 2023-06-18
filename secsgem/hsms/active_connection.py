@@ -27,24 +27,19 @@ if typing.TYPE_CHECKING:
     from .settings import HsmsSettings
 
 
-class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
+class HsmsActiveConnection(HsmsConnection):
     """Client class for single active (outgoing) connection."""
 
-    def __init__(self, settings: HsmsSettings, delegate=None):
+    def __init__(self, settings: HsmsSettings):
         """
         Initialize a active hsms connection.
 
         Args:
             settings: protocol and communication settings
-            delegate: target for messages
-
-        Example:
-
-            # TODO: create example
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, settings, delegate)
+        HsmsConnection.__init__(self, settings)
 
         # initially not enabled
         self.enabled = False
@@ -56,7 +51,9 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         # flag if this is the first connection since enable
         self.first_connection = True
 
-    def _on_hsms_connection_close(self, data):
+        self.on_disconnected.register(self._disconnected)
+
+    def _disconnected(self, _: typing.Dict[str, typing.Any]):
         """
         Signal from super that the connection was closed.
 
@@ -104,14 +101,16 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
             # disconnect super class
             self.disconnect()
 
-    def __idle(self, timeout):
+    def __idle(self, timeout: float):
         """
         Wait until timeout elapsed or connection thread is stopped.
 
-        :param timeout: number of seconds to wait
-        :type timeout: float
-        :returns: False if thread was stopped
-        :rtype: boolean
+        Args:
+            timeout: number of seconds to wait
+
+        Returns:
+                False if thread was stopped
+
         """
         for _ in range(int(timeout) * 5):
             time.sleep(0.2)
@@ -151,26 +150,27 @@ class HsmsActiveConnection(HsmsConnection):  # pragma: no cover
         """
         Open connection to remote host.
 
-        :returns: True if connection was established, False if connection failed
-        :rtype: boolean
+        Returns:
+            True if connection was established, False if connection failed
+
         """
         # create socket
-        self.__sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         # setup socket
-        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         self._logger.debug("connecting to %s:%d", self._settings.address, self._settings.port)
 
         # try to connect socket
         try:
-            self._sock.connect((self._settings.address, self._settings.port))
+            self._socket.connect((self._settings.address, self._settings.port))
         except socket.error:
             self._logger.debug("connecting to %s:%d failed", self._settings.address, self._settings.port)
             return False
 
         # make socket nonblocking
-        self._sock.setblocking(0)
+        self._socket.setblocking(0)
 
         # start the receiver thread
         self._start_receiver()

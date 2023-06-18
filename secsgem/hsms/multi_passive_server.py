@@ -25,7 +25,7 @@ import secsgem.common
 from .multi_passive_connection import HsmsMultiPassiveConnection
 
 
-class HsmsMultiPassiveServer:  # pragma: no cover  # pylint: disable=too-many-instance-attributes
+class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
     """
     Server class for multiple passive (incoming) connection.
 

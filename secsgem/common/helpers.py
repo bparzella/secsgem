@@ -23,19 +23,19 @@ def format_hex(text: bytes) -> str:
     """
     Return byte arrays (string) formated as hex numbers.
 
-    Example:
+    Args:
+        text: byte array
 
+    Returns:
+        formated sring
+
+    Example:
         >>> import secsgem.common
         >>>
         >>> data = b"asdfg"
         >>> secsgem.common.format_hex(data)
         '61:73:64:66:67'
 
-
-    :param text: byte array
-    :type text: string
-    :returns: Formated text
-    :rtype: string
     """
     return ":".join(f"{c:02x}" for c in bytearray(text))
 
@@ -44,10 +44,11 @@ def is_windows() -> bool:
     """
     Return True if running on windows.
 
-    :returns: Is windows system
-    :rtype: bool
+    Returns:
+        True when running on a windows system
+
     """
-    if sys.platform == "win32":  # pragma: no cover
+    if sys.platform == "win32":
         return True
 
     return False
@@ -57,8 +58,9 @@ def function_name(function) -> str:
     """
     Get name of function or method.
 
-    :returns: function/method name
-    :rtype: string
+    Returns:
+        function/method name
+
     """
     if isinstance(function, types.FunctionType):
         return function.__name__
@@ -70,12 +72,13 @@ def indent_line(line: str, spaces: int = 2) -> str:
     """
     Indent line by a number of spaces.
 
-    :param line: input text
-    :type line: string
-    :param spaces: number of spaces to prepend
-    :type spaces: integer
-    :returns: indented text
-    :rtype: string
+    Args:
+        line: input text
+        spaces: number of spaces to prepend
+
+    Returns:
+        indented text
+
     """
     return f"{' ' * spaces}{line}"
 
@@ -84,12 +87,13 @@ def indent_block(block: str, spaces: int = 2) -> str:
     """
     Indent a multiline string by a number of spaces.
 
-    :param block: input text
-    :type block: string
-    :param spaces: number of spaces to prepend to each line
-    :type spaces: integer
-    :returns: indented text
-    :rtype: string
+    Args:
+        block: input text
+        spaces: number of spaces to prepend to each line
+
+    Returns:
+        indented text
+
     """
     lines = block.split('\n')
     lines_filter = filter(None, lines)
@@ -101,8 +105,12 @@ def is_errorcode_ewouldblock(errorcode: int) -> bool:
     """
     Check if the errorcode is a would-block error.
 
-    :param errorcode: Code of the error
-    :return: True if blocking error code
+    Args:
+        errorcode: Code of the error
+
+    Returns:
+        True if blocking error code
+
     """
     if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
         return True

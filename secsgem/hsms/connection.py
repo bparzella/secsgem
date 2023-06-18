@@ -18,14 +18,12 @@ from __future__ import annotations
 
 import logging
 import select
-import struct
 import time
 import threading
 import typing
 
 import secsgem.common
 
-from .packet import HsmsPacket
 
 if typing.TYPE_CHECKING:
     import socket
@@ -35,69 +33,50 @@ if typing.TYPE_CHECKING:
 # TODO: timeouts (T7, T8)
 
 
-class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: disable=too-many-instance-attributes
+class HsmsConnection(secsgem.common.Connection):
     """Connection class used for active and passive hsms connections."""
 
     select_timeout = 0.5
     """ Timeout for select calls ."""
 
-    send_block_size = 1024 * 1024
-    """ Block size for outbound data ."""
-
-    def __init__(self, settings: HsmsSettings, delegate=None):
+    def __init__(self, settings: HsmsSettings):
         """
         Initialize a hsms connection.
 
         Args:
             settings: protocol and communication settings
-            delegate: target for messages
 
         """
+        super().__init__(settings)
+
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._settings = settings
-
-        self._delegate = delegate
-
         # connection socket
-        self.__sock: typing.Optional[socket.socket] = None
-
-        # buffer for received data
-        self._receive_buffer = b""
+        self._sock: typing.Optional[socket.socket] = None
 
         # receiving thread flags
         self._thread_running = False
         self._stop_thread = False
 
-        # connected flag
-        self._connected = False
-
-        # flag set during disconnection
-        self._disconnecting = False
-
     @property
-    def _sock(self) -> socket.socket:
-        if self.__sock is None:
+    def _socket(self) -> socket.socket:
+        if self._sock is None:
             raise ConnectionError(f"Hsms socket is not connected: {self}")
 
-        return self.__sock
+        return self._sock
 
     @property
     def timeouts(self) -> secsgem.common.Timeouts:
         """Get connection timeouts."""
         return self._settings.timeouts
 
-    @property
-    def disconnecting(self) -> bool:
-        """Connection is disconnecting."""
-        return self._disconnecting
-
     def _serialize_data(self):
         """
         Return data for serialization.
 
-        :returns: data to serialize for this object
-        :rtype: dict
+        Returns
+            data to serialize for this object
+
         """
         return {
             'connect_mode': self._settings.connect_mode,
@@ -135,15 +114,10 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
             pass
 
         # send event
-        if self._delegate and hasattr(self._delegate, 'on_connection_established') \
-                and callable(getattr(self._delegate, 'on_connection_established')):
-            try:
-                self._delegate.on_connection_established(self)
-            except Exception:  # pylint: disable=broad-except
-                self._logger.exception('ignoring exception for on_connection_established handler')
-
-    def _on_hsms_connection_close(self, data):
-        pass
+        try:
+            self.on_connected({"source": self})
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception('ignoring exception for on_connection_established handler')
 
     def disconnect(self):
         """Close connection."""
@@ -164,90 +138,44 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
         # clear disconnecting flag, no selects coming any more
         self._disconnecting = False
 
-    def send_packet(self, packet: secsgem.common.Packet) -> bool:
+    def send_data(self, data: bytes) -> bool:
         """
-        Send a packet to the remote host.
+        Send data to the remote host.
 
         Args:
-            packet: packet to be transmitted
+            data: encoded data.
 
         Returns:
             True if succeeded, False if failed
 
         """
-        # encode the packet
-        data = packet.encode()
+        retry = True
 
-        # split data into blocks
-        blocks = [data[i: i + self.send_block_size] for i in range(0, len(data), self.send_block_size)]
+        # not sent yet, retry
+        while retry:
+            # wait until socket is writable
+            while not select.select([], [self._socket], [], self.select_timeout)[1]:
+                pass
 
-        for block in blocks:
-            retry = True
+            try:
+                # send packet
+                self._socket.send(data)
 
-            # not sent yet, retry
-            while retry:
-                # wait until socket is writable
-                while not select.select([], [self._sock], [], self.select_timeout)[1]:
-                    pass
-
-                try:
-                    # send packet
-                    self._sock.send(block)
-
-                    # retry will be cleared if send succeeded
-                    retry = False
-                except OSError as exc:
-                    if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
-                        # raise if not EWOULDBLOCK
-                        return False
-                    # it is EWOULDBLOCK, so retry sending
+                # retry will be cleared if send succeeded
+                retry = False
+            except OSError as exc:
+                if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
+                    # raise if not EWOULDBLOCK
+                    return False
+                # it is EWOULDBLOCK, so retry sending
 
         return True
-
-    def _process_receive_buffer(self):
-        """
-        Parse the receive buffer and dispatch callbacks.
-
-        .. warning:: Do not call this directly, will be called from
-        :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
-        """
-        # check if enough data in input buffer
-        if len(self._receive_buffer) < 4:
-            return False
-
-        # unpack length from input buffer
-        length = struct.unpack(">L", self._receive_buffer[0:4])[0] + 4
-
-        # check if enough data in input buffer
-        if len(self._receive_buffer) < length:
-            return False
-
-        # extract and remove packet from input buffer
-        data = self._receive_buffer[0:length]
-        self._receive_buffer = self._receive_buffer[length:]
-
-        # decode received packet
-        response = HsmsPacket.decode(data)
-
-        # redirect packet to hsms handler
-        if self._delegate and hasattr(self._delegate, 'on_connection_packet_received') \
-                and callable(getattr(self._delegate, 'on_connection_packet_received')):
-            try:
-                self._delegate.on_connection_packet_received(self, response)
-            except Exception:  # pylint: disable=broad-except
-                self._logger.exception('ignoring exception for on_connection_packet_received handler')
-
-        # return True if more data is available
-        if len(self._receive_buffer) > 0:
-            return True
-
-        return False
 
     def __receiver_thread_read_data(self):
         # check if shutdown requested
         while not self._stop_thread:
             # check if data available
-            select_result = select.select([self._sock], [], [self._sock], self.select_timeout)
+            select_result = select.select([self._socket], [], [self._socket], self.select_timeout)
 
             # check if disconnection was started
             if self._disconnecting:
@@ -257,7 +185,7 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
             if select_result[0]:
                 try:
                     # get data from socket
-                    recv_data = self._sock.recv(1024)
+                    recv_data = self._socket.recv(1024)
 
                     # check if socket was closed
                     if len(recv_data) == 0:
@@ -266,14 +194,10 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
                         continue
 
                     # add received data to input buffer
-                    self._receive_buffer += recv_data
+                    self.on_data({"source": self, "data": recv_data})
                 except OSError as exc:
                     if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
                         raise exc
-
-                # handle data in input buffer
-                while self._process_receive_buffer():
-                    pass
 
     def __receiver_thread(self):
         """
@@ -290,31 +214,24 @@ class HsmsConnection(secsgem.common.Connection):  # pragma: no cover # pylint: d
             self._logger.exception('exception')
 
         # notify listeners of disconnection
-        if self._delegate and hasattr(self._delegate, 'on_connection_before_closed') \
-                and callable(getattr(self._delegate, 'on_connection_before_closed')):
-            try:
-                self._delegate.on_connection_before_closed(self)
-            except Exception:  # pylint: disable=broad-except
-                self._logger.exception('ignoring exception for on_connection_before_closed handler')
+        try:
+            self.on_disconnecting({"source": self})
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception('ignoring exception for on_connection_before_closed handler')
 
         # close the socket
-        self._sock.close()
+        self._socket.close()
 
         # notify listeners of disconnection
-        if self._delegate and hasattr(self._delegate, 'on_connection_closed') \
-                and callable(getattr(self._delegate, 'on_connection_closed')):
-            try:
-                self._delegate.on_connection_closed(self)
-            except Exception:  # pylint: disable=broad-except
-                self._logger.exception('ignoring exception for on_connection_closed handler')
+        try:
+            self.on_disconnected({"source": self})
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception('ignoring exception for on_connection_closed handler')
 
         # reset all flags
         self._connected = False
         self._thread_running = False
         self._stop_thread = False
 
-        # clear receive buffer
-        self._receive_buffer = b""
-
         # notify inherited classes of disconnection
-        self._on_hsms_connection_close({'connection': self})
+        self.on_disconnected({'source': self})

@@ -206,11 +206,11 @@ __maintainer__ = 'Mansour Behabadi'
 __email__ = 'mansour@oxplot.com'
 
 
-class FysomError(Exception):  # pragma: no cover
+class FysomError(Exception):
     """Fysom Error."""
 
 
-class Fysom:  # pragma: no cover
+class Fysom:
     """Fysom state machine."""
 
     def __init__(self, cfg):
@@ -352,5 +352,5 @@ class Fysom:  # pragma: no cover
         return None
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == '__main__':
     pass

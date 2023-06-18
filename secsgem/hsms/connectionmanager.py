@@ -74,7 +74,7 @@ class HsmsConnectionManager:
         """
         return f"{address}"
 
-    def _update_required_servers(self, additional_port=-1):  # pragma: no cover
+    def _update_required_servers(self, additional_port=-1):
         """
         Start server if any active handler is found.
 
@@ -133,7 +133,7 @@ class HsmsConnectionManager:
                 handler = connection_handler(address, port, active, session_id, name, self._test_server_object)
             else:
                 handler = connection_handler(address, port, active, session_id, name, self._test_server_object)
-        else:  # pragma: no cover
+        else:
             if active:
                 handler = connection_handler(address, port, active, session_id, name)
             else:

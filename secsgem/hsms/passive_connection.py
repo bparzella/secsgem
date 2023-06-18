@@ -30,7 +30,7 @@ if typing.TYPE_CHECKING:
     from .settings import HsmsSettings
 
 
-class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
+class HsmsPassiveConnection(HsmsConnection):
     """
     Server class for single passive (incoming) connection.
 
@@ -38,21 +38,16 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     After the connection is established the listening socket is closed.
     """
 
-    def __init__(self, settings: HsmsSettings, delegate=None):
+    def __init__(self, settings: HsmsSettings):
         """
         Initialize a passive hsms connection.
 
         Args:
             settings: protocol and communication settings
-            delegate: target for messages
-
-        Example:
-
-            # TODO: create example
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, settings, delegate)
+        HsmsConnection.__init__(self, settings)
 
         # initially not enabled
         self._enabled = False
@@ -62,11 +57,14 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
         self._stop_server_thread = False
         self._server_sock = None
 
-    def _on_hsms_connection_close(self, data):
+        self.on_disconnected.register(self._disconnected)
+
+    def _disconnected(self, _: typing.Dict[str, typing.Any]):
         """
-        Signal from super that the connection was closed.
+        Called when the connection was disconnected.
 
         This is required to initiate the reconnect if the connection is still enabled
+
         """
         if self._enabled:
             self.__start_server_thread()
@@ -144,13 +142,13 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             if accept_result is None:
                 continue
 
-            (self.__sock, (_, _)) = accept_result
+            (self._sock, (_, _)) = accept_result
 
             # setup socket
-            self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
             # make socket nonblocking
-            self._sock.setblocking(0)
+            self._socket.setblocking(0)
 
             # start the receiver thread
             self._start_receiver()

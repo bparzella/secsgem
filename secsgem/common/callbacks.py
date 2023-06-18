@@ -43,8 +43,9 @@ class CallbackHandler:
         """
         Set an item as object member.
 
-        :param name: Name of the callback
-        :param value: Callback
+        Args:
+            name: name of the callback
+
         """
         if '_object_intitialized' not in self.__dict__ or name in self.__dict__:
             dict.__setattr__(self, name, value)
@@ -60,8 +61,9 @@ class CallbackHandler:
         """
         Get a callable function for an event.
 
-        :param name: Name of the event
-        :return: Callable representation of the callback
+        Args:
+            name: name of the event
+
         """
         return _CallbackCallWrapper(self, name)
 
@@ -70,7 +72,7 @@ class CallbackHandler:
             self._keys = list(keys)
             self._counter = 0
 
-        def __iter__(self):  # pragma: no cover
+        def __iter__(self):
             return self
 
         def __next__(self):
@@ -85,7 +87,9 @@ class CallbackHandler:
         """
         Get an iterator for the callbacks.
 
-        :return: Callback iterator.
+        Returns:
+            callback iterator
+
         """
         return self._CallbacksIter(self._callbacks.keys())
 
@@ -93,8 +97,12 @@ class CallbackHandler:
         """
         Check if a callback is present.
 
-        :param callback: Name of the event
-        :return: True if callback present
+        Args:
+            callback: name of the event
+
+        Returns:
+            True if callback present
+
         """
         if callback in self._callbacks:
             return True

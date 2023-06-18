@@ -24,14 +24,48 @@ class Event:
         """Initialize the event class."""
         self._callbacks: typing.List[typing.Callable[[typing.Dict[str, typing.Any]], None]] = []
 
+    def register(self, callback: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> None:
+        """Add a new callback to event.
+
+        Args:
+            callback: function to register as callback
+
+        """
+        self._callbacks.append(callback)
+
     def __iadd__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
-        """Add a new callback to event."""
-        self._callbacks.append(other)
+        """Add a new callback to event.
+
+        Args:
+            other: function to register as callback
+
+        Returns:
+            updated instance
+
+        """
+        self.register(other)
         return self
 
+    def unregister(self, callback: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> None:
+        """Remove a callback from the event.
+
+        Args:
+            callback: function to unregister
+
+        """
+        self._callbacks.remove(callback)
+
     def __isub__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
-        """Remove a callback from event."""
-        self._callbacks.remove(other)
+        """Remove a callback from event.
+
+        Args:
+            other: function to unregister
+
+        Returns:
+            updated instance
+
+        """
+        self.unregister(other)
         return self
 
     def __call__(self, data: typing.Dict[str, typing.Any]):
@@ -70,7 +104,7 @@ class Targets:
             self._values = values
             self._counter = 0
 
-        def __iter__(self):  # pragma: no cover
+        def __iter__(self):
             """Return the iterator."""
             return self
 
@@ -122,10 +156,10 @@ class EventProducer:
 
         calls all the available handlers for a specific event
 
-        :param event: name of the event
-        :type event: string
-        :param data: data connected to this event
-        :type data: dict
+        Args:
+            event: name of the event
+            data: data connected to this event
+
         """
         for target in self._targets:
             generic_handler = getattr(target, "_on_event", None)
@@ -148,7 +182,7 @@ class EventProducer:
             self._keys = list(keys)
             self._counter = 0
 
-        def __iter__(self):  # pragma: no cover
+        def __iter__(self):
             """Return the iterator."""
             return self
 

@@ -20,7 +20,7 @@ import socket
 from .connection import HsmsConnection
 
 
-class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
+class HsmsMultiPassiveConnection(HsmsConnection):
     """
     Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
@@ -63,11 +63,11 @@ class HsmsMultiPassiveConnection(HsmsConnection):  # pragma: no cover
         del address  # unused parameter
 
         # setup socket
-        self.__sock = sock
-        self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self._sock = sock
+        self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         # make socket nonblocking
-        self._sock.setblocking(0)
+        self._socket.setblocking(0)
 
         # start the receiver thread
         self._start_receiver()

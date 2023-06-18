@@ -16,28 +16,91 @@
 """Connection base function."""
 import abc
 
-from .packet import Packet
+from .events import Event
+from .settings import Settings
 
 
 class Connection(abc.ABC):
     """Abstract base class for a connection."""
 
+    def __init__(self, settings: Settings) -> None:
+        """Initialize connection object."""
+        super().__init__()
+
+        self._settings = settings
+
+        self._on_connected = Event()
+        self._on_data = Event()
+        self._on_disconnecting = Event()
+        self._on_disconnected = Event()
+
+        self._connected = False
+        self._disconnecting = False
+
     @property
-    @abc.abstractmethod
+    def on_connected(self) -> Event:
+        """Get the connected event.
+
+        Callbacks to this event are called, when a connection was established.
+
+        """
+        return self._on_connected
+
+    @property
+    def on_data(self) -> Event:
+        """Get the data received event.
+
+        Callbacks to this event are called, when data was received.
+
+        """
+        return self._on_data
+
+    @property
+    def on_disconnecting(self) -> Event:
+        """Get the disconnecting event.
+
+        Callbacks to this event are called, before the connection is separated.
+
+        """
+        return self._on_disconnecting
+
+    @property
+    def on_disconnected(self) -> Event:
+        """Get the disconnect event.
+
+        Callbacks to this event are called, after the connection was separated.
+
+        """
+        return self._on_disconnected
+
+    @property
+    def connected(self) -> bool:
+        """Get the connected flag.
+
+        This flag is True, when a connection is established.
+
+        """
+        return self._connected
+
+    @property
     def disconnecting(self) -> bool:
-        """Get the disconnecting flag."""
-        raise NotImplementedError("Connection.disconnecting missing implementation")
+        """Get the disconnecting flag.
+
+        This flag is True, when the connection is about to be separated.
+
+        """
+        return self._disconnecting
 
     @abc.abstractmethod
-    def send_packet(self, packet: Packet) -> bool:
+    def send_data(self, data: bytes) -> bool:
         """
-        Send a packet to the remote.
+        Send data to the remote host.
 
         Args:
-            packet: packet to be transmitted
+            data: encoded data.
 
         Returns:
             True if succeeded, False if failed
 
         """
-        raise NotImplementedError("Connection.send_packet missing implementation")
+        raise NotImplementedError("Connection.send_data missing implementation")
