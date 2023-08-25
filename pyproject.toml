@@ -20,15 +20,16 @@ classifiers = [
     "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
 
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
 ]
 
 keywords = ["development", "hsms", "secs", "gem"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8"
 python-dateutil = "^2.8.1"
 transitions = "^0.8.8"
 
