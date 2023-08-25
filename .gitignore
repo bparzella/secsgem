@@ -64,3 +64,4 @@ samples/log/*.log
 
 # OS
 .DS_Store
+.python-version
