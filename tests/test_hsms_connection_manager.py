@@ -15,8 +15,7 @@
 #####################################################################
 
 import unittest
-
-from mock import Mock
+import unittest.mock
 
 import secsgem
 
@@ -30,7 +29,7 @@ class TestHsmsConnectionManager(unittest.TestCase):
         self.assertIsNotNone(manager)
 
     def testAddEvent(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         manager = secsgem.HsmsConnectionManager()
 

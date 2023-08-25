@@ -33,11 +33,11 @@ class TestCodecJIS8:
 
     @pytest.mark.parametrize("char_map", charMap)
     def test_encode_text(self, char_map):
-        assert char_map[0].encode("jis-8") == char_map[1]
+        assert char_map[0].encode("jis_8") == char_map[1]
     
     @pytest.mark.parametrize("char_map", charMap)
     def test_decode_text(self, char_map):
-        assert char_map[1].decode("jis-8") == char_map[0]
+        assert char_map[1].decode("jis_8") == char_map[0]
 
     def test_unknown_search(self):
         assert secsgem.common.codec_jis_x_0201._jis_x_0201_search("invalid") == None

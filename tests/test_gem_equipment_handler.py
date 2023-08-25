@@ -17,11 +17,11 @@
 import datetime
 import threading
 import unittest
+import unittest.mock
 
 from dateutil.tz import tzlocal
 from dateutil.parser import parse
 
-from mock import Mock
 
 import secsgem
 from secsgem.secs.variables import SecsVarString, SecsVarU4
@@ -2026,7 +2026,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.sendCEEnableReport(ceid=[5001])
         self.assertEqual(function.get(), 0)
 
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.rcmd_TEST_RCMD = f
 
@@ -2106,7 +2106,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestRemoteCommands()
         self.establishCommunication()
 
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.rcmd_TEST_RCMD = f
 

@@ -1488,7 +1488,7 @@ class SecsVarJIS8(SecsVarText):
     textCode = u"J"
     preferredTypes = [bytes, str]
     controlChars = u"".join(chr(ch) for ch in range(256) if unicodedata.category(chr(ch))[0] == "C")
-    coding = "jis-8"
+    coding = "jis_8"
 
 
 class SecsVarNumber(SecsVar):

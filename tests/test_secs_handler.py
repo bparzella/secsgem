@@ -16,8 +16,7 @@
 
 import threading
 import unittest
-
-from mock import Mock
+import unittest.mock
 
 import secsgem
 
@@ -195,7 +194,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testStreamFunctionReceivingExceptingCallback(self):
         self.server.simulate_connect()
 
-        f = Mock(side_effect=Exception("testException"))
+        f = unittest.mock.Mock(side_effect=Exception("testException"))
 
         self.client.register_stream_function(1, 1, f)
 
@@ -596,7 +595,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testUnhandeledFunctionCallback(self):
         self.server.simulate_connect()
 
-        f = Mock(return_value=False)
+        f = unittest.mock.Mock(return_value=False)
         self.client.register_stream_function(1, 2, f)
 
         self.performSelect()
@@ -608,7 +607,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def testExceptionFunctionCallback(self):
         self.server.simulate_connect()
 
-        f = Mock(side_effect=Exception("testException"))
+        f = unittest.mock.Mock(side_effect=Exception("testException"))
         self.client.register_stream_function(1, 2, f)
 
         self.performSelect()
@@ -652,7 +651,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(self.client.get_dvid_name(0), "")
 
     def testUnregisterStreamFunctionCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.register_stream_function(0, 0, f)
         self.assertIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
@@ -661,19 +660,19 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertNotIn(self.client._generate_sf_callback_name(0, 0), self.client._callback_handler._callbacks)
 
     def testRegisterCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.test = f
         self.assertIn("test", self.client.callbacks._callbacks)
 
     def testCallbackIn(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.test = f
         self.assertIn("test", self.client.callbacks)
 
     def testCallCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.test = f
         self.assertIn("test", self.client._callback_handler._callbacks)
@@ -683,7 +682,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         f.assert_called_once()
 
     def testUnRegisterCallback(self):
-        f = Mock()
+        f = unittest.mock.Mock()
 
         self.client.callbacks.test = f
         self.assertIn("test", self.client._callback_handler._callbacks)
