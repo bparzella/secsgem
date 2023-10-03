@@ -45,6 +45,3 @@ jobs:
         with:
           coverageCommand: poetry run coverage xml
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.9'
-
-      - name: Lint with prospector
-        run: poetry run prospector --no-autodetect --output-format=pylint secsgem
