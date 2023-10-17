@@ -67,6 +67,8 @@ class HsmsHeader(secsgem.common.Header):
     Base for different specific headers
     """
 
+    length = 14
+
     def __init__(
             self, 
             system: int, 
@@ -79,20 +81,14 @@ class HsmsHeader(secsgem.common.Header):
         """
         Initialize a hsms header.
 
-        :param system: message ID
-        :type system: integer
-        :param session_id: device / session ID
-        :type session_id: integer
-        :param stream: stream
-        :type stream: integer
-        :param function: function
-        :type function: integer
-        :param requires_response: is response required
-        :type requires_response: bool
-        :param p_type: P-Type
-        :type p_type: integer
-        :param s_type: S-Type
-        :type s_type: integer
+        Args:
+            system: message ID
+            session_id: device / session ID
+            stream: stream
+            function: function
+            requires_response: is response required
+            p_type: P-Type
+            s_type: S-Type
 
         Example:
 
@@ -107,7 +103,7 @@ require_response:False})
         self._p_type = p_type
         self._s_type = s_type
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Generate string representation for an object of this class."""
         return f'{{session_id:0x{self.session_id:04x}, ' \
                f'stream:{self.stream:02d}, ' \
@@ -117,7 +113,7 @@ require_response:False})
                f'system:0x{self.system:08x}, ' \
                f'require_response:{self.require_response!r}}}'
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__}({self.__str__()})"
 
@@ -136,12 +132,11 @@ require_response:False})
         """Get S-type."""
         return self._s_type
 
-    def encode(self):
-        """
-        Encode header to hsms packet.
+    def encode(self) -> bytes:
+        """Encode header to hsms packet.
 
-        :returns: encoded header
-        :rtype: string
+        Returns:
+            encoded header
 
         Example:
 
@@ -165,4 +160,27 @@ require_response:False})
             self.p_type,
             self.s_type.value,
             self.system
+        )
+
+    @classmethod
+    def decode(cls, data: bytes) -> "HsmsHeader":
+        """Decode data to HsmsHeader object.
+
+        Args:
+            data: data to decode
+
+        Returns:
+            new header object
+
+        """
+        res = struct.unpack(">LHBBBBL", data)
+
+        return HsmsHeader(
+            res[6], 
+            res[1],
+            res[2] & 0b01111111,
+            res[3],
+            (((res[2] & 0b10000000) >> 7) == 1),
+            res[4],
+            HsmsSType(res[5])
         )

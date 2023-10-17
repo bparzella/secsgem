@@ -119,19 +119,11 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
             >>> secsgem.hsms.HsmsPacket.decode(packetData)
             HsmsPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         """   # noqa pylint: disable=line-too-long
-        data_length = len(data) - 14
-        data_length_text = str(data_length) + "s"
+        data_length = len(data) - HsmsHeader.length
 
-        res = struct.unpack(">LHBBBBL" + data_length_text, data)
+        header = HsmsHeader.decode(data[:HsmsHeader.length])
+        res = struct.unpack(f">{data_length}s", data[HsmsHeader.length:])
 
-        result = HsmsPacket(HsmsHeader(
-            res[6], 
-            res[1],
-            res[2] & 0b01111111,
-            res[3],
-            (((res[2] & 0b10000000) >> 7) == 1),
-            res[4],
-            HsmsSType(res[5])
-        ), res[7])
+        result = HsmsPacket(header, res[0])
 
         return result
