@@ -21,7 +21,7 @@ import typing
 
 import secsgem.common
 
-from .header import HsmsHeader, HsmsSType
+from .header import HsmsHeader
 
 
 class HsmsPacket(secsgem.common.Packet):
