@@ -234,4 +234,4 @@ class HsmsConnection(secsgem.common.Connection):
         self._stop_thread = False
 
         # notify inherited classes of disconnection
-        self.on_disconnected({'source': self})
+        #self.on_disconnected({'source': self})

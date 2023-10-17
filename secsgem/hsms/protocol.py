@@ -299,13 +299,13 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         if packet.header.s_type_enum == HsmsSType.SELECT_REQ:
             self.__handle_hsms_requests_select_req(packet)
-        elif packet.header.s_type == HsmsSType.SELECT_RSP:
+        elif packet.header.s_type_enum == HsmsSType.SELECT_RSP:
             self.__handle_hsms_requests_select_rsp(packet)
-        elif packet.header.s_type == HsmsSType.DESELECT_REQ:
+        elif packet.header.s_type_enum == HsmsSType.DESELECT_REQ:
             self.__handle_hsms_requests_deselect_req(packet)
-        elif packet.header.s_type == HsmsSType.DESELECT_RSP:
+        elif packet.header.s_type_enum == HsmsSType.DESELECT_RSP:
             self.__handle_hsms_requests_deselect_rsp(packet)
-        elif packet.header.s_type == HsmsSType.LINKTEST_REQ:
+        elif packet.header.s_type_enum == HsmsSType.LINKTEST_REQ:
             self.__handle_hsms_requests_linktest_req(packet)
         else:
             if packet.header.system in self._system_queues:
