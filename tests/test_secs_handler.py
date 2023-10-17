@@ -112,7 +112,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x02)
+        self.assertEqual(packet.header.s_type.value, 0x02)
         self.assertEqual(packet.header.session_id, 0xffff)
 
     def testStreamFunctionReceiving(self):
@@ -129,7 +129,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 2)
@@ -148,7 +148,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
@@ -170,7 +170,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x07)
+        self.assertEqual(packet.header.s_type.value, 0x07)
         self.assertEqual(packet.header.session_id, 0xffff)
 
     def testStreamFunctionReceivingUnhandledFunction(self):
@@ -185,7 +185,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0)
         self.assertEqual(packet.header.stream, 9)
         self.assertEqual(packet.header.function, 5)
@@ -206,7 +206,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 0)
@@ -223,7 +223,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=37)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
@@ -251,7 +251,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=33)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
@@ -279,7 +279,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=11)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
@@ -306,7 +306,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=11)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
@@ -333,7 +333,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
@@ -360,7 +360,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
@@ -387,7 +387,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=29)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
@@ -415,7 +415,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=29)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
@@ -443,7 +443,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=13)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
@@ -470,7 +470,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=13)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
@@ -497,7 +497,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=15)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
@@ -524,7 +524,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=15)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
@@ -552,7 +552,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 3)
@@ -580,7 +580,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.server.expect_packet(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
