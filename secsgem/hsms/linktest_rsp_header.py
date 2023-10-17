@@ -15,7 +15,7 @@
 #####################################################################
 """Header for the hsms linktest response."""
 
-from .header import HsmsHeader
+from .header import HsmsHeader, HsmsSType
 
 
 class HsmsLinktestRspHeader(HsmsHeader):
@@ -25,7 +25,7 @@ class HsmsLinktestRspHeader(HsmsHeader):
     Header for message with SType 6.
     """
 
-    def __init__(self, system):
+    def __init__(self, system: int):
         """
         Initialize a hsms linktest response.
 
@@ -40,4 +40,4 @@ class HsmsLinktestRspHeader(HsmsHeader):
             HsmsLinktestRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, \
 system:0x0000000a, require_response:False})
         """
-        super().__init__(system, 0xFFFF, 0, 0, False, 0x00, 0x06)
+        super().__init__(system, 0xFFFF, 0, 0, False, 0x00, HsmsSType.LINKTEST_RSP)

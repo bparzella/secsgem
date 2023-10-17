@@ -14,9 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Header for the hsms packets."""
-
-import struct
 import enum
+import struct
+import typing
 
 import secsgem.common
 
@@ -24,6 +24,7 @@ import secsgem.common
 class HsmsSType(enum.Enum):
     """HSMS SType enum."""
 
+    DATA_MESSAGE = 0
     SELECT_REQ = 1
     SELECT_RSP = 2
     DESELECT_REQ = 3
@@ -32,6 +33,31 @@ class HsmsSType(enum.Enum):
     LINKTEST_RSP = 6
     REJECT_REQ = 7
     SEPARATE_REQ = 9
+
+    @classmethod
+    def names(cls) -> typing.Dict["HsmsSType", str]:
+        """Get the names associated with the scode.
+
+        Returns:
+            dictionary of names associated with enum values
+
+        """
+        return {
+            cls.DATA_MESSAGE: "Data.msg",
+            cls.SELECT_REQ: "Select.req",
+            cls.SELECT_RSP: "Select.rsp",
+            cls.DESELECT_REQ: "Deselect.req",
+            cls.DESELECT_RSP: "Deselect.rsp",
+            cls.LINKTEST_REQ: "Linktest.req",
+            cls.LINKTEST_RSP: "Linktest.rsp",
+            cls.REJECT_REQ: "Reject.req",
+            cls.SEPARATE_REQ: "Separate.req"
+        }
+
+    @property
+    def text(self) -> str:
+        """Get the text for the item."""
+        return self.names()[self]
 
 
 class HsmsHeader(secsgem.common.Header):
@@ -49,7 +75,7 @@ class HsmsHeader(secsgem.common.Header):
             function: int = 0,
             requires_response: bool = False,
             p_type: int = 0x00,
-            s_type: int = 0x01):
+            s_type: HsmsSType = HsmsSType.SELECT_REQ):
         """
         Initialize a hsms header.
 
@@ -87,7 +113,7 @@ require_response:False})
                f'stream:{self.stream:02d}, ' \
                f'function:{self.function:02d}, ' \
                f'p_type:0x{self.p_type:02x}, ' \
-               f's_type:0x{self.s_type:02x}, ' \
+               f's_type:0x{self.s_type.value:02x}, ' \
                f'system:0x{self.system:08x}, ' \
                f'require_response:{self.require_response!r}}}'
 
@@ -106,14 +132,9 @@ require_response:False})
         return self._p_type
 
     @property
-    def s_type(self) -> int:
+    def s_type(self) -> HsmsSType:
         """Get S-type."""
         return self._s_type
-
-    @property
-    def s_type_enum(self) -> HsmsSType:
-        """Get S-type as enum."""
-        return HsmsSType(self._s_type)
 
     def encode(self):
         """
@@ -142,6 +163,6 @@ require_response:False})
             header_stream,
             self.function,
             self.p_type,
-            self.s_type,
+            self.s_type.value,
             self.system
         )

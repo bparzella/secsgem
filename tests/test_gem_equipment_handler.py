@@ -374,7 +374,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 16)
@@ -407,7 +407,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 16)
@@ -420,7 +420,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 18)
@@ -453,7 +453,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 18)
@@ -480,7 +480,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 12)
@@ -545,7 +545,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 4)
@@ -760,7 +760,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 34)
@@ -779,7 +779,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 36)
@@ -793,7 +793,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 38)
@@ -808,7 +808,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 4)
@@ -822,7 +822,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 16)
@@ -1246,7 +1246,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
@@ -1274,7 +1274,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 30)
@@ -1288,7 +1288,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 14)
@@ -1302,7 +1302,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 16)
@@ -1565,7 +1565,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 1)
@@ -1611,7 +1611,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 1)
@@ -1942,7 +1942,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 6)
@@ -1973,7 +1973,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 6)
@@ -2001,7 +2001,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 8)
@@ -2039,7 +2039,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2054,7 +2054,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS06F12(0)))
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
@@ -2075,7 +2075,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2095,7 +2095,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2120,7 +2120,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2149,7 +2149,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2164,7 +2164,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS06F12(0)))
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)
@@ -2191,7 +2191,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 42)
@@ -2206,7 +2206,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS06F12(0)))
 
         self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 11)

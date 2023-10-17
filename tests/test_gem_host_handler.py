@@ -51,7 +51,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=37)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
@@ -67,7 +67,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=33)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
@@ -116,7 +116,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=33)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
@@ -133,7 +133,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=35)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 35)
@@ -150,7 +150,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=37)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
@@ -176,7 +176,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=33)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
@@ -194,7 +194,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=35)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 35)
@@ -211,7 +211,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=37)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
@@ -237,7 +237,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=41)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 41)
@@ -273,7 +273,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=17)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 17)
@@ -299,7 +299,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=19)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 19)
@@ -321,7 +321,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=17)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 17)
@@ -343,7 +343,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=15)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 15)
@@ -365,7 +365,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 3)
@@ -391,7 +391,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 3)
@@ -417,7 +417,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=5)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 5)
@@ -442,7 +442,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=5)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 5)
@@ -467,7 +467,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(function=7)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 7)
@@ -487,7 +487,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 2)
@@ -505,7 +505,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 2)
@@ -525,7 +525,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         packet = self.server.expect_packet(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type, 0x00)
+        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 12)

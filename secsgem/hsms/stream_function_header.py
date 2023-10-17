@@ -15,7 +15,7 @@
 #####################################################################
 """HSMS Header for streams/functions."""
 
-from .header import HsmsHeader
+from .header import HsmsHeader, HsmsSType
 
 
 class HsmsStreamFunctionHeader(HsmsHeader):
@@ -48,4 +48,4 @@ class HsmsStreamFunctionHeader(HsmsHeader):
             HsmsStreamFunctionHeader({session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, \
 system:0x00000016, require_response:True})
         """
-        super().__init__(system, session_id, stream, function, require_response, 0x00, 0x00)
+        super().__init__(system, session_id, stream, function, require_response, 0x00, HsmsSType.DATA_MESSAGE)

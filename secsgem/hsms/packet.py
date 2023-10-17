@@ -21,7 +21,7 @@ import typing
 
 import secsgem.common
 
-from .header import HsmsHeader
+from .header import HsmsHeader, HsmsSType
 
 
 class HsmsPacket(secsgem.common.Packet):
@@ -131,7 +131,7 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
             res[3],
             (((res[2] & 0b10000000) >> 7) == 1),
             res[4],
-            res[5]
+            HsmsSType(res[5])
         ), res[7])
 
         return result

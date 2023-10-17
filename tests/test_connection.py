@@ -198,7 +198,7 @@ class HsmsTestServer:
                 if system_id is not None and packet.header.system == system_id:
                     match = True
 
-                if s_type is not None and packet.header.s_type == s_type:
+                if s_type is not None and packet.header.s_type.value == s_type:
                     match = True
 
                 if stream is not None and packet.header.stream == stream:

@@ -32,7 +32,7 @@ class TestExampleSecsGem(unittest.TestCase):
     def testLinktest(self):
         result_packet = self.handler.send_linktest_req()
 
-        self.assertEqual(result_packet.header.s_type, 6)
+        self.assertEqual(result_packet.header.s_type.value, 6)
         self.assertEqual(result_packet.header.session_id, 65535)
 
 
