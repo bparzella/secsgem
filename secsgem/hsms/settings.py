@@ -67,7 +67,6 @@ class HsmsSettings(Settings):
             Setting("connect_mode", HsmsConnectMode.ACTIVE, "Hsms connect mode"),
             Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
             Setting("port", 5000, "TCP port of remote host"),
-            Setting("session_id", 0, "session / device ID to use for connection")
         ]
 
     def create_protocol(self) -> Protocol:

@@ -99,7 +99,8 @@ class Settings(abc.ABC):
         return [
             Setting("timeouts", None, "Communication timeout", Timeouts),
             Setting("device_type", DeviceType.HOST, "Device type"),
-            Setting("streams_functions", None, "Container with streams/functions")
+            Setting("streams_functions", None, "Container with streams/functions"),
+            Setting("session_id", 0, "session / device ID to use for connection"),
         ]
 
     @classmethod
