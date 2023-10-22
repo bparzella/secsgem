@@ -172,7 +172,16 @@ class HsmsActiveConnection(HsmsConnection):
         # make socket nonblocking
         self._socket.setblocking(0)
 
+        # mark connection as connected
+        self._connected = True
+
         # start the receiver thread
         self._start_receiver()
+
+        # send event
+        try:
+            self.on_connected({"source": self})
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception('ignoring exception for on_connected handler')
 
         return True

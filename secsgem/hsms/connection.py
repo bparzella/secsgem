@@ -102,9 +102,6 @@ class HsmsConnection(secsgem.common.Connection):
             :class:`secsgem.hsms.connections.HsmsPassiveConnection`,
             :class:`secsgem.hsms.connections.HsmsMultiPassiveConnection`
         """
-        # mark connection as connected
-        self._connected = True
-
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(),
                          name=f"secsgem_hsmsConnection_receiver_{self._settings.address}:{self._settings.port}").start()
@@ -112,12 +109,6 @@ class HsmsConnection(secsgem.common.Connection):
         # wait until thread is running
         while not self._thread_running:
             pass
-
-        # send event
-        try:
-            self.on_connected({"source": self})
-        except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_established handler')
 
     def disconnect(self):
         """Close connection."""

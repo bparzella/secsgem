@@ -164,7 +164,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
             sock.close()
             return
 
-        new_connection.on_connected(sock, source_ip)
+        new_connection.connected(sock, source_ip)
 
     def _listen_thread_func(self):
         """
