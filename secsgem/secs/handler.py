@@ -46,7 +46,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         self.settings = settings
 
         self._protocol = settings.create_protocol()
-        self._protocol.events.hsms_packet_received += self._on_hsms_packet_received
+        self._protocol.events.packet_received += self._on_packet_received
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -266,12 +266,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
             self.logger.exception('Callback aborted because of exception, abort sent')
             self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
 
-    def _on_hsms_packet_received(self, data):
-        """
-        Packet received from hsms layer.
+    def _on_packet_received(self, data: secsgem.common.Packet):
+        """Packet received from protocol layer.
 
-        :param data: received data
-        :type data: :class:`secsgem.common.Packet`
+        Args:
+            data: received data
+
         """
         packet = data["packet"]
 

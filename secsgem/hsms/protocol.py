@@ -89,7 +89,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
                 print ("Connected")
 
             client = secsgem.hsms.HsmsProtocol(settings)
-            client.events.hsms_connected += onConnect
+            client.events.connected += onConnect
 
             client.enable()
 
@@ -99,10 +99,9 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         """
         super().__init__(settings)
-        self._settings = settings
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-        self._communication_logger = logging.getLogger("hsms_communication")
+        self._communication_logger = logging.getLogger("communication")
 
         self._connected = False
 
@@ -224,7 +223,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :type data: object
         """
         # send event
-        self.events.fire('hsms_selected', {'connection': self})
+        self.events.fire('communicating', {'connection': self})
 
     def _on_linktest_timer(self):
         """Linktest time timed out, so send linktest request."""
@@ -241,7 +240,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         # update connection state
         self._connection_state.connect()
 
-        self.events.fire("hsms_connected", {'connection': self})
+        self.events.fire("connected", {'connection': self})
 
     def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
         """Handle connection is about to be closed event."""
@@ -257,7 +256,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         # clear receive buffer
         self._receive_buffer = b""
 
-        self.events.fire("hsms_disconnected", {'connection': self})
+        self.events.fire("disconnected", {'connection': self})
 
     def __handle_hsms_requests_select_req(self, packet: HsmsPacket):
         if self._connection.disconnecting:
@@ -361,12 +360,12 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         return False
 
-    def _on_connection_packet_received(self, _, packet):
-        """
-        Packet received by connection.
+    def _on_connection_packet_received(self, _, packet: HsmsPacket):
+        """Packet received by connection.
 
-        :param packet: received data packet
-        :type packet: :class:`secsgem.hsms.HsmsPacket`
+        Args:
+            packet: received data packet
+
         """
         if packet.header.s_type.value > 0:
             self.__handle_hsms_requests(packet)
@@ -391,7 +390,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
                 self._system_queues[packet.header.system].put_nowait(packet)
             # just log if nobody is interested
             else:
-                self.events.fire("hsms_packet_received", {'connection': self, 'packet': packet})
+                self.events.fire("packet_received", {'connection': self, 'packet': packet})
 
     def _get_queue_for_system(self, system_id):
         """

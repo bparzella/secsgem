@@ -34,7 +34,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         :param connection: connection to use
         """
         super().__init__(settings)
-        self._protocol.events.hsms_selected += self._on_hsms_select
+        self._protocol.events.communicating += self._on_communicating
 
         self._mdln = "secsgem"  #: model number returned by S01E13/14
         self._softrev = "0.1.0"  #: software version returned by S01E13/14
@@ -110,8 +110,8 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def enable(self) -> None:
         """Enable the connection."""
-        self.protocol.enable()
         self._communication_state.enable()  # type: ignore
+        self.protocol.enable()
 
         self._logger.info("Connection enabled")
 
@@ -122,9 +122,9 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         self._logger.info("Connection disabled")
 
-    def _on_hsms_packet_received(self, data: typing.Dict[str, typing.Any]):
+    def _on_packet_received(self, data: typing.Dict[str, typing.Any]):
         """
-        Packet received from hsms layer.
+        Packet received from protocol layer.
 
         :param data: received event data
         """
@@ -150,7 +150,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
                              name=f"secsgem_gemHandler_callback_S{packet.header.stream}F{packet.header.function}"
                              ).start()
 
-    def _on_hsms_select(self, _):
+    def _on_communicating(self, _):
         """Selected received from hsms layer."""
         self._communication_state.select()
 
