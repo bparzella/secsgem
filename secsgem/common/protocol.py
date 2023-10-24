@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import abc
+import random
 import typing
 
 from .events import EventProducer
@@ -31,7 +32,7 @@ class Protocol(abc.ABC):
     """Abstract base class for a protocol."""
 
     def __init__(self, settings: Settings) -> None:
-        """Initialize protocol base object."""        
+        """Initialize protocol base object."""
         super().__init__()
 
         self._settings = settings
@@ -39,10 +40,26 @@ class Protocol(abc.ABC):
         self._event_producer = EventProducer()
         self._event_producer.targets += self
 
+        self._system_counter = random.randint(0, (2 ** 32) - 1)
+
     @property
     def events(self):
         """Property for event handling."""
         return self._event_producer
+
+    def get_next_system_counter(self):
+        """
+        Return the next System.
+
+        :returns: System for the next command
+        :rtype: integer
+        """
+        self._system_counter += 1
+
+        if self._system_counter > ((2 ** 32) - 1):
+            self._system_counter = 0
+
+        return self._system_counter
 
     @property
     @abc.abstractmethod

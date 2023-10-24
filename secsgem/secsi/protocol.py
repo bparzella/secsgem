@@ -31,7 +31,6 @@ if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
     from .settings import SecsISettings
 
-
 class SecsIProtocol(secsgem.common.Protocol):
     """Implementation for SECS-I protocol."""
 
@@ -39,6 +38,8 @@ class SecsIProtocol(secsgem.common.Protocol):
     EOT = 0b00000100
     ACK = 0b00000110
     NAK = 0b00010101
+
+    block_size = 244
 
     def __init__(self, settings: SecsISettings):
         """
@@ -74,7 +75,7 @@ class SecsIProtocol(secsgem.common.Protocol):
 
         self._connected = False
 
-        self._receive_buffer = b""
+        self._receive_buffer = secsgem.common.ByteQueue()
 
         self._system_queues: typing.Dict[int, queue.Queue[SecsIPacket]] = {}
 
@@ -108,13 +109,30 @@ class SecsIProtocol(secsgem.common.Protocol):
 
         """
         # encode the packet
-        data = packet.encode()
+        data = packet.data
 
         # split data into blocks
-        blocks = [data[i: i + self.send_block_size] for i in range(0, len(data), self.send_block_size)]
+        blocks = [data[i: i + self.block_size] for i in range(0, len(data), self.block_size)]
 
-        for block in blocks:
-            if not self._connection.send_data(block):
+        for index, block in enumerate(blocks):
+            header_data = {
+                "block": index,
+                "last_block": index == len(blocks)
+            }
+            header = packet.header.updated_with(**header_data)
+
+            block_data = header.encode() + block
+
+            block_length_data = bytes([len(block_data)])
+            checksum_data = struct.pack(">H", self._calculate_checksum(block_data))
+
+            packet_data = block_length_data + block_data + checksum_data
+
+            self._request_send()
+
+            self._connection.send_data(packet_data)
+
+            if not self._get_send_result():
                 return False
 
         return True
@@ -176,9 +194,9 @@ class SecsIProtocol(secsgem.common.Protocol):
     def _on_disconnected(self, _: typing.Dict[str, typing.Any]):
         """Handle connection was _ event."""
         # clear receive buffer
-        self._receive_buffer = b""
+        self._receive_buffer.clear()
 
-        self.events.fire("hdisconnected", {'connection': self})
+        self.events.fire("disconnected", {'connection': self})
 
     def _on_connection_data_received(self, data: typing.Dict[str, typing.Any]):
         """Data received by connection.
@@ -187,22 +205,22 @@ class SecsIProtocol(secsgem.common.Protocol):
             data: received data
 
         """
-        self._receive_buffer += data["data"]
+        self._receive_buffer.append(data["data"])
 
         # handle data in input buffer
         while self._process_receive_buffer():
             pass
 
     def _process_receive_buffer(self):
-        """Parse the receive buffer and dispatch callbacks."""        
+        """Parse the receive buffer and dispatch callbacks."""
         if self._state_machine.state == "IDLE":
             if len(self._receive_buffer) < 1:
                 return False
 
-            if self._receive_buffer[0] != self.ENQ:
+            if self._receive_buffer.peek_byte() != self.ENQ:
                 raise Exception("Expected ENQ in IDLE state")
 
-            self._receive_buffer = self._receive_buffer[1:]
+            self._receive_buffer.pop()
 
             self._state_machine.ENQReceived()
 
@@ -210,25 +228,16 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             self._state_machine.Receive()
         elif self._state_machine.state == "RECEIVE":
-            if len(self._receive_buffer) < self._receive_buffer[0] + 3:
+            if len(self._receive_buffer) < self._receive_buffer.peek_byte() + 3:
                 return False
 
-            length = self._receive_buffer[0]
-            self._receive_buffer = self._receive_buffer[1:]
-
-            data = self._receive_buffer[:length]
-            self._receive_buffer = self._receive_buffer[length:]
-
-            checksum = self._receive_buffer[:2]
-            self._receive_buffer = self._receive_buffer[2:]
+            length = self._receive_buffer.pop_byte()
+            data = self._receive_buffer.pop(length)
+            checksum = self._receive_buffer.pop(2)
 
             received_checksum = struct.unpack(">H", checksum)[0]
 
-            calculated_checksum = 0
-            for data_byte in data:
-                calculated_checksum += data_byte
-
-            if received_checksum != calculated_checksum:
+            if received_checksum != self._calculate_checksum(data):
                 self._state_machine.ReceiveComplete()
                 self._connection.send_data(bytes([self.NAK]))
                 return False
@@ -255,6 +264,23 @@ class SecsIProtocol(secsgem.common.Protocol):
             return True
 
         return False
+
+    def _calculate_checksum(self, data: bytes) -> int:
+        """Calculate checksum of data packet.
+
+        Args:
+            data: packet data
+
+        Returns:
+            checksum
+
+        """
+        calculated_checksum = 0
+
+        for data_byte in data:
+            calculated_checksum += data_byte
+
+        return calculated_checksum
 
     def _on_connection_packet_received(self, _, packet: SecsIPacket):
         """Packet received by connection.

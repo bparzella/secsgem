@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import struct
+import typing
 
 import secsgem.common
 
@@ -31,10 +32,10 @@ class SecsIHeader(secsgem.common.Header):
     length = 10
 
     def __init__(
-            self, 
-            system: int, 
-            session_id: int, 
-            stream: int = 0, 
+            self,
+            system: int,
+            session_id: int,
+            stream: int = 0,
             function: int = 0,
             block: int = 0,
             from_equipment: bool = False,
@@ -96,6 +97,25 @@ require_response:False})
         This is the end bit (e-bit).
         """
         return self._last_block
+
+    @property
+    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+        """Get the data as dictionary.
+
+        Returns:
+            Header data as dictionary.
+
+        """
+        return {
+            "system": self._system,
+            "session_id": self._session_id,
+            "stream": self._stream,
+            "function": self._function,
+            "block": self._block,
+            "from_equipment": self._from_equipment,
+            "require_response": self._require_response,
+            "last_block": self._last_block
+        }
 
     def __str__(self) -> str:
         """Generate string representation for an object of this class."""

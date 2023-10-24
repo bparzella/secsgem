@@ -168,4 +168,5 @@ class SecsIConnection(secsgem.common.Connection):
 
         """
         self._port.write(data)
+
         return True

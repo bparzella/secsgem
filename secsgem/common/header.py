@@ -14,7 +14,10 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """header base class."""
+from __future__ import annotations
+
 import abc
+import typing
 
 
 class Header(abc.ABC):
@@ -57,3 +60,40 @@ class Header(abc.ABC):
     def system(self) -> int:
         """Get system."""
         return self._system
+
+    @abc.abstractmethod
+    def encode(self) -> bytes:
+        """Encode header to hsms packet.
+
+        Returns:
+            encoded header
+
+        """
+        raise NotImplementedError("Header.encode missing implementation")
+
+    @property
+    @abc.abstractmethod
+    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+        """Get the data as dictionary.
+
+        Returns:
+            Header data as dictionary.
+
+        """
+        raise NotImplementedError("Header._as_dictionary missing implementation")
+
+    def updated_with(self, **kwargs) -> Header:
+        """Get a new header with updated fields.
+
+        Args:
+            kwargs: parameter name will update constructor field
+
+        Returns:
+            new header with modified data
+
+        """
+        data = self._as_dictionary
+
+        data.update(kwargs)
+
+        return self.__class__(**data)

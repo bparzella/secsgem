@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Header for the hsms packets."""
+from __future__ import annotations
+
 import enum
 import struct
 import typing
@@ -70,10 +72,10 @@ class HsmsHeader(secsgem.common.Header):
     length = 14
 
     def __init__(
-            self, 
-            system: int, 
-            session_id: int, 
-            stream: int = 0, 
+            self,
+            system: int,
+            session_id: int,
+            stream: int = 0,
             function: int = 0,
             requires_response: bool = False,
             p_type: int = 0x00,
@@ -132,6 +134,24 @@ require_response:False})
         """Get S-type."""
         return self._s_type
 
+    @property
+    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+        """Get the data as dictionary.
+
+        Returns:
+            Header data as dictionary.
+
+        """
+        return {
+            "system": self._system,
+            "session_id": self._session_id,
+            "stream": self._stream,
+            "function": self._function,
+            "requires_response": self._require_response,
+            "p_type": self._p_type,
+            "s_type": self._s_type
+        }
+
     def encode(self) -> bytes:
         """Encode header to hsms packet.
 
@@ -176,7 +196,7 @@ require_response:False})
         res = struct.unpack(">LHBBBBL", data)
 
         return HsmsHeader(
-            res[6], 
+            res[6],
             res[1],
             res[2] & 0b01111111,
             res[3],

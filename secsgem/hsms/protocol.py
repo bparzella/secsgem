@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import logging
 import queue
-import random
 import struct
 import threading
 import typing
@@ -105,9 +104,6 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         self._connected = False
 
-        # system id counter
-        self._system_counter = random.randint(0, (2 ** 32) - 1)
-
         # repeating linktest variables
         self._linktest_timer = None
         self._linktest_timeout = 30
@@ -158,20 +154,6 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     def connection_state(self) -> ConnectionStateMachine:
         """Property for connection state."""
         return self._connection_state
-
-    def get_next_system_counter(self):
-        """
-        Return the next System.
-
-        :returns: System for the next command
-        :rtype: integer
-        """
-        self._system_counter += 1
-
-        if self._system_counter > ((2 ** 32) - 1):
-            self._system_counter = 0
-
-        return self._system_counter
 
     def _send_select_req_thread(self):
         response = self.send_select_req()
