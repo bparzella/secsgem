@@ -16,6 +16,7 @@
 """Queue for bytes."""
 from __future__ import annotations
 
+import threading
 
 class ByteQueue:
     """FIFO class for queuing and retrieving bytes."""
@@ -23,6 +24,7 @@ class ByteQueue:
     def __init__(self) -> None:
         """Initialize the queue."""
         self._buffer = bytearray()
+        self._buffer_lock = threading.Condition()
 
     def append(self, data: bytes):
         """Add bytes to the end of the queue.
@@ -31,7 +33,9 @@ class ByteQueue:
             data: bytes to add
 
         """
-        self._buffer.extend(data)
+        with self._buffer_lock:
+            self._buffer.extend(data)
+            self._buffer_lock.notify_all()
 
     def pop(self, size: int = 1) -> bytes:
         """Remove and return bytes from the beginning of queue.
@@ -43,9 +47,10 @@ class ByteQueue:
             removed bytes
 
         """
-        data = self._buffer[:size]
-        del self._buffer[:size]
-        return data
+        with self._buffer_lock:
+            data = self._buffer[:size]
+            del self._buffer[:size]
+            return data
 
     def pop_byte(self) -> int:
         """Remove and return single byte from the beginning of queue.
@@ -54,9 +59,10 @@ class ByteQueue:
             removed byte
 
         """
-        data = self._buffer[0]
-        del self._buffer[0]
-        return data
+        with self._buffer_lock:
+            data = self._buffer[0]
+            del self._buffer[0]
+            return data
 
     def peek(self, size: int = 1) -> bytes:
         """Get bytes from beginning of the queue without removing them.
@@ -84,7 +90,8 @@ class ByteQueue:
 
     def clear(self):
         """Clear the bytes in the queue."""
-        self._buffer.clear()
+        with self._buffer_lock:
+            self._buffer.clear()
 
     def __len__(self) -> int:
         """Get the length of the queue.
@@ -94,3 +101,38 @@ class ByteQueue:
 
         """
         return len(self._buffer)
+
+    def wait_for(self, size: int = 1, peek: bool = False) -> bytes:
+        """Wait until the requested number of bytes is available in the receive queue.
+
+        Args:
+            size: number of bytes
+            peek: only look, don't remove the item from the queue.
+
+        Returns:
+            Found bytes
+
+        """
+        def min_size() -> bool:
+            return len(self._buffer) >= size
+
+        if len(self._buffer) < size:
+            with self._buffer_lock:
+                self._buffer_lock.wait_for(min_size)
+
+        if peek:
+            return self.peek(size)
+
+        return self.pop(size)
+
+    def wait_for_byte(self, peek: bool = False) -> int:
+        """Wait until one byte is available in the receive queue.
+
+        Args:
+            peek: only look, don't remove the item from the queue.
+
+        Returns:
+            Found byte
+
+        """
+        return self.wait_for(peek=peek)[0]
