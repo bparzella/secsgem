@@ -142,18 +142,31 @@ class Settings(abc.ABC):
     @abc.abstractmethod
     def create_protocol(self) -> Protocol:
         """Protocol class for this configuration."""
-        raise NotImplementedError(f"property 'protocol' is not implemented for '{self.__class__.__name__}'")
+        raise NotImplementedError(f"function 'create_protocol' is not implemented for '{self.__class__.__name__}'")
 
     @abc.abstractmethod
     def create_connection(self) -> Connection:
         """Connection class for this configuration."""
-        raise NotImplementedError(f"property 'connection' is not implemented for '{self.__class__.__name__}'")
+        raise NotImplementedError(f"function 'create_connection' is not implemented for '{self.__class__.__name__}'")
 
     @property
     @abc.abstractmethod
     def name(self) -> str:
         """Name of this configuration."""
         raise NotImplementedError(f"property 'name' is not implemented for '{self.__class__.__name__}'")
+
+    @abc.abstractmethod
+    def generate_thread_name(self, functionality: str) -> str:
+        """Generate a unique thread name for this configuration and a provided functionality.
+
+        Args:
+            functionality: name of the functionality to generate thread name for
+
+        Returns:
+            generated thread name
+
+        """
+        raise NotImplementedError(f"function 'generate_thread_name' is not implemented for '{self.__class__.__name__}'")
 
     def __getattr__(self, name: str) -> typing.Any:
         """

@@ -90,3 +90,15 @@ class HsmsSettings(Settings):
     def is_active(self) -> bool:
         """Check if connection is active."""
         return self.connect_mode == HsmsConnectMode.ACTIVE
+
+    def generate_thread_name(self, functionality: str) -> str:
+        """Generate a unique thread name for this configuration and a provided functionality.
+
+        Args:
+            functionality: name of the functionality to generate thread name for
+
+        Returns:
+            generated thread name
+
+        """
+        return f"secsgem_HSMS_{functionality}_{self.connect_mode}_{self.address}:{self.port}"

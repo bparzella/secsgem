@@ -69,3 +69,15 @@ class SecsISettings(Settings):
     def name(self) -> str:
         """Name of this configuration."""
         return f"SECSI-{self.port}"
+
+    def generate_thread_name(self, functionality: str) -> str:
+        """Generate a unique thread name for this configuration and a provided functionality.
+
+        Args:
+            functionality: name of the functionality to generate thread name for
+
+        Returns:
+            generated thread name
+
+        """
+        return f"secsgem_SecsI_{functionality}_{self.port}@{self.speed}"
