@@ -24,6 +24,7 @@ from .header import Header
 from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
 from .packet import Packet
 from .protocol import Protocol
+from .protocol_dispatcher import ProtocolDispatcher
 from .settings import Settings, DeviceType
 from .timeouts import Timeouts
 
@@ -38,6 +39,7 @@ __all__ = [
     "format_hex", "function_name", "indent_block", "is_windows", "is_errorcode_ewouldblock",
     "Packet",
     "Protocol",
+    "ProtocolDispatcher",
     "Settings", "DeviceType",
-    "Timeouts"
+    "Timeouts",
 ]
