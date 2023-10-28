@@ -75,9 +75,9 @@ class HsmsTestConnection(secsgem.common.Connection):
     def simulate_disconnect(self):
         self.disconnect()
 
-    def simulate_packet(self, packet):
-        if self._delegate and hasattr(self._delegate, 'on_connection_packet_received') and callable(getattr(self._delegate, 'on_connection_packet_received')):
-            self._delegate.on_connection_packet_received(self, packet)
+    def simulate_packet(self, message):
+        if self._delegate and hasattr(self._delegate, 'on_connection_message_received') and callable(getattr(self._delegate, 'on_connection_message_received')):
+            self._delegate.on_connection_message_received(self, message)
 
     def enable(self):
         self._enabled = True
@@ -221,4 +221,4 @@ class HsmsTestServer:
         return self.connection.get_next_system_counter()
 
     def generate_stream_function_packet(self, system_id, packet, session_id=0):
-        return secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())
+        return secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())

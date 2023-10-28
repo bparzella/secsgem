@@ -234,16 +234,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f15(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 15, Request offline.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         oflack = 0
 
@@ -255,16 +255,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 17, Request online.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         onlack = 1
 
@@ -384,18 +384,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 3, Equipment status request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         responses = []
 
@@ -414,18 +414,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f11(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 11, SV namelist request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         responses = []
 
@@ -499,18 +499,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f33(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 33, Define Report.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         # 0  = Accept
         # 1  = Denied. Insufficient space.
@@ -562,18 +562,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f35(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 35, Link event report.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Denied. Insufficient space
@@ -616,18 +616,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Denied. At least one CEID does not exist
@@ -640,18 +640,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Callback handler for Stream 6, Function 15, event report request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         ceid = message.get()
 
@@ -803,18 +803,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 13, Equipment constant request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         responses = []
 
@@ -833,18 +833,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 15, Equipment constant send.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         eac = 0
 
@@ -870,18 +870,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f29(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 29, EC namelist request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         responses = []
 
@@ -964,18 +964,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f03(self,
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 3, Alarm en-/disabled.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Error
@@ -991,18 +991,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f05(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 5, Alarm list.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         result = []
 
@@ -1021,16 +1021,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f07(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 7, Enabled alarm list.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         result = []
 
@@ -1056,7 +1056,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f41(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 2, Function 41, host command send.
 
@@ -1064,14 +1064,14 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         completion first.
         Then we run the actual remote command callback and signal success with the matching collection event.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         rcmd_name = message.RCMD.get()
         rcmd_callback_name = "rcmd_" + rcmd_name
@@ -1092,7 +1092,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self.send_response(self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.ACK_FINISH_LATER,
                                                         "PARAMS": []}),
-                           packet.header.system)
+                           message.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
 

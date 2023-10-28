@@ -21,7 +21,7 @@ import random
 import typing
 
 from .events import EventProducer
-from .packet import Packet
+from .message import Message
 
 if typing.TYPE_CHECKING:
     from .settings import Settings
@@ -85,22 +85,28 @@ class Protocol(abc.ABC):
     @abc.abstractmethod
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
         """
-        Send the packet and wait for the response.
+        Send the message and wait for the response.
 
-        :param function: packet to be sent
-        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
+        Args:
+            function: message to be sent
+
+        Returns:
+            True if sent successful
+
         """
         raise NotImplementedError("Protocol.send_stream_function missing implementation")
 
     @abc.abstractmethod
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[Packet]:
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[Message]:
         """
-        Send the packet and wait for the response.
+        Send the message and wait for the response.
 
-        :param function: packet to be sent
-        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
-        :returns: Packet that was received
-        :rtype: :class:`secsgem.common.Packet`
+        Args:
+            function: message to be sent
+
+        Returns:
+            message that was received
+
         """
         raise NotImplementedError("Protocol.send_and_waitfor_response missing implementation")
 

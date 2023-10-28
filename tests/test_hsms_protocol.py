@@ -54,7 +54,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0x05)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestRspHeader(packet.header.system)))
 
         packet = self.server.expect_packet(s_type=0x05)
 
@@ -66,7 +66,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -82,7 +82,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -94,7 +94,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -103,7 +103,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.session_id, 0xffff)
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -115,7 +115,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -127,7 +127,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -142,7 +142,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -154,7 +154,7 @@ class TestHsmsProtocolHandlerPassive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -190,7 +190,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0x01)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
     def testSelectSendError(self):
         self.server.fail_next_send()
@@ -206,7 +206,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0x01)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
         clientCommandThread = threading.Thread(target=self.client.send_deselect_req, name="TestHsmsProtocolActive_testDeselect")
         clientCommandThread.daemon = True  # make thread killable on program termination
@@ -218,7 +218,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0x03)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsDeselectRspHeader(packet.header.system)))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -227,7 +227,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -239,7 +239,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsDeselectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -254,7 +254,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.client._connection.disconnecting = True
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -267,7 +267,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -289,7 +289,7 @@ class TestHsmsProtocolActive(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0x01)
         self.assertEqual(packet.header.session_id, 0xffff)
 
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectRspHeader(packet.header.system)))
 
         system_id = self.server.get_next_system_counter()
         self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F01()))

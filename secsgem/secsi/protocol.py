@@ -26,14 +26,14 @@ import typing
 import secsgem.common
 
 from .header import SecsIHeader
-from .packet import SecsIPacket
+from .message import SecsIMessage
 
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
     from .settings import SecsISettings
 
 
-class PacketSendResult(enum.Enum):
+class MessageSendResult(enum.Enum):
     """Enum for send result including not send state."""
 
     NOT_SENT = 0
@@ -41,8 +41,8 @@ class PacketSendResult(enum.Enum):
     SENT_ERROR = 2
 
 
-class PacketSendInfo:
-    """Container for sending packet and waiting for result."""
+class MessageSendInfo:
+    """Container for sending message and waiting for result."""
 
     def __init__(self, data: bytes):
         """Initialize package send info object.
@@ -53,7 +53,7 @@ class PacketSendInfo:
         """
         self._data = data
 
-        self._result = PacketSendResult.NOT_SENT
+        self._result = MessageSendResult.NOT_SENT
         self._result_trigger = threading.Event()
 
     @property
@@ -68,46 +68,46 @@ class PacketSendInfo:
             result: result to resolve with
 
         """
-        self._result = PacketSendResult.SENT_OK if result else PacketSendResult.SENT_ERROR
+        self._result = MessageSendResult.SENT_OK if result else MessageSendResult.SENT_ERROR
         self._result_trigger.set()
 
     def wait(self) -> bool:
-        """Wait for the packet is sent and a result is available."""
+        """Wait for the message is sent and a result is available."""
         self._result_trigger.wait()
 
-        return self._result == PacketSendResult.SENT_OK
+        return self._result == MessageSendResult.SENT_OK
 
 
 class SecsIBlockContainer:
-    """Container for packet blocks."""
+    """Container for message blocks."""
 
     def __init__(self) -> None:
         """Initialize container."""
-        self._packets: typing.Dict[int, typing.List[SecsIPacket]] = {}
+        self._blocks: typing.Dict[int, typing.List[SecsIMessage]] = {}
 
-    def add_block(self, packet: SecsIPacket) -> typing.Optional[SecsIPacket]:
-        """Add a block, and get completed packet if available.
+    def add_block(self, block: SecsIMessage) -> typing.Optional[SecsIMessage]:
+        """Add a block, and get completed message if available.
 
         Args:
-            packet: block to add
+            block: block to add
 
         Returns:
-            completed packet or None if paket not complete
+            completed message or None if paket not complete
 
         """
-        old_packets = self._packets.get(packet.header.system, None)
+        old_blocks = self._blocks.get(block.header.system, None)
 
-        if old_packets is None:
-            new_packets = [packet]
+        if old_blocks is None:
+            new_blocks = [block]
         else:
-            new_packets = old_packets + [packet]
-            del self._packets[packet.header.system]
+            new_blocks = old_blocks + [block]
+            del self._blocks[block.header.system]
 
-        if not packet.header.last_block:
-            self._packets[packet.header.system] = new_packets
+        if not block.header.last_block:
+            self._blocks[block.header.system] = new_blocks
             return None
 
-        return SecsIPacket(packet.header, b"".join([packet.data for packet in new_packets]))
+        return SecsIMessage(block.header, b"".join([block.data for block in new_blocks]))
 
 
 class SecsIProtocol(secsgem.common.Protocol):
@@ -154,16 +154,16 @@ class SecsIProtocol(secsgem.common.Protocol):
 
         self.__connection: typing.Optional[secsgem.common.Connection] = None
         self._receive_buffer = secsgem.common.ByteQueue()
-        self._send_queue: queue.Queue[PacketSendInfo] = queue.Queue()
+        self._send_queue: queue.Queue[MessageSendInfo] = queue.Queue()
         self._block_container = SecsIBlockContainer()
 
         self._thread = secsgem.common.ProtocolDispatcher(
             self._process_data,
-            self._dispatch_packet,
+            self._dispatch_message,
             self._settings
         )
 
-        self._system_queues: typing.Dict[int, queue.Queue[SecsIPacket]] = {}
+        self._system_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
 
     @property
     def _connection(self) -> secsgem.common.Connection:
@@ -183,16 +183,16 @@ class SecsIProtocol(secsgem.common.Protocol):
         """Disable the connection."""
         self._connection.enable()
 
-    def send_packet(self, packet: secsgem.common.Packet) -> bool:
+    def send_message(self, message: secsgem.common.Message) -> bool:
         """
-        Send a packet to the remote host.
+        Send a message to the remote host.
 
         Args:
-            packet: packet to be transmitted
+            message: message to be transmitted
 
         """
-        # encode the packet
-        data = packet.data
+        # encode the message
+        data = message.data
 
         # split data into blocks
         blocks = [data[i: i + self.block_size] for i in range(0, len(data), self.block_size)]
@@ -202,39 +202,39 @@ class SecsIProtocol(secsgem.common.Protocol):
                 "block": index + 1,
                 "last_block": (index + 1) == len(blocks)
             }
-            header = packet.header.updated_with(**header_data)
+            header = message.header.updated_with(**header_data)
 
             block_data = header.encode() + block
 
             block_length_data = bytes([len(block_data)])
             checksum_data = struct.pack(">H", self._calculate_checksum(block_data))
 
-            packet_data = block_length_data + block_data + checksum_data
+            message_data = block_length_data + block_data + checksum_data
 
-            packet_info = PacketSendInfo(packet_data)
-            self._send_queue.put(packet_info)
+            message_info = MessageSendInfo(message_data)
+            self._send_queue.put(message_info)
             self._thread.trigger_receiver()
 
-            if not packet_info.wait():
+            if not message_info.wait():
                 return False
 
         return True
 
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Packet]:
-        """Send the packet and wait for the response.
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Message]:
+        """Send the message and wait for the response.
 
         Args:
-            packet: packet to be sent
+            function: message to be sent
 
         Returns:
-            Packet that was received
+            Message that was received
 
         """
         system_id = self.get_next_system_counter()
 
         response_queue = self._get_queue_for_system(system_id)
 
-        out_packet = SecsIPacket(
+        out_message = SecsIMessage(
             SecsIHeader(
                 system_id,
                 self._settings.session_id,
@@ -246,10 +246,10 @@ class SecsIProtocol(secsgem.common.Protocol):
             function.encode()
         )
 
-        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
 
-        if not self.send_packet(out_packet):
-            self._logger.error("Sending packet failed")
+        if not self.send_message(out_message):
+            self._logger.error("Sending message failed")
             self._remove_queue(system_id)
             return None
 
@@ -271,22 +271,26 @@ class SecsIProtocol(secsgem.common.Protocol):
         :param system: system to reply to
         :type system: integer
         """
-        out_packet = SecsIPacket(
+        out_message = SecsIMessage(
             SecsIHeader(system, self._settings.session_id, function.stream, function.function),
             function.encode())
 
-        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
 
-        return self.send_packet(out_packet)
+        return self.send_message(out_message)
 
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
         """
-        Send the packet and wait for the response.
+        Send the message and wait for the response.
 
-        :param packet: packet to be sent
-        :type packet: :class:`secsgem.secs.functionbase.SecsStreamFunction`
+        Args:
+            function: message to be sent
+
+        Returns:
+            True if successful
+
         """
-        out_packet = SecsIPacket(
+        out_message = SecsIMessage(
             SecsIHeader(
                 self.get_next_system_counter(),
                 self._settings.session_id,
@@ -298,9 +302,9 @@ class SecsIProtocol(secsgem.common.Protocol):
             function.encode()
         )
 
-        self._communication_logger.info("> %s\n%s", out_packet, function, extra=self._get_log_extra())
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
 
-        return self.send_packet(out_packet)
+        return self.send_message(out_message)
 
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
@@ -356,13 +360,13 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             enq_resonse = self._receive_buffer.pop_byte()
 
-            packet_info = self._send_queue.get()
+            message_info = self._send_queue.get()
 
-            self._connection.send_data(packet_info.data)
+            self._connection.send_data(message_info.data)
 
             data_resonse = self._receive_buffer.wait_for_byte()
 
-            packet_info.resolve(data_resonse == self.ACK)
+            message_info.resolve(data_resonse == self.ACK)
 
     def _process_received_data(self):
         if len(self._receive_buffer) < 1:
@@ -388,10 +392,10 @@ class SecsIProtocol(secsgem.common.Protocol):
                 self._connection.send_data(bytes([self.NAK]))
                 return False
 
-            response = SecsIPacket.decode(data)
+            response = SecsIMessage.decode(data)
 
-            # redirect packet to hsms handler
-            self._thread.queue_packet(self, response)
+            # redirect message to hsms handler
+            self._thread.queue_message(self, response)
 
             self._connection.send_data(bytes([self.ACK]))
 
@@ -401,10 +405,10 @@ class SecsIProtocol(secsgem.common.Protocol):
         self._process_received_data()
 
     def _calculate_checksum(self, data: bytes) -> int:
-        """Calculate checksum of data packet.
+        """Calculate checksum of data message.
 
         Args:
-            data: packet data
+            data: message data
 
         Returns:
             checksum
@@ -417,31 +421,31 @@ class SecsIProtocol(secsgem.common.Protocol):
 
         return calculated_checksum
 
-    def _on_connection_packet_received(self, source: object, packet: SecsIPacket):
-        """Packet received by connection.
+    def _on_connection_message_received(self, source: object, message: SecsIMessage):
+        """Message received by connection.
 
         Args:
-            packet: received data packet
+            message: received data message
 
         """
-        message = self._settings.streams_functions.decode(packet)
-        self._communication_logger.info("< %s\n%s", packet, message, extra=self._get_log_extra())
+        decoded_message = self._settings.streams_functions.decode(message)
+        self._communication_logger.info("< %s\n%s", message, decoded_message, extra=self._get_log_extra())
 
         # someone is waiting for this message
-        if packet.header.system in self._system_queues:
-            self._system_queues[packet.header.system].put_nowait(packet)
+        if message.header.system in self._system_queues:
+            self._system_queues[message.header.system].put_nowait(message)
         else:
-            self.events.fire("packet_received", {'connection': source, 'packet': packet})
+            self.events.fire("message_received", {'connection': source, 'message': message})
 
-    def _dispatch_packet(self, source: object, packet: SecsIPacket):
-        result = self._block_container.add_block(packet)
+    def _dispatch_message(self, source: object, message: SecsIMessage):
+        result = self._block_container.add_block(message)
         if result is None:
             return
 
         try:
-            self._on_connection_packet_received(source, packet)
+            self._on_connection_message_received(source, message)
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_packet_received handler')
+            self._logger.exception('ignoring exception for on_connection_message_received handler')
 
     def _get_log_extra(self):
         return {"port": self._settings.port,
@@ -449,7 +453,7 @@ class SecsIProtocol(secsgem.common.Protocol):
                 "session_id": self._settings.session_id,
                 "remoteName": self._settings.name}
 
-    # TODO: different way of waiting for response? PacketInfo?
+    # TODO: different way of waiting for response? BlockInfo?
     def _get_queue_for_system(self, system_id):
         """
         Create a new queue to receive responses for a certain system.

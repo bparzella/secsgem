@@ -18,11 +18,11 @@ Delegates
 ---------
 
 All connections work with delegates.
-When a connection is established/terminated or a packet is received a method of the passed delegate object will be called.
+When a connection is established/terminated or a message is received a method of the passed delegate object will be called.
 The connections support the following delegates:
 
 * on_connection_established(connection)
-* on_connection_packet_received(response)
+* on_connection_message_received(response)
 * on_connection_before_closed(connection)
 * on_connection_closed(connection)
 
@@ -32,8 +32,8 @@ Sample delegate class::
         def on_connection_established(self, connection):
             print "Connection established"
 
-        def on_connection_packet_received(self, connection, packet):
-            print "Packet received", packet
+        def on_connection_message_received(self, connection, packet):
+            print "Message received", message
 
         def on_connection_before_closed(self, connection):
             print "Connection about to be terminated"

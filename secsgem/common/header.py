@@ -21,7 +21,7 @@ import typing
 
 
 class Header(abc.ABC):
-    """Abstract base class for a packet header."""
+    """Abstract base class for a message header."""
 
     def __init__(self, system: int, session_id: int, stream: int, function: int):
         """
@@ -63,7 +63,7 @@ class Header(abc.ABC):
 
     @abc.abstractmethod
     def encode(self) -> bytes:
-        """Encode header to hsms packet.
+        """Encode header to message.
 
         Returns:
             encoded header

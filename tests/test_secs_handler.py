@@ -49,7 +49,7 @@ class TestSecsHandler(unittest.TestCase):
         server = HsmsTestServer()
         client = secsgem.secs.SecsHandler(server.settings)
 
-        packet = secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsHeader(0, 0, 99))
+        packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99))
         function = client.settings.streams_functions.decode(packet)
 
         self.assertIsNone(function)
@@ -58,7 +58,7 @@ class TestSecsHandler(unittest.TestCase):
         server = HsmsTestServer()
         client = secsgem.secs.SecsHandler(server.settings)
 
-        packet = secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsHeader(0, 0, 99))
+        packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99))
         function = client.settings.streams_functions.decode(packet)
 
         self.assertIsNone(function)
@@ -107,7 +107,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
     def performSelect(self):
         # select
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 

@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Header for the hsms packets."""
+"""Header for the hsms messages."""
 from __future__ import annotations
 
 import enum
@@ -153,7 +153,7 @@ require_response:False})
         }
 
     def encode(self) -> bytes:
-        """Encode header to hsms packet.
+        """Encode header to hsms message.
 
         Returns:
             encoded header

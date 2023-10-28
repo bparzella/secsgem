@@ -71,7 +71,7 @@ class GemHandlerPassiveGroup:
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -85,7 +85,7 @@ class GemHandlerPassiveGroup:
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -97,7 +97,7 @@ class GemHandlerPassiveGroup:
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 
@@ -125,7 +125,7 @@ class GemHandlerPassiveGroup:
         self.server.simulate_connect()
 
         system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
 
         packet = self.server.expect_packet(system_id=system_id)
 

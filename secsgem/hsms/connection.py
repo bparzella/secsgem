@@ -149,7 +149,7 @@ class HsmsConnection(secsgem.common.Connection):
                 pass
 
             try:
-                # send packet
+                # send message
                 self._socket.send(data)
 
                 # retry will be cleared if send succeeded

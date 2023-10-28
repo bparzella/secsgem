@@ -19,7 +19,7 @@ from secsgem.common.settings import DeviceType
 
 from .connectionmanager import HsmsConnectionManager
 from .protocol import HsmsProtocol
-from .packet import HsmsPacket
+from .message import HsmsMessage
 from .stream_function_header import HsmsStreamFunctionHeader
 from .separate_req_header import HsmsSeparateReqHeader
 from .reject_req_header import HsmsRejectReqHeader
@@ -34,7 +34,7 @@ from .settings import HsmsSettings, HsmsConnectMode
 
 __all__ = ["HsmsConnectionManager",
            "HsmsProtocol",
-           "HsmsPacket",
+           "HsmsMessage",
            "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
            "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
            "HsmsSelectReqHeader", "HsmsHeader",

@@ -67,25 +67,25 @@ class StreamsFunctions:
 
         return functions[0]
 
-    def decode(self, packet: secsgem.common.Packet) -> typing.Optional[SecsStreamFunction]:
+    def decode(self, message: secsgem.common.Message) -> typing.Optional[SecsStreamFunction]:
         """
         Get object of decoded stream and function class, or None if no class is available.
 
         Args:
-            packet to get object for
+            message: message to get object for
 
         Returns:
             matching stream and function object
 
         """
-        if packet is None:
+        if message is None:
             return None
 
-        func = self.function(packet.header.stream, packet.header.function)
+        func = self.function(message.header.stream, message.header.function)
         if func is None:
             return None
 
         function = func()
-        function.decode(packet.data)
+        function.decode(message.data)
 
         return function

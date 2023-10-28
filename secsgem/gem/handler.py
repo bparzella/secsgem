@@ -122,32 +122,32 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         self._logger.info("Connection disabled")
 
-    def _on_packet_received(self, data: typing.Dict[str, typing.Any]):
+    def _on_message_received(self, data: typing.Dict[str, typing.Any]):
         """
-        Packet received from protocol layer.
+        Message received from protocol layer.
 
         :param data: received event data
         """
-        packet = data["packet"]
+        message = data["message"]
         if self._communication_state.isstate('WAIT_CRA'):
-            if packet.header.stream == 1 and packet.header.function == 13:
+            if message.header.stream == 1 and message.header.function == 13:
                 if self._is_host:
                     self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
                                                                     "MDLN": []}),
-                                       packet.header.system)
+                                       message.header.system)
                 else:
                     self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
                                                                     "MDLN": [self._mdln, self._softrev]}),
-                                       packet.header.system)
+                                       message.header.system)
 
                 self._communication_state.s1f13received()  # type: ignore
-            elif packet.header.stream == 1 and packet.header.function == 14:
+            elif message.header.stream == 1 and message.header.function == 14:
                 self._communication_state.s1f14received()  # type: ignore
         elif self._communication_state.isstate('WAIT_DELAY'):
             pass
         elif self._communication_state.isstate('COMMUNICATING'):
-            threading.Thread(target=self._handle_stream_function, args=(packet, ),
-                             name=f"secsgem_gemHandler_callback_S{packet.header.stream}F{packet.header.function}"
+            threading.Thread(target=self._handle_stream_function, args=(message, ),
+                             name=f"secsgem_gemHandler_callback_S{message.header.stream}F{message.header.function}"
                              ).start()
 
     def _on_communicating(self, _):
@@ -303,16 +303,16 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 1, Are You There.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         if self._is_host:
             return self.stream_function(1, 2)()
@@ -321,16 +321,16 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f13(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 1, Function 13, Establish Communication Request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         if self._is_host:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})

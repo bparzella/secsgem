@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Header for the secs packets."""
+"""Header for the secs messagess."""
 from __future__ import annotations
 
 import struct
@@ -134,7 +134,7 @@ require_response:False})
         return f"{self.__class__.__name__}({self.__str__()})"
 
     def encode(self) -> bytes:
-        """Encode header to SECS I packet.
+        """Encode header to SECS I message.
 
         Returns:
             encoded header

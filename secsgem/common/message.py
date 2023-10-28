@@ -1,5 +1,5 @@
 #####################################################################
-# packet.py
+# message.py
 #
 # (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""packet base class."""
+"""Message base class."""
 from __future__ import annotations
 
 import abc
@@ -21,42 +21,42 @@ import abc
 from .header import Header
 
 
-class Packet(abc.ABC):
-    """Abstract base class for a packet."""
+class Message(abc.ABC):
+    """Abstract base class for a message."""
 
     @property
     @abc.abstractmethod
     def header(self) -> Header:
         """Get the header."""
-        raise NotImplementedError("Packet.header missing implementation")
+        raise NotImplementedError("Message.header missing implementation")
 
     @property
     @abc.abstractmethod
     def data(self) -> bytes:
         """Get the header."""
-        raise NotImplementedError("Packet.data missing implementation")
+        raise NotImplementedError("Message.data missing implementation")
 
     @abc.abstractmethod
     def encode(self) -> bytes:
         """
-        Encode packet object to transmittable bytes.
+        Encode message object to transmittable bytes.
 
         Returns:
-            byte-encoded packet
+            byte-encoded message
 
         """
-        raise NotImplementedError("Packet.encode missing implementation")
+        raise NotImplementedError("Message.encode missing implementation")
 
     @staticmethod
     @abc.abstractmethod
-    def decode(data: bytes) -> Packet:
-        """Decode byte array hsms packet to HsmsPacket object.
+    def decode(data: bytes) -> Message:
+        """Decode byte array Message to Message object.
 
         Args:
-            data: byte-encode packet data
+            data: byte-encode message data
 
         Returns
-            received packet object
+            received message object
 
         """
-        raise NotImplementedError("Packet.decode missing implementation")
+        raise NotImplementedError("Message.decode missing implementation")

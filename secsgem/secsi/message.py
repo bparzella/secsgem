@@ -1,7 +1,7 @@
 #####################################################################
-# packet.py
+# message.py
 #
-# (c) Copyright 2015, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains hsms packet class."""
+"""Contains SECS I message class."""
 from __future__ import annotations
 
 import struct
@@ -21,39 +21,38 @@ import typing
 
 import secsgem.common
 
-from .header import HsmsHeader
+from .header import SecsIHeader
 
 
-class HsmsPacket(secsgem.common.Packet):
+class SecsIMessage(secsgem.common.Message):
     """
-    Class for hsms packet.
+    Class for SECS I message.
 
     Contains all required data and functions.
     """
 
-    def __init__(self, header: typing.Optional[HsmsHeader] = None, data: bytes = b""):
+    def __init__(self, header: typing.Optional[SecsIHeader] = None, data: bytes = b""):
         """
-        Initialize a hsms packet.
+        Initialize a SECS I message.
 
         Args:
-            header: header used for this packet
+            header: header used for this message
             data: data part used for streams and functions (SType 0)
 
         Example:
-
-            >>> import secsgem.hsms
+            >>> import secsgem.secsi
             >>>
-            >>> secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
-            HsmsPacket({'header': HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, \
+            >>> secsgem.secsi.SecsIMessage()
+            SecsIMessage({'header': HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, \
 s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
 
         """
-        self._header = HsmsHeader(0, 0) if header is None else header
+        self._header = SecsIHeader(0, 0) if header is None else header
 
         self._data = data
 
     @property
-    def header(self) -> HsmsHeader:
+    def header(self) -> SecsIHeader:
         """Get the header."""
         return self._header
 
@@ -74,56 +73,56 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
 
     def encode(self) -> bytes:
         """
-        Encode packet data to hsms packet.
+        Encode message data to SECS I bytestream.
 
         Returns:
-            byte-encoded packet
+            byte-encoded message
 
         Example:
 
-            >>> import secsgem.hsms
+            >>> import secsgem.secsi
             >>> import secsgem.common
             >>>
-            >>> packet = secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
-            >>> secsgem.common.format_hex(packet.encode())
+            >>> message = secsgem.secsi.SecsIMessage()
+            >>> secsgem.common.format_hex(message.encode())
             '00:00:00:0a:ff:ff:00:00:00:05:00:00:00:02'
 
         """
-        headerdata = self.header.encode()
+        headerdata = self._header.encode()
 
         length = len(headerdata) + len(self.data)
 
         return struct.pack(">L", length) + headerdata + self.data
 
     @staticmethod
-    def decode(data: bytes) -> HsmsPacket:
+    def decode(data: bytes) -> SecsIMessage:
         r"""
-        Decode byte array hsms packet to HsmsPacket object.
+        Decode byte array SECS I packet to SecsIPacket object.
 
         Args:
             data: byte-encode packet data
-        
+
         Returns:
             received packet object
 
         Example:
-
             >>> import secsgem.common
-            >>> import secsgem.hsms
+            >>> import secsgem.secsi
             >>>
             >>> packetData = b"\x00\x00\x00\x0b\xff\xff\x00\x00\x00\x05\x00\x00\x00\x02"
             >>>
             >>> secsgem.common.format_hex(packetData)
             '00:00:00:0b:ff:ff:00:00:00:05:00:00:00:02'
             >>>
-            >>> secsgem.hsms.HsmsPacket.decode(packetData)
-            HsmsPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
+            >>> secsgem.secsi.SecsIPacket.decode(packetData)
+            SecsIPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
+
         """   # noqa pylint: disable=line-too-long
-        data_length = len(data) - HsmsHeader.length
+        data_length = len(data) - SecsIHeader.length
 
-        header = HsmsHeader.decode(data[:HsmsHeader.length])
-        res = struct.unpack(f">{data_length}s", data[HsmsHeader.length:])
+        header = SecsIHeader.decode(data[:SecsIHeader.length])
+        res = struct.unpack(f">{data_length}s", data[SecsIHeader.length:])
 
-        result = HsmsPacket(header, res[0])
+        result = SecsIMessage(header, res[0])
 
         return result

@@ -46,7 +46,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         self.settings = settings
 
         self._protocol = settings.create_protocol()
-        self._protocol.events.packet_received += self._on_packet_received
+        self._protocol.events.message_received += self._on_message_received
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
@@ -246,39 +246,39 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         return self._remote_commands
 
-    def _handle_stream_function(self, packet):
-        sf_callback_index = self._generate_sf_callback_name(packet.header.stream, packet.header.function)
+    def _handle_stream_function(self, message):
+        sf_callback_index = self._generate_sf_callback_name(message.header.stream, message.header.function)
 
         # return S09F05 if no callback present
         if sf_callback_index not in self._callback_handler:
-            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
-            if packet.header.require_response:
-                self.send_response(self.stream_function(9, 5)(packet.header.encode()), packet.header.system)
+            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, message.header)
+            if message.header.require_response:
+                self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
 
             return
 
         try:
             callback = getattr(self._callback_handler, sf_callback_index)
-            result = callback(self, packet)
+            result = callback(self, message)
             if result is not None:
-                self.send_response(result, packet.header.system)
+                self.send_response(result, message.header.system)
         except Exception:  # pylint: disable=broad-except
             self.logger.exception('Callback aborted because of exception, abort sent')
-            self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
+            self.send_response(self.stream_function(message.header.stream, 0)(), message.header.system)
 
-    def _on_packet_received(self, data: secsgem.common.Packet):
-        """Packet received from protocol layer.
+    def _on_message_received(self, data: typing.Dict[str, typing.Any]):
+        """Message received from protocol layer.
 
         Args:
             data: received data
 
         """
-        packet = data["packet"]
+        message = data["message"]
 
         # check if callbacks available for this stream and function
         threading.Thread(
-            target=self._handle_stream_function, args=(packet, ),
-            name=f"secsgem_secsHandler_callback_S{packet.header.stream}F{packet.header.function}").start()
+            target=self._handle_stream_function, args=(message, ),
+            name=f"secsgem_secsHandler_callback_S{message.header.stream}F{message.header.function}").start()
 
     def disable_ceids(self):
         """Disable all Collection Events."""
@@ -304,9 +304,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         if svs is None:
             svs = []
 
-        packet = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
 
-        return self.settings.streams_functions.decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_svs(self, svs):
         """
@@ -319,9 +319,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         self.logger.info("Get value of service variables %s", svs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
 
-        return self.settings.streams_functions.decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_sv(self, sv_id):
         """
@@ -347,9 +347,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         if ecs is None:
             ecs = []
-        packet = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
-        return self.settings.streams_functions.decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_ecs(self, ecs):
         """
@@ -362,9 +362,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         self.logger.info("Get value of equipment constants %s", ecs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
 
-        return self.settings.streams_functions.decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_ec(self, ec_id):
         """
@@ -388,9 +388,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
 
-        return self.secs_decode(packet).get()
+        return self.secs_decode(message).get()
 
     def set_ec(self, ec_id, value):
         """

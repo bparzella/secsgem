@@ -207,16 +207,16 @@ class GemHostHandler(GemHandler):
 
     def _on_s05f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 5, Function 1, Alarm request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        s5f1 = self.settings.streams_functions.decode(packet)
+        s5f1 = self.settings.streams_functions.decode(message)
 
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
@@ -227,18 +227,18 @@ class GemHostHandler(GemHandler):
 
     def _on_s06f11(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 6, Function 11, Establish Communication Request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(packet)
+        message = self.settings.streams_functions.decode(message)
 
         for report in message.RPT:
             report_dvs = self.report_subscriptions[report.RPTID.get()]
@@ -263,16 +263,16 @@ class GemHostHandler(GemHandler):
 
     def _on_s10f01(self, 
                    handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """
         Handle Stream 10, Function 1, Terminal Request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        s10f1 = self.settings.streams_functions.decode(packet)
+        s10f1 = self.settings.streams_functions.decode(message)
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
         self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol,
