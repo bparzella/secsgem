@@ -54,7 +54,6 @@ class SecsIHeader(secsgem.common.Header):
             last_block: last block of multi block message
 
         Example:
-
             >>> import secsgem.secsi
             >>>
             >>> secsgem.secsi.SecsIHeader(3, 100)

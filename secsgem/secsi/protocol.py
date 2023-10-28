@@ -78,6 +78,38 @@ class PacketSendInfo:
         return self._result == PacketSendResult.SENT_OK
 
 
+class SecsIBlockContainer:
+    """Container for packet blocks."""
+
+    def __init__(self) -> None:
+        """Initialize container."""
+        self._packets: typing.Dict[int, typing.List[SecsIPacket]] = {}
+
+    def add_block(self, packet: SecsIPacket) -> typing.Optional[SecsIPacket]:
+        """Add a block, and get completed packet if available.
+
+        Args:
+            packet: block to add
+
+        Returns:
+            completed packet or None if paket not complete
+
+        """
+        old_packets = self._packets.get(packet.header.system, None)
+
+        if old_packets is None:
+            new_packets = [packet]
+        else:
+            new_packets = old_packets + [packet]
+            del self._packets[packet.header.system]
+
+        if not packet.header.last_block:
+            self._packets[packet.header.system] = new_packets
+            return None
+
+        return SecsIPacket(packet.header, b"".join([packet.data for packet in new_packets]))
+
+
 class SecsIProtocol(secsgem.common.Protocol):
     """Implementation for SECS-I protocol."""
 
@@ -123,6 +155,7 @@ class SecsIProtocol(secsgem.common.Protocol):
         self.__connection: typing.Optional[secsgem.common.Connection] = None
         self._receive_buffer = secsgem.common.ByteQueue()
         self._send_queue: queue.Queue[PacketSendInfo] = queue.Queue()
+        self._block_container = SecsIBlockContainer()
 
         self._thread = secsgem.common.ProtocolDispatcher(
             self._process_data,
@@ -331,7 +364,6 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             packet_info.resolve(data_resonse == self.ACK)
 
-    # TODO: join multi-block message before dispatching
     def _process_received_data(self):
         if len(self._receive_buffer) < 1:
             return
@@ -402,6 +434,10 @@ class SecsIProtocol(secsgem.common.Protocol):
             self.events.fire("packet_received", {'connection': source, 'packet': packet})
 
     def _dispatch_packet(self, source: object, packet: SecsIPacket):
+        result = self._block_container.add_block(packet)
+        if result is None:
+            return
+
         try:
             self._on_connection_packet_received(source, packet)
         except Exception:  # pylint: disable=broad-except

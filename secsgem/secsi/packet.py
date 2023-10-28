@@ -20,7 +20,6 @@ import struct
 import typing
 
 import secsgem.common
-from secsgem.common.header import Header
 
 from .header import SecsIHeader
 
@@ -53,7 +52,7 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
         self._data = data
 
     @property
-    def header(self) -> Header:
+    def header(self) -> SecsIHeader:
         """Get the header."""
         return self._header
 
@@ -102,7 +101,7 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
 
         Args:
             data: byte-encode packet data
-        
+
         Returns:
             received packet object
 
