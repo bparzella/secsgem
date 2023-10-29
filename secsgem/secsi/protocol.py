@@ -17,7 +17,6 @@
 from __future__ import annotations
 
 import enum
-import logging
 import queue
 import struct
 import threading
@@ -149,10 +148,6 @@ class SecsIProtocol(secsgem.common.Protocol):
         """
         super().__init__(settings)
 
-        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-        self._communication_logger = logging.getLogger("communication")
-
-        self.__connection: typing.Optional[secsgem.common.Connection] = None
         self._receive_buffer = secsgem.common.ByteQueue()
         self._send_queue: queue.Queue[MessageSendInfo] = queue.Queue()
         self._block_container = SecsIBlockContainer()
@@ -164,24 +159,6 @@ class SecsIProtocol(secsgem.common.Protocol):
         )
 
         self._system_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
-
-    @property
-    def _connection(self) -> secsgem.common.Connection:
-        if self.__connection is None:
-            self.__connection = self._settings.create_connection()
-            self.__connection.on_connected.register(self._on_connected)
-            self.__connection.on_data.register(self._on_connection_data_received)
-            self.__connection.on_disconnected.register(self._on_disconnected)
-
-        return self.__connection
-
-    def enable(self):
-        """Enable the connection."""
-        self._connection.enable()
-
-    def disable(self):
-        """Disable the connection."""
-        self._connection.enable()
 
     def send_message(self, message: secsgem.common.Message) -> bool:
         """
@@ -345,6 +322,9 @@ class SecsIProtocol(secsgem.common.Protocol):
         self._receive_buffer.append(data["data"])
         self._thread.trigger_receiver()
 
+    def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
+        pass
+
     def _process_send_queue(self):
         if self._send_queue.empty():
             return
@@ -390,7 +370,7 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             if received_checksum != self._calculate_checksum(data):
                 self._connection.send_data(bytes([self.NAK]))
-                return False
+                return
 
             response = SecsIMessage.decode(data)
 
@@ -425,6 +405,7 @@ class SecsIProtocol(secsgem.common.Protocol):
         """Message received by connection.
 
         Args:
+            source: source of event
             message: received data message
 
         """

@@ -16,7 +16,6 @@
 """Contains class to create model for hsms endpoints."""
 from __future__ import annotations
 
-import logging
 import queue
 import struct
 import threading
@@ -99,9 +98,6 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         """
         super().__init__(settings)
 
-        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-        self._communication_logger = logging.getLogger("communication")
-
         self._connected = False
 
         # repeating linktest variables
@@ -121,34 +117,6 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         # buffer for received data
         self._receive_buffer = b""
-
-        self.__connection: typing.Optional[secsgem.common.Connection] = None
-
-    @property
-    def _connection(self) -> secsgem.common.Connection:
-        if self.__connection is None:
-            self.__connection = self._settings.create_connection()
-            self.__connection.on_connected.register(self._on_connected)
-            self.__connection.on_data.register(self._on_connection_data_received)
-            self.__connection.on_disconnecting.register(self._on_disconnecting)
-            self.__connection.on_disconnected.register(self._on_disconnected)
-
-        return self.__connection
-
-    @property
-    def timeouts(self) -> secsgem.common.Timeouts:
-        """Property for timeout."""
-        return self._settings.timeouts
-
-    @property
-    def name(self) -> str:
-        """Property for name."""
-        return self._settings.name
-
-    @property
-    def connection(self) -> secsgem.common.Connection:
-        """Property for connection."""
-        return self._connection
 
     @property
     def connection_state(self) -> ConnectionStateMachine:
@@ -411,17 +379,9 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
             'port': self._settings.port,
             'connect_mode': self._settings.connect_mode,
             'session_id': self._settings.session_id,
-            'name': self.name,
+            'name': self._settings.name,
             'connected': self._connected
         }
-
-    def enable(self):
-        """Enable the connection."""
-        self._connection.enable()
-
-    def disable(self):
-        """Disable the connection."""
-        self._connection.disable()
 
     def send_message(self, message: secsgem.common.Message) -> bool:
         """

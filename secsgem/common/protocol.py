@@ -17,11 +17,14 @@
 from __future__ import annotations
 
 import abc
+import logging
 import random
 import typing
 
+from .connection import Connection
 from .events import EventProducer
 from .message import Message
+from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
     from .settings import Settings
@@ -42,6 +45,38 @@ class Protocol(abc.ABC):
 
         self._system_counter = random.randint(0, (2 ** 32) - 1)
 
+        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._communication_logger = logging.getLogger("communication")
+
+        self.__connection: typing.Optional[Connection] = None
+
+    @property
+    def _connection(self) -> Connection:
+        if self.__connection is None:
+            self.__connection = self._settings.create_connection()
+            self.__connection.on_connected.register(self._on_connected)
+            self.__connection.on_data.register(self._on_connection_data_received)
+            self.__connection.on_disconnecting.register(self._on_disconnecting)
+            self.__connection.on_disconnected.register(self._on_disconnected)
+
+        return self.__connection
+
+    @abc.abstractmethod
+    def _on_connected(self, _: typing.Dict[str, typing.Any]):
+        raise NotImplementedError("Protocol._on_connected missing implementation")
+
+    @abc.abstractmethod
+    def _on_connection_data_received(self, _: typing.Dict[str, typing.Any]):
+        raise NotImplementedError("Protocol._on_connection_data_received missing implementation")
+
+    @abc.abstractmethod
+    def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
+        raise NotImplementedError("Protocol._on_disconnecting missing implementation")
+
+    @abc.abstractmethod
+    def _on_disconnected(self, _: typing.Dict[str, typing.Any]):
+        raise NotImplementedError("Protocol._on_disconnected missing implementation")
+
     @property
     def events(self):
         """Property for event handling."""
@@ -61,26 +96,23 @@ class Protocol(abc.ABC):
 
         return self._system_counter
 
+    def enable(self):
+        """Enable the connection."""
+        self._connection.enable()
+
+    def disable(self):
+        """Disable the connection."""
+        self._connection.disable()
+
     @property
-    @abc.abstractmethod
-    def timeouts(self):
+    def timeouts(self) -> Timeouts:
         """Property for timeout."""
-        raise NotImplementedError("Protocol.timeouts missing implementation")
+        return self._settings.timeouts
 
     @abc.abstractmethod
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """Get protocol serialized data for debugging."""
         raise NotImplementedError("Protocol.serialize_data missing implementation")
-
-    @abc.abstractmethod
-    def enable(self):
-        """Enable the connection."""
-        raise NotImplementedError("Protocol.enable missing implementation")
-
-    @abc.abstractmethod
-    def disable(self):
-        """Disable the connection."""
-        raise NotImplementedError("Protocol.disable missing implementation")
 
     @abc.abstractmethod
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
