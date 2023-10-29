@@ -40,7 +40,6 @@ class HsmsMessage(secsgem.common.Message):
             data: data part used for streams and functions (SType 0)
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsPacket(secsgem.hsms.HsmsLinktestReqHeader(2))
@@ -97,8 +96,7 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
 
     @staticmethod
     def decode(data: bytes) -> HsmsMessage:
-        r"""
-        Decode byte array hsms packet to HsmsPacket object.
+        r"""Decode byte array hsms packet to HsmsPacket object.
 
         Args:
             data: byte-encode packet data
@@ -107,7 +105,6 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
             received packet object
 
         Example:
-
             >>> import secsgem.common
             >>> import secsgem.hsms
             >>>
@@ -118,6 +115,7 @@ s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
             >>>
             >>> secsgem.hsms.HsmsPacket.decode(packetData)
             HsmsPacket({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
+
         """   # noqa pylint: disable=line-too-long
         data_length = len(data) - HsmsHeader.length
 
