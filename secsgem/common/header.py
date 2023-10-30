@@ -19,9 +19,13 @@ from __future__ import annotations
 import abc
 import typing
 
+HeaderT = typing.TypeVar('HeaderT', bound='Header')
+
 
 class Header(abc.ABC):
     """Abstract base class for a message header."""
+
+    length = -1
 
     def __init__(self, system: int, session_id: int, stream: int, function: int):
         """
@@ -71,6 +75,20 @@ class Header(abc.ABC):
         """
         raise NotImplementedError("Header.encode missing implementation")
 
+    @classmethod
+    @abc.abstractmethod
+    def decode(cls, data: bytes) -> Header:
+        """Decode byte array header to Header object.
+
+        Args:
+            data: byte-encode header data
+
+        Returns
+            Header object
+
+        """
+        raise NotImplementedError("Header.decode missing implementation")
+
     @property
     @abc.abstractmethod
     def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
@@ -82,7 +100,7 @@ class Header(abc.ABC):
         """
         raise NotImplementedError("Header._as_dictionary missing implementation")
 
-    def updated_with(self, **kwargs) -> Header:
+    def updated_with(self: HeaderT, **kwargs) -> HeaderT:
         """Get a new header with updated fields.
 
         Args:
