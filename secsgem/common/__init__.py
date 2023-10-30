@@ -22,7 +22,7 @@ from .events import EventProducer
 from .fysom import Fysom
 from .header import Header
 from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
-from .message import Message
+from .message import Message, Block
 from .protocol import Protocol
 from .protocol_dispatcher import ProtocolDispatcher
 from .settings import Settings, DeviceType
@@ -37,7 +37,7 @@ __all__ = [
     "Fysom",
     "Header",
     "format_hex", "function_name", "indent_block", "is_windows", "is_errorcode_ewouldblock",
-    "Message",
+    "Message", "Block",
     "Protocol",
     "ProtocolDispatcher",
     "Settings", "DeviceType",

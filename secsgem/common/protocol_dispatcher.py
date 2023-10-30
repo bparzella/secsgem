@@ -22,7 +22,7 @@ import typing
 
 if typing.TYPE_CHECKING:
     from .settings import Settings
-    from .message import Message
+    from .message import Block
 
 
 class ProtocolDispatcher:
@@ -52,7 +52,7 @@ class ProtocolDispatcher:
         self._receiver_thread_trigger = threading.Event()
         self._dispatcher_thread_trigger = threading.Event()
 
-        self._dispatch_queue = queue.Queue()
+        self._dispatch_queue: queue.Queue[Block] = queue.Queue()
 
         self._stop_receiver_thread = False
         self._stop_dispatcher_thread = False
@@ -93,8 +93,8 @@ class ProtocolDispatcher:
         """Trigger the thread to call target function."""
         self._receiver_thread_trigger.set()
 
-    def queue_message(self, source: object, message: Message):
-        self._dispatch_queue.put((source, message))
+    def queue_message(self, source: object, block: Block):
+        self._dispatch_queue.put((source, block))
         self._dispatcher_thread_trigger.set()
 
     def _receiver_thread_function(self):

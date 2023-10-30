@@ -25,7 +25,7 @@ import typing
 import secsgem.common
 
 from .header import SecsIHeader
-from .message import SecsIMessage
+from .message import SecsIBlock, SecsIMessage
 
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
@@ -82,9 +82,9 @@ class SecsIBlockContainer:
 
     def __init__(self) -> None:
         """Initialize container."""
-        self._blocks: typing.Dict[int, typing.List[SecsIMessage]] = {}
+        self._messages: typing.Dict[int, SecsIMessage] = {}
 
-    def add_block(self, block: SecsIMessage) -> typing.Optional[SecsIMessage]:
+    def add_block(self, block: SecsIBlock) -> typing.Optional[SecsIMessage]:
         """Add a block, and get completed message if available.
 
         Args:
@@ -94,19 +94,18 @@ class SecsIBlockContainer:
             completed message or None if paket not complete
 
         """
-        old_blocks = self._blocks.get(block.header.system, None)
-
-        if old_blocks is None:
-            new_blocks = [block]
+        if block.header.system not in self._messages:
+            self._messages[block.header.system] = SecsIMessage.from_block(block)
         else:
-            new_blocks = old_blocks + [block]
-            del self._blocks[block.header.system]
+            self._messages[block.header.system].blocks.append(block)
 
-        if not block.header.last_block:
-            self._blocks[block.header.system] = new_blocks
+        message = self._messages[block.header.system]
+
+        if not message.complete:
             return None
 
-        return SecsIMessage(block.header, b"".join([block.data for block in new_blocks]))
+        del self._messages[block.header.system]
+        return message
 
 
 class SecsIProtocol(secsgem.common.Protocol):
@@ -372,7 +371,7 @@ class SecsIProtocol(secsgem.common.Protocol):
                 self._connection.send_data(bytes([self.NAK]))
                 return
 
-            response = SecsIMessage.decode(data)
+            response = SecsIBlock.decode(data)
 
             # redirect message to hsms handler
             self._thread.queue_message(self, response)
@@ -418,13 +417,13 @@ class SecsIProtocol(secsgem.common.Protocol):
         else:
             self.events.fire("message_received", {'connection': source, 'message': message})
 
-    def _dispatch_message(self, source: object, message: SecsIMessage):
+    def _dispatch_message(self, source: object, message: SecsIBlock):
         result = self._block_container.add_block(message)
         if result is None:
             return
 
         try:
-            self._on_connection_message_received(source, message)
+            self._on_connection_message_received(source, result)
         except Exception:  # pylint: disable=broad-except
             self._logger.exception('ignoring exception for on_connection_message_received handler')
 
