@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import enum
 import queue
-import struct
 import threading
 import typing
 
@@ -32,7 +31,7 @@ if typing.TYPE_CHECKING:
     from .settings import SecsISettings
 
 
-class MessageSendResult(enum.Enum):
+class BlockSendResult(enum.Enum):
     """Enum for send result including not send state."""
 
     NOT_SENT = 0
@@ -40,11 +39,11 @@ class MessageSendResult(enum.Enum):
     SENT_ERROR = 2
 
 
-class MessageSendInfo:
-    """Container for sending message and waiting for result."""
+class BlockSendInfo:
+    """Container for sending block and waiting for result."""
 
     def __init__(self, data: bytes):
-        """Initialize package send info object.
+        """Initialize block send info object.
 
         Args:
             data: data to send.
@@ -52,7 +51,7 @@ class MessageSendInfo:
         """
         self._data = data
 
-        self._result = MessageSendResult.NOT_SENT
+        self._result = BlockSendResult.NOT_SENT
         self._result_trigger = threading.Event()
 
     @property
@@ -67,17 +66,17 @@ class MessageSendInfo:
             result: result to resolve with
 
         """
-        self._result = MessageSendResult.SENT_OK if result else MessageSendResult.SENT_ERROR
+        self._result = BlockSendResult.SENT_OK if result else BlockSendResult.SENT_ERROR
         self._result_trigger.set()
 
     def wait(self) -> bool:
         """Wait for the message is sent and a result is available."""
         self._result_trigger.wait()
 
-        return self._result == MessageSendResult.SENT_OK
+        return self._result == BlockSendResult.SENT_OK
 
 
-class SecsIBlockContainer:
+class SecsIReceiveBlockContainer:
     """Container for message blocks."""
 
     def __init__(self) -> None:
@@ -148,8 +147,9 @@ class SecsIProtocol(secsgem.common.Protocol):
         super().__init__(settings)
 
         self._receive_buffer = secsgem.common.ByteQueue()
-        self._send_queue: queue.Queue[MessageSendInfo] = queue.Queue()
-        self._block_container = SecsIBlockContainer()
+        self._send_queue: queue.Queue[BlockSendInfo] = queue.Queue()
+        self._response_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
+        self._block_container = SecsIReceiveBlockContainer()
 
         self._thread = secsgem.common.ProtocolDispatcher(
             self._process_data,
@@ -157,7 +157,6 @@ class SecsIProtocol(secsgem.common.Protocol):
             self._settings
         )
 
-        self._system_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
 
     def send_message(self, message: secsgem.common.Message) -> bool:
         """
@@ -167,31 +166,12 @@ class SecsIProtocol(secsgem.common.Protocol):
             message: message to be transmitted
 
         """
-        # encode the message
-        data = message.data
-
-        # split data into blocks
-        blocks = [data[i: i + self.block_size] for i in range(0, len(data), self.block_size)]
-
-        for index, block in enumerate(blocks):
-            header_data = {
-                "block": index + 1,
-                "last_block": (index + 1) == len(blocks)
-            }
-            header = message.header.updated_with(**header_data)
-
-            block_data = header.encode() + block
-
-            block_length_data = bytes([len(block_data)])
-            checksum_data = struct.pack(">H", self._calculate_checksum(block_data))
-
-            message_data = block_length_data + block_data + checksum_data
-
-            message_info = MessageSendInfo(message_data)
-            self._send_queue.put(message_info)
+        for block in message.blocks:
+            block_send_info = BlockSendInfo(block.encode())
+            self._send_queue.put(block_send_info)
             self._thread.trigger_receiver()
 
-            if not message_info.wait():
+            if not block_send_info.wait():
                 return False
 
         return True
@@ -359,19 +339,15 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             self._connection.send_data(bytes([self.EOT]))
 
-            length = self._receive_buffer.wait_for_byte()
+            length = self._receive_buffer.wait_for_byte(peek=True)
 
-            data = self._receive_buffer.wait_for(length)
-
-            checksum = self._receive_buffer.wait_for(2)
-
-            received_checksum = struct.unpack(">H", checksum)[0]
-
-            if received_checksum != self._calculate_checksum(data):
-                self._connection.send_data(bytes([self.NAK]))
-                return
+            data = self._receive_buffer.wait_for(length + 3)
 
             response = SecsIBlock.decode(data)
+
+            if response is None:
+                self._connection.send_data(bytes([self.NAK]))
+                return
 
             # redirect message to hsms handler
             self._thread.queue_message(self, response)
@@ -382,23 +358,6 @@ class SecsIProtocol(secsgem.common.Protocol):
         """Parse the receive buffer and dispatch callbacks."""
         self._process_send_queue()
         self._process_received_data()
-
-    def _calculate_checksum(self, data: bytes) -> int:
-        """Calculate checksum of data message.
-
-        Args:
-            data: message data
-
-        Returns:
-            checksum
-
-        """
-        calculated_checksum = 0
-
-        for data_byte in data:
-            calculated_checksum += data_byte
-
-        return calculated_checksum
 
     def _on_connection_message_received(self, source: object, message: SecsIMessage):
         """Message received by connection.
@@ -412,8 +371,8 @@ class SecsIProtocol(secsgem.common.Protocol):
         self._communication_logger.info("< %s\n%s", message, decoded_message, extra=self._get_log_extra())
 
         # someone is waiting for this message
-        if message.header.system in self._system_queues:
-            self._system_queues[message.header.system].put_nowait(message)
+        if message.header.system in self._response_queues:
+            self._response_queues[message.header.system].put_nowait(message)
         else:
             self.events.fire("message_received", {'connection': source, 'message': message})
 
@@ -443,8 +402,8 @@ class SecsIProtocol(secsgem.common.Protocol):
         :returns: queue to receive responses with
         :rtype: queue.Queue
         """
-        self._system_queues[system_id] = queue.Queue()
-        return self._system_queues[system_id]
+        self._response_queues[system_id] = queue.Queue()
+        return self._response_queues[system_id]
 
     def _remove_queue(self, system_id):
         """
@@ -453,4 +412,4 @@ class SecsIProtocol(secsgem.common.Protocol):
         :param system_id: system id to remove
         :type system_id: int
         """
-        del self._system_queues[system_id]
+        del self._response_queues[system_id]

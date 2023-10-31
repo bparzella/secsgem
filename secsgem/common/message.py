@@ -32,6 +32,8 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
     """Base class for data block."""
 
     header_type: typing.Type[BlockHeaderT]
+    length_format: str
+    checksum_format: str
 
     def __init__(self, header: BlockHeaderT, data: bytes):
         """
@@ -55,6 +57,19 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
         """Get the data."""
         return self._data
 
+    @property
+    def checksum(self) -> int:
+        """Get the checksum."""
+        if self.checksum_format == "":
+            return 0
+
+        calculated_checksum = 0
+
+        for data_byte in self.header.encode() + self.data:
+            calculated_checksum += data_byte
+
+        return calculated_checksum
+
     def encode(self) -> bytes:
         """Encode block data.
 
@@ -62,14 +77,26 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
             byte-encoded block
 
         """
-        headerdata = self.header.encode()
+        data_length = len(self.data)
 
-        length = len(headerdata) + len(self.data)
+        struct_args: typing.Tuple = (
+            self.header.length + data_length,
+            self.header.encode(),
+            self.data
+        )
 
-        return struct.pack(">L", length) + headerdata + self.data
+        if self.checksum_format != "":
+            struct_args += (self.checksum, )
+
+        encoded_data = struct.pack(
+            f">{self.length_format}{self.header.length}s{data_length}s{self.checksum_format}",
+            *struct_args
+        )
+
+        return encoded_data
 
     @classmethod
-    def decode(cls: typing.Type[BlockT], data: bytes) -> BlockT:
+    def decode(cls: typing.Type[BlockT], data: bytes) -> typing.Optional[BlockT]:
         """Decode byte array hsms packet to HsmsPacket object.
 
         Args:
@@ -79,12 +106,22 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
             received packet object
 
         """
-        data_length = len(data) - cls.header_type.length
+        data_length = struct.unpack_from(f">{cls.length_format}", data)[0] - cls.header_type.length
 
-        header = cls.header_type.decode(data[:cls.header_type.length])
-        res = struct.unpack(f">{data_length}s", data[cls.header_type.length:])
+        data_fields = struct.unpack(
+            f">{cls.length_format}{cls.header_type.length}s{data_length}s{cls.checksum_format}",
+            data
+        )
 
-        return cls(header, res[0])
+        header = cls.header_type.decode(data_fields[1])
+
+        obj = cls(header, data_fields[2])
+
+        if cls.checksum_format != "":
+            if obj.checksum != data_fields[3]:
+                return None
+
+        return obj
 
 
 class Message(abc.ABC, typing.Generic[BlockT]):

@@ -16,6 +16,8 @@
 """Contains SECS I message class."""
 from __future__ import annotations
 
+import struct
+
 import secsgem.common
 
 from .header import SecsIHeader
@@ -25,6 +27,8 @@ class SecsIBlock(secsgem.common.Block[SecsIHeader]):
     """Data block for SECS I."""
 
     header_type = SecsIHeader
+    length_format = "B"
+    checksum_format = "H"
 
 
 class SecsIMessage(secsgem.common.Message[SecsIBlock]):

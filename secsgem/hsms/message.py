@@ -25,6 +25,8 @@ class HsmsBlock(secsgem.common.Block[HsmsHeader]):
     """Data block for SECS I."""
 
     header_type = HsmsHeader
+    length_format = "L"
+    checksum_format = ""
 
 
 class HsmsMessage(secsgem.common.Message):
