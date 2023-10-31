@@ -16,8 +16,6 @@
 """Contains SECS I message class."""
 from __future__ import annotations
 
-import struct
-
 import secsgem.common
 
 from .header import SecsIHeader

@@ -29,35 +29,10 @@ if typing.TYPE_CHECKING:
     from .settings import SecsISettings
 
 
-class SecsIReceiveBlockContainer:
+class SecsIBlockContainer(secsgem.common.BlockContainer[SecsIMessage, SecsIBlock]):
     """Container for message blocks."""
 
-    def __init__(self) -> None:
-        """Initialize container."""
-        self._messages: typing.Dict[int, SecsIMessage] = {}
-
-    def add_block(self, block: SecsIBlock) -> typing.Optional[SecsIMessage]:
-        """Add a block, and get completed message if available.
-
-        Args:
-            block: block to add
-
-        Returns:
-            completed message or None if paket not complete
-
-        """
-        if block.header.system not in self._messages:
-            self._messages[block.header.system] = SecsIMessage.from_block(block)
-        else:
-            self._messages[block.header.system].blocks.append(block)
-
-        message = self._messages[block.header.system]
-
-        if not message.complete:
-            return None
-
-        del self._messages[block.header.system]
-        return message
+    message_type = SecsIMessage
 
 
 class SecsIProtocol(secsgem.common.Protocol):
@@ -102,7 +77,7 @@ class SecsIProtocol(secsgem.common.Protocol):
         self._receive_buffer = secsgem.common.ByteQueue()
         self._send_queue: queue.Queue[secsgem.common.BlockSendInfo] = queue.Queue()
         self._response_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
-        self._block_container = SecsIReceiveBlockContainer()
+        self._block_container = SecsIBlockContainer()
 
         self._thread = secsgem.common.ProtocolDispatcher(
             self._process_data,
@@ -204,7 +179,7 @@ class SecsIProtocol(secsgem.common.Protocol):
                 self._settings.session_id,
                 function.stream,
                 function.function,
-                require_response=True,
+                require_response=function.is_reply_required,
                 from_equipment=(self._settings.device_type == secsgem.common.DeviceType.EQUIPMENT)
             ),
             function.encode()
