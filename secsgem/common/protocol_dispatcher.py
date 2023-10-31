@@ -1,5 +1,5 @@
 #####################################################################
-# triggerable_thread.py
+# protocol_dispatcher.py
 #
 # (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
@@ -16,6 +16,7 @@
 """Thread that can be triggered and call a callback."""
 from __future__ import annotations
 
+import logging
 import queue
 import threading
 import typing
@@ -25,7 +26,7 @@ if typing.TYPE_CHECKING:
     from .message import Block
 
 
-class ProtocolDispatcher:
+class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
     """Thread that calls a target function when a trigger was raised."""
 
     def __init__(
@@ -52,7 +53,7 @@ class ProtocolDispatcher:
         self._receiver_thread_trigger = threading.Event()
         self._dispatcher_thread_trigger = threading.Event()
 
-        self._dispatch_queue: queue.Queue[Block] = queue.Queue()
+        self._dispatch_queue: queue.Queue[typing.Tuple[object, Block]] = queue.Queue()
 
         self._stop_receiver_thread = False
         self._stop_dispatcher_thread = False
@@ -93,7 +94,14 @@ class ProtocolDispatcher:
         """Trigger the thread to call target function."""
         self._receiver_thread_trigger.set()
 
-    def queue_message(self, source: object, block: Block):
+    def queue_block(self, source: object, block: Block):
+        """Add a block to the dispatch queue and trigger dispatch thread.
+
+        Args:
+            source: source of the block
+            block: new block
+
+        """
         self._dispatch_queue.put((source, block))
         self._dispatcher_thread_trigger.set()
 
@@ -111,8 +119,8 @@ class ProtocolDispatcher:
 
             try:
                 self._receiver_target()
-            except Exception as exc:
-                print("receiver exception", exc)
+            except Exception as exc:  # pylint: disable=broad-exception-caught
+                logging.warning("Exception in receiver callback, ignoring", exc_info=exc)
 
         print("Stopping receiver thread")
 
@@ -135,8 +143,8 @@ class ProtocolDispatcher:
 
                 try:
                     self._dispatcher_target(*data)
-                except Exception as exc:
-                    print("exception", exc)
+                except Exception as exc:  # pylint: disable=broad-exception-caught
+                    logging.warning("Exception in dispatcher callback, ignoring", exc_info=exc)
 
         print("Stopping dispatcher thread")
 

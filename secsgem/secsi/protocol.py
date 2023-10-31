@@ -350,7 +350,7 @@ class SecsIProtocol(secsgem.common.Protocol):
                 return
 
             # redirect message to hsms handler
-            self._thread.queue_message(self, response)
+            self._thread.queue_block(self, response)
 
             self._connection.send_data(bytes([self.ACK]))
 
