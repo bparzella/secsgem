@@ -15,6 +15,7 @@
 #####################################################################
 """Contains helper functions."""
 
+from .block_send_info import BlockSendInfo
 from .byte_queue import ByteQueue
 from .callbacks import CallbackHandler
 from .connection import Connection
@@ -30,6 +31,7 @@ from .timeouts import Timeouts
 
 
 __all__ = [
+    "BlockSendInfo",
     "ByteQueue",
     "CallbackHandler",
     "Connection",
