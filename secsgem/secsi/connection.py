@@ -45,6 +45,7 @@ class SecsIConnection(secsgem.common.Connection):
         super().__init__(settings)
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._bytestream_logger = logging.getLogger("bytestream")
 
         self.__port: typing.Optional[serial.Serial] = None
 
@@ -154,6 +155,7 @@ class SecsIConnection(secsgem.common.Connection):
                 data = self._port.read()
 
             if len(data) > 0:
+                self._bytestream_logger.debug("< %s", secsgem.common.format_hex(data))
                 self.on_data({"source": self, "data": data})
 
     def send_data(self, data: bytes) -> bool:
@@ -167,6 +169,7 @@ class SecsIConnection(secsgem.common.Connection):
             True if succeeded, False if failed
 
         """
+        self._bytestream_logger.debug("> %s", secsgem.common.format_hex(data))
         self._port.write(data)
 
         return True
