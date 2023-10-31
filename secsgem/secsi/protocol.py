@@ -157,7 +157,6 @@ class SecsIProtocol(secsgem.common.Protocol):
             self._settings
         )
 
-
     def send_message(self, message: secsgem.common.Message) -> bool:
         """
         Send a message to the remote host.
@@ -335,7 +334,7 @@ class SecsIProtocol(secsgem.common.Protocol):
             receive_byte = self._receive_buffer.pop_byte()
 
             if receive_byte != self.ENQ:
-                raise Exception(f"Expected ENQ, received '{receive_byte}'")
+                self._logger.info("Expected ENQ, received '%s'. Ignoring", receive_byte)
 
             self._connection.send_data(bytes([self.EOT]))
 
