@@ -25,11 +25,9 @@ class _Timeout:
 
 
 class Timeouts:
-    r"""
-    Timeouts.
+    r"""Timeouts.
 
     Example:
-
         >>> import secsgem.common
         >>> timeouts = secsgem.common.Timeouts(t3=60.0)
         >>> timeouts.t3

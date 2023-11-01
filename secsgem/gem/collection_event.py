@@ -27,8 +27,7 @@ class CollectionEvent:
                  name: str,
                  data_values: typing.List[typing.Union[int, str]],
                  **kwargs):
-        """
-        Initialize a collection event.
+        """Initialize a collection event.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
@@ -38,12 +37,11 @@ class CollectionEvent:
 
         If use_callbacks is disabled, you can set the value with the value property.
 
-        :param ceid: ID of the collection event
-        :type ceid: various
-        :param name: long name of the collection event
-        :type name: string
-        :param data_values: data values available for this event
-        :type data_values: list of DVIDs
+        Args:
+            ceid: ID of the collection event
+            name: long name of the collection event
+            data_values: data values available for this event
+
         """
         self.ceid = ceid
         self.name = name

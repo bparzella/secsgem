@@ -19,6 +19,7 @@ import logging
 import select
 import socket
 import threading
+import typing
 
 import secsgem.common
 
@@ -26,8 +27,7 @@ from .multi_passive_connection import HsmsMultiPassiveConnection
 
 
 class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
-    """
-    Server class for multiple passive (incoming) connection.
+    """Server class for multiple passive (incoming) connection.
 
     The server creates a listening socket and waits for incoming connections on this socket.
     """
@@ -35,15 +35,14 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
     select_timeout = 0.5
     """ Timeout for select calls ."""
 
-    def __init__(self, port=5000, bind_ip=''):
-        """
-        Initialize a passive hsms server.
+    def __init__(self, port: int = 5000, bind_ip: str = ''):
+        """Initialize a passive hsms server.
 
-        :param port: TCP port to listen on
-        :type port: integer
+        Args:
+            port: TCP port to listen on
+            bind_ip: IP address to listen on
 
         Example:
-
             # TODO: create example
 
         """
@@ -61,18 +60,24 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
 
         self._listen_thread = None
 
-    def create_connection(self, address, port=5000, session_id=0, delegate=None):
-        """
-        Create and remember connection for the server.
+    def create_connection(
+            self,
+            address: str,
+            port: int = 5000,
+            session_id: int = 0,
+            delegate: typing.Optional[object] = None
+    ) -> HsmsMultiPassiveConnection:
+        """Create and remember connection for the server.
 
-        :param address: IP address of target host
-        :type address: string
-        :param port: TCP port of target host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: object
+        Args:
+            address: IP address of target host
+            port: TCP port of target host
+            session_id: session / device ID to use for connection
+            delegate: target for messages
+
+        Returns:
+            connection object
+
         """
         connection = HsmsMultiPassiveConnection(address, port, session_id, delegate)
         connection.handler = self
@@ -82,8 +87,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
         return connection
 
     def start(self):
-        """
-        Start the server and return.
+        """Start the server and return.
 
         It will launch a listener running in background to wait for incoming connections.
         """
@@ -103,14 +107,14 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
 
         self._logger.debug("listening")
 
-    def stop(self, terminate_connections=True):
-        """
-        Stop the server. The background job waiting for incoming connections will be terminated.
+    def stop(self, terminate_connections: bool = True):
+        """Stop the server. The background job waiting for incoming connections will be terminated.
 
         Optionally all connections received will be closed.
 
-        :param terminate_connections: terminate all connection made by this server
-        :type terminate_connections: boolean
+        Args:
+            terminate_connections: terminate all connection made by this server
+
         """
         self._stop_thread = True
 
@@ -129,8 +133,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
         self._logger.debug("server stopped")
 
     def _initialize_connection_thread(self, accept_result):
-        """
-        Set connection up.
+        """Set connection up.
 
         .. warning:: Do not call this directly, used internally.
         """
@@ -167,8 +170,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
         new_connection.connected(sock, source_ip)
 
     def _listen_thread_func(self):
-        """
-        Thread listening for incoming connections.
+        """Thread listening for incoming connections.
 
         .. warning:: Do not call this directly, used internally.
         """

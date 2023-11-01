@@ -32,8 +32,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes
                  value_type: typing.Type[secsgem.secs.variables.Base],
                  use_callback: bool = True,
                  **kwargs):
-        """
-        Initialize an equipment constant.
+        """Initialize an equipment constant.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
@@ -44,22 +43,16 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes
 
         If use_callbacks is disabled, you can set the value with the value property.
 
-        :param ecid: ID of the equipment constant
-        :type ecid: various
-        :param name: long name
-        :type name: string
-        :param min_value: minimum value
-        :type min_value: various
-        :param max_value: maximum value
-        :type max_value: various
-        :param default_value: default value
-        :type default_value: various
-        :param unit: unit (see SEMI E5, Units of Measure)
-        :type unit: string
-        :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
-        :type use_callback: boolean
+        Args:
+            ecid: ID of the equipment constant
+            name: long name
+            min_value: minimum value
+            max_value: maximum value
+            default_value: default value
+            unit: unit (see SEMI E5, Units of Measure)
+            value_type: type of the status variable
+            use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
+
         """
         self.ecid = ecid
         self.name = name

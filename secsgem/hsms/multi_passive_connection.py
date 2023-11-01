@@ -16,6 +16,7 @@
 """Hsms multi passive connection."""
 
 import socket
+import typing
 
 from .connection import HsmsConnection
 
@@ -27,21 +28,22 @@ class HsmsMultiPassiveConnection(HsmsConnection):
     Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None):
-        """
-        Initialize a passive client connection.
+    def __init__(
+            self,
+            address: str,
+            port: int = 5000,
+            session_id: int = 0,
+            delegate: typing.Optional[object] = None
+    ):
+        """Initialize a passive client connection.
 
-        :param address: IP address of target host
-        :type address: string
-        :param port: TCP port of target host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: object
+        Args:
+            address: IP address of target host
+            port: TCP port of target host
+            session_id: session / device ID to use for connection
+            delegate: target for messages
 
         Example:
-
             # TODO: create example
 
         """
@@ -51,14 +53,13 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         # initially not enabled
         self.enabled = False
 
-    def connected(self, sock, address):
-        """
-        Connect callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
+    def connected(self, sock: socket.Socket, address: str):
+        """Connect callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
-        :param sock: Socket for new connection
-        :type sock: :class:`Socket`
-        :param address: IP address of remote host
-        :type address: string
+        Args:
+            sock: Socket for new connection
+            address: IP address of remote host
+
         """
         del address  # unused parameter
 
@@ -82,18 +83,18 @@ class HsmsMultiPassiveConnection(HsmsConnection):
             self._logger.exception('ignoring exception for on_connected handler')
 
     def enable(self):
-        """
-        Enable the connection.
+        """Enable the connection.
 
         Starts the connection process to the passive remote.
+
         """
         self.enabled = True
 
     def disable(self):
-        """
-        Disable the connection.
+        """Disable the connection.
 
         Stops all connection attempts, and closes the connection
+
         """
         self.enabled = False
         if self._connected:

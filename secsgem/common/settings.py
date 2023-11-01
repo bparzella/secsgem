@@ -191,7 +191,6 @@ class ExistingProtocolSettings(Settings):
     These attributes can be initialized in the constructor and accessed as property.
 
     Example:
-
         >>> import secsgem.hsms
         >>>
         >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
@@ -202,6 +201,7 @@ class ExistingProtocolSettings(Settings):
         import secsgem.hsms.settings
 
         secsgem.hsms.settings.HsmsSettings._attributes_help()
+
     """
 
     @classmethod

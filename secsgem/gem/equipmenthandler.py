@@ -62,14 +62,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                  settings: secsgem.common.Settings,
                  initial_control_state: str = "ATTEMPT_ONLINE",
                  initial_online_control_state: str = "REMOTE"):
-        """
-        Initialize a gem equipment handler.
+        """Initialize a gem equipment handler.
 
-        :param connection: Base connection
-        :type address: string
-        :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
-        "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-        :type initial_control_state: string
+        Args:
+            settings: communication layer settings
+            initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
+            "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+            initial_online_control_state: initial state for online control state model
         """
         super().__init__(settings)
 
@@ -235,8 +234,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s01f15(self, 
                    handler: secsgem.secs.SecsHandler, 
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 15, Request offline.
+        """Handle Stream 1, Function 15, Request offline.
 
         Args:
             handler: handler the message was received on
@@ -256,8 +254,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 17, Request online.
+        """Handle Stream 1, Function 17, Request online.
 
         Args:
             handler: handler the message was received on
@@ -280,41 +277,42 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def data_values(self) -> typing.Dict[typing.Union[int, str], DataValue]:
-        """
-        Get list of the data values.
+        """Get list of the data values.
 
-        :returns: Data value list
-        :rtype: list of :class:`secsgem.gem.DataValue`
+        Returns:
+            Data value list
+
         """
         return self._data_values
 
     def on_dv_value_request(self, 
                             data_value_id: secsgem.secs.variables.Base, 
                             data_value: DataValue) -> secsgem.secs.variables.Base:
-        """
-        Get the data value depending on its configuation.
+        """Get the data value depending on its configuation.
 
         Override in inherited class to provide custom data value request handling.
 
-        :param dvid: Id of the data value encoded in the corresponding type
-        :type dvid: :class:`secsgem.secs.variables.Base`
-        :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.DataValue`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            data_value_id: Id of the data value encoded in the corresponding type
+            data_value: The data value requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del data_value_id  # unused variable
 
         return data_value.value_type(data_value.value)
 
     def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:
-        """
-        Get the data value depending on its configuation.
+        """Get the data value depending on its configuation.
 
-        :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.DataValue`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            dv: The data value requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if data_value.use_callback:
             return self.on_dv_value_request(data_value.id_type(data_value.dvid), data_value)
@@ -325,41 +323,42 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def status_variables(self) -> typing.Dict[typing.Union[int, str], StatusVariable]:
-        """
-        Get list of the status variables.
+        """Get list of the status variables.
 
-        :returns: Status variable list
-        :rtype: list of :class:`secsgem.gem.StatusVariables`
+        Returns:
+            Status variable list
+
         """
         return self._status_variables
 
     def on_sv_value_request(self,
                             svid: secsgem.secs.variables.Base,
                             status_variable: StatusVariable) -> secsgem.secs.variables.Base:
-        """
-        Get the status variable value depending on its configuation.
+        """Get the status variable value depending on its configuation.
 
         Override in inherited class to provide custom status variable request handling.
 
-        :param svid: Id of the status variable encoded in the corresponding type
-        :type svid: :class:`secsgem.secs.variables.Base`
-        :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.StatusVariable`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            svid: Id of the status variable encoded in the corresponding type
+            sv: The status variable requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del svid  # unused variable
 
         return status_variable.value_type(status_variable.value)
 
     def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
-        """
-        Get the status variable value depending on its configuation.
+        """Get the status variable value depending on its configuation.
 
-        :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.StatusVariable`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            sv: The status variable requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if status_variable.svid == SVID_CLOCK:
             result = status_variable.value_type(self._get_clock())
@@ -385,8 +384,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 3, Equipment status request.
+        """Handle Stream 1, Function 3, Equipment status request.
 
         Args:
             handler: handler the message was received on
@@ -415,8 +413,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s01f11(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 11, SV namelist request.
+        """Handle Stream 1, Function 11, SV namelist request.
 
         Args:
             handler: handler the message was received on
@@ -450,41 +447,40 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEvent]:
-        """
-        Get list of the collection events.
+        """Get list of the collection events.
 
-        :returns: Collection event list
-        :rtype: list of :class:`secsgem.gem.CollectionEvent`
+        Returns:
+            Collection event list
+
         """
         return self._collection_events
 
     @property
     def registered_reports(self) -> typing.Dict[typing.Union[int, str], CollectionEventReport]:
-        """
-        Get list of the subscribed reports.
+        """Get list of the subscribed reports.
 
-        :returns: Collection event report list
-        :rtype: dictionary of subscribed reports
+        Returns:
+            Collection event report list
+
         """
         return self._registered_reports
 
     @property
     def registered_collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEventLink]:
-        """
-        Get list of the subscribed collection events.
+        """Get list of the subscribed collection events.
 
-        :returns: Collection event list
-        :rtype: dictionary of :class:`secsgem.gem.CollectionEventLink`
+        Returns:
+            Collection event list
 
         """
         return self._registered_collection_events
 
     def trigger_collection_events(self, ceids: typing.List[typing.Union[int, str]]):
-        """
-        Triggers the supplied collection events.
+        """Triggers the supplied collection events.
 
-        :param ceids: List of collection events
-        :type ceids: list of various
+        Args:
+            ceids: List of collection events
+
         """
         if not isinstance(ceids, list):
             ceids = [ceids]
@@ -500,8 +496,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f33(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 33, Define Report.
+        """Handle Stream 2, Function 33, Define Report.
 
         Args:
             handler: handler the message was received on
@@ -563,8 +558,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f35(self,  # noqa: MC0001
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 35, Link event report.
+        """Handle Stream 2, Function 35, Link event report.
 
         Args:
             handler: handler the message was received on
@@ -617,8 +611,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Callback handler for Stream 2, Function 37, En-/Disable Event Report.
+        """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         Args:
             handler: handler the message was received on
@@ -641,8 +634,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Callback handler for Stream 6, Function 15, event report request.
+        """Callback handler for Stream 6, Function 15, event report request.
 
         Args:
             handler: handler the message was received on
@@ -664,15 +656,15 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
     def _set_ce_state(self, ceed: bool, ceids: typing.List[typing.Union[int, str]]) -> bool:
-        """
-        En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
+        """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
 
-        :param ceed: Enable (True) or disable (False) event reports
-        :type ceed: bool
-        :param ceids: List of collection events
-        :type ceids: list of integer
-        :returns: True if all ceids were ok, False if illegal ceid was supplied
-        :rtype: bool
+        Args:
+            ceed: Enable (True) or disable (False) event reports
+            ceids: List of collection events
+
+        Returns:
+            True if all ceids were ok, False if illegal ceid was supplied
+
         """
         result = True
         if not ceids:
@@ -688,13 +680,14 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return result
 
     def _build_collection_event(self, ceid: typing.Union[int, str]):
-        """
-        Build reports for a collection event.
+        """Build reports for a collection event.
 
-        :param ceid: collection event to build
-        :type ceid: integer
-        :returns: collection event data
-        :rtype: array
+        Args:
+            ceid: collection event to build
+
+        Returns:
+            collection event data
+
         """
         reports = []
 
@@ -717,28 +710,28 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def equipment_constants(self) -> typing.Dict[typing.Union[int, str], EquipmentConstant]:
-        """
-        The list of the equipments contstants.
+        """The list of the equipments contstants.
 
-        :returns: Equipment constant list
-        :rtype: list of :class:`secsgem.gem.EquipmentConstant`
+        Returns:
+            Equipment constant list
+
         """
         return self._equipment_constants
 
     def on_ec_value_request(self,
                             equipment_constant_id: secsgem.secs.variables.Base,
                             equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
-        """
-        Get the equipment constant value depending on its configuation.
+        """Get the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant request handling.
 
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.Base`
-        :param ec: The equipment constant requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            ecid: Id of the equipment constant encoded in the corresponding type
+            ec: The equipment constant requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del equipment_constant_id  # unused variable
 
@@ -748,30 +741,29 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                            equipment_constant_id: secsgem.secs.variables.Base,
                            equipment_constant: EquipmentConstant, 
                            value: typing.Union[int, float]):
-        """
-        Set the equipment constant value depending on its configuation.
+        """Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
 
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.Base`
-        :param ec: The equipment constant to be updated
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.Base`
+        Args:
+            ecid: Id of the equipment constant encoded in the corresponding type
+            ec: The equipment constant to be updated
+            value: The value encoded in the corresponding type
+
         """
         del equipment_constant_id  # unused variable
 
         equipment_constant.value = value
 
     def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
-        """
-        Get the equipment constant value depending on its configuation.
+        """Get the equipment constant value depending on its configuation.
 
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            ec: The equipment requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             return equipment_constant.value_type(self._establish_communication_timeout)
@@ -783,13 +775,12 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return equipment_constant.value_type(equipment_constant.value)
 
     def _set_ec_value(self, equipment_constant: EquipmentConstant, value: typing.Union[int, float]):
-        """
-        Get the equipment constant value depending on its configuation.
+        """Get the equipment constant value depending on its configuation.
 
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.Base`
+        Args:
+            ec: The equipment requested
+            value: The value encoded in the corresponding type
+
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
             self._establish_communication_timeout = int(value)
@@ -804,8 +795,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 13, Equipment constant request.
+        """Handle Stream 2, Function 13, Equipment constant request.
 
         Args:
             handler: handler the message was received on
@@ -834,8 +824,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f15(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 15, Equipment constant send.
+        """Handle Stream 2, Function 15, Equipment constant send.
 
         Args:
             handler: handler the message was received on
@@ -871,8 +860,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s02f29(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 29, EC namelist request.
+        """Handle Stream 2, Function 29, EC namelist request.
 
         Args:
             handler: handler the message was received on
@@ -908,20 +896,20 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def alarms(self) -> typing.Dict[typing.Union[int, str], Alarm]:
-        """
-        Get the list of the alarms.
+        """Get the list of the alarms.
 
-        :returns: Alarms list
-        :rtype: list of :class:`secsgem.gem.Alarm`
+        Returns:
+            Alarms list
+
         """
         return self._alarms
 
     def set_alarm(self, alid: typing.Union[int, str]):
-        """
-        Set the list of the alarms.
+        """Set the list of the alarms.
 
-        :param alid: Alarm id
-        :type alid: str/int
+        Args:
+            alid: Alarm id
+
         """
         if alid not in self.alarms:
             raise ValueError(f"Unknown alarm id {alid}")
@@ -942,11 +930,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self.trigger_collection_events([self.alarms[alid].ce_on])
 
     def clear_alarm(self, alid: typing.Union[int, str]):
-        """
-        Clear the list of the alarms.
+        """Clear the list of the alarms.
 
-        :param alid: Alarm id
-        :type alid: str/int
+        Args:
+            alid: Alarm id
+
         """
         if alid not in self.alarms:
             raise ValueError(f"Unknown alarm id {alid}")
@@ -965,8 +953,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s05f03(self,
                    handler: secsgem.secs.SecsHandler, 
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 3, Alarm en-/disabled.
+        """Handle Stream 5, Function 3, Alarm en-/disabled.
 
         Args:
             handler: handler the message was received on
@@ -992,8 +979,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s05f05(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 5, Alarm list.
+        """Handle Stream 5, Function 5, Alarm list.
 
         Args:
             handler: handler the message was received on
@@ -1022,8 +1008,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def _on_s05f07(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 7, Enabled alarm list.
+        """Handle Stream 5, Function 7, Enabled alarm list.
 
         Args:
             handler: handler the message was received on
@@ -1046,19 +1031,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     @property
     def remote_commands(self) -> typing.Dict[typing.Union[int, str], RemoteCommand]:
-        """
-        Get list of the remote commands.
+        """Get list of the remote commands.
 
-        :returns: Remote command list
-        :rtype: list of :class:`secsgem.gem.RemoteCommand`
+        Returns:
+            Remote command list
+
         """
         return self._remote_commands
 
     def _on_s02f41(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 41, host command send.
+        """Handle Stream 2, Function 41, host command send.
 
         The remote command handing differs from usual stream function handling, because we send the ack with later
         completion first.

@@ -28,17 +28,14 @@ class Header(abc.ABC):
     length = -1
 
     def __init__(self, system: int, session_id: int, stream: int, function: int):
-        """
-        Initialize a hsms header.
+        """Initialize a hsms header.
 
-        :param system: message ID
-        :type system: integer
-        :param session_id: device / session ID
-        :type session_id: integer
-        :param stream: stream
-        :type stream: integer
-        :param function: function
-        :type function: integer
+        Args:
+            system: message ID
+            session_id: device / session ID
+            stream: stream
+            function: function
+
         """
         self._session_id = session_id
         self._stream = stream

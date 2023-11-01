@@ -40,11 +40,11 @@ class CallbackHandler:
         self._object_intitialized = True
 
     def __setattr__(self, name: str, value: typing.Callable):
-        """
-        Set an item as object member.
+        """Set an item as object member.
 
         Args:
             name: name of the callback
+            value: callback function
 
         """
         if '_object_intitialized' not in self.__dict__ or name in self.__dict__:

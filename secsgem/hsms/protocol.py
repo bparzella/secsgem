@@ -326,7 +326,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
             if not self._connection_state.is_CONNECTED_SELECTED():
                 self._logger.warning("received message when not selected")
 
-                out_message = HsmsMessage(HsmsRejectReqHeader(message.header.system, message.header.s_type, 4))
+                out_message = HsmsMessage(HsmsRejectReqHeader(message.header.system, message.header.s_type, 4), b"")
                 self._communication_logger.info(
                     "> %s\n  %s", out_message, out_message.header.s_type.text,
                     extra=self._get_log_extra())
@@ -429,7 +429,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         Args:
             function: message to be sent
-        
+
         Returns:
             Message that was received
 
@@ -438,9 +438,15 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         response_queue = self._get_queue_for_system(system_id)
 
-        out_message = HsmsMessage(HsmsStreamFunctionHeader(system_id, function.stream, function.function, True,
-                                                           self._settings.session_id),
-                                function.encode())
+        out_message = HsmsMessage(
+            HsmsStreamFunctionHeader(
+                system_id,
+                function.stream,
+                function.function,
+                True,
+                self._settings.session_id),
+            function.encode()
+        )
 
         self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
 
@@ -486,7 +492,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         response_queue = self._get_queue_for_system(system_id)
 
-        message = HsmsMessage(HsmsSelectReqHeader(system_id))
+        message = HsmsMessage(HsmsSelectReqHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -511,7 +517,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        message = HsmsMessage(HsmsSelectRspHeader(system_id))
+        message = HsmsMessage(HsmsSelectRspHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -528,7 +534,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         response_queue = self._get_queue_for_system(system_id)
 
-        message = HsmsMessage(HsmsLinktestReqHeader(system_id))
+        message = HsmsMessage(HsmsLinktestReqHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -553,7 +559,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        message = HsmsMessage(HsmsLinktestRspHeader(system_id))
+        message = HsmsMessage(HsmsLinktestRspHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -570,7 +576,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
         response_queue = self._get_queue_for_system(system_id)
 
-        message = HsmsMessage(HsmsDeselectReqHeader(system_id))
+        message = HsmsMessage(HsmsDeselectReqHeader(system_id), b"")
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text,
                                         extra=self._get_log_extra())
 
@@ -594,7 +600,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :param system_id: System of the request to reply for
         :type system_id: integer
         """
-        message = HsmsMessage(HsmsDeselectRspHeader(system_id))
+        message = HsmsMessage(HsmsDeselectRspHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -611,7 +617,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         :param reason: reason for rejection
         :type reason: integer
         """
-        message = HsmsMessage(HsmsRejectReqHeader(system_id, s_type, reason))
+        message = HsmsMessage(HsmsRejectReqHeader(system_id, s_type, reason), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
@@ -621,7 +627,7 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         """Send a Separate Request to the remote host."""
         system_id = self.get_next_system_counter()
 
-        message = HsmsMessage(HsmsSeparateReqHeader(system_id))
+        message = HsmsMessage(HsmsSeparateReqHeader(system_id), b"")
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())

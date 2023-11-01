@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import threading
 
+
 class ByteQueue:
     """FIFO class for queuing and retrieving bytes."""
 

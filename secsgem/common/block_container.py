@@ -28,7 +28,7 @@ BlockT = typing.TypeVar("BlockT", bound="Block")
 class BlockContainer(typing.Generic[MessageT, BlockT]):
     """Container for message blocks."""
 
-    message_type: typing.Type[Message]
+    message_type: typing.Type[MessageT]
 
     def __init__(self) -> None:
         """Initialize container."""

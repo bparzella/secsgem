@@ -80,8 +80,7 @@ class HsmsHeader(secsgem.common.Header):
             requires_response: bool = False,
             p_type: int = 0x00,
             s_type: HsmsSType = HsmsSType.SELECT_REQ):
-        """
-        Initialize a hsms header.
+        """Initialize a hsms header.
 
         Args:
             system: message ID
@@ -93,12 +92,12 @@ class HsmsHeader(secsgem.common.Header):
             s_type: S-Type
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsHeader(3, 100)
             HsmsHeader({session_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
 require_response:False})
+
         """
         super().__init__(system, session_id, stream, function)
         self._require_response = requires_response

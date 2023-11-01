@@ -26,15 +26,14 @@ class CollectionEventReport:
                  rptid: typing.Union[int, str],
                  variables: typing.List[typing.Union[int, str]], 
                  **kwargs):
-        """
-        Initialize a collection event report.
+        """Initialize a collection event report.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
-        :param rptid: ID of the report
-        :type rptid: various
-        :param vars: long name of the collection event
-        :type vars: string
+        Args:
+            rptid: ID of the report
+            vars: long name of the collection event
+
         """
         self.rptid = rptid
         self.vars = variables

@@ -83,11 +83,11 @@ class Protocol(abc.ABC):
         return self._event_producer
 
     def get_next_system_counter(self):
-        """
-        Return the next System.
+        """Return the next System.
 
-        :returns: System for the next command
-        :rtype: integer
+        Returns: 
+            System for the next command
+
         """
         self._system_counter += 1
 
@@ -116,8 +116,7 @@ class Protocol(abc.ABC):
 
     @abc.abstractmethod
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
-        """
-        Send the message and wait for the response.
+        """Send the message and wait for the response.
 
         Args:
             function: message to be sent
@@ -130,8 +129,7 @@ class Protocol(abc.ABC):
 
     @abc.abstractmethod
     def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[Message]:
-        """
-        Send the message and wait for the response.
+        """Send the message and wait for the response.
 
         Args:
             function: message to be sent
@@ -144,12 +142,11 @@ class Protocol(abc.ABC):
 
     @abc.abstractmethod
     def send_response(self, function: SecsStreamFunction, system: int) -> bool:
-        """
-        Send response function for system.
+        """Send response function for system.
 
-        :param function: function to be sent
-        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
-        :param system: system to reply to
-        :type system: int
+        Args:
+            function: function to be sent
+            system: system to reply to
+
         """
         raise NotImplementedError("Protocol.send_response missing implementation")

@@ -26,12 +26,13 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
     """Baseclass for creating Host/Equipment models. This layer contains GEM functionality."""
 
     def __init__(self, settings: secsgem.common.Settings):
-        """
-        Initialize a gem handler.
+        """Initialize a gem handler.
 
         Inherit from this class and override required functions.
 
-        :param connection: connection to use
+        Args:
+            settings: communication settings
+
         """
         super().__init__(settings)
         self._protocol.events.communicating += self._on_communicating
@@ -96,11 +97,11 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         return self._communication_state
 
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
-        """
-        Get serialized data.
+        """Get serialized data.
 
-        :returns: data to serialize for this object
-        :rtype: dict
+        Returns:
+            data to serialize for this object
+
         """
         data = self.protocol.serialize_data()
         data.update({'communicationState': self._communication_state.current,
@@ -123,10 +124,11 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         self._logger.info("Connection disabled")
 
     def _on_message_received(self, data: typing.Dict[str, typing.Any]):
-        """
-        Message received from protocol layer.
+        """Message received from protocol layer.
 
-        :param data: received event data
+        Args:
+            data: received event data
+
         """
         message = data["message"]
         if self._communication_state.isstate('WAIT_CRA'):
@@ -163,11 +165,11 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         self._communication_state.delayexpired()
 
     def _on_state_wait_cra(self, _):
-        """
-        Connection state model changed to state WAIT_CRA.
+        """Connection state model changed to state WAIT_CRA.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         self._logger.debug("connectionState -> WAIT_CRA")
 
@@ -180,11 +182,11 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
             self.send_stream_function(self.stream_function(1, 13)([self._mdln, self._softrev]))
 
     def _on_state_wait_delay(self, _):
-        """
-        Connection state model changed to state WAIT_DELAY.
+        """Connection state model changed to state WAIT_DELAY.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         self._logger.debug("connectionState -> WAIT_DELAY")
 
@@ -193,31 +195,31 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         self._comm_delay_timer.start()
 
     def _on_state_leave_wait_cra(self, _):
-        """
-        Connection state model changed to state WAIT_CRA.
+        """Connection state model changed to state WAIT_CRA.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         if self._wait_cra_timer is not None:
             self._wait_cra_timer.cancel()
 
     def _on_state_leave_wait_delay(self, _):
-        """
-        Connection state model changed to state WAIT_DELAY.
+        """Connection state model changed to state WAIT_DELAY.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         if self._comm_delay_timer is not None:
             self._comm_delay_timer.cancel()
 
     def _on_state_communicating(self, _):
-        """
-        Connection state model changed to state COMMUNICATING.
+        """Connection state model changed to state COMMUNICATING.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         self._logger.debug("connectionState -> COMMUNICATING")
 
@@ -238,13 +240,13 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
             self._communication_state.communicationfail()
 
     def on_commack_requested(self) -> int:
-        """
-        Get the acknowledgement code for the connection request.
+        """Get the acknowledgement code for the connection request.
 
         override to accept or deny connection request
 
-        :returns: 0 when connection is accepted, 1 when connection is denied
-        :rtype: integer
+        Returns:
+            0 when connection is accepted, 1 when connection is denied
+
         """
         return 0
 
@@ -254,10 +256,10 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         """
         Send a process program.
 
-        :param ppid: Transferred process programs ID
-        :type ppid: string
-        :param ppbody: Content of process program
-        :type ppbody: string
+        Args:
+            ppid: Transferred process programs ID
+            ppbody: Content of process program
+
         """
         # send remote command
         self._logger.info("Send process program %s", ppid)
@@ -267,11 +269,10 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def request_process_program(self, 
                                 ppid: typing.Union[int, str]) -> typing.Tuple[typing.Union[int, str], str]:
-        """
-        Request a process program.
+        """Request a process program.
 
-        :param ppid: Transferred process programs ID
-        :type ppid: string
+            ppid: Transferred process programs ID
+
         """
         self._logger.info("Request process program %s", ppid)
 
@@ -280,13 +281,14 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         return s7f6.PPID.get(), s7f6.PPBODY.get()
 
     def waitfor_communicating(self, timeout: typing.Optional[float] = None) -> bool:
-        """
-        Wait until connection gets into communicating state. Returns immediately if state is communicating.
+        """Wait until connection gets into communicating state. Returns immediately if state is communicating.
 
-        :param timeout: seconds to wait before aborting
-        :type timeout: float
-        :returns: True if state is communicating, False if timed out
-        :rtype: bool
+        Args:
+            timeout: seconds to wait before aborting
+        
+        Returns:
+            True if state is communicating, False if timed out
+
         """
         event = threading.Event()
         self._wait_event_list.append(event)
@@ -304,8 +306,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
     def _on_s01f01(self, 
                    handler: secsgem.secs.SecsHandler, 
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 1, Are You There.
+        """Handle Stream 1, Function 1, Are You There.
 
         Args:
             handler: handler the message was received on
@@ -322,8 +323,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
     def _on_s01f13(self, 
                    handler: secsgem.secs.SecsHandler, 
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 13, Establish Communication Request.
+        """Handle Stream 1, Function 13, Establish Communication Request.
 
         Args:
             handler: handler the message was received on

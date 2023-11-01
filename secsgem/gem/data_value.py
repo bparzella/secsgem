@@ -28,8 +28,7 @@ class DataValue:
                  value_type: typing.Type[secsgem.secs.variables.Base],
                  use_callback: bool = True,
                  **kwargs):
-        """
-        Initialize a data value.
+        """Initialize a data value.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
@@ -39,14 +38,12 @@ class DataValue:
 
         If use_callbacks is disabled, you can set the value with the value property.
 
-        :param dvid: ID of the data value
-        :type dvid: various
-        :param name: long name of the data value
-        :type name: string
-        :param value_type: type of the data value
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-        :type use_callback: boolean
+        Args:
+            dvid: ID of the data value
+            name: long name of the data value
+            value_type: type of the data value
+            use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+
         """
         self.dvid = dvid
         self.name = name

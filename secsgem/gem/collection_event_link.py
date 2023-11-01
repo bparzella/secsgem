@@ -27,13 +27,12 @@ class CollectionEventLink:
                  collection_event: CollectionEvent,
                  reports: typing.List[CollectionEventReport],
                  **kwargs):
-        """
-        Initialize a collection event link.
+        """Initialize a collection event link.
 
-        :param ce: ID of the collection event
-        :type ce: :class:`gem.CollectionEvent`
-        :param reports: list of the linked reports
-        :type reports: list of :class:`gem.CollectionEventReport`
+        Args:
+            ce: ID of the collection event
+            reports: list of the linked reports
+
         """
         self._collection_event = collection_event
         self._reports = reports
@@ -49,10 +48,10 @@ class CollectionEventLink:
 
     @property
     def reports(self):
-        """
-        Get list of the data values.
+        """Get list of the data values.
 
-        :returns: List of linked reports
-        :rtype: list of :class:`gem.CollectionEventReport`
+        Returns:
+            List of linked reports
+
         """
         return self._reports

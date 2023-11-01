@@ -30,21 +30,17 @@ class Alarm:  # pylint: disable=too-many-instance-attributes
                  ce_on: typing.Union[str, int],
                  ce_off: typing.Union[str, int],
                  **kwargs):
-        """
-        Initialize an alarm.
+        """Initialize an alarm.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
-        :param alid: ID of the alarm
-        :type alid: various
-        :param name: long name of the alarm
-        :type name: string
-        :param text: alarm text
-        :type text: string
-        :param ce_on: collection event for alarm set
-        :type ce_on: types supported by data item CEID
-        :param ce_off: collection event for alarm cleared
-        :type ce_off: types supported by data item CEID
+        Args:
+            alid: ID of the alarm
+            name: long name of the alarm
+            text: alarm text
+            ce_on: collection event for alarm set
+            ce_off: collection event for alarm cleared
+
         """
         self.alid = alid
         self.name = name
