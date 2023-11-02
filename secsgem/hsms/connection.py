@@ -50,6 +50,7 @@ class HsmsConnection(secsgem.common.Connection):
         super().__init__(settings)
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
+        self._bytestream_logger = logging.getLogger("bytestream")
 
         # connection socket
         self._sock: typing.Optional[socket.socket] = None
@@ -160,6 +161,8 @@ class HsmsConnection(secsgem.common.Connection):
                     return False
                 # it is EWOULDBLOCK, so retry sending
 
+            self._bytestream_logger.debug("> %s", secsgem.common.format_hex(data))
+
         return True
 
     def __receiver_thread_read_data(self):
@@ -183,6 +186,8 @@ class HsmsConnection(secsgem.common.Connection):
                         self._connected = False
                         self._stop_thread = True
                         continue
+
+                    self._bytestream_logger.debug("< %s", secsgem.common.format_hex(recv_data))
 
                     # add received data to input buffer
                     self.on_data({"source": self, "data": recv_data})
