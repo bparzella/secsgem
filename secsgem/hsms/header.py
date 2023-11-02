@@ -69,7 +69,7 @@ class HsmsHeader(secsgem.common.Header):
     Base for different specific headers
     """
 
-    length = 14
+    length = 10
 
     def __init__(
             self,
@@ -192,14 +192,14 @@ require_response:False})
             new header object
 
         """
-        res = struct.unpack(">LHBBBBL", data)
+        res = struct.unpack(">HBBBBL", data)
 
         return HsmsHeader(
-            res[6],
-            res[1],
-            res[2] & 0b01111111,
+            res[5],
+            res[0],
+            res[1] & 0b01111111,
+            res[2],
+            (((res[1] & 0b10000000) >> 7) == 1),
             res[3],
-            (((res[2] & 0b10000000) >> 7) == 1),
-            res[4],
-            HsmsSType(res[5])
+            HsmsSType(res[4])
         )
