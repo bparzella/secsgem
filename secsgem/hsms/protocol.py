@@ -23,7 +23,7 @@ import typing
 
 import secsgem.common
 
-from .message import HsmsMessage
+from .message import HsmsMessage, HsmsBlock
 from .header import HsmsSType
 from .select_req_header import HsmsSelectReqHeader
 from .select_rsp_header import HsmsSelectRspHeader
@@ -43,20 +43,7 @@ if typing.TYPE_CHECKING:
     from .settings import HsmsSettings
 
 
-HSMS_STYPES = {
-    1: "Select.req",
-    2: "Select.rsp",
-    3: "Deselect.req",
-    4: "Deselect.rsp",
-    5: "Linktest.req",
-    6: "Linktest.rsp",
-    7: "Reject.req",
-    9: "Separate.req"
-}
-"""Names for hsms header SType."""
-
-
-class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instance-attributes
+class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: disable=too-many-instance-attributes
     """
     Baseclass for creating Host/Equipment models.
 
@@ -64,8 +51,10 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     Inherit from this class and override required functions.
     """
 
-    send_block_size = 1024 * 1024
+    send_packet_size = 1024 * 1024
     """ Block size for outbound data ."""
+
+    message_type = HsmsMessage
 
     def __init__(self, settings: HsmsSettings):
         """
@@ -107,16 +96,10 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         # select request thread for active connections, to avoid blocking state changes
         self._select_req_thread = None
 
-        # response queues
-        self._system_queues: typing.Dict[int, queue.Queue[HsmsMessage]] = {}
-
         # hsms connection state fsm
         self._connection_state = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
                                                          "on_exit_CONNECTED": self._on_state_disconnect,
                                                          "on_enter_CONNECTED_SELECTED": self._on_state_select})
-
-        # buffer for received data
-        self._receive_buffer = b""
 
     @property
     def connection_state(self) -> ConnectionStateMachine:
@@ -124,9 +107,12 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         return self._connection_state
 
     def _send_select_req_thread(self):
-        response = self.send_select_req()
-        if response is None:
-            self._logger.warning("select request failed")
+        try:
+            response = self.send_select_req()
+            if response is None:
+                self._logger.warning("select request failed")
+        except Exception as exc:
+            self._logger.warning("exception in _send_select_req_thread", exc_info=exc)
 
     def _start_linktest_timer(self):
         self._linktest_timer = threading.Timer(self._linktest_timeout, self._on_linktest_timer)
@@ -187,6 +173,8 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         """Handle connection was established event."""
         self._connected = True
 
+        self._thread.start()
+
         # update connection state
         self._connection_state.connect()
 
@@ -203,10 +191,11 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         self._connected = False
         self._connection_state.disconnect()
 
-        # clear receive buffer
-        self._receive_buffer = b""
+        self._thread.stop()
+        self._receive_buffer.clear()
 
         self.events.fire("disconnected", {'connection': self})
+
 
     def __handle_hsms_requests_select_req(self, message: HsmsMessage):
         if self._connection.disconnecting:
@@ -219,8 +208,8 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     def __handle_hsms_requests_select_rsp(self, message: HsmsMessage):
         self._connection_state.select()
 
-        if message.header.system in self._system_queues:
-            self._system_queues[message.header.system].put_nowait(message)
+        if message.header.system in self._response_queues:
+            self._response_queues[message.header.system].put_nowait(message)
 
     def __handle_hsms_requests_deselect_req(self, message: HsmsMessage):
         if self._connection.disconnecting:
@@ -233,8 +222,8 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
     def __handle_hsms_requests_deselect_rsp(self, message: HsmsMessage):
         self._connection_state.deselect()
 
-        if message.header.system in self._system_queues:
-            self._system_queues[message.header.system].put_nowait(message)
+        if message.header.system in self._response_queues:
+            self._response_queues[message.header.system].put_nowait(message)
 
     def __handle_hsms_requests_linktest_req(self, message: HsmsMessage):
         if self._connection.disconnecting:
@@ -257,63 +246,29 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
         elif message.header.s_type == HsmsSType.LINKTEST_REQ:
             self.__handle_hsms_requests_linktest_req(message)
         else:
-            if message.header.system in self._system_queues:
-                self._system_queues[message.header.system].put_nowait(message)
+            if message.header.system in self._response_queues:
+                self._response_queues[message.header.system].put_nowait(message)
 
-    def _on_connection_data_received(self, data: typing.Dict[str, typing.Any]):
-        """Data received by connection.
-
-        Args:
-            data: received data
-
-        """
-        self._receive_buffer += data["data"]
-
-        # handle data in input buffer
-        while self._process_receive_buffer():
-            pass
-
-    def _process_receive_buffer(self):
-        """
-        Parse the receive buffer and dispatch callbacks.
-
-        .. warning:: Do not call this directly, will be called from
-        :func:`secsgem.hsmsConnections.hsmsConnection.__receiver_thread` method.
-        """
-        # check if enough data in input buffer
+    def _process_received_data(self):
         if len(self._receive_buffer) < 4:
-            return False
+            return
 
-        # unpack length from input buffer
-        length = struct.unpack(">L", self._receive_buffer[0:4])[0] + 4
+        while len(self._receive_buffer) > 3:
+            length_data = self._receive_buffer.wait_for(4, peek=True)
+            length = struct.unpack(">L", length_data)[0] + 4
 
-        # check if enough data in input buffer
-        if len(self._receive_buffer) < length:
-            return False
+            data = self._receive_buffer.wait_for(length)
 
-        # extract and remove message from input buffer
-        data = self._receive_buffer[0:length]
-        self._receive_buffer = self._receive_buffer[length:]
+            # decode received message
+            response = HsmsBlock.decode(data)
 
-        # decode received message
-        response = HsmsMessage.decode(data)
+            self._thread.queue_block(self, response)
 
-        # redirect message to hsms handler
-        try:
-            self._on_connection_message_received(self, response)
-        except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_message_received handler')
-
-        # return True if more data is available
-        if len(self._receive_buffer) > 0:
-            return True
-
-        return False
-
-    def _on_connection_message_received(self, _, message: HsmsMessage):
+    def _on_connection_message_received(self, source: object, message: HsmsMessage):
         """Message received by connection.
 
         Args:
+            source: source of event
             message: received data message
 
         """
@@ -335,37 +290,12 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
                 return
 
             # someone is waiting for this message
-            if message.header.system in self._system_queues:
+            if message.header.system in self._response_queues:
                 # send message to request sender
-                self._system_queues[message.header.system].put_nowait(message)
+                self._response_queues[message.header.system].put_nowait(message)
             # just log if nobody is interested
             else:
                 self.events.fire("message_received", {'connection': self, 'message': message})
-
-    def _get_queue_for_system(self, system_id):
-        """
-        Create a new queue to receive responses for a certain system.
-
-        :param system_id: system id to watch
-        :type system_id: int
-        :returns: queue to receive responses with
-        :rtype: queue.Queue
-        """
-        self._system_queues[system_id] = queue.Queue()
-        return self._system_queues[system_id]
-
-    def _remove_queue(self, system_id):
-        """
-        Remove queue for system id from list.
-
-        :param system_id: system id to remove
-        :type system_id: int
-        """
-        del self._system_queues[system_id]
-
-    def __repr__(self):
-        """Generate textual representation for an object of this class."""
-        return f"{self.__class__.__name__} {str(self.serialize_data())}"
 
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
@@ -383,103 +313,49 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
             'connected': self._connected
         }
 
-    def send_message(self, message: secsgem.common.Message) -> bool:
-        """
-        Send a message to the remote host.
+    def _process_send_queue(self):
+        if self._send_queue.empty():
+            return
+
+        while not self._send_queue.empty():
+            block_info = self._send_queue.get()
+
+            packets = [
+                block_info.data[i: i + self.send_packet_size]
+                for i in range(0, len(block_info.data), self.send_packet_size)
+            ]
+
+            for packet in packets:
+                if not self._connection.send_data(packet):
+                    block_info.resolve(False)
+                    return
+
+            block_info.resolve(True)
+
+    def _create_message_for_function(
+            self,
+            function: SecsStreamFunction,
+            system_id: int
+    ) -> secsgem.common.Message:
+        """Create a protocol specific message for a function.
 
         Args:
-            message: message to be transmitted
-
-        """
-        # encode the message
-        data = message.encode()
-
-        # split data into blocks
-        blocks = [data[i: i + self.send_block_size] for i in range(0, len(data), self.send_block_size)]
-
-        for block in blocks:
-            if not self._connection.send_data(block):
-                return False
-
-        return True
-
-    def send_stream_function(self, function: SecsStreamFunction) -> bool:
-        """
-        Send the message and wait for the response.
-
-        Args:
-            function: message to be sent
+            function: function to create message for
+            system_id: system
 
         Returns:
-            True if successful
+            created message
 
         """
-        out_message = HsmsMessage(
-            HsmsStreamFunctionHeader(self.get_next_system_counter(), function.stream, function.function,
-                                     function.is_reply_required, self._settings.session_id),
-            function.encode())
-
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        return self.send_message(out_message)
-
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Message]:
-        """
-        Send the message and wait for the response.
-
-        Args:
-            function: message to be sent
-
-        Returns:
-            Message that was received
-
-        """
-        system_id = self.get_next_system_counter()
-
-        response_queue = self._get_queue_for_system(system_id)
-
-        out_message = HsmsMessage(
+        return HsmsMessage(
             HsmsStreamFunctionHeader(
                 system_id,
                 function.stream,
                 function.function,
-                True,
-                self._settings.session_id),
-            function.encode()
-        )
-
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        if not self.send_message(out_message):
-            self._logger.error("Sending message failed")
-            self._remove_queue(system_id)
-            return None
-
-        try:
-            response = response_queue.get(True, self.timeouts.t3)
-        except queue.Empty:
-            response = None
-
-        self._remove_queue(system_id)
-
-        return response
-
-    def send_response(self, function: SecsStreamFunction, system: int) -> bool:
-        """
-        Send response function for system.
-
-        :param function: function to be sent
-        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
-        :param system: system to reply to
-        :type system: integer
-        """
-        out_message = HsmsMessage(HsmsStreamFunctionHeader(system, function.stream, function.function, False,
-                                                           self._settings.session_id),
-                                  function.encode())
-
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        return self.send_message(out_message)
+                function.is_reply_required,
+                self._settings.session_id
+            ),
+            function.encode())
 
     def send_select_req(self):
         """
@@ -639,7 +515,8 @@ class HsmsProtocol(secsgem.common.Protocol):  # pylint: disable=too-many-instanc
 
     # helpers
 
-    def _get_log_extra(self):
+    def _get_log_extra(self) -> typing.Dict[str, typing.Any]:
+        """Get extra fields for logging."""
         return {"address": self._settings.address,
                 "port": self._settings.port,
                 "session_id": self._settings.session_id,

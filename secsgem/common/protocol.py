@@ -18,21 +18,29 @@ from __future__ import annotations
 
 import abc
 import logging
+import queue
 import random
 import typing
 
+import secsgem.common
+
 from .connection import Connection
 from .events import EventProducer
-from .message import Message
 from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
     from .settings import Settings
+    from .message import Message, Block
     from ..secs.functions.base import SecsStreamFunction
 
+MessageT = typing.TypeVar("MessageT", bound="Message")
+BlockT = typing.TypeVar("BlockT", bound="Block")
 
-class Protocol(abc.ABC):
+
+class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=too-many-instance-attributes
     """Abstract base class for a protocol."""
+
+    message_type: typing.Type[MessageT]
 
     def __init__(self, settings: Settings) -> None:
         """Initialize protocol base object."""
@@ -50,6 +58,18 @@ class Protocol(abc.ABC):
 
         self.__connection: typing.Optional[Connection] = None
 
+        self._response_queues: typing.Dict[int, queue.Queue[MessageT]] = {}
+
+        self._receive_buffer = secsgem.common.ByteQueue()
+        self._send_queue: queue.Queue[secsgem.common.BlockSendInfo] = queue.Queue()
+        self._incomplete_messages: typing.Dict[int, MessageT] = {}
+
+        self._thread = secsgem.common.ProtocolDispatcher(
+            self._process_data,
+            self._dispatch_block,
+            self._settings
+        )
+
     @property
     def _connection(self) -> Connection:
         if self.__connection is None:
@@ -66,16 +86,47 @@ class Protocol(abc.ABC):
         raise NotImplementedError("Protocol._on_connected missing implementation")
 
     @abc.abstractmethod
-    def _on_connection_data_received(self, _: typing.Dict[str, typing.Any]):
-        raise NotImplementedError("Protocol._on_connection_data_received missing implementation")
-
-    @abc.abstractmethod
     def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
         raise NotImplementedError("Protocol._on_disconnecting missing implementation")
 
     @abc.abstractmethod
     def _on_disconnected(self, _: typing.Dict[str, typing.Any]):
         raise NotImplementedError("Protocol._on_disconnected missing implementation")
+
+    def _on_connection_data_received(self, data: typing.Dict[str, typing.Any]):
+        """Data received by connection.
+
+        Args:
+            data: received data
+
+        """
+        self._receive_buffer.append(data["data"])
+        self._thread.trigger_receiver()
+
+    def _process_data(self):
+        """Parse the receive buffer and dispatch callbacks."""
+        self._process_send_queue()
+        self._process_received_data()
+
+    @abc.abstractmethod
+    def _process_send_queue(self):
+        """Process the send to communication queue."""
+        raise NotImplementedError("Protocol._process_send_queue missing implementation")
+
+    @abc.abstractmethod
+    def _process_received_data(self):
+        """Process the receive from communication queue."""
+        raise NotImplementedError("Protocol._process_received_data missing implementation")
+
+    def _dispatch_block(self, source: object, block: BlockT):
+        result = self._add_message_block(block)
+        if result is None:
+            return
+
+        try:
+            self._on_connection_message_received(source, result)
+        except Exception:  # pylint: disable=broad-except
+            self._logger.exception('ignoring exception for on_connection_message_received handler')
 
     @property
     def events(self):
@@ -85,7 +136,7 @@ class Protocol(abc.ABC):
     def get_next_system_counter(self):
         """Return the next System.
 
-        Returns: 
+        Returns:
             System for the next command
 
         """
@@ -115,32 +166,133 @@ class Protocol(abc.ABC):
         raise NotImplementedError("Protocol.serialize_data missing implementation")
 
     @abc.abstractmethod
-    def send_stream_function(self, function: SecsStreamFunction) -> bool:
+    def _on_connection_message_received(self, source: object, message: MessageT):
+        """Message received by connection.
+
+        Args:
+            source: source of event
+            message: received data message
+
+        """
+        raise NotImplementedError("Protocol._on_connection_message_received missing implementation")
+
+    def _get_queue_for_system(self, system_id: int) -> queue.Queue:
+        """Create a new queue to receive responses for a certain system.
+
+        Args:
+            system_id: system id to watch
+
+        Returns:
+            queue to receive responses with
+
+        """
+        self._response_queues[system_id] = queue.Queue()
+        return self._response_queues[system_id]
+
+    def _remove_queue(self, system_id: int):
+        """
+        Remove queue for system id from list.
+
+        Args:
+            system_id: system id to remove
+
+        """
+        del self._response_queues[system_id]
+
+    def _add_message_block(self, block: BlockT) -> typing.Optional[MessageT]:
+        """Add a block, and get completed message if available.
+
+        Args:
+            block: block to add
+
+        Returns:
+            completed message or None if paket not complete
+
+        """
+        if block.header.system not in self._incomplete_messages:
+            self._incomplete_messages[block.header.system] = self.message_type.from_block(block)
+        else:
+            self._incomplete_messages[block.header.system].blocks.append(block)
+
+        message = self._incomplete_messages[block.header.system]
+
+        if not message.complete:
+            return None
+
+        del self._incomplete_messages[block.header.system]
+        return message
+
+    @abc.abstractmethod
+    def _create_message_for_function(
+            self,
+            function: SecsStreamFunction,
+            system_id: int
+    ) -> secsgem.common.Message:
+        """Create a protocol specific message for a function.
+
+        Args:
+            function: function to create message for
+            system_id: system
+
+        Returns:
+            created message
+
+        """
+        raise NotImplementedError("Protocol._create_message_for_function missing implementation")
+
+    def send_message(self, message: secsgem.common.Message) -> bool:
+        """
+        Send a message to the remote host.
+
+        Args:
+            message: message to be transmitted
+
+        Returns:
+            True if sending was successful
+
+        """
+        for block in message.blocks:
+            block_send_info = secsgem.common.BlockSendInfo(block.encode())
+            self._send_queue.put(block_send_info)
+            self._thread.trigger_receiver()
+
+            if not block_send_info.wait():
+                return False
+
+        return True
+
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Message]:
         """Send the message and wait for the response.
 
         Args:
             function: message to be sent
 
         Returns:
-            True if sent successful
+            Message that was received
 
         """
-        raise NotImplementedError("Protocol.send_stream_function missing implementation")
+        system_id = self.get_next_system_counter()
 
-    @abc.abstractmethod
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[Message]:
-        """Send the message and wait for the response.
+        response_queue = self._get_queue_for_system(system_id)
 
-        Args:
-            function: message to be sent
+        out_message = self._create_message_for_function(function, system_id)
 
-        Returns:
-            message that was received
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
 
-        """
-        raise NotImplementedError("Protocol.send_and_waitfor_response missing implementation")
+        if not self.send_message(out_message):
+            self._logger.error("Sending message failed")
+            self._remove_queue(system_id)
+            return None
 
-    @abc.abstractmethod
+        try:
+            response = response_queue.get(True, self.timeouts.t3)
+        except queue.Empty:
+            response = None
+
+        self._remove_queue(system_id)
+
+        return response
+
     def send_response(self, function: SecsStreamFunction, system: int) -> bool:
         """Send response function for system.
 
@@ -148,5 +300,38 @@ class Protocol(abc.ABC):
             function: function to be sent
             system: system to reply to
 
+        Returns:
+            True if sending was successful
+
         """
-        raise NotImplementedError("Protocol.send_response missing implementation")
+        out_message = self._create_message_for_function(function, system)
+
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
+
+        return self.send_message(out_message)
+
+    def send_stream_function(self, function: SecsStreamFunction) -> bool:
+        """
+        Send the message and wait for the response.
+
+        Args:
+            function: message to be sent
+
+        Returns:
+            True if successful
+
+        """
+        out_message = self._create_message_for_function(function, self.get_next_system_counter())
+
+        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
+
+        return self.send_message(out_message)
+
+    def __repr__(self):
+        """Generate textual representation for an object of this class."""
+        return f"{self.__class__.__name__} {str(self.serialize_data())}"
+
+    @abc.abstractmethod
+    def _get_log_extra(self) -> typing.Dict[str, typing.Any]:
+        """Get extra fields for logging."""
+        raise NotImplementedError("Protocol._get_log_extra missing implementation")

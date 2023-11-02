@@ -16,7 +16,6 @@
 """SECS-I protocol implementation."""
 from __future__ import annotations
 
-import queue
 import typing
 
 import secsgem.common
@@ -29,13 +28,7 @@ if typing.TYPE_CHECKING:
     from .settings import SecsISettings
 
 
-class SecsIBlockContainer(secsgem.common.BlockContainer[SecsIMessage, SecsIBlock]):
-    """Container for message blocks."""
-
-    message_type = SecsIMessage
-
-
-class SecsIProtocol(secsgem.common.Protocol):
+class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
     """Implementation for SECS-I protocol."""
 
     ENQ = 0b00000101
@@ -44,6 +37,8 @@ class SecsIProtocol(secsgem.common.Protocol):
     NAK = 0b00010101
 
     block_size = 244
+
+    message_type = SecsIMessage
 
     def __init__(self, settings: SecsISettings):
         """
@@ -74,108 +69,24 @@ class SecsIProtocol(secsgem.common.Protocol):
         """
         super().__init__(settings)
 
-        self._receive_buffer = secsgem.common.ByteQueue()
-        self._send_queue: queue.Queue[secsgem.common.BlockSendInfo] = queue.Queue()
-        self._response_queues: typing.Dict[int, queue.Queue[SecsIMessage]] = {}
-        self._block_container = SecsIBlockContainer()
-
-        self._thread = secsgem.common.ProtocolDispatcher(
-            self._process_data,
-            self._dispatch_message,
-            self._settings
-        )
-
-    def send_message(self, message: secsgem.common.Message) -> bool:
-        """
-        Send a message to the remote host.
+    def _create_message_for_function(
+            self,
+            function: SecsStreamFunction,
+            system_id: int
+    ) -> secsgem.common.Message:
+        """Create a protocol specific message for a function.
 
         Args:
-            message: message to be transmitted
-
-        """
-        for block in message.blocks:
-            block_send_info = secsgem.common.BlockSendInfo(block.encode())
-            self._send_queue.put(block_send_info)
-            self._thread.trigger_receiver()
-
-            if not block_send_info.wait():
-                return False
-
-        return True
-
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Message]:
-        """Send the message and wait for the response.
-
-        Args:
-            function: message to be sent
+            function: function to create message for
+            system_id: system
 
         Returns:
-            Message that was received
+            created message
 
         """
-        system_id = self.get_next_system_counter()
-
-        response_queue = self._get_queue_for_system(system_id)
-
-        out_message = SecsIMessage(
+        return SecsIMessage(
             SecsIHeader(
                 system_id,
-                self._settings.session_id,
-                function.stream,
-                function.function,
-                require_response=True,
-                from_equipment=(self._settings.device_type == secsgem.common.DeviceType.EQUIPMENT)
-            ),
-            function.encode()
-        )
-
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        if not self.send_message(out_message):
-            self._logger.error("Sending message failed")
-            self._remove_queue(system_id)
-            return None
-
-        try:
-            response = response_queue.get(True, self.timeouts.t3)
-        except queue.Empty:
-            response = None
-
-        self._remove_queue(system_id)
-
-        return response
-
-    def send_response(self, function: SecsStreamFunction, system: int) -> bool:
-        """
-        Send response function for system.
-
-        :param function: function to be sent
-        :type function: :class:`secsgem.secs.functionbase.SecsStreamFunction`
-        :param system: system to reply to
-        :type system: integer
-        """
-        out_message = SecsIMessage(
-            SecsIHeader(system, self._settings.session_id, function.stream, function.function),
-            function.encode())
-
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        return self.send_message(out_message)
-
-    def send_stream_function(self, function: SecsStreamFunction) -> bool:
-        """
-        Send the message and wait for the response.
-
-        Args:
-            function: message to be sent
-
-        Returns:
-            True if successful
-
-        """
-        out_message = SecsIMessage(
-            SecsIHeader(
-                self.get_next_system_counter(),
                 self._settings.session_id,
                 function.stream,
                 function.function,
@@ -185,10 +96,6 @@ class SecsIProtocol(secsgem.common.Protocol):
             function.encode()
         )
 
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        return self.send_message(out_message)
-
     def serialize_data(self) -> typing.Dict[str, typing.Any]:
         """
         Return data for serialization.
@@ -197,11 +104,6 @@ class SecsIProtocol(secsgem.common.Protocol):
         :rtype: dict
         """
         return {'port': self._settings.port, 'baud_rate': self._settings.speed}
-
-    @property
-    def timeouts(self) -> secsgem.common.Timeouts:
-        """Property for timeout."""
-        return self._settings.timeouts
 
     def _on_connected(self, _: typing.Dict[str, typing.Any]):
         """Handle connection was established event."""
@@ -217,16 +119,6 @@ class SecsIProtocol(secsgem.common.Protocol):
         self._thread.stop()
 
         self._receive_buffer.clear()
-
-    def _on_connection_data_received(self, data: typing.Dict[str, typing.Any]):
-        """Data received by connection.
-
-        Args:
-            data: received data
-
-        """
-        self._receive_buffer.append(data["data"])
-        self._thread.trigger_receiver()
 
     def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
         pass
@@ -246,13 +138,13 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             enq_resonse = self._receive_buffer.pop_byte()
 
-            message_info = self._send_queue.get()
+            block_info = self._send_queue.get()
 
-            self._connection.send_data(message_info.data)
+            self._connection.send_data(block_info.data)
 
-            data_resonse = self._receive_buffer.wait_for_byte()
+            data_response = self._receive_buffer.wait_for_byte()
 
-            message_info.resolve(data_resonse == self.ACK)
+            block_info.resolve(data_response == self.ACK)
 
     def _process_received_data(self):
         if len(self._receive_buffer) < 1:
@@ -281,13 +173,8 @@ class SecsIProtocol(secsgem.common.Protocol):
 
             self._connection.send_data(bytes([self.ACK]))
 
-    def _process_data(self):
-        """Parse the receive buffer and dispatch callbacks."""
-        self._process_send_queue()
-        self._process_received_data()
-
     def _on_connection_message_received(self, source: object, message: SecsIMessage):
-        """Message received by connection.
+        """Message received from connection.
 
         Args:
             source: source of event
@@ -303,40 +190,9 @@ class SecsIProtocol(secsgem.common.Protocol):
         else:
             self.events.fire("message_received", {'connection': source, 'message': message})
 
-    def _dispatch_message(self, source: object, message: SecsIBlock):
-        result = self._block_container.add_block(message)
-        if result is None:
-            return
-
-        try:
-            self._on_connection_message_received(source, result)
-        except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_message_received handler')
-
-    def _get_log_extra(self):
+    def _get_log_extra(self) -> typing.Dict[str, typing.Any]:
+        """Get extra fields for logging."""
         return {"port": self._settings.port,
                 "speed": self._settings.speed,
                 "session_id": self._settings.session_id,
                 "remoteName": self._settings.name}
-
-    # TODO: different way of waiting for response? BlockInfo?
-    def _get_queue_for_system(self, system_id):
-        """
-        Create a new queue to receive responses for a certain system.
-
-        :param system_id: system id to watch
-        :type system_id: int
-        :returns: queue to receive responses with
-        :rtype: queue.Queue
-        """
-        self._response_queues[system_id] = queue.Queue()
-        return self._response_queues[system_id]
-
-    def _remove_queue(self, system_id):
-        """
-        Remove queue for system id from list.
-
-        :param system_id: system id to remove
-        :type system_id: int
-        """
-        del self._response_queues[system_id]
