@@ -106,13 +106,9 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
         self._dispatcher_thread_trigger.set()
 
     def _receiver_thread_function(self):
-        print("Starting receiver thread")
-
         while not self._stop_receiver_thread:
             self._receiver_thread_trigger.wait()
             self._receiver_thread_trigger.clear()
-
-            print("Receiver thread triggered")
 
             if self._stop_receiver_thread:
                 continue
@@ -122,18 +118,12 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
             except Exception as exc:  # pylint: disable=broad-exception-caught
                 logging.warning("Exception in receiver callback, ignoring", exc_info=exc)
 
-        print("Stopping receiver thread")
-
         self._stop_receiver_thread = False
 
     def _dispatcher_thread_function(self):
-        print("Starting dispatcher thread")
-
         while not self._stop_dispatcher_thread:
             self._dispatcher_thread_trigger.wait()
             self._dispatcher_thread_trigger.clear()
-
-            print("Dispatcher thread triggered")
 
             if self._stop_dispatcher_thread:
                 continue
@@ -145,7 +135,5 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
                     self._dispatcher_target(*data)
                 except Exception as exc:  # pylint: disable=broad-exception-caught
                     logging.warning("Exception in dispatcher callback, ignoring", exc_info=exc)
-
-        print("Stopping dispatcher thread")
 
         self._stop_dispatcher_thread = False
