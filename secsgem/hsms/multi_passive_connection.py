@@ -53,7 +53,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         # initially not enabled
         self.enabled = False
 
-    def connected(self, sock: socket.Socket, address: str):
+    def connected(self, sock: socket.socket, address: str):
         """Connect callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
         Args:
