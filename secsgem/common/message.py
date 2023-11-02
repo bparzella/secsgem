@@ -144,7 +144,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
     @classmethod
     def _split_blocks(cls, data: bytes, header: BlockHeaderT) -> typing.List[BlockT]:
         if cls.block_size == -1:
-            return cls.block_type(header, data)
+            return [cls.block_type(header, data)]
 
         data_blocks = [data[i: i + cls.block_size] for i in range(0, len(data), cls.block_size)]
 
