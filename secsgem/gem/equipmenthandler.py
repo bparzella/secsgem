@@ -15,25 +15,24 @@
 #####################################################################
 # pylint: disable=too-many-lines
 """Handler for GEM equipment."""
-from datetime import datetime
 import typing
+from datetime import datetime
 
 from dateutil.tz import tzlocal
 
 import secsgem.common
-import secsgem.secs.variables
 import secsgem.secs.data_items
+import secsgem.secs.variables
 
-from .status_variable import StatusVariable
 from .alarm import Alarm
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
 from .data_value import DataValue
 from .equipment_constant import EquipmentConstant
-from .remote_command import RemoteCommand
 from .handler import GemHandler
-
+from .remote_command import RemoteCommand
+from .status_variable import StatusVariable
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
@@ -55,7 +54,7 @@ RCMD_START = "START"
 RCMD_STOP = "STOP"
 
 
-class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes
+class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
@@ -120,47 +119,47 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
 
         self._control_state = secsgem.common.Fysom({
-            'initial': "INIT",
-            'events': [
-                {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1
-                {'name': 'initial_offline', 'src': 'CONTROL', 'dst': 'OFFLINE'},  # 1
-                {'name': 'initial_equipment_offline', 'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
-                {'name': 'initial_attempt_online', 'src': 'OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 2
-                {'name': 'initial_host_offline', 'src': 'OFFLINE', 'dst': 'HOST_OFFLINE'},  # 2
-                {'name': 'switch_online', 'src': 'EQUIPMENT_OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 3
-                {'name': 'attempt_online_fail_equipment_offline', 'src': 'ATTEMPT_ONLINE',
-                 'dst': 'EQUIPMENT_OFFLINE'},  # 4
-                {'name': 'attempt_online_fail_host_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'HOST_OFFLINE'},  # 4
-                {'name': 'attempt_online_success', 'src': 'ATTEMPT_ONLINE', 'dst': 'ONLINE'},  # 5
-                {'name': 'switch_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 'dst': 'EQUIPMENT_OFFLINE'},  # 6, 12
-                {'name': 'initial_online', 'src': 'CONTROL', 'dst': 'ONLINE'},  # 1
-                {'name': 'initial_online_local', 'src': 'ONLINE', 'dst': 'ONLINE_LOCAL'},  # 7
-                {'name': 'initial_online_remote', 'src': 'ONLINE', 'dst': 'ONLINE_REMOTE'},  # 7
-                {'name': 'switch_online_local', 'src': 'ONLINE_REMOTE', 'dst': 'ONLINE_LOCAL'},  # 8
-                {'name': 'switch_online_remote', 'src': 'ONLINE_LOCAL', 'dst': 'ONLINE_REMOTE'},  # 9
-                {'name': 'remote_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 'dst': 'HOST_OFFLINE'},  # 10
-                {'name': 'remote_online', 'src': 'HOST_OFFLINE', 'dst': 'ONLINE'},  # 11
+            "initial": "INIT",
+            "events": [
+                {"name": "start", "src": "INIT", "dst": "CONTROL"},  # 1
+                {"name": "initial_offline", "src": "CONTROL", "dst": "OFFLINE"},  # 1
+                {"name": "initial_equipment_offline", "src": "OFFLINE", "dst": "EQUIPMENT_OFFLINE"},  # 2
+                {"name": "initial_attempt_online", "src": "OFFLINE", "dst": "ATTEMPT_ONLINE"},  # 2
+                {"name": "initial_host_offline", "src": "OFFLINE", "dst": "HOST_OFFLINE"},  # 2
+                {"name": "switch_online", "src": "EQUIPMENT_OFFLINE", "dst": "ATTEMPT_ONLINE"},  # 3
+                {"name": "attempt_online_fail_equipment_offline", "src": "ATTEMPT_ONLINE",
+                 "dst": "EQUIPMENT_OFFLINE"},  # 4
+                {"name": "attempt_online_fail_host_offline", "src": "ATTEMPT_ONLINE", "dst": "HOST_OFFLINE"},  # 4
+                {"name": "attempt_online_success", "src": "ATTEMPT_ONLINE", "dst": "ONLINE"},  # 5
+                {"name": "switch_offline", "src": ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
+                 "dst": "EQUIPMENT_OFFLINE"},  # 6, 12
+                {"name": "initial_online", "src": "CONTROL", "dst": "ONLINE"},  # 1
+                {"name": "initial_online_local", "src": "ONLINE", "dst": "ONLINE_LOCAL"},  # 7
+                {"name": "initial_online_remote", "src": "ONLINE", "dst": "ONLINE_REMOTE"},  # 7
+                {"name": "switch_online_local", "src": "ONLINE_REMOTE", "dst": "ONLINE_LOCAL"},  # 8
+                {"name": "switch_online_remote", "src": "ONLINE_LOCAL", "dst": "ONLINE_REMOTE"},  # 9
+                {"name": "remote_offline", "src": ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
+                 "dst": "HOST_OFFLINE"},  # 10
+                {"name": "remote_online", "src": "HOST_OFFLINE", "dst": "ONLINE"},  # 11
             ],
-            'callbacks': {
-                'onCONTROL': self._on_control_state_control,  # 1, forward online/offline depending on configuration
-                'onOFFLINE': self._on_control_state_offline,  # 2, forward to configured offline state
-                'onATTEMPT_ONLINE': self._on_control_state_attempt_online,  # 3, send S01E01
-                'onONLINE': self._on_control_state_online,  # 7, forward to configured online state
-                'oninitial_online_local': self._on_control_state_initial_online_local,  # 7, send collection event
-                'onswitch_online_local': self._on_control_state_initial_online_local,  # 8, send collection event
-                'oninitial_online_remote': self._on_control_state_initial_online_remote,  # 8, send collection event
-                'onswitch_online_remote': self._on_control_state_initial_online_remote,  # 9, send collection event
+            "callbacks": {
+                "onCONTROL": self._on_control_state_control,  # 1, forward online/offline depending on configuration
+                "onOFFLINE": self._on_control_state_offline,  # 2, forward to configured offline state
+                "onATTEMPT_ONLINE": self._on_control_state_attempt_online,  # 3, send S01E01
+                "onONLINE": self._on_control_state_online,  # 7, forward to configured online state
+                "oninitial_online_local": self._on_control_state_initial_online_local,  # 7, send collection event
+                "onswitch_online_local": self._on_control_state_initial_online_local,  # 8, send collection event
+                "oninitial_online_remote": self._on_control_state_initial_online_remote,  # 8, send collection event
+                "onswitch_online_remote": self._on_control_state_initial_online_remote,  # 9, send collection event
             },
-            'autoforward': [
+            "autoforward": [
                 # {'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
                 # {'src': 'EQUIPMENT_INITIATED_CONNECT', 'dst': 'WAIT_CRA'},  # 5
                 # {'src': 'HOST_INITIATED_CONNECT', 'dst': 'WAIT_CR_FROM_HOST'},  # 10
             ]
         })
 
-        self._control_state.start()  # type: ignore
+        self._control_state.start()
 
     @property
     def control_state(self) -> secsgem.common.Fysom:
@@ -231,8 +230,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self._control_state.switch_online_remote()
         self._online_control_state = "REMOTE"
 
-    def _on_s01f15(self, 
-                   handler: secsgem.secs.SecsHandler, 
+    def _on_s01f15(self,
+                   handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """Handle Stream 1, Function 15, Request offline.
 
@@ -246,7 +245,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         oflack = 0
 
         if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            self._control_state.remote_offline()  # type: ignore
+            self._control_state.remote_offline()
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
         return self.stream_function(1, 16)(oflack)
@@ -266,7 +265,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         onlack = 1
 
         if self._control_state.isstate("HOST_OFFLINE"):
-            self._control_state.remote_online()  # type: ignore
+            self._control_state.remote_online()
             onlack = 0
         elif self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
             onlack = 2
@@ -285,8 +284,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         return self._data_values
 
-    def on_dv_value_request(self, 
-                            data_value_id: secsgem.secs.variables.Base, 
+    def on_dv_value_request(self,
+                            data_value_id: secsgem.secs.variables.Base,
                             data_value: DataValue) -> secsgem.secs.variables.Base:
         """Get the data value depending on its configuation.
 
@@ -308,7 +307,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """Get the data value depending on its configuation.
 
         Args:
-            dv: The data value requested
+            data_value: The data value requested
 
         Returns:
             The value encoded in the corresponding type
@@ -340,7 +339,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         Args:
             svid: Id of the status variable encoded in the corresponding type
-            sv: The status variable requested
+            status_variable: The status variable requested
 
         Returns:
             The value encoded in the corresponding type
@@ -354,7 +353,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """Get the status variable value depending on its configuation.
 
         Args:
-            sv: The status variable requested
+            status_variable: The status variable requested
 
         Returns:
             The value encoded in the corresponding type
@@ -398,8 +397,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         responses = []
 
         if len(message) == 0:
-            for status_variable_id, status_variable in self._status_variables.items():
-                responses.append(self._get_sv_value(status_variable))
+            responses = [self._get_sv_value(status_variable) for status_variable in self._status_variables.values()]
         else:
             for status_variable_id in message:
                 if status_variable_id not in self._status_variables:
@@ -427,10 +425,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         responses = []
 
         if len(message) == 0:
-            for status_variable_id, status_variable in self._status_variables.items():
-                responses.append({"SVID": status_variable.svid,
-                                  "SVNAME": status_variable.name,
-                                  "UNITS": status_variable.unit})
+            responses = [{
+                "SVID": status_variable.svid,
+                "SVNAME": status_variable.name,
+                "UNITS": status_variable.unit
+            } for status_variable in self._status_variables.values()]
         else:
             for status_variable_id in message:
                 if status_variable_id not in self._status_variables:
@@ -486,14 +485,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             ceids = [ceids]
 
         for ceid in ceids:
-            if ceid in self._registered_collection_events:
-                if self._registered_collection_events[ceid].enabled:
-                    reports = self._build_collection_event(ceid)
+            if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
+                reports = self._build_collection_event(ceid)
 
-                    self.send_and_waitfor_response(self.stream_function(6, 11)(
-                        {"DATAID": 1, "CEID": ceid, "RPT": reports}))
+                self.send_and_waitfor_response(self.stream_function(6, 11)(
+                    {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
-    def _on_s02f33(self,  # noqa: MC0001
+    def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """Handle Stream 2, Function 33, Define Report.
@@ -555,7 +553,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return result
 
-    def _on_s02f35(self,  # noqa: MC0001
+    def _on_s02f35(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """Handle Stream 2, Function 35, Link event report.
@@ -649,9 +647,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         reports = []
 
-        if ceid in self._registered_collection_events:
-            if self._registered_collection_events[ceid].enabled:
-                reports = self._build_collection_event(ceid)
+        if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
+            reports = self._build_collection_event(ceid)
 
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
@@ -668,7 +665,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         result = True
         if not ceids:
-            for ceid, collection_event in self._registered_collection_events.items():
+            for collection_event in self._registered_collection_events.values():
                 collection_event.enabled = ceed
         else:
             for ceid in ceids:
@@ -726,8 +723,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         Override in inherited class to provide custom equipment constant request handling.
 
         Args:
-            ecid: Id of the equipment constant encoded in the corresponding type
-            ec: The equipment constant requested
+            equipment_constant_id: Id of the equipment constant encoded in the corresponding type
+            equipment_constant: The equipment constant requested
 
         Returns:
             The value encoded in the corresponding type
@@ -739,15 +736,15 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def on_ec_value_update(self,
                            equipment_constant_id: secsgem.secs.variables.Base,
-                           equipment_constant: EquipmentConstant, 
+                           equipment_constant: EquipmentConstant,
                            value: typing.Union[int, float]):
         """Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
 
         Args:
-            ecid: Id of the equipment constant encoded in the corresponding type
-            ec: The equipment constant to be updated
+            equipment_constant_id: Id of the equipment constant encoded in the corresponding type
+            equipment_constant: The equipment constant to be updated
             value: The value encoded in the corresponding type
 
         """
@@ -759,7 +756,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """Get the equipment constant value depending on its configuation.
 
         Args:
-            ec: The equipment requested
+            equipment_constant: The equipment requested
 
         Returns:
             The value encoded in the corresponding type
@@ -778,7 +775,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """Get the equipment constant value depending on its configuation.
 
         Args:
-            ec: The equipment requested
+            equipment_constant: The equipment requested
             value: The value encoded in the corresponding type
 
         """
@@ -809,8 +806,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         responses = []
 
         if len(message) == 0:
-            for equipment_constant_id, equipment_constant in self._equipment_constants.items():
-                responses.append(self._get_ec_value(equipment_constant))
+            responses = [self._get_ec_value(equipment_constant)
+                         for equipment_constant in self._equipment_constants.values()]
         else:
             for equipment_constant_id in message:
                 if equipment_constant_id not in self._equipment_constants:
@@ -843,13 +840,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             else:
                 constant = self.equipment_constants[equipment_constant.ECID.get()]
 
-                if constant.min_value is not None:
-                    if equipment_constant.ECV.get() < constant.min_value:
-                        eac = 3
+                if constant.min_value is not None and equipment_constant.ECV.get() < constant.min_value:
+                    eac = 3
 
-                if constant.max_value is not None:
-                    if equipment_constant.ECV.get() > constant.max_value:
-                        eac = 3
+                if constant.max_value is not None and equipment_constant.ECV.get() > constant.max_value:
+                    eac = 3
 
         if eac == 0:
             for equipment_constant in message:
@@ -874,11 +869,14 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         responses = []
 
         if len(message) == 0:
-            for ecid, eq_constant in self._equipment_constants.items():
-                responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
-                                  "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
-                                  "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
-                                  "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
+            responses = [{
+                "ECID": eq_constant.ecid,
+                "ECNAME": eq_constant.name,
+                "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                "ECDEF": eq_constant.default_value,
+                "UNITS": eq_constant.unit
+            } for eq_constant in self._equipment_constants.values()]
         else:
             for ecid in message:
                 if ecid not in self._equipment_constants:
@@ -951,7 +949,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
     def _on_s05f03(self,
-                   handler: secsgem.secs.SecsHandler, 
+                   handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
         """Handle Stream 5, Function 3, Alarm en-/disabled.
 
@@ -990,18 +988,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         message = self.settings.streams_functions.decode(message)
 
-        result = []
-
         alids = message.get()
 
         if len(alids) == 0:
             alids = list(self.alarms.keys())
 
-        for alid in alids:
-            result.append({"ALCD": self.alarms[alid].code |
-                           (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-                           "ALID": alid,
-                           "ALTX": self.alarms[alid].text})
+        result = [{
+            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+            "ALID": alid,
+            "ALTX": self.alarms[alid].text
+        } for alid in alids]
 
         return self.stream_function(5, 6)(result)
 
@@ -1017,13 +1013,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler, message  # unused parameters
 
-        result = []
-
-        for alid in list(self.alarms.keys()):
-            if self.alarms[alid].enabled:
-                result.append({"ALCD": self.alarms[alid].code |
-                               (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-                               "ALID": alid, "ALTX": self.alarms[alid].text})
+        result = [{
+            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+            "ALID": alid,
+            "ALTX": self.alarms[alid].text
+        } for alid in list(self.alarms.keys()) if self.alarms[alid].enabled]
 
         return self.stream_function(5, 8)(result)
 
@@ -1082,7 +1076,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         kwargs = {}
         for param in message.PARAMS.get():
-            kwargs[param['CPNAME']] = param['CPVAL']
+            kwargs[param["CPNAME"]] = param["CPVAL"]
 
         callback(**kwargs)
 
@@ -1099,8 +1093,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # helpers
 
     def _get_clock(self) -> str:
-        """
-        Get the clock depending on configured time format.
+        """Get the clock depending on configured time format.
 
         :returns: time code
         :rtype: string
@@ -1115,8 +1108,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
     def _get_control_state_id(self) -> int:
-        """
-        Get id of the control state for the current control state.
+        """Get id of the control state for the current control state.
 
         :returns: control state
         :rtype: integer
@@ -1135,8 +1127,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return -1
 
     def _get_events_enabled(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the enabled collection events.
+        """List of the enabled collection events.
 
         :returns: collection event
         :rtype: list of various
@@ -1150,8 +1141,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return enabled_ceid
 
     def _get_alarms_enabled(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the enabled alarms.
+        """List of the enabled alarms.
 
         :returns: alarms
         :rtype: list of various
@@ -1165,8 +1155,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return enabled_alarms
 
     def _get_alarms_set(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the set alarms.
+        """List of the set alarms.
 
         :returns: alarms
         :rtype: list of various

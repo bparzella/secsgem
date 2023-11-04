@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 06 function 19."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import RPTID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F19(SecsStreamFunction):
-    """
-    individual report request.
+    """individual report request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F19
         RPTID: U1/U2/U4/U8/I1/I2/I4/I8/A

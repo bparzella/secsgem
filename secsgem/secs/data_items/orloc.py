@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ORLOC(DataItemBase):
-    """
-    Origin location.
+    """Origin location.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

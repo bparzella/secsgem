@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECMAX(DataItemBase):
-    """
-    Equipment constant maximum value.
+    """Equipment constant maximum value.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

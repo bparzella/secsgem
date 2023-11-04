@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 01 function 03."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import SVID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F03(SecsStreamFunction):
-    """
-    Selected equipment status - request.
+    """Selected equipment status - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F03
         [

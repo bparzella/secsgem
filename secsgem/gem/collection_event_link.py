@@ -30,8 +30,9 @@ class CollectionEventLink:
         """Initialize a collection event link.
 
         Args:
-            ce: ID of the collection event
+            collection_event: collection event
             reports: list of the linked reports
+            **kwargs: additional attributes for object
 
         """
         self._collection_event = collection_event

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 06 function 06."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import GRANT6
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F06(SecsStreamFunction):
-    """
-    multi block data grant.
+    """multi block data grant.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F06
         GRANT6: B[1]

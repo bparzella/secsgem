@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class MDLN(DataItemBase):
-    """
-    Equipment model type.
+    """Equipment model type.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 20

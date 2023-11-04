@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class MAPER(DataItemBase):
-    """
-    Map error.
+    """Map error.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

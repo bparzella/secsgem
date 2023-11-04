@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 10 function 04."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ACKC10
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS10F04(SecsStreamFunction):
-    """
-    terminal single - acknowledge.
+    """terminal single - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F04
         ACKC10: B[1]

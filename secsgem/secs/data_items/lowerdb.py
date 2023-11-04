@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class LOWERDB(DataItemBase):
-    """
-    Limit for variable lower deadband.
+    """Limit for variable lower deadband.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

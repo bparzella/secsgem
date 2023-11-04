@@ -15,23 +15,17 @@
 #####################################################################
 """Class for stream 05 function 09."""
 
+from secsgem.secs.data_items import EXID, EXMESSAGE, EXRECVRA, EXTYPE, TIMESTAMP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TIMESTAMP
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import EXTYPE
-from secsgem.secs.data_items import EXMESSAGE
-from secsgem.secs.data_items import EXRECVRA
 
 
 class SecsS05F09(SecsStreamFunction):
-    """
-    exception post - notify.
+    """exception post - notify.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F09
         {

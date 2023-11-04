@@ -115,7 +115,7 @@ class Targets:
                 self._counter += 1
                 return self._values[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __iter__(self) -> _TargetsIter:
         """Return the iterator."""
@@ -139,20 +139,19 @@ class EventProducer:
 
     def __iadd__(self, other) -> "EventProducer":
         """Add a the callbacks and targets of another EventProducer to this one."""
-        for event_name in other._events:  # noqa
+        for event_name in other._events:
             if event_name not in self._events:
                 self._events[event_name] = Event()
 
-            for callback in other._events[event_name]._callbacks:  # noqa
+            for callback in other._events[event_name]._callbacks:
                 self._events[event_name] += callback
 
-        for target in other._targets:  # noqa
+        for target in other._targets:
             self._targets += target
         return self
 
     def fire(self, event: str, data: typing.Dict[str, typing.Any]):
-        """
-        Fire a event.
+        """Fire a event.
 
         calls all the available handlers for a specific event
 
@@ -193,7 +192,7 @@ class EventProducer:
                 self._counter += 1
                 return self._keys[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __iter__(self) -> _EventsIter:
         """Return the iterator."""

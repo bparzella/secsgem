@@ -17,9 +17,10 @@
 
 import secsgem.common
 
-from . import list_type  # pylint: disable=cyclic-import
-from . import functions  # pylint: disable=cyclic-import
-
+from . import (
+    functions,  # pylint: disable=cyclic-import
+    list_type,  # pylint: disable=cyclic-import
+)
 from .base import Base
 
 
@@ -27,7 +28,7 @@ class Array(Base):
     """List variable type. List with items of same type."""
 
     format_code = 0
-    text_code = 'L'
+    text_code = "L"
     preferred_types = [list]
 
     class _SecsVarArrayIter:
@@ -46,11 +47,10 @@ class Array(Base):
                 self._counter += 1
                 return self._values[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __init__(self, data_format, value=None, count=-1):
-        """
-        Initialize a secs array variable.
+        """Initialize a secs array variable.
 
         :param data_format: internal data definition/sample
         :type data_format: :class:`secs.variables.Base`
@@ -76,8 +76,7 @@ class Array(Base):
 
     @staticmethod
     def get_format(data_format, showname=False):
-        """
-        Get the format of the variable.
+        """Get the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
@@ -92,13 +91,17 @@ class Array(Base):
             array_name = ""
 
         if isinstance(data_format, list):
-            return f"{array_name}[\n" \
-                   f"{secsgem.common.indent_block(list_type.List.get_format(data_format), 4)}\n" \
-                   f"    ...\n]"
+            return (
+                f"{array_name}[\n"
+                f"{secsgem.common.indent_block(list_type.List.get_format(data_format), 4)}\n"
+                f"    ...\n]"
+            )
 
-        return f"{array_name}[\n" \
-               f"{secsgem.common.indent_block(data_format.get_format(not showname), 4)}\n" \
-               f"    ...\n]"
+        return (
+            f"{array_name}[\n"
+            f"{secsgem.common.indent_block(data_format.get_format(not showname), 4)}\n"
+            f"    ...\n]"
+        )
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
@@ -134,8 +137,7 @@ class Array(Base):
             self.data[key].set(value)
 
     def append(self, data):
-        """
-        Append data to the internal list.
+        """Append data to the internal list.
 
         :param value: new value
         :type value: various
@@ -145,8 +147,7 @@ class Array(Base):
         self.data.append(new_object)
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: list
@@ -154,9 +155,8 @@ class Array(Base):
         if not isinstance(value, list):
             raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
-        if self.count >= 0:
-            if not len(value) == self.count:
-                raise ValueError(f"Value has invalid field count (expected: {self.count}, actual: {len(value)})")
+        if self.count >= 0 and not len(value) == self.count:
+            raise ValueError(f"Value has invalid field count (expected: {self.count}, actual: {len(value)})")
 
         self.data = []
 
@@ -166,21 +166,15 @@ class Array(Base):
             self.data.append(new_object)
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: list
         """
-        data = []
-        for item in self.data:
-            data.append(item.get())
-
-        return data
+        return [item.get() for item in self.data]
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -193,8 +187,7 @@ class Array(Base):
         return result
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string

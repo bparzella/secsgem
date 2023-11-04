@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class STRP(DataItemBase):
-    """
-    Starting position.
+    """Starting position.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

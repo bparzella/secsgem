@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 07 function 17."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F17(SecsStreamFunction):
-    """
-    delete process program - send.
+    """delete process program - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F17
         [

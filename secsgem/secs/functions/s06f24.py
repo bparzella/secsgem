@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 06 function 24."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import RSDA
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F24(SecsStreamFunction):
-    """
-    Request spooled data acknowledge.
+    """Request spooled data acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F24
         RSDA: B[1]

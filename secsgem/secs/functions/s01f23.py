@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 01 function 23."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import CEID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F23(SecsStreamFunction):
-    """
-    Collection event namelist request.
+    """Collection event namelist request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F23
         [

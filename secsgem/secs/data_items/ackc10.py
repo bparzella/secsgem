@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ACKC10(DataItemBase):
-    """
-    Acknowledge code for stream 10.
+    """Acknowledge code for stream 10.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

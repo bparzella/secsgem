@@ -22,8 +22,7 @@ from .connection import HsmsConnection
 
 
 class HsmsMultiPassiveConnection(HsmsConnection):
-    """
-    Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
+    """Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
     Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
     """
@@ -53,7 +52,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         # initially not enabled
         self.enabled = False
 
-    def connected(self, sock: socket.socket, address: str):
+    def new_connection(self, sock: socket.socket, address: str):
         """Connect callback for :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
         Args:
@@ -68,7 +67,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
         # make socket nonblocking
-        self._socket.setblocking(0)
+        self._socket.setblocking(False)
 
         # mark connection as connected
         self._connected = True
@@ -80,7 +79,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
         try:
             self.on_connected({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connected handler')
+            self._logger.exception("ignoring exception for on_connected handler")
 
     def enable(self):
         """Enable the connection.

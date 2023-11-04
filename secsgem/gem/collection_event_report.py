@@ -19,12 +19,12 @@ import typing
 import secsgem.secs
 
 
-class CollectionEventReport:
+class CollectionEventReport:  # pylint: disable=too-few-public-methods
     """Report definition for registered collection events."""
 
     def __init__(self,
                  rptid: typing.Union[int, str],
-                 variables: typing.List[typing.Union[int, str]], 
+                 variables: typing.List[typing.Union[int, str]],
                  **kwargs):
         """Initialize a collection event report.
 
@@ -32,7 +32,8 @@ class CollectionEventReport:
 
         Args:
             rptid: ID of the report
-            vars: long name of the collection event
+            variables: long name of the collection event
+            **kwargs: additional attributes for object
 
         """
         self.rptid = rptid

@@ -19,8 +19,7 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsDeselectReqHeader(HsmsHeader):
-    """
-    Header for Deselect Request.
+    """Header for Deselect Request.
 
     Header for message with SType 3.
     """

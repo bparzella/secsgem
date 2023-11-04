@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class OFLACK(DataItemBase):
-    """
-    Acknowledge code for OFFLINE request.
+    """Acknowledge code for OFFLINE request.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

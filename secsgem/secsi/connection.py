@@ -29,14 +29,13 @@ if typing.TYPE_CHECKING:
     from .settings import SecsISettings
 
 
-class SecsIConnection(secsgem.common.Connection):
+class SecsIConnection(secsgem.common.Connection):  # pylint: disable=too-many-instance-attributes
     """Connection class used for secs I connections."""
 
     _receiver_timeout = 0.5
 
     def __init__(self, settings: SecsISettings):
-        """
-        Initialize a secs connection.
+        """Initialize a secs connection.
 
         Args:
             settings: protocol and communication settings
@@ -47,12 +46,12 @@ class SecsIConnection(secsgem.common.Connection):
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self._bytestream_logger = logging.getLogger("bytestream")
 
-        self.__port: typing.Optional[serial.Serial] = None
+        self.__port: serial.Serial | None = None
 
         self._enabled = False
         self._receiver_thread_running = False
         self._stop_receiver_thread = False
-        self._receiver_thread: typing.Optional[threading.Thread] = None
+        self._receiver_thread: threading.Thread | None = None
 
     @property
     def _port(self) -> serial.Serial:
@@ -63,9 +62,11 @@ class SecsIConnection(secsgem.common.Connection):
 
     def __str__(self):
         """Get the contents of this object as a string."""
-        return f"Serial connection to " \
-               f"{self._settings.port}@{self._settings.speed}" \
-               f" session_id={str(self._settings.session_id)}"
+        return (
+            f"Serial connection to "
+            f"{self._settings.port}@{self._settings.speed}"
+            f" session_id={self._settings.session_id}"
+        )
 
     def enable(self):
         """Enable the connection.
@@ -93,7 +94,7 @@ class SecsIConnection(secsgem.common.Connection):
         try:
             self.on_connected({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connected handler')
+            self._logger.exception("ignoring exception for on_connected handler")
 
         # wait until thread is running
         while not self._receiver_thread_running:
@@ -124,13 +125,13 @@ class SecsIConnection(secsgem.common.Connection):
         try:
             self._receiver_loop()
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('exception')
+            self._logger.exception("exception")
 
         # notify listeners of disconnection
         try:
             self.on_disconnecting({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_disconnecting handler')
+            self._logger.exception("ignoring exception for on_disconnecting handler")
 
         # close the socket
         self._port.close()
@@ -139,7 +140,7 @@ class SecsIConnection(secsgem.common.Connection):
         try:
             self.on_disconnected({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_disconnected handler')
+            self._logger.exception("ignoring exception for on_disconnected handler")
 
         # reset all flags
         self._connected = False
@@ -149,18 +150,14 @@ class SecsIConnection(secsgem.common.Connection):
     def _receiver_loop(self):
         # check if shutdown requested
         while not self._stop_receiver_thread:
-            if self._port.in_waiting > 0:
-                data = self._port.read(self._port.in_waiting)
-            else:
-                data = self._port.read()
+            data = self._port.read(self._port.in_waiting) if self._port.in_waiting > 0 else self._port.read()
 
             if len(data) > 0:
                 self._bytestream_logger.debug("< %s", secsgem.common.format_hex(data))
                 self.on_data({"source": self, "data": data})
 
     def send_data(self, data: bytes) -> bool:
-        """
-        Send data to the remote host.
+        """Send data to the remote host.
 
         Args:
             data: encoded data.

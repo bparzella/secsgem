@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SMPLN(DataItemBase):
-    """
-    Sample number.
+    """Sample number.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

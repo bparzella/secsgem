@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ERACK(DataItemBase):
-    """
-    Enable/disable event report acknowledge.
+    """Enable/disable event report acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

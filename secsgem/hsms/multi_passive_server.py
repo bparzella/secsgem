@@ -35,7 +35,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
     select_timeout = 0.5
     """ Timeout for select calls ."""
 
-    def __init__(self, port: int = 5000, bind_ip: str = ''):
+    def __init__(self, port: int = 5000, bind_ip: str = ""):
         """Initialize a passive hsms server.
 
         Args:
@@ -167,7 +167,7 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
             sock.close()
             return
 
-        new_connection.connected(sock, source_ip)
+        new_connection.new_connection(sock, source_ip)
 
     def _listen_thread_func(self):
         """Thread listening for incoming connections.
@@ -204,6 +204,6 @@ class HsmsMultiPassiveServer:  # pylint: disable=too-many-instance-attributes
                     ).start()
 
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('exception')
+            self._logger.exception("exception")
 
         self._thread_running = False

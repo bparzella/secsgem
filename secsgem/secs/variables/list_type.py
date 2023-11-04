@@ -19,16 +19,18 @@ from collections import OrderedDict
 
 import secsgem.common
 
+from . import (
+    array,  # pylint: disable=cyclic-import
+    functions,  # pylint: disable=cyclic-import
+)
 from .base import Base
-from . import array  # pylint: disable=cyclic-import
-from . import functions  # pylint: disable=cyclic-import
 
 
 class List(Base):
     """List variable type. List with items of different types."""
 
     format_code = 0
-    text_code = 'L'
+    text_code = "L"
     preferred_types = [dict]
 
     class _SecsVarListIter:
@@ -47,11 +49,10 @@ class List(Base):
                 self._counter += 1
                 return self._keys[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __init__(self, data_format, value=None):
-        """
-        Initialize a secs list variable.
+        """Initialize a secs list variable.
 
         :param data_format: internal data values
         :type data_format: OrderedDict
@@ -73,16 +74,12 @@ class List(Base):
 
     @staticmethod
     def get_format(data_format, showname=False):
-        """
-        Get the format of the variable.
+        """Get the format of the variable.
 
         :returns: returns the string representation of the function
         :rtype: string
         """
-        if showname:
-            array_name = f"{List.get_name_from_format(data_format)}: "
-        else:
-            array_name = ""
+        array_name = f"{List.get_name_from_format(data_format)}: " if showname else ""
 
         if isinstance(data_format, list):
             items = []
@@ -164,12 +161,12 @@ class List(Base):
         """Get an item as member of the object."""
         try:
             return self.data.__getitem__(item)
-        except KeyError:
-            raise AttributeError(item)  # pylint: disable=raise-missing-from
+        except KeyError as exc:
+            raise AttributeError(item) from exc
 
     def __setattr__(self, item, value):
         """Set an item as member of the object."""
-        if '_object_intitialized' not in self.__dict__:
+        if "_object_intitialized" not in self.__dict__:
             dict.__setattr__(self, item, value)
             return
 
@@ -186,8 +183,7 @@ class List(Base):
 
     @staticmethod
     def get_name_from_format(data_format):
-        """
-        Generate a name for the passed data_format.
+        """Generate a name for the passed data_format.
 
         :param data_format: data_format to get name for
         :type data_format: list/Base based class
@@ -203,8 +199,7 @@ class List(Base):
         return "DATA"
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: dict/list
@@ -224,8 +219,7 @@ class List(Base):
             raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: list
@@ -237,8 +231,7 @@ class List(Base):
         return data
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -251,8 +244,7 @@ class List(Base):
         return result
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string

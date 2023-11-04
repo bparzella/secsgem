@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECID(DataItemBase):
-    """
-    Equipment constant ID.
+    """Equipment constant ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

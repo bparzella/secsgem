@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class V(DataItemBase):  # pylint: disable=invalid-name
-    """
-    Variable data.
+    """Variable data.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

@@ -37,7 +37,7 @@ class HsmsSType(enum.Enum):
     SEPARATE_REQ = 9
 
     @classmethod
-    def names(cls) -> typing.Dict["HsmsSType", str]:
+    def names(cls) -> dict[HsmsSType, str]:
         """Get the names associated with the scode.
 
         Returns:
@@ -63,15 +63,14 @@ class HsmsSType(enum.Enum):
 
 
 class HsmsHeader(secsgem.common.Header):
-    """
-    Generic HSMS header.
+    """Generic HSMS header.
 
     Base for different specific headers
     """
 
     length = 10
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
             self,
             system: int,
             session_id: int,
@@ -106,13 +105,15 @@ require_response:False})
 
     def __str__(self) -> str:
         """Generate string representation for an object of this class."""
-        return f'{{session_id:0x{self.session_id:04x}, ' \
-               f'stream:{self.stream:02d}, ' \
-               f'function:{self.function:02d}, ' \
-               f'p_type:0x{self.p_type:02x}, ' \
-               f's_type:0x{self.s_type.value:02x}, ' \
-               f'system:0x{self.system:08x}, ' \
-               f'require_response:{self.require_response!r}}}'
+        return (
+            f"{{session_id:0x{self.session_id:04x}, "
+            f"stream:{self.stream:02d}, "
+            f"function:{self.function:02d}, "
+            f"p_type:0x{self.p_type:02x}, "
+            f"s_type:0x{self.s_type.value:02x}, "
+            f"system:0x{self.system:08x}, "
+            f"require_response:{self.require_response!r}}}"
+        )
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
@@ -134,7 +135,7 @@ require_response:False})
         return self._s_type
 
     @property
-    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+    def _as_dictionary(self) -> dict[str, typing.Any]:
         """Get the data as dictionary.
 
         Returns:
@@ -158,7 +159,6 @@ require_response:False})
             encoded header
 
         Example:
-
             >>> import secsgem.hsms
             >>> import secsgem.common
             >>>
@@ -182,7 +182,7 @@ require_response:False})
         )
 
     @classmethod
-    def decode(cls, data: bytes) -> "HsmsHeader":
+    def decode(cls, data: bytes) -> HsmsHeader:
         """Decode data to HsmsHeader object.
 
         Args:

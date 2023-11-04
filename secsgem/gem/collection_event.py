@@ -19,7 +19,7 @@ import typing
 import secsgem.secs.variables
 
 
-class CollectionEvent:
+class CollectionEvent:  # pylint: disable=too-few-public-methods
     """Collection event definition."""
 
     def __init__(self,
@@ -41,6 +41,7 @@ class CollectionEvent:
             ceid: ID of the collection event
             name: long name of the collection event
             data_values: data values available for this event
+            **kwargs: additional attributes for object
 
         """
         self.ceid = ceid

@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 05 function 11."""
 
+from secsgem.secs.data_items import EXID, EXMESSAGE, EXTYPE, TIMESTAMP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TIMESTAMP
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import EXTYPE
-from secsgem.secs.data_items import EXMESSAGE
 
 
 class SecsS05F11(SecsStreamFunction):
-    """
-    exception clear - notify.
+    """exception clear - notify.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F11
         {

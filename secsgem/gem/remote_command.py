@@ -16,10 +16,10 @@
 """Wrapper for GEM remote command."""
 import typing
 
-from secsgem.secs.variables import U4, String, Base
+from secsgem.secs.variables import U4, Base, String
 
 
-class RemoteCommand:
+class RemoteCommand:  # pylint: disable=too-few-public-methods
     """Remote command definition."""
 
     def __init__(self,
@@ -28,8 +28,7 @@ class RemoteCommand:
                  params: typing.List[str],
                  ce_finished: typing.Union[int, str],
                  **kwargs):
-        """
-        Initialize a remote command.
+        """Initialize a remote command.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 

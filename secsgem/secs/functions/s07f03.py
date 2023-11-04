@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 07 function 03."""
 
+from secsgem.secs.data_items import PPBODY, PPID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import PPID
-from secsgem.secs.data_items import PPBODY
 
 
 class SecsS07F03(SecsStreamFunction):
-    """
-    process program - send.
+    """process program - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F03
         {

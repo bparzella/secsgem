@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class BINLT(DataItemBase):
-    """
-    Bin list.
+    """Bin list.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS14F00(SecsStreamFunction):
-    """
-    abort transaction stream 14.
+    """abort transaction stream 14.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F00
         Header only

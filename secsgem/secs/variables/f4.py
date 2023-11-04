@@ -19,8 +19,7 @@ from .base_number import BaseNumber
 
 
 class F4(BaseNumber):
-    """
-    Secs type for 4 byte float data.
+    """Secs type for 4 byte float data.
 
     :param value: initial value
     :type value: list/float

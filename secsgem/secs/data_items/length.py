@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class LENGTH(DataItemBase):
-    """
-    Service/process program length.
+    """Service/process program length.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 02 function 30."""
 
+from secsgem.secs.data_items import ECDEF, ECID, ECMAX, ECMIN, ECNAME, UNITS
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ECID
-from secsgem.secs.data_items import ECNAME
-from secsgem.secs.data_items import ECMIN
-from secsgem.secs.data_items import ECMAX
-from secsgem.secs.data_items import ECDEF
-from secsgem.secs.data_items import UNITS
 
 
 class SecsS02F30(SecsStreamFunction):
-    """
-    equipment constant namelist.
+    """equipment constant namelist.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F30
         [

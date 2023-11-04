@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F07(SecsStreamFunction):
-    """
-    list enabled alarms - request.
+    """list enabled alarms - request.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F07
         Header only

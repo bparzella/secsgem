@@ -20,12 +20,13 @@ import enum
 import typing
 
 from secsgem.common.settings import Setting, Settings
+
 from .active_connection import HsmsActiveConnection
 from .passive_connection import HsmsPassiveConnection
 
 if typing.TYPE_CHECKING:
-    from secsgem.common.protocol import Protocol
     from secsgem.common.connection import Connection
+    from secsgem.common.protocol import Protocol
 
 
 class HsmsConnectMode(enum.Enum):
@@ -61,9 +62,10 @@ class HsmsSettings(Settings):
     """
 
     @classmethod
-    def _attributes(cls) -> typing.List[Setting]:
+    def _attributes(cls) -> list[Setting]:
         """Get the available settings for the class."""
-        return super()._attributes() + [
+        return [
+            *super()._attributes(),
             Setting("connect_mode", HsmsConnectMode.ACTIVE, "Hsms connect mode"),
             Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
             Setting("port", 5000, "TCP port of remote host"),

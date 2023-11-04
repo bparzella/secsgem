@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F17(SecsStreamFunction):
-    """
-    date and time - request.
+    """date and time - request.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F17
         Header only

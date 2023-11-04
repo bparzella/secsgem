@@ -15,21 +15,17 @@
 #####################################################################
 """Class for stream 02 function 35."""
 
+from secsgem.secs.data_items import CEID, DATAID, RPTID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import CEID
-from secsgem.secs.data_items import RPTID
 
 
 class SecsS02F35(SecsStreamFunction):
-    """
-    link event report.
+    """link event report.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F35
         {

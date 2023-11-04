@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class EXRECVRA(DataItemBase):
-    """
-    Exception recovery action.
+    """Exception recovery action.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 40

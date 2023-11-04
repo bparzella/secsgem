@@ -93,8 +93,7 @@ class Connection(abc.ABC):
 
     @abc.abstractmethod
     def send_data(self, data: bytes) -> bool:
-        """
-        Send data to the remote host.
+        """Send data to the remote host.
 
         Args:
             data: encoded data.

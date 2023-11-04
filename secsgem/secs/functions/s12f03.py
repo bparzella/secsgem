@@ -15,27 +15,17 @@
 #####################################################################
 """Class for stream 12 function 03."""
 
+from secsgem.secs.data_items import BCEQU, FFROT, FNLOC, IDTYP, MAPFT, MID, NULBC, ORLOC, PRAXI
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import MAPFT
-from secsgem.secs.data_items import FNLOC
-from secsgem.secs.data_items import FFROT
-from secsgem.secs.data_items import ORLOC
-from secsgem.secs.data_items import PRAXI
-from secsgem.secs.data_items import BCEQU
-from secsgem.secs.data_items import NULBC
 
 
 class SecsS12F03(SecsStreamFunction):
-    """
-    map setup data - request.
+    """map setup data - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F03
         {

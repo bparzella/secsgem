@@ -31,16 +31,14 @@ if typing.TYPE_CHECKING:
 
 
 class HsmsPassiveConnection(HsmsConnection):
-    """
-    Server class for single passive (incoming) connection.
+    """Server class for single passive (incoming) connection.
 
     Creates a listening socket and waits for one incoming connection on this socket.
     After the connection is established the listening socket is closed.
     """
 
     def __init__(self, settings: HsmsSettings):
-        """
-        Initialize a passive hsms connection.
+        """Initialize a passive hsms connection.
 
         Args:
             settings: protocol and communication settings
@@ -59,9 +57,8 @@ class HsmsPassiveConnection(HsmsConnection):
 
         self.on_disconnected.register(self._disconnected)
 
-    def _disconnected(self, _: typing.Dict[str, typing.Any]):
-        """
-        Called when the connection was disconnected.
+    def _disconnected(self, _: dict[str, typing.Any]):
+        """Called when the connection was disconnected.
 
         This is required to initiate the reconnect if the connection is still enabled
 
@@ -70,8 +67,7 @@ class HsmsPassiveConnection(HsmsConnection):
             self.__start_server_thread()
 
     def enable(self):
-        """
-        Enable the connection.
+        """Enable the connection.
 
         Starts the connection process to the passive remote.
         """
@@ -84,8 +80,7 @@ class HsmsPassiveConnection(HsmsConnection):
             self.__start_server_thread()
 
     def disable(self):
-        """
-        Disable the connection.
+        """Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -115,8 +110,7 @@ class HsmsPassiveConnection(HsmsConnection):
         self._server_thread.start()
 
     def __server_thread(self):
-        """
-        Thread function to (re)connect active connection to remote host.
+        """Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -131,8 +125,8 @@ class HsmsPassiveConnection(HsmsConnection):
         while not self._stop_server_thread:
             try:
                 select_result = select.select([self._server_sock], [], [], self.select_timeout)
-            except Exception:  # pylint: disable=broad-except
-                continue
+            except Exception as exc:  # pylint: disable=broad-except
+                self._logger.debug("select exception", exc_info=exc)
 
             if not select_result[0]:
                 # select timed out
@@ -160,7 +154,7 @@ class HsmsPassiveConnection(HsmsConnection):
             try:
                 self.on_connected({"source": self})
             except Exception:  # pylint: disable=broad-except
-                self._logger.exception('ignoring exception for on_connection_established handler')
+                self._logger.exception("ignoring exception for on_connection_established handler")
 
             self._server_sock.shutdown(socket.SHUT_RDWR)
             self._server_sock.close()

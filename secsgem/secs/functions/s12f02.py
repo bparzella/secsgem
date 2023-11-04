@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 12 function 02."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import SDACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F02(SecsStreamFunction):
-    """
-    map setup data - acknowledge.
+    """map setup data - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F02
         SDACK: B[1]

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 09 function 05."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import MHEAD
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F05(SecsStreamFunction):
-    """
-    unrecognized function type.
+    """unrecognized function type.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F05
         MHEAD: B[10]

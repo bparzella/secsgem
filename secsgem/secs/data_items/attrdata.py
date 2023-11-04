@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ATTRDATA(DataItemBase):
-    """
-    Object attribute value.
+    """Object attribute value.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

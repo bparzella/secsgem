@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 12 function 07."""
 
+from secsgem.secs.data_items import BINLT, IDTYP, MID, RSINF
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import RSINF
-from secsgem.secs.data_items import BINLT
 
 
 class SecsS12F07(SecsStreamFunction):
-    """
-    map data type 1 - send.
+    """map data type 1 - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F07
         {

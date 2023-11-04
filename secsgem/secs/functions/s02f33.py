@@ -15,21 +15,17 @@
 #####################################################################
 """Class for stream 02 function 33."""
 
+from secsgem.secs.data_items import DATAID, RPTID, VID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import RPTID
-from secsgem.secs.data_items import VID
 
 
 class SecsS02F33(SecsStreamFunction):
-    """
-    define report.
+    """define report.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F33
         {

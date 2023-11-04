@@ -17,14 +17,15 @@
 
 import inspect
 
-from . import base
-from . import list_type  # pylint: disable=cyclic-import
-from . import array  # pylint: disable=cyclic-import
+from . import (
+    array,  # pylint: disable=cyclic-import
+    base,
+    list_type,  # pylint: disable=cyclic-import
+)
 
 
 def generate(data_format):
-    """
-    Generate actual variable from data format.
+    """Generate actual variable from data format.
 
     :param data_format: data format to create variable for
     :type data_format: list/Base based class
@@ -46,8 +47,7 @@ def generate(data_format):
 
 
 def get_format(data_format, showname=False):
-    """
-    Get the format of the function.
+    """Get the format of the function.
 
     :returns: returns the string representation of the function
     :rtype: string

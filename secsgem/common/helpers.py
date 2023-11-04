@@ -20,8 +20,7 @@ import types
 
 
 def format_hex(text: bytes) -> str:
-    """
-    Return byte arrays (string) formated as hex numbers.
+    """Return byte arrays (string) formated as hex numbers.
 
     Args:
         text: byte array
@@ -41,8 +40,7 @@ def format_hex(text: bytes) -> str:
 
 
 def is_windows() -> bool:
-    """
-    Return True if running on windows.
+    """Return True if running on windows.
 
     Returns:
         True when running on a windows system
@@ -55,8 +53,7 @@ def is_windows() -> bool:
 
 
 def function_name(function) -> str:
-    """
-    Get name of function or method.
+    """Get name of function or method.
 
     Returns:
         function/method name
@@ -69,8 +66,7 @@ def function_name(function) -> str:
 
 
 def indent_line(line: str, spaces: int = 2) -> str:
-    """
-    Indent line by a number of spaces.
+    """Indent line by a number of spaces.
 
     Args:
         line: input text
@@ -84,8 +80,7 @@ def indent_line(line: str, spaces: int = 2) -> str:
 
 
 def indent_block(block: str, spaces: int = 2) -> str:
-    """
-    Indent a multiline string by a number of spaces.
+    """Indent a multiline string by a number of spaces.
 
     Args:
         block: input text
@@ -95,15 +90,14 @@ def indent_block(block: str, spaces: int = 2) -> str:
         indented text
 
     """
-    lines = block.split('\n')
+    lines = block.split("\n")
     lines_filter = filter(None, lines)
     indented_lines = [indent_line(line, spaces) for line in lines_filter]
-    return '\n'.join(indented_lines)
+    return "\n".join(indented_lines)
 
 
 def is_errorcode_ewouldblock(errorcode: int) -> bool:
-    """
-    Check if the errorcode is a would-block error.
+    """Check if the errorcode is a would-block error.
 
     Args:
         errorcode: Code of the error

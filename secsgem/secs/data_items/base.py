@@ -23,16 +23,15 @@ from .. import variables
 class DataItemMeta(type):
     """Meta class for data items."""
 
-    def __new__(mcs, name, bases, attrs):  # noqa: N804
+    def __new__(cls, name, bases, attrs):
         """Meta class creation."""
         if name != "DataItemBase":
             bases += (attrs["__type__"], )
-        return type.__new__(mcs, name, bases, attrs)
+        return type.__new__(cls, name, bases, attrs)
 
 
 class DataItemBase(metaclass=DataItemMeta):
-    """
-    Base class for data items.
+    """Base class for data items.
 
     It provides type and output handling.
     """
@@ -42,8 +41,7 @@ class DataItemBase(metaclass=DataItemMeta):
     __count__ = -1
 
     def __init__(self, value=None):
-        """
-        Initialize a data item.
+        """Initialize a data item.
 
         :param value: Value of the data item
         """
@@ -54,18 +52,23 @@ class DataItemBase(metaclass=DataItemMeta):
         else:
             self.__type__.__init__(self, value, self.__count__)
 
-    @classmethod
-    def get_format(cls, showname=True):
-        """
-        Format the contents as a string.
+    @property
+    def typ(self) -> typing.Optional[typing.Type[variables.Base]]:
+        """Get the configured type."""
+        return self.__type__
 
-        :param showname: Display the real class name when True
-        :return: Formatted value string
+    @classmethod
+    def get_format(cls, showname=True) -> str:
+        """Format the contents as a string.
+
+        Args:
+            showname: Display the real class name when True
+
+        Returns:
+            Formatted value string
+
         """
-        if showname:
-            clsname = format(cls.__name__)
-        else:
-            clsname = "DATA"
+        clsname = format(cls.__name__) if showname else "DATA"
 
         if cls.__type__ is variables.Dynamic:
             if cls.__count__ > 0:
@@ -74,6 +77,6 @@ class DataItemBase(metaclass=DataItemMeta):
             return f"{clsname}: {'/'.join([x.text_code for x in cls.__allowedtypes__])}"
 
         if cls.__count__ > 0:
-            return f"{clsname}: {cls.text_code}[{cls.__count__}]"
+            return f"{clsname}: {cls.__type__.text_code}[{cls.__count__}]"
 
-        return f"{clsname}: {cls.text_code}"
+        return f"{clsname}: {cls.__type__.text_code}"

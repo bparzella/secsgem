@@ -18,19 +18,19 @@
 from secsgem.common.settings import DeviceType
 
 from .connectionmanager import HsmsConnectionManager
-from .protocol import HsmsProtocol
-from .message import HsmsMessage
-from .stream_function_header import HsmsStreamFunctionHeader
-from .separate_req_header import HsmsSeparateReqHeader
-from .reject_req_header import HsmsRejectReqHeader
-from .linktest_rsp_header import HsmsLinktestRspHeader
-from .linktest_req_header import HsmsLinktestReqHeader
-from .deselect_rsp_header import HsmsDeselectRspHeader
 from .deselect_req_header import HsmsDeselectReqHeader
-from .select_rsp_header import HsmsSelectRspHeader
-from .select_req_header import HsmsSelectReqHeader
+from .deselect_rsp_header import HsmsDeselectRspHeader
 from .header import HsmsHeader
-from .settings import HsmsSettings, HsmsConnectMode
+from .linktest_req_header import HsmsLinktestReqHeader
+from .linktest_rsp_header import HsmsLinktestRspHeader
+from .message import HsmsMessage
+from .protocol import HsmsProtocol
+from .reject_req_header import HsmsRejectReqHeader
+from .select_req_header import HsmsSelectReqHeader
+from .select_rsp_header import HsmsSelectRspHeader
+from .separate_req_header import HsmsSeparateReqHeader
+from .settings import HsmsConnectMode, HsmsSettings
+from .stream_function_header import HsmsStreamFunctionHeader
 
 __all__ = ["HsmsConnectionManager",
            "HsmsProtocol",

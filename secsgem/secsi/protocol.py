@@ -41,8 +41,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
     message_type = SecsIMessage
 
     def __init__(self, settings: SecsISettings):
-        """
-        Instantiate SECS I protocol class.
+        """Instantiate SECS I protocol class.
 
         Args:
             settings: protocol and communication settings
@@ -96,31 +95,30 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
             function.encode()
         )
 
-    def serialize_data(self) -> typing.Dict[str, typing.Any]:
-        """
-        Return data for serialization.
+    def serialize_data(self) -> dict[str, typing.Any]:
+        """Return data for serialization.
 
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {'port': self._settings.port, 'baud_rate': self._settings.speed}
+        return {"port": self._settings.port, "baud_rate": self._settings.speed}
 
-    def _on_connected(self, _: typing.Dict[str, typing.Any]):
+    def _on_connected(self, _: dict[str, typing.Any]):
         """Handle connection was established event."""
         self._thread.start()
-        self.events.fire("connected", {'connection': self})
-        self.events.fire('communicating', {'connection': self})
+        self.events.fire("connected", {"connection": self})
+        self.events.fire("communicating", {"connection": self})
 
-    def _on_disconnected(self, _: typing.Dict[str, typing.Any]):
+    def _on_disconnected(self, _: dict[str, typing.Any]):
         """Handle connection was _ event."""
         # clear receive buffer
-        self.events.fire("disconnected", {'connection': self})
+        self.events.fire("disconnected", {"connection": self})
 
         self._thread.stop()
 
         self._receive_buffer.clear()
 
-    def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
+    def _on_disconnecting(self, _: dict[str, typing.Any]):
         pass
 
     def _process_send_queue(self):
@@ -188,9 +186,9 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         if message.header.system in self._response_queues:
             self._response_queues[message.header.system].put_nowait(message)
         else:
-            self.events.fire("message_received", {'connection': source, 'message': message})
+            self.events.fire("message_received", {"connection": source, "message": message})
 
-    def _get_log_extra(self) -> typing.Dict[str, typing.Any]:
+    def _get_log_extra(self) -> dict[str, typing.Any]:
         """Get extra fields for logging."""
         return {"port": self._settings.port,
                 "speed": self._settings.speed,

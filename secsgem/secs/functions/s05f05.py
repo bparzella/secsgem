@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 05 function 05."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ALID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F05(SecsStreamFunction):
-    """
-    list alarms - request.
+    """list alarms - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F05
         [

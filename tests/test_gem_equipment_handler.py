@@ -721,7 +721,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
             30: secsgem.gem.DataValue(30, "sample1, numeric DV, U4", secsgem.secs.variables.U4, use_callbacks),
         })
 
-        self.client.data_values[30].value = 31337
+        self.client.data_values[30]._value = 31337
 
     def setupTestCollectionEvents(self):
         self.client.collection_events.update({

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class STRACK(DataItemBase):
-    """
-    Spool stream acknowledge.
+    """Spool stream acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

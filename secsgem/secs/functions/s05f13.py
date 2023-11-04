@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 05 function 13."""
 
+from secsgem.secs.data_items import EXID, EXRECVRA
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import EXRECVRA
 
 
 class SecsS05F13(SecsStreamFunction):
-    """
-    exception recover - request.
+    """exception recover - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F13
         {

@@ -19,29 +19,28 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsStreamFunctionHeader(HsmsHeader):
-    """
-    Header for SECS message.
+    """Header for SECS message.
 
     Header for message with SType 0.
     """
 
-    def __init__(self, system: int, stream: int, function: int, require_response: bool, session_id: int):
-        """
-        Initialize a stream function secs header.
+    def __init__(  # pylint: disable=too-many-arguments
+            self,
+            system: int,
+            stream: int,
+            function: int,
+            require_response: bool,
+            session_id: int):
+        """Initialize a stream function secs header.
 
-        :param system: message ID
-        :type system: integer
-        :param stream: messages stream
-        :type stream: integer
-        :param function: messages function
-        :type function: integer
-        :param require_response: is response expected from remote
-        :type require_response: boolean
-        :param session_id: device / session ID
-        :type session_id: integer
+        Args:
+            system: message ID
+            stream: messages stream
+            function: messages function
+            require_response: is response expected from remote
+            session_id: device / session ID
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsStreamFunctionHeader(22, 1, 1, True, 100)

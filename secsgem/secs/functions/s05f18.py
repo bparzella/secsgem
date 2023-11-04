@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 05 function 18."""
 
+from secsgem.secs.data_items import ACKA, ERRCODE, ERRTEXT, EXID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import ACKA
-from secsgem.secs.data_items import ERRCODE
-from secsgem.secs.data_items import ERRTEXT
 
 
 class SecsS05F18(SecsStreamFunction):
-    """
-    exception recover abort - acknowledge.
+    """exception recover abort - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F18
         {

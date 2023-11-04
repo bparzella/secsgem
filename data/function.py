@@ -55,9 +55,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
     sf_regex = re.compile(r"[sS](\d+)[fF](\d+)")
 
     def __init__(
-        self, 
-        name: str, 
-        data: typing.Dict[str, typing.Any], 
+        self,
+        name: str,
+        data: typing.Dict[str, typing.Any],
         data_items: typing.Dict[str, typing.Any]
     ) -> None:
         """Initialize item config."""
@@ -253,6 +253,11 @@ class Function:  # pylint: disable=too-many-instance-attributes
         items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
         return items
+
+    @property
+    def data_items_sorted(self) -> typing.List[DataItem]:
+        """Get the data items used sorted alphabetically."""
+        return sorted(self.data_items, key=lambda data_item: data_item.name)
 
     def _find_items(self, structure, items):
         if not isinstance(structure, list):

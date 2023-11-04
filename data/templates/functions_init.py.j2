@@ -17,12 +17,14 @@
 from .base import SecsStreamFunction
 from .streams_functions import StreamsFunctions
 
+# isort: split
+
 {% for function in functions %}
 from .{{ function.module_name }} import Secs{{ function.name }}
 {% endfor %}
 
 __all__ = [
-    "SecsStreamFunction", 
+    "SecsStreamFunction",
     "StreamsFunctions",
 {% for function in functions %}
     "Secs{{ function.name }}",

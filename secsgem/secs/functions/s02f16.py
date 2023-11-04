@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 16."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import EAC
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F16(SecsStreamFunction):
-    """
-    new equipment constant - acknowledge.
+    """new equipment constant - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F16
         EAC: B[1]

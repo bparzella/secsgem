@@ -17,6 +17,7 @@
 import typing
 
 import secsgem.common
+
 from ..data_items import DataItemBase
 from ..variables import functions
 
@@ -37,8 +38,7 @@ class _ClassProperty(property):
 
 
 class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=too-many-instance-attributes
-    """
-    Secs stream and function base class.
+    """Secs stream and function base class.
 
     This class is inherited to create a stream/function class.
     To create a function specific content the class variables :attr:`_stream`, :attr:`_function`
@@ -59,11 +59,9 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     _is_multi_block = False
 
     def __init__(self, value=None):
-        """
-        Initialize a stream function object.
+        """Initialize a stream function object.
 
         Example:
-
             class SecsS02F30(SecsStreamFunction):
                 _stream = 2
                 _function = 30
@@ -133,7 +131,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
 
     def __setattr__(self, item, value):
         """Set an item as object member."""
-        if '_object_intitialized' not in self.__dict__:
+        if "_object_intitialized" not in self.__dict__:
             dict.__setattr__(self, item, value)
             return
 
@@ -142,21 +140,19 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
             return
 
     def append(self, data):
-        """
-        Append data to list, if stream/function parameter is a list.
+        """Append data to list, if stream/function parameter is a list.
 
         :param data: list item to add
         :type data: various
         """
-        if hasattr(self.data, 'append') and callable(self.data.append):
+        if hasattr(self.data, "append") and callable(self.data.append):
             self.data.append(data)
         else:
             raise AttributeError(
                 f"class {self.__class__.__name__} has no attribute 'append'")
 
     def encode(self):
-        """
-        Generate the encoded hsms data of the stream/function parameter.
+        """Generate the encoded hsms data of the stream/function parameter.
 
         :returns: encoded data
         :rtype: string
@@ -167,8 +163,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
         return self.data.encode()
 
     def decode(self, data):
-        """
-        Update stream/function parameter data from the passed data.
+        """Update stream/function parameter data from the passed data.
 
         :param data: encoded data
         :type data: string
@@ -177,8 +172,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
             self.data.decode(data)
 
     def set(self, value):
-        """
-        Update the value of the stream/function parameter.
+        """Update the value of the stream/function parameter.
 
         :param value: new value for the parameter
         :type value: various
@@ -186,8 +180,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
         self.data.set(value)
 
     def get(self):
-        """
-        Get the current value of the stream/function parameter.
+        """Get the current value of the stream/function parameter.
 
         :returns: current parameter value
         :rtype: various
@@ -199,8 +192,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
 
     @classmethod
     def get_format(cls):
-        """
-        Get the format of the function.
+        """Get the format of the function.
 
         :returns: returns the string representation of the function
         :rtype: string

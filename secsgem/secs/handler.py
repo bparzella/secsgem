@@ -22,22 +22,20 @@ import secsgem.common
 import secsgem.hsms
 
 if typing.TYPE_CHECKING:
+    from ..gem.alarm import Alarm
     from ..gem.collection_event import CollectionEvent
     from ..gem.data_value import DataValue
-    from ..gem.alarm import Alarm
     from ..gem.remote_command import RemoteCommand
 
 
-class SecsHandler:  # pylint: disable=too-many-instance-attributes
-    """
-    Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
+class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
+    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
     Inherit from this class and override required functions.
     """
 
     def __init__(self, settings: secsgem.common.Settings):
-        """
-        Initialize a secs handler.
+        """Initialize a secs handler.
 
         Args:
             settings: settings defining protocol and connection
@@ -98,8 +96,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self._callback_handler
 
     def register_stream_function(self, stream: int, function: int, callback):
-        """
-        Register the function callback for stream and function.
+        """Register the function callback for stream and function.
 
         :param stream: stream to register callback for
         :type stream: integer
@@ -112,8 +109,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         setattr(self._callback_handler, name, callback)
 
     def unregister_stream_function(self, stream, function):
-        """
-        Unregister the function callback for stream and function.
+        """Unregister the function callback for stream and function.
 
         :param stream: stream to unregister callback for
         :type stream: integer
@@ -125,8 +121,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def collection_events(self):
-        """
-        Get available collection events.
+        """Get available collection events.
 
         *Example*::
 
@@ -153,8 +148,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def data_values(self):
-        """
-        Get available data values.
+        """Get available data values.
 
         *Example*::
 
@@ -181,8 +175,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def alarms(self):
-        """
-        Get available alarms.
+        """Get available alarms.
 
         *Example*::
 
@@ -209,8 +202,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def remote_commands(self):
-        """
-        Get available remote commands.
+        """Get available remote commands.
 
         *Example*::
 
@@ -263,7 +255,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
             if result is not None:
                 self.send_response(result, message.header.system)
         except Exception:  # pylint: disable=broad-except
-            self.logger.exception('Callback aborted because of exception, abort sent')
+            self.logger.exception("Callback aborted because of exception, abort sent")
             self.send_response(self.stream_function(message.header.stream, 0)(), message.header.system)
 
     def _on_message_received(self, data: typing.Dict[str, typing.Any]):
@@ -293,8 +285,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
     def list_svs(self, svs=None):
-        """
-        Get list of available Service Variables.
+        """Get list of available Service Variables.
 
         :returns: available Service Variables
         :rtype: list
@@ -309,8 +300,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.settings.streams_functions.decode(message)
 
     def request_svs(self, svs):
-        """
-        Request contents of supplied Service Variables.
+        """Request contents of supplied Service Variables.
 
         :param svs: Service Variables to request
         :type svs: list
@@ -324,8 +314,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.settings.streams_functions.decode(message)
 
     def request_sv(self, sv_id):
-        """
-        Request contents of one Service Variable.
+        """Request contents of one Service Variable.
 
         :param sv_id: id of Service Variable
         :type sv_id: int
@@ -337,8 +326,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.request_svs([sv_id])[0]
 
     def list_ecs(self, ecs=None):
-        """
-        Get list of available Equipment Constants.
+        """Get list of available Equipment Constants.
 
         :returns: available Equipment Constants
         :rtype: list
@@ -352,8 +340,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.settings.streams_functions.decode(message)
 
     def request_ecs(self, ecs):
-        """
-        Request contents of supplied Equipment Constants.
+        """Request contents of supplied Equipment Constants.
 
         :param ecs: Equipment Constants to request
         :type ecs: list
@@ -367,8 +354,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.settings.streams_functions.decode(message)
 
     def request_ec(self, ec_id):
-        """
-        Request contents of one Equipment Constant.
+        """Request contents of one Equipment Constant.
 
         :param ec_id: id of Equipment Constant
         :type ec_id: int
@@ -380,8 +366,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.request_ecs([ec_id])
 
     def set_ecs(self, ecs):
-        """
-        Set contents of supplied Equipment Constants.
+        """Set contents of supplied Equipment Constants.
 
         :param ecs: list containing list of id / value pairs
         :type ecs: list
@@ -393,8 +378,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.secs_decode(message).get()
 
     def set_ec(self, ec_id, value):
-        """
-        Set contents of one Equipment Constant.
+        """Set contents of one Equipment Constant.
 
         :param ec_id: id of Equipment Constant
         :type ec_id: int
@@ -406,8 +390,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.set_ecs([[ec_id, value]])
 
     def send_equipment_terminal(self, terminal_id, text):
-        """
-        Set text to equipment terminal.
+        """Set text to equipment terminal.
 
         :param terminal_id: ID of terminal
         :type terminal_id: int
@@ -419,32 +402,28 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
     def get_ceid_name(self, ceid):
-        """
-        Get the name of a collection event.
+        """Get the name of a collection event.
 
         :param ceid: ID of collection event
         :type ceid: integer
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if ceid in self._collection_events:
-            if "name" in self._collection_events[ceid]:
-                return self._collection_events[ceid]["name"]
+        if ceid in self._collection_events and "name" in self._collection_events[ceid]:
+            return self._collection_events[ceid]["name"]
 
         return ""
 
     def get_dvid_name(self, dvid):
-        """
-        Get the name of a data value.
+        """Get the name of a data value.
 
         :param dvid: ID of data value
         :type dvid: integer
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if dvid in self._data_values:
-            if "name" in self._data_values[dvid]:
-                return self._data_values[dvid]["name"]
+        if dvid in self._data_values and "name" in self._data_values[dvid]:
+            return self._data_values[dvid]["name"]
 
         return ""
 
@@ -455,8 +434,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
     def stream_function(self, stream, function):
-        """
-        Get class for stream and function.
+        """Get class for stream and function.
 
         :param stream: stream to get function for
         :type stream: int

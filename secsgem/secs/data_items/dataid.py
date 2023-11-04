@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DATAID(DataItemBase):
-    """
-    Data ID.
+    """Data ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

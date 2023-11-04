@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DVVALNAME(DataItemBase):
-    """
-    Data value name.
+    """Data value name.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 09 function 09."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import SHEAD
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F09(SecsStreamFunction):
-    """
-    transaction timer timeout.
+    """transaction timer timeout.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F09
         SHEAD: B[10]

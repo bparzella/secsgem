@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 06 function 20."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import V
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F20(SecsStreamFunction):
-    """
-    individual report data.
+    """individual report data.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F20
         [

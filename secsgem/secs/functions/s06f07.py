@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 06 function 07."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import DATAID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F07(SecsStreamFunction):
-    """
-    data transfer request.
+    """data transfer request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F07
         DATAID: U1/U2/U4/U8/I1/I2/I4/I8/A

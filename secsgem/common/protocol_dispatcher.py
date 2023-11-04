@@ -22,8 +22,8 @@ import threading
 import typing
 
 if typing.TYPE_CHECKING:
-    from .settings import Settings
     from .message import Block
+    from .settings import Settings
 
 
 class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
@@ -47,13 +47,13 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
         self._dispatcher_target = dispatcher_target
         self._settings = settings
 
-        self._receiver_thread: typing.Optional[threading.Thread] = None
-        self._dispatcher_thread: typing.Optional[threading.Thread] = None
+        self._receiver_thread: threading.Thread | None = None
+        self._dispatcher_thread: threading.Thread | None = None
 
         self._receiver_thread_trigger = threading.Event()
         self._dispatcher_thread_trigger = threading.Event()
 
-        self._dispatch_queue: queue.Queue[typing.Tuple[object, Block]] = queue.Queue()
+        self._dispatch_queue: queue.Queue[tuple[object, Block]] = queue.Queue()
 
         self._stop_receiver_thread = False
         self._stop_dispatcher_thread = False

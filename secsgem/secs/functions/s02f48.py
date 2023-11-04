@@ -15,25 +15,17 @@
 #####################################################################
 """Class for stream 02 function 48."""
 
+from secsgem.secs.data_items import LIMITID, LIMITMAX, LIMITMIN, LOWERDB, UNITS, UPPERDB, VID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import VID
-from secsgem.secs.data_items import UNITS
-from secsgem.secs.data_items import LIMITMIN
-from secsgem.secs.data_items import LIMITMAX
-from secsgem.secs.data_items import LIMITID
-from secsgem.secs.data_items import UPPERDB
-from secsgem.secs.data_items import LOWERDB
 
 
 class SecsS02F48(SecsStreamFunction):
-    """
-    Define variable limit attributes - acknowledge.
+    """Define variable limit attributes - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F48
         [
@@ -58,7 +50,7 @@ class SecsS02F48(SecsStreamFunction):
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F48([{
-        ...     "VID": 1, 
+        ...     "VID": 1,
         ...     "DATA": {
         ...         "UNITS": "meters",
         ...         "LIMITMIN": 10,

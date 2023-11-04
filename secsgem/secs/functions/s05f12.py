@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F12(SecsStreamFunction):
-    """
-    exception clear - confirm.
+    """exception clear - confirm.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F12
         Header only

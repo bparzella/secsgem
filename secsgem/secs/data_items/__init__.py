@@ -16,6 +16,8 @@
 """Data items module initializer."""
 from .base import DataItemBase
 
+# isort: split
+
 from .abs import ABS
 from .acka import ACKA
 from .ackc5 import ACKC5

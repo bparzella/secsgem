@@ -19,17 +19,19 @@ import typing
 import secsgem.secs
 
 
-class Alarm:  # pylint: disable=too-many-instance-attributes
+class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Alarm definition."""
 
-    def __init__(self,
-                 alid: typing.Union[str, int],
-                 name: str,
-                 text: str,
-                 code: int,
-                 ce_on: typing.Union[str, int],
-                 ce_off: typing.Union[str, int],
-                 **kwargs):
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        alid: typing.Union[str, int],
+        name: str,
+        text: str,
+        code: int,
+        ce_on: typing.Union[str, int],
+        ce_off: typing.Union[str, int],
+        **kwargs
+    ):
         """Initialize an alarm.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -38,8 +40,10 @@ class Alarm:  # pylint: disable=too-many-instance-attributes
             alid: ID of the alarm
             name: long name of the alarm
             text: alarm text
+            code: alarm code
             ce_on: collection event for alarm set
             ce_off: collection event for alarm cleared
+            **kwargs: additional attributes for object
 
         """
         self.alid = alid

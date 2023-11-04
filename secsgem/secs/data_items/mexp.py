@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class MEXP(DataItemBase):
-    """
-    Message expected.
+    """Message expected.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 6

@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F16(SecsStreamFunction):
-    """
-    exception recover complete - confirm.
+    """exception recover complete - confirm.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F16
         Header only

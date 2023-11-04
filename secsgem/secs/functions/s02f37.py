@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 02 function 37."""
 
+from secsgem.secs.data_items import CEED, CEID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import CEED
-from secsgem.secs.data_items import CEID
 
 
 class SecsS02F37(SecsStreamFunction):
-    """
-    en-/disable event report.
+    """en-/disable event report.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F37
         {

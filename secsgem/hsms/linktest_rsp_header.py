@@ -19,8 +19,7 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsLinktestRspHeader(HsmsHeader):
-    """
-    Header for Linktest Response.
+    """Header for Linktest Response.
 
     Header for message with SType 6.
     """

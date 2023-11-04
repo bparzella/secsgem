@@ -18,7 +18,6 @@
 from .protocol import SecsIProtocol
 from .settings import SecsISettings
 
-
 __all__ = [
     "SecsIProtocol",
     "SecsISettings"

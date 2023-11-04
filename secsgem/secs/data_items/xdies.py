@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class XDIES(DataItemBase):
-    """
-    Die size/index X-axis.
+    """Die size/index X-axis.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

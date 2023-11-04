@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 12 function 10."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import MDACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F10(SecsStreamFunction):
-    """
-    map data type 2 - acknowledge.
+    """map data type 2 - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F10
         MDACK: B[1]

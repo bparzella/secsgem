@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class PPGNT(DataItemBase):
-    """
-    Process program grant status.
+    """Process program grant status.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

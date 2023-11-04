@@ -22,13 +22,12 @@ from .connection import Connection
 from .events import EventProducer
 from .fysom import Fysom
 from .header import Header
-from .helpers import format_hex, function_name, indent_block, is_windows, is_errorcode_ewouldblock
-from .message import Message, Block
+from .helpers import format_hex, function_name, indent_block, is_errorcode_ewouldblock, is_windows
+from .message import Block, Message
 from .protocol import Protocol
 from .protocol_dispatcher import ProtocolDispatcher
-from .settings import Settings, DeviceType
+from .settings import DeviceType, Settings
 from .timeouts import Timeouts
-
 
 __all__ = [
     "BlockSendInfo",

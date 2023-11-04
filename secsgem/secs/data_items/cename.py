@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CENAME(DataItemBase):
-    """
-    Collection event Name.
+    """Collection event Name.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

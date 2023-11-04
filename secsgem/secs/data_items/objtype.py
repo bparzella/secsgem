@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class OBJTYPE(DataItemBase):
-    """
-    Class of object identifier.
+    """Class of object identifier.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

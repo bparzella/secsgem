@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 02 function 44."""
 
+from secsgem.secs.data_items import FCNID, RSPACK, STRACK, STRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import RSPACK
-from secsgem.secs.data_items import STRID
-from secsgem.secs.data_items import STRACK
-from secsgem.secs.data_items import FCNID
 
 
 class SecsS02F44(SecsStreamFunction):
-    """
-    reset spooling - acknowledge.
+    """reset spooling - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F44
         {

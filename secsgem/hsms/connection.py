@@ -18,19 +18,16 @@ from __future__ import annotations
 
 import logging
 import select
-import time
 import threading
+import time
 import typing
 
 import secsgem.common
-
 
 if typing.TYPE_CHECKING:
     import socket
 
     from .settings import HsmsSettings
-
-# TODO: timeouts (T7, T8)
 
 
 class HsmsConnection(secsgem.common.Connection):
@@ -40,8 +37,7 @@ class HsmsConnection(secsgem.common.Connection):
     """ Timeout for select calls ."""
 
     def __init__(self, settings: HsmsSettings):
-        """
-        Initialize a hsms connection.
+        """Initialize a hsms connection.
 
         Args:
             settings: protocol and communication settings
@@ -53,7 +49,7 @@ class HsmsConnection(secsgem.common.Connection):
         self._bytestream_logger = logging.getLogger("bytestream")
 
         # connection socket
-        self._sock: typing.Optional[socket.socket] = None
+        self._sock: socket.socket | None = None
 
         # receiving thread flags
         self._thread_running = False
@@ -72,29 +68,29 @@ class HsmsConnection(secsgem.common.Connection):
         return self._settings.timeouts
 
     def _serialize_data(self):
-        """
-        Return data for serialization.
+        """Return data for serialization.
 
-        Returns
+        Returns:
             data to serialize for this object
 
         """
         return {
-            'connect_mode': self._settings.connect_mode,
-            'remoteAddress': self._settings.address,
-            'remotePort': self._settings.port,
-            'session_id': self._settings.session_id,
-            'connected': self._connected}
+            "connect_mode": self._settings.connect_mode,
+            "remoteAddress": self._settings.address,
+            "remotePort": self._settings.port,
+            "session_id": self._settings.session_id,
+            "connected": self._connected}
 
     def __str__(self):
         """Get the contents of this object as a string."""
-        return f"{self._settings.connect_mode} connection to " \
-               f"{self._settings.address}:{str(self._settings.port)}" \
-               f" session_id={str(self._settings.session_id)}"
+        return (
+            f"{self._settings.connect_mode} connection to "
+            f"{self._settings.address}:{self._settings.port}"
+            f" session_id={self._settings.session_id}"
+        )
 
     def _start_receiver(self):
-        """
-        Start the thread for receiving and handling incoming messages.
+        """Start the thread for receiving and handling incoming messages.
 
         Will also do the initial Select and Linktest requests.
 
@@ -131,8 +127,7 @@ class HsmsConnection(secsgem.common.Connection):
         self._disconnecting = False
 
     def send_data(self, data: bytes) -> bool:
-        """
-        Send data to the remote host.
+        """Send data to the remote host.
 
         Args:
             data: encoded data.
@@ -196,8 +191,7 @@ class HsmsConnection(secsgem.common.Connection):
                         raise exc
 
     def __receiver_thread(self):
-        """
-        Thread for receiving incoming data and adding it to the receive buffer.
+        """Thread for receiving incoming data and adding it to the receive buffer.
 
         .. warning:: Do not call this directly, will be called from
         :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
@@ -207,13 +201,13 @@ class HsmsConnection(secsgem.common.Connection):
         try:
             self.__receiver_thread_read_data()
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('exception')
+            self._logger.exception("exception")
 
         # notify listeners of disconnection
         try:
             self.on_disconnecting({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_before_closed handler')
+            self._logger.exception("ignoring exception for on_connection_before_closed handler")
 
         # close the socket
         self._socket.close()
@@ -222,7 +216,7 @@ class HsmsConnection(secsgem.common.Connection):
         try:
             self.on_disconnected({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_closed handler')
+            self._logger.exception("ignoring exception for on_connection_closed handler")
 
         # reset all flags
         self._connected = False

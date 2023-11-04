@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ALCD(DataItemBase):
-    """
-    Alarm code byte.
+    """Alarm code byte.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

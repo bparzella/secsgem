@@ -19,11 +19,12 @@ from __future__ import annotations
 import typing
 
 from secsgem.common.settings import Setting, Settings
+
 from .connection import SecsIConnection
 
 if typing.TYPE_CHECKING:
-    from secsgem.common.protocol import Protocol
     from secsgem.common.connection import Connection
+    from secsgem.common.protocol import Protocol
 
 
 class SecsISettings(Settings):
@@ -48,9 +49,10 @@ class SecsISettings(Settings):
     """
 
     @classmethod
-    def _attributes(cls) -> typing.List[Setting]:
+    def _attributes(cls) -> list[Setting]:
         """Get the available settings for the class."""
-        return super()._attributes() + [
+        return [
+            *super()._attributes(),
             Setting("port", None, "Serial port"),
             Setting("speed", 9600, "Serial port baud rate"),
         ]

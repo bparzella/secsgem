@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 06 function 01."""
 
+from secsgem.secs.data_items import SMPLN, STIME, SV, TRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TRID
-from secsgem.secs.data_items import SMPLN
-from secsgem.secs.data_items import STIME
-from secsgem.secs.data_items import SV
 
 
 class SecsS06F01(SecsStreamFunction):
-    """
-    Trace data send.
+    """Trace data send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F01
         {

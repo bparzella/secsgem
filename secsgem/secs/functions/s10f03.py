@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 10 function 03."""
 
+from secsgem.secs.data_items import TEXT, TID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TID
-from secsgem.secs.data_items import TEXT
 
 
 class SecsS10F03(SecsStreamFunction):
-    """
-    terminal single - display.
+    """terminal single - display.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS10F03
         {

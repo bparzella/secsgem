@@ -15,23 +15,17 @@
 #####################################################################
 """Class for stream 02 function 23."""
 
+from secsgem.secs.data_items import DSPER, REPGSZ, SVID, TOTSMP, TRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TRID
-from secsgem.secs.data_items import DSPER
-from secsgem.secs.data_items import TOTSMP
-from secsgem.secs.data_items import REPGSZ
-from secsgem.secs.data_items import SVID
 
 
 class SecsS02F23(SecsStreamFunction):
-    """
-    Trace initialize.
+    """Trace initialize.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F23
         {

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DVNAME(DataItemBase):
-    """
-    Data value name.
+    """Data value name.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

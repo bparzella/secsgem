@@ -16,6 +16,8 @@
 """Data items module initializer."""
 from .base import DataItemBase
 
+# isort: split
+
 {% for data_item in data_items %}
 from .{{ data_item.module_name }} import {{ data_item.name }}
 {% endfor %}

@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 06 function 11."""
 
+from secsgem.secs.data_items import CEID, DATAID, RPTID, V
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import CEID
-from secsgem.secs.data_items import RPTID
-from secsgem.secs.data_items import V
 
 
 class SecsS06F11(SecsStreamFunction):
-    """
-    event report.
+    """event report.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F11
         {

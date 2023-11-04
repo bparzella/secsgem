@@ -44,7 +44,7 @@ class Setting:
                  name: str,
                  default_value: typing.Any,
                  help_text: str,
-                 default_class: typing.Optional[typing.Type] = None) -> None:
+                 default_class: type | None = None) -> None:
         """Initialize setting descriptor.
 
         Args:
@@ -56,7 +56,7 @@ class Setting:
         """
         self._name = name
         self._default_value = default_value
-        self._help = help_text
+        self._help_text = help_text
         self._default_class = default_class
 
     @property
@@ -70,12 +70,12 @@ class Setting:
         return self._default_value
 
     @property
-    def help(self) -> str:
+    def help_text(self) -> str:
         """Help text."""
-        return self._help
+        return self._help_text
 
     @property
-    def default_class(self) -> typing.Optional[typing.Type]:
+    def default_class(self) -> type | None:
         """Class to initialize with kwargs as default."""
         return self._default_class
 
@@ -94,7 +94,7 @@ class Settings(abc.ABC):
 
     @classmethod
     @abc.abstractmethod
-    def _attributes(cls) -> typing.List[Setting]:
+    def _attributes(cls) -> list[Setting]:
         """Get the available settings for the class."""
         return [
             Setting("timeouts", None, "Communication timeout", Timeouts),
@@ -108,18 +108,17 @@ class Settings(abc.ABC):
         """Print help for the attributes."""
         for attribute in cls._attributes():
             if attribute.default_class is not None:
-                print(f".. attribute:: {attribute.name}\n\n"
+                print(f".. attribute:: {attribute.name}\n\n"  # noqa: T201
                       f"   :type: {attribute.default_class.__name__}\n"
-                      f"   {attribute.help}")
+                      f"   {attribute.help_text}")
             else:
-                print(f".. attribute:: {attribute.name}\n\n"
+                print(f".. attribute:: {attribute.name}\n\n"  # noqa: T201
                       f"   :type: {attribute.default_value.__class__.__name__}\n"
                       f"   :value: {attribute.default_value}\n"
-                      f"   {attribute.help}")
+                      f"   {attribute.help_text}")
 
     def __init__(self, **kwargs) -> None:
-        """
-        Initialize settings.
+        """Initialize settings.
 
         Pass parameter values as keyword arguments.
 
@@ -169,8 +168,7 @@ class Settings(abc.ABC):
         raise NotImplementedError(f"function 'generate_thread_name' is not implemented for '{self.__class__.__name__}'")
 
     def __getattr__(self, name: str) -> typing.Any:
-        """
-        Get an attribute.
+        """Get an attribute.
 
         Args:
             name: attribute name
@@ -205,9 +203,10 @@ class ExistingProtocolSettings(Settings):
     """
 
     @classmethod
-    def _attributes(cls) -> typing.List[Setting]:
+    def _attributes(cls) -> list[Setting]:
         """Get the available settings for the class."""
-        return super()._attributes() + [
+        return [
+            *super()._attributes(),
             Setting("existing_protocol", None, "Existing protocol"),
         ]
 

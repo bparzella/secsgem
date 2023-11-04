@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS00F00(SecsStreamFunction):
-    """
-    Hsms communication.
+    """Hsms communication.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS00F00
         Header only

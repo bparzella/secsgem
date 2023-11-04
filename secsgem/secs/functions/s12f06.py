@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 12 function 06."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import GRNT1
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F06(SecsStreamFunction):
-    """
-    map transmit - grant.
+    """map transmit - grant.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F06
         GRNT1: B[1]

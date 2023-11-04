@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 05 function 03."""
 
+from secsgem.secs.data_items import ALED, ALID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ALED
-from secsgem.secs.data_items import ALID
 
 
 class SecsS05F03(SecsStreamFunction):
-    """
-    en-/disable alarm - send.
+    """en-/disable alarm - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F03
         {

@@ -23,15 +23,14 @@ import secsgem.common
 
 
 class SecsIHeader(secsgem.common.Header):
-    """
-    Generic SECS I header.
+    """Generic SECS I header.
 
     Base for different specific headers
     """
 
     length = 10
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
             self,
             system: int,
             session_id: int,
@@ -98,7 +97,7 @@ require_response:False})
         return self._last_block
 
     @property
-    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+    def _as_dictionary(self) -> dict[str, typing.Any]:
         """Get the data as dictionary.
 
         Returns:
@@ -118,16 +117,18 @@ require_response:False})
 
     def __str__(self) -> str:
         """Generate string representation for an object of this class."""
-        return '{' \
-               f'session_id:0x{self.session_id:04x}, ' \
-               f'stream:{self.stream:02d}, ' \
-               f'function:{self.function:02d}, ' \
-               f'system:0x{self.system:08x}, ' \
-               f'block:0x{self.block:04x}, ' \
-               f'from_host:{self.from_equipment!r}, ' \
-               f'require_response:{self.require_response!r}, ' \
-               f'last_block:{self.last_block!r}' \
-               '}'
+        return (
+            "{"
+            f"session_id:0x{self.session_id:04x}, "
+            f"stream:{self.stream:02d}, "
+            f"function:{self.function:02d}, "
+            f"system:0x{self.system:08x}, "
+            f"block:0x{self.block:04x}, "
+            f"from_host:{self.from_equipment!r}, "
+            f"require_response:{self.require_response!r}, "
+            f"last_block:{self.last_block!r}"
+            "}"
+        )
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
@@ -140,7 +141,6 @@ require_response:False})
             encoded header
 
         Example:
-
             >>> import secsgem.secsi
             >>> import secsgem.common
             >>>

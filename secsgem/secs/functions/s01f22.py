@@ -15,21 +15,17 @@
 #####################################################################
 """Class for stream 01 function 22."""
 
+from secsgem.secs.data_items import DVVALNAME, UNITS, VID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import VID
-from secsgem.secs.data_items import DVVALNAME
-from secsgem.secs.data_items import UNITS
 
 
 class SecsS01F22(SecsStreamFunction):
-    """
-    Data variable namelist.
+    """Data variable namelist.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F22
         [

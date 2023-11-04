@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class STRID(DataItemBase):
-    """
-    Stream ID.
+    """Stream ID.
 
     :Type: :class:`U1 <secsgem.secs.variables.U1>`
     :Length: 1

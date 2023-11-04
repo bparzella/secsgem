@@ -19,21 +19,18 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsSelectReqHeader(HsmsHeader):
-    """
-    Header for Select Request.
+    """Header for Select Request.
 
     Header for message with SType 1.
     """
 
     def __init__(self, system: int):
-        """
-        Initialize a hsms select request.
+        """Initialize a hsms select request.
 
         :param system: message ID
         :type system: integer
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsSelectReqHeader(14)

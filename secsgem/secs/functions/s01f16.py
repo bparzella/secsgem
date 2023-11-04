@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 01 function 16."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import OFLACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F16(SecsStreamFunction):
-    """
-    offline acknowledge.
+    """offline acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F16
         OFLACK: B[1]

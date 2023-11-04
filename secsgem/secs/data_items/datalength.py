@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DATALENGTH(DataItemBase):
-    """
-    Length of data to be sent.
+    """Length of data to be sent.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

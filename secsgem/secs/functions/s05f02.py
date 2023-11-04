@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 05 function 02."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ACKC5
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F02(SecsStreamFunction):
-    """
-    alarm report - acknowledge.
+    """alarm report - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F02
         ACKC5: B[1]

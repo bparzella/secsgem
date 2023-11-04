@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 24."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import TIAACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F24(SecsStreamFunction):
-    """
-    Trace initialize - acknowledge.
+    """Trace initialize - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F24
         TIAACK: B[1]

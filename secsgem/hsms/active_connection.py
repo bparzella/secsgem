@@ -31,8 +31,7 @@ class HsmsActiveConnection(HsmsConnection):
     """Client class for single active (outgoing) connection."""
 
     def __init__(self, settings: HsmsSettings):
-        """
-        Initialize a active hsms connection.
+        """Initialize a active hsms connection.
 
         Args:
             settings: protocol and communication settings
@@ -53,9 +52,8 @@ class HsmsActiveConnection(HsmsConnection):
 
         self.on_disconnected.register(self._disconnected)
 
-    def _disconnected(self, _: typing.Dict[str, typing.Any]):
-        """
-        Signal from super that the connection was closed.
+    def _disconnected(self, _: dict[str, typing.Any]):
+        """Signal from super that the connection was closed.
 
         This is required to initiate the reconnect if the connection is still enabled
         """
@@ -63,8 +61,7 @@ class HsmsActiveConnection(HsmsConnection):
             self.__start_connect_thread()
 
     def enable(self):
-        """
-        Enable the connection.
+        """Enable the connection.
 
         Starts the connection process to the passive remote.
         """
@@ -80,8 +77,7 @@ class HsmsActiveConnection(HsmsConnection):
             self.__start_connect_thread()
 
     def disable(self):
-        """
-        Disable the connection.
+        """Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -102,8 +98,7 @@ class HsmsActiveConnection(HsmsConnection):
             self.disconnect()
 
     def __idle(self, timeout: float):
-        """
-        Wait until timeout elapsed or connection thread is stopped.
+        """Wait until timeout elapsed or connection thread is stopped.
 
         Args:
             timeout: number of seconds to wait
@@ -129,15 +124,13 @@ class HsmsActiveConnection(HsmsConnection):
         self.connection_thread.start()
 
     def __connect_thread(self):
-        """
-        Thread function to (re)connect active connection to remote host.
+        """Thread function to (re)connect active connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
         """
         # wait for timeout if this is not the first connection
-        if not self.first_connection:
-            if not self.__idle(self.timeouts.t5):
-                return
+        if not self.first_connection and not self.__idle(self.timeouts.t5):
+            return
 
         self.first_connection = False
 
@@ -147,8 +140,7 @@ class HsmsActiveConnection(HsmsConnection):
                 return
 
     def __connect(self):
-        """
-        Open connection to remote host.
+        """Open connection to remote host.
 
         Returns:
             True if connection was established, False if connection failed
@@ -165,7 +157,7 @@ class HsmsActiveConnection(HsmsConnection):
         # try to connect socket
         try:
             self._socket.connect((self._settings.address, self._settings.port))
-        except socket.error:
+        except OSError:
             self._logger.debug("connecting to %s:%d failed", self._settings.address, self._settings.port)
             return False
 
@@ -182,6 +174,6 @@ class HsmsActiveConnection(HsmsConnection):
         try:
             self.on_connected({"source": self})
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connected handler')
+            self._logger.exception("ignoring exception for on_connected handler")
 
         return True

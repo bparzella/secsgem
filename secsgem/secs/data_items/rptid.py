@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class RPTID(DataItemBase):
-    """
-    Report ID.
+    """Report ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

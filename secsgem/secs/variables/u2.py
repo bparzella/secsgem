@@ -19,8 +19,7 @@ from .base_number import BaseNumber
 
 
 class U2(BaseNumber):
-    """
-    Secs type for 2 byte unsigned data.
+    """Secs type for 2 byte unsigned data.
 
     :param value: initial value
     :type value: list/integer

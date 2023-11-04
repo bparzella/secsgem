@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class PRAXI(DataItemBase):
-    """
-    Process axis.
+    """Process axis.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

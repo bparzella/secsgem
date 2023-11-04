@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TRID(DataItemBase):
-    """
-    Trace request ID.
+    """Trace request ID.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

@@ -19,21 +19,18 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsSeparateReqHeader(HsmsHeader):
-    """
-    Header for Separate Request.
+    """Header for Separate Request.
 
     Header for message with SType 9.
     """
 
     def __init__(self, system: int):
-        """
-        Initialize a hsms separate request header.
+        """Initialize a hsms separate request header.
 
         :param system: message ID
         :type system: integer
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsSeparateReqHeader(17)

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class GRANT6(DataItemBase):
-    """
-    Permission to send.
+    """Permission to send.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

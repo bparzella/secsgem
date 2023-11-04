@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 02 function 15."""
 
+from secsgem.secs.data_items import ECID, ECV
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ECID
-from secsgem.secs.data_items import ECV
 
 
 class SecsS02F15(SecsStreamFunction):
-    """
-    new equipment constant - send.
+    """new equipment constant - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F15
         [

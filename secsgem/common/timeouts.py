@@ -19,9 +19,24 @@ import typing
 
 class _Timeout:
     def __init__(self, name: str, default: float, help_text: str) -> None:
-        self.name = name
-        self.default = default
-        self.help = help_text
+        self._name = name
+        self._default = default
+        self._help = help_text
+
+    @property
+    def name(self) -> str:
+        """Get the timeout name."""
+        return self._name
+
+    @property
+    def default(self) -> float:
+        """Get the default timeout value."""
+        return self._default
+
+    @property
+    def help(self) -> str:
+        """Get the help text for the timeout."""
+        return self._help
 
 
 class Timeouts:
@@ -47,7 +62,8 @@ class Timeouts:
     """
 
     @classmethod
-    def _timeouts(cls) -> typing.List[_Timeout]:
+    def timeouts(cls) -> typing.List[_Timeout]:
+        """Get a list of default timeouts."""
         return [
             _Timeout("t1", 5.0, "Inter-Character Timeout"),
             _Timeout("t2", 100.0, "Protocol Timeout"),
@@ -60,13 +76,15 @@ class Timeouts:
         ]
 
     def __init__(self, **kwargs) -> None:
-        """
-        Timout initializer.
+        """Timout initializer.
 
         All arguments are optional.
         The default value will be used, when an argument is omitted.
 
         Args:
+            **kwargs: keyword arguments, see below
+
+        Keyword Args:
             t1: Inter-Character Timeout
             t2: Protocol Timeout
             t3: Reply Timeout
@@ -79,7 +97,7 @@ class Timeouts:
         """
         self._data = {}
 
-        for timeout in self._timeouts():
+        for timeout in self.timeouts():
             self._data[timeout.name] = kwargs.get(timeout.name, timeout.default)
 
     def __getattr__(self, name: str):

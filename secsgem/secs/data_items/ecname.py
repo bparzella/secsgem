@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECNAME(DataItemBase):
-    """
-    Equipment constant name.
+    """Equipment constant name.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

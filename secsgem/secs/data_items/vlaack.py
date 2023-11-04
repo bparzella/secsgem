@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class VLAACK(DataItemBase):
-    """
-    Variable limit attribute acknowledgement code.
+    """Variable limit attribute acknowledgement code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

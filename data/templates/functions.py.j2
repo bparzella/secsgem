@@ -15,15 +15,14 @@
 #####################################################################
 """Class for stream {{ "{:02}".format(data.stream) }} function {{ "{:02}".format(data.function) }}."""
 
+{% if data.data_items %}
+from secsgem.secs.data_items import {% for data_item in data.data_items_sorted %}{{ data_item.name }}{{ ", " if not loop.last else "" }}{% endfor +%}
+{% endif %}
 from secsgem.secs.functions.base import SecsStreamFunction
-{% for data_item in data.data_items %}
-from secsgem.secs.data_items import {{ data_item.name }}
-{% endfor %}
 
 
 class Secs{{ data.name }}(SecsStreamFunction):
-    """
-    {{ data.description }}.
+    """{{ data.description }}.
 
     {% if data.data_items|length > 0 %}
     Args:
@@ -31,7 +30,6 @@ class Secs{{ data.name }}(SecsStreamFunction):
 
     {% endif %}
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.Secs{{ data.name }}
 {{ data.data_structure_text | indent(8, True) }}

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ERRCODE(DataItemBase):
-    """
-    Code identifying an error.
+    """Code identifying an error.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

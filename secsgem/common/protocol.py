@@ -24,14 +24,14 @@ import typing
 
 import secsgem.common
 
-from .connection import Connection
 from .events import EventProducer
-from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
-    from .settings import Settings
-    from .message import Message, Block
     from ..secs.functions.base import SecsStreamFunction
+    from .connection import Connection
+    from .message import Block, Message
+    from .settings import Settings
+    from .timeouts import Timeouts
 
 MessageT = typing.TypeVar("MessageT", bound="Message")
 BlockT = typing.TypeVar("BlockT", bound="Block")
@@ -40,7 +40,7 @@ BlockT = typing.TypeVar("BlockT", bound="Block")
 class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=too-many-instance-attributes
     """Abstract base class for a protocol."""
 
-    message_type: typing.Type[MessageT]
+    message_type: type[MessageT]
 
     def __init__(self, settings: Settings) -> None:
         """Initialize protocol base object."""
@@ -51,18 +51,18 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         self._event_producer = EventProducer()
         self._event_producer.targets += self
 
-        self._system_counter = random.randint(0, (2 ** 32) - 1)
+        self._system_counter = random.randint(0, (2 ** 32) - 1)  # noqa: S311
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self._communication_logger = logging.getLogger("communication")
 
-        self.__connection: typing.Optional[Connection] = None
+        self.__connection: Connection | None = None
 
-        self._response_queues: typing.Dict[int, queue.Queue[MessageT]] = {}
+        self._response_queues: dict[int, queue.Queue[MessageT]] = {}
 
         self._receive_buffer = secsgem.common.ByteQueue()
         self._send_queue: queue.Queue[secsgem.common.BlockSendInfo] = queue.Queue()
-        self._incomplete_messages: typing.Dict[int, MessageT] = {}
+        self._incomplete_messages: dict[int, MessageT] = {}
 
         self._thread = secsgem.common.ProtocolDispatcher(
             self._process_data,
@@ -82,18 +82,18 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         return self.__connection
 
     @abc.abstractmethod
-    def _on_connected(self, _: typing.Dict[str, typing.Any]):
+    def _on_connected(self, _: dict[str, typing.Any]):
         raise NotImplementedError("Protocol._on_connected missing implementation")
 
     @abc.abstractmethod
-    def _on_disconnecting(self, _: typing.Dict[str, typing.Any]):
+    def _on_disconnecting(self, _: dict[str, typing.Any]):
         raise NotImplementedError("Protocol._on_disconnecting missing implementation")
 
     @abc.abstractmethod
-    def _on_disconnected(self, _: typing.Dict[str, typing.Any]):
+    def _on_disconnected(self, _: dict[str, typing.Any]):
         raise NotImplementedError("Protocol._on_disconnected missing implementation")
 
-    def _on_connection_data_received(self, data: typing.Dict[str, typing.Any]):
+    def _on_connection_data_received(self, data: dict[str, typing.Any]):
         """Data received by connection.
 
         Args:
@@ -126,7 +126,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         try:
             self._on_connection_message_received(source, result)
         except Exception:  # pylint: disable=broad-except
-            self._logger.exception('ignoring exception for on_connection_message_received handler')
+            self._logger.exception("ignoring exception for on_connection_message_received handler")
 
     @property
     def events(self):
@@ -161,7 +161,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         return self._settings.timeouts
 
     @abc.abstractmethod
-    def serialize_data(self) -> typing.Dict[str, typing.Any]:
+    def serialize_data(self) -> dict[str, typing.Any]:
         """Get protocol serialized data for debugging."""
         raise NotImplementedError("Protocol.serialize_data missing implementation")
 
@@ -190,8 +190,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         return self._response_queues[system_id]
 
     def _remove_queue(self, system_id: int):
-        """
-        Remove queue for system id from list.
+        """Remove queue for system id from list.
 
         Args:
             system_id: system id to remove
@@ -199,7 +198,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         """
         del self._response_queues[system_id]
 
-    def _add_message_block(self, block: BlockT) -> typing.Optional[MessageT]:
+    def _add_message_block(self, block: BlockT) -> MessageT | None:
         """Add a block, and get completed message if available.
 
         Args:
@@ -241,8 +240,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         raise NotImplementedError("Protocol._create_message_for_function missing implementation")
 
     def send_message(self, message: secsgem.common.Message) -> bool:
-        """
-        Send a message to the remote host.
+        """Send a message to the remote host.
 
         Args:
             message: message to be transmitted
@@ -261,7 +259,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         return True
 
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> typing.Optional[secsgem.common.Message]:
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> secsgem.common.Message | None:
         """Send the message and wait for the response.
 
         Args:
@@ -311,8 +309,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         return self.send_message(out_message)
 
     def send_stream_function(self, function: SecsStreamFunction) -> bool:
-        """
-        Send the message and wait for the response.
+        """Send the message and wait for the response.
 
         Args:
             function: message to be sent
@@ -329,9 +326,9 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""
-        return f"{self.__class__.__name__} {str(self.serialize_data())}"
+        return f"{self.__class__.__name__} {self.serialize_data()}"
 
     @abc.abstractmethod
-    def _get_log_extra(self) -> typing.Dict[str, typing.Any]:
+    def _get_log_extra(self) -> dict[str, typing.Any]:
         """Get extra fields for logging."""
         raise NotImplementedError("Protocol._get_log_extra missing implementation")

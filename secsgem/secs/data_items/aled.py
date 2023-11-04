@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ALED(DataItemBase):
-    """
-    Alarm en-/disable code byte.
+    """Alarm en-/disable code byte.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

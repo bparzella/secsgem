@@ -26,8 +26,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-"""
-USAGE.
+"""USAGE.
 
 from fysom import Fysom
 fsm = Fysom({
@@ -197,13 +196,13 @@ So you have a number of choices available to you when initializing your
 state machine.
 """
 
-__author__ = 'Mansour Behabadi'
-__copyright__ = 'Copyright 2011, Mansour Behabadi and Jake Gordon'
-__credits__ = ['Mansour Behabadi', 'Jake Gordon']
-__license__ = 'MIT'
-__version__ = '1.0'
-__maintainer__ = 'Mansour Behabadi'
-__email__ = 'mansour@oxplot.com'
+__author__ = "Mansour Behabadi"
+__copyright__ = "Copyright 2011, Mansour Behabadi and Jake Gordon"
+__credits__ = ["Mansour Behabadi", "Jake Gordon"]
+__license__ = "MIT"
+__version__ = "1.0"
+__maintainer__ = "Mansour Behabadi"
+__email__ = "mansour@oxplot.com"
 
 
 class FysomError(Exception):
@@ -224,36 +223,36 @@ class Fysom:
     def can(self, event):
         """Check if transition possible."""
         return event in self._map and self.current in self._map[event] \
-            and not hasattr(self, 'transition')
+            and not hasattr(self, "transition")
 
     def cannot(self, event):
         """Check if transition is not possible."""
         return not self.can(event)
 
-    def _apply(self, cfg):  # noqa: MC0001
-        init = cfg['initial'] if 'initial' in cfg else None
+    def _apply(self, cfg):  # noqa: C901
+        init = cfg["initial"] if "initial" in cfg else None
         if isinstance(init, (str, bytes)):
-            init = {'state': init}
-        events = cfg['events'] if 'events' in cfg else []
-        callbacks = cfg['callbacks'] if 'callbacks' in cfg else {}
+            init = {"state": init}
+        events = cfg["events"] if "events" in cfg else []
+        callbacks = cfg["callbacks"] if "callbacks" in cfg else {}
         tmap = {}
         self._map = tmap
         self._autoforward = {}
-        if 'autoforward' in cfg:
-            for autoforward in cfg['autoforward']:
-                self._autoforward[autoforward['src']] = autoforward['dst']
+        if "autoforward" in cfg:
+            for autoforward in cfg["autoforward"]:
+                self._autoforward[autoforward["src"]] = autoforward["dst"]
 
         def add(event):
-            sources = [event['src']] if isinstance(event['src'], (str, bytes)) else event['src']
-            if event['name'] not in tmap:
-                tmap[event['name']] = {}
+            sources = [event["src"]] if isinstance(event["src"], (str, bytes)) else event["src"]
+            if event["name"] not in tmap:
+                tmap[event["name"]] = {}
             for source in sources:
-                tmap[event['name']][source] = event['dst']
+                tmap[event["name"]][source] = event["dst"]
 
         if init:
-            if 'event' not in init:
-                init['event'] = 'startup'
-            add({'name': init['event'], 'src': 'none', 'dst': init['state']})
+            if "event" not in init:
+                init["event"] = "startup"
+            add({"name": init["event"], "src": "none", "dst": init["state"]})
 
         for event in events:
             add(event)
@@ -264,23 +263,23 @@ class Fysom:
         for name in callbacks:
             setattr(self, name, callbacks[name])
 
-        self.current = 'none'
+        self.current = "none"
 
-        if init and 'defer' not in init:
-            getattr(self, init['event'])()
+        if init and "defer" not in init:
+            getattr(self, init["event"])()
 
-    class _EventObject:
+    class _EventObject:  # pylint: disable=too-few-public-methods
         def __init__(self, fsm, event, src, dst):
             self.fsm = fsm
             self.event = event
             self.src = src
             self.dst = dst
 
-    def _build_event(self, event):  # noqa: MC0001
+    def _build_event(self, event):  # noqa: C901
         def function(**kwargs):
             evt = event
 
-            if hasattr(self, 'transition'):
+            if hasattr(self, "transition"):
                 raise FysomError(f"event {evt} inappropriate because previous transition did not complete")
             if not self.can(evt):
                 raise FysomError(f"event {evt} inappropriate in current state {self.current}")
@@ -299,16 +298,15 @@ class Fysom:
                         return
 
                     def _tran():
-                        delattr(self, 'transition')
-                        self.current = dst  # pylint: disable=attribute-defined-outside-init
-                        self._enter_state(event_object)
-                        self._change_state(event_object)
-                        self._after_event(event_object)
+                        delattr(self, "transition")
+                        self.current = dst  # noqa: B023, pylint: disable=attribute-defined-outside-init
+                        self._enter_state(event_object)  # noqa: B023
+                        self._change_state(event_object)  # noqa: B023
+                        self._after_event(event_object)  # noqa: B023
                     self.transition = _tran  # pylint: disable=attribute-defined-outside-init
 
-                if self._leave_state(event_object) is not False:
-                    if hasattr(self, 'transition'):
-                        self.transition()
+                if self._leave_state(event_object) is not False and hasattr(self, "transition"):
+                    self.transition()
 
                 if self.current in self._autoforward:
                     src = dst
@@ -322,35 +320,35 @@ class Fysom:
         return function
 
     def _before_event(self, event):
-        fnname = 'onbefore' + event.event
+        fnname = "onbefore" + event.event
         if hasattr(self, fnname):
             return getattr(self, fnname)(event)
         return None
 
     def _after_event(self, event):
-        for fnname in ['onafter' + event.event, 'on' + event.event]:
+        for fnname in ["onafter" + event.event, "on" + event.event]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(event)
         return None
 
     def _leave_state(self, event):
-        fnname = 'onleave' + event.src
+        fnname = "onleave" + event.src
         if hasattr(self, fnname):
             return getattr(self, fnname)(event)
         return None
 
     def _enter_state(self, event):
-        for fnname in ['onenter' + event.dst, 'on' + event.dst]:
+        for fnname in ["onenter" + event.dst, "on" + event.dst]:
             if hasattr(self, fnname):
                 return getattr(self, fnname)(event)
         return None
 
     def _change_state(self, event):
-        fnname = 'onchangestate'
+        fnname = "onchangestate"
         if hasattr(self, fnname):
             return getattr(self, fnname)(event)
         return None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

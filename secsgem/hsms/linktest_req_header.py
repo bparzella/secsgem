@@ -19,8 +19,7 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsLinktestReqHeader(HsmsHeader):
-    """
-    Header for Linktest Request.
+    """Header for Linktest Request.
 
     Header for message with SType 5.
     """

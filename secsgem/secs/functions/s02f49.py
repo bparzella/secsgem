@@ -15,23 +15,17 @@
 #####################################################################
 """Class for stream 02 function 49."""
 
+from secsgem.secs.data_items import CEPVAL, CPNAME, DATAID, OBJSPEC, RCMD
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import OBJSPEC
-from secsgem.secs.data_items import RCMD
-from secsgem.secs.data_items import CPNAME
-from secsgem.secs.data_items import CEPVAL
 
 
 class SecsS02F49(SecsStreamFunction):
-    """
-    Enhanced remote command.
+    """Enhanced remote command.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49
         {
@@ -49,9 +43,9 @@ class SecsS02F49(SecsStreamFunction):
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49({
-        ...     "DATAID": 1, 
+        ...     "DATAID": 1,
         ...     "OBJSPEC": 'test',
-        ...     "RCMD": "COMMAND1", 
+        ...     "RCMD": "COMMAND1",
         ...     "PARAMS": [{
         ...         "CPNAME": "CPARAM",
         ...         "CEPVAL": "VALUE"

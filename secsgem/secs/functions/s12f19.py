@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 12 function 19."""
 
+from secsgem.secs.data_items import DATLC, MAPER
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MAPER
-from secsgem.secs.data_items import DATLC
 
 
 class SecsS12F19(SecsStreamFunction):
-    """
-    map error report - send.
+    """map error report - send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F19
         {

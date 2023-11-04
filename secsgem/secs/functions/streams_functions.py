@@ -18,15 +18,15 @@ import typing
 
 import secsgem.common
 
-from .base import SecsStreamFunction
 from ._all import secs_streams_functions
+from .base import SecsStreamFunction
 
 
 class StreamsFunctions:
     """Container for functions classes."""
 
     def __init__(
-        self, 
+        self,
         functions: typing.Optional[typing.List[typing.Type[SecsStreamFunction]]] = None
     ) -> None:
         """Initialize streams functions container."""
@@ -68,8 +68,7 @@ class StreamsFunctions:
         return functions[0]
 
     def decode(self, message: secsgem.common.Message) -> typing.Optional[SecsStreamFunction]:
-        """
-        Get object of decoded stream and function class, or None if no class is available.
+        """Get object of decoded stream and function class, or None if no class is available.
 
         Args:
             message: message to get object for

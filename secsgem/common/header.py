@@ -19,7 +19,7 @@ from __future__ import annotations
 import abc
 import typing
 
-HeaderT = typing.TypeVar('HeaderT', bound='Header')
+HeaderT = typing.TypeVar("HeaderT", bound="Header")
 
 
 class Header(abc.ABC):
@@ -80,7 +80,7 @@ class Header(abc.ABC):
         Args:
             data: byte-encode header data
 
-        Returns
+        Returns:
             Header object
 
         """
@@ -88,7 +88,7 @@ class Header(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def _as_dictionary(self) -> typing.Dict[str, typing.Any]:
+    def _as_dictionary(self) -> dict[str, typing.Any]:
         """Get the data as dictionary.
 
         Returns:

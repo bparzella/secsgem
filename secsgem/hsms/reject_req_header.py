@@ -19,15 +19,13 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsRejectReqHeader(HsmsHeader):
-    """
-    Header for Reject Request.
+    """Header for Reject Request.
 
     Header for message with SType 7.
     """
 
     def __init__(self, system: int, s_type: HsmsSType, reason: int):
-        """
-        Initialize a hsms reject request.
+        """Initialize a hsms reject request.
 
         :param system: message ID
         :type system: integer
@@ -37,7 +35,6 @@ class HsmsRejectReqHeader(HsmsHeader):
         :type reason: integer
 
         Example:
-
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsRejectReqHeader(17, 3, 4)

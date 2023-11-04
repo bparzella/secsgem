@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class EXID(DataItemBase):
-    """
-    Exception identifier.
+    """Exception identifier.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 20

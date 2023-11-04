@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 38."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ERACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F38(SecsStreamFunction):
-    """
-    en-/disable event report - acknowledge.
+    """en-/disable event report - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F38
         ERACK: B[1]

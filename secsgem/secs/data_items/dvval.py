@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DVVAL(DataItemBase):
-    """
-    Data value.
+    """Data value.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

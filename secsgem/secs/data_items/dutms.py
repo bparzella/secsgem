@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DUTMS(DataItemBase):
-    """
-    Die units of measure.
+    """Die units of measure.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

@@ -30,8 +30,7 @@ class HsmsBlock(secsgem.common.Block[HsmsHeader]):
 
 
 class HsmsMessage(secsgem.common.Message):
-    """
-    Class for hsms message.
+    """Class for hsms message.
 
     Contains all required data and functions.
     """

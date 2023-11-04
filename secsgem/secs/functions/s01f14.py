@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 01 function 14."""
 
+from secsgem.secs.data_items import COMMACK, MDLN
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import COMMACK
-from secsgem.secs.data_items import MDLN
 
 
 class SecsS01F14(SecsStreamFunction):
-    """
-    establish communication - acknowledge.
+    """establish communication - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F14
         {

@@ -15,23 +15,17 @@
 #####################################################################
 """Class for stream 14 function 03."""
 
+from secsgem.secs.data_items import ATTRDATA, ATTRID, OBJID, OBJSPEC, OBJTYPE
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJSPEC
-from secsgem.secs.data_items import OBJTYPE
-from secsgem.secs.data_items import OBJID
-from secsgem.secs.data_items import ATTRID
-from secsgem.secs.data_items import ATTRDATA
 
 
 class SecsS14F03(SecsStreamFunction):
-    """
-    SetAttr request.
+    """SetAttr request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F03
         {
@@ -56,7 +50,7 @@ class SecsS14F03(SecsStreamFunction):
         ...       "OBJTYPE": 'StripMap',
         ...       "OBJID": ['MAP001'],
         ...       "ATTRIBS": [{
-        ...           "ATTRID": "CellStatus", 
+        ...           "ATTRID": "CellStatus",
         ...           "ATTRDATA": "3"}]})
         S14F3 W
           <L [4]

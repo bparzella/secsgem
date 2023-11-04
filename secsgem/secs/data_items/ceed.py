@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CEED(DataItemBase):
-    """
-    Collection event or trace enable/disable code.
+    """Collection event or trace enable/disable code.
 
     :Type: :class:`Boolean <secsgem.secs.variables.Boolean>`
     :Length: 1

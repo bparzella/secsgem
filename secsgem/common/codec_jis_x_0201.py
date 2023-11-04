@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #####################################################################
 # codec_jis_x_0201.py
 #
@@ -15,7 +14,6 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """JIS X 0201 Codec required for JIS8 encoding of JIS8."""
-
 import codecs
 
 jis8_decoding_map = codecs.make_identity_dict(range(256))  # type: ignore[attr-defined]
@@ -30,11 +28,11 @@ for i in range(0x00A1, 0x00E0):
 jis8_encoding_map = codecs.make_encoding_map(jis8_decoding_map)  # type: ignore[attr-defined]
 
 
-def _jis_x_0201_encode(data, errors='strict'):
+def _jis_x_0201_encode(data, errors="strict"):
     return codecs.charmap_encode(data, errors, jis8_encoding_map)
 
 
-def _jis_x_0201_decode(data, errors='strict'):
+def _jis_x_0201_decode(data, errors="strict"):
     return codecs.charmap_decode(data, errors, jis8_decoding_map)
 
 

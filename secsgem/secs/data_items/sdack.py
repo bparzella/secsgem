@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SDACK(DataItemBase):
-    """
-    Map setup acknowledge.
+    """Map setup acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

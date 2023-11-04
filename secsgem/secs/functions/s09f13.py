@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 09 function 13."""
 
+from secsgem.secs.data_items import EDID, MEXP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MEXP
-from secsgem.secs.data_items import EDID
 
 
 class SecsS09F13(SecsStreamFunction):
-    """
-    conversation timeout.
+    """conversation timeout.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F13
         {

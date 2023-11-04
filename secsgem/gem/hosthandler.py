@@ -27,8 +27,7 @@ class GemHostHandler(GemHandler):
     """Baseclass for creating host models. Inherit from this class and override required functions."""
 
     def __init__(self, settings: secsgem.common.Settings):
-        """
-        Initialize a gem host handler.
+        """Initialize a gem host handler.
 
         Args:
             settings: communication settings
@@ -57,8 +56,7 @@ class GemHostHandler(GemHandler):
                                    ceid: typing.Union[int, str],
                                    dvs: typing.List[typing.Union[int, str]],
                                    report_id: typing.Optional[typing.Union[int, str]] = None):
-        """
-        Subscribe to a collection event.
+        """Subscribe to a collection event.
 
         :param ceid: ID of the collection event
         :type ceid: integer
@@ -90,8 +88,7 @@ class GemHostHandler(GemHandler):
     def send_remote_command(self,
                             rcmd: typing.Union[int, str],
                             params: typing.List[str]):
-        """
-        Send a remote command.
+        """Send a remote command.
 
         :param rcmd: Name of command
         :type rcmd: string
@@ -114,8 +111,7 @@ class GemHostHandler(GemHandler):
 
     def delete_process_programs(self,
                                 ppids: typing.List[typing.Union[int, str]]):
-        """
-        Delete a list of process program.
+        """Delete a list of process program.
 
         :param ppids: Process programs to delete
         :type ppids: list of strings
@@ -154,8 +150,7 @@ class GemHostHandler(GemHandler):
             self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
     def enable_alarm(self, alid: typing.Union[int, str]):
-        """
-        Enable alarm.
+        """Enable alarm.
 
         :param alid: alarm id to enable
         :type alid: :class:`secsgem.secs.dataitems.ALID`
@@ -166,8 +161,7 @@ class GemHostHandler(GemHandler):
             {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
 
     def disable_alarm(self, alid: typing.Union[int, str]):
-        """
-        Disable alarm.
+        """Disable alarm.
 
         :param alid: alarm id to disable
         :type alid: :class:`secsgem.secs.dataitems.ALID`
@@ -177,10 +171,9 @@ class GemHostHandler(GemHandler):
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
 
-    def list_alarms(self, 
+    def list_alarms(self,
                     alids: typing.Optional[typing.List[typing.Union[int, str]]] = None):
-        """
-        List alarms.
+        """List alarms.
 
         :param alids: alarms to list details for
         :type alids: array of int/str
@@ -205,11 +198,10 @@ class GemHostHandler(GemHandler):
         del handler, alarm_id, alarm_code, alarm_text  # unused variables
         return secsgem.secs.data_items.ACKC5.ACCEPTED
 
-    def _on_s05f01(self, 
-                   handler: secsgem.secs.SecsHandler, 
+    def _on_s05f01(self,
+                   handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 1, Alarm request.
+        """Handle Stream 5, Function 1, Alarm request.
 
         Args:
             handler: handler the message was received on
@@ -221,15 +213,14 @@ class GemHostHandler(GemHandler):
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
         self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX,
-                                            "handler": self.protocol, 'peer': self})
+                                            "handler": self.protocol, "peer": self})
 
         return self.stream_function(5, 2)(result)
 
-    def _on_s06f11(self, 
-                   handler: secsgem.secs.SecsHandler, 
+    def _on_s06f11(self,
+                   handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 6, Function 11, Establish Communication Request.
+        """Handle Stream 6, Function 11, Establish Communication Request.
 
         Args:
             handler: handler the message was received on
@@ -252,7 +243,7 @@ class GemHostHandler(GemHandler):
                                "name": self.get_dvid_name(data_value_id)})
 
             data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values,
-                    "name": self.get_ceid_name(message.CEID), "handler": self.protocol, 'peer': self}
+                    "name": self.get_ceid_name(message.CEID), "handler": self.protocol, "peer": self}
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)
@@ -261,11 +252,10 @@ class GemHostHandler(GemHandler):
         del handler, terminal_id, text  # unused variables
         return secsgem.secs.data_items.ACKC10.ACCEPTED
 
-    def _on_s10f01(self, 
-                   handler: secsgem.secs.SecsHandler, 
+    def _on_s10f01(self,
+                   handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 10, Function 1, Terminal Request.
+        """Handle Stream 10, Function 1, Terminal Request.
 
         Args:
             handler: handler the message was received on
@@ -276,6 +266,6 @@ class GemHostHandler(GemHandler):
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
         self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol,
-                                               'peer': self})
+                                               "peer": self})
 
         return self.stream_function(10, 2)(result)

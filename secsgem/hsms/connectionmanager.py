@@ -14,13 +14,14 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains class for handling multiple connections."""
+from __future__ import annotations
 
 import logging
 
 import secsgem.common
 
-from .protocol import HsmsProtocol
 from .multi_passive_server import HsmsMultiPassiveServer
+from .protocol import HsmsProtocol
 
 
 class HsmsConnectionManager:
@@ -46,8 +47,7 @@ class HsmsConnectionManager:
         return self._event_producer
 
     def has_connection_to(self, index):
-        """
-        Check if connection to certain peer exists.
+        """Check if connection to certain peer exists.
 
         :param index: Name of the reqested handler.
         :type index: string
@@ -66,8 +66,7 @@ class HsmsConnectionManager:
 
     @staticmethod
     def get_connection_id(address):
-        """
-        Generate connection ids used for internal indexing.
+        """Generate connection ids used for internal indexing.
 
         :param address: The IP address for the affected remote.
         :type address: string
@@ -75,8 +74,7 @@ class HsmsConnectionManager:
         return f"{address}"
 
     def _update_required_servers(self, additional_port=-1):
-        """
-        Start server if any active handler is found.
+        """Start server if any active handler is found.
 
         .. warning:: Do not call this directly, for internal use only.
         """
@@ -89,9 +87,8 @@ class HsmsConnectionManager:
             required_ports.append(additional_port)
 
         for handler in self.handlers.values():
-            if not handler.active:
-                if handler.port not in required_ports:
-                    required_ports.append(handler.port)
+            if not handler.active and handler.port not in required_ports:
+                required_ports.append(handler.port)
 
         for server_port, server in self.servers.items():
             if server_port not in required_ports:
@@ -105,22 +102,24 @@ class HsmsConnectionManager:
                 self.servers[required_port] = HsmsMultiPassiveServer(required_port)
                 self.servers[required_port].start()
 
-    def add_peer(self, name, address, port, active, session_id, connection_handler=HsmsProtocol):
-        """
-        Add a new connection.
+    def add_peer(  # pylint: disable=too-many-arguments
+            self,
+            name: str,
+            address: str,
+            port: int,
+            active: bool,
+            session_id: int,
+            connection_handler: type[HsmsProtocol] = HsmsProtocol):
+        """Add a new connection.
 
-        :param name: Name of the peers configuration
-        :type name: string
-        :param address: IP address of peer
-        :type address: string
-        :param port: TCP port of peer
-        :type port: integer
-        :param active: Is the connection active (*True*) or passive (*False*)
-        :type active: boolean
-        :param session_id: session / device ID of peer
-        :type session_id: integer
-        :param connection_handler: Model handling this connection
-        :type connection_handler: inherited from :class:`secsgem.hsms.protocol.HsmsProtocol`
+        Args:
+            name: Name of the peers configuration
+            address: IP address of peer
+            port: TCP port of peer
+            active: Is the connection active (*True*) or passive (*False*)
+            session_id: session / device ID of peer
+            connection_handler: Model handling this connection
+
         """
         self.logger.debug("new remote %s at %s:%d", name, address, port)
 
@@ -139,7 +138,7 @@ class HsmsConnectionManager:
             else:
                 handler = connection_handler(address, port, active, session_id, name, self.servers[port])
 
-        handler._event_producer += self._event_producer
+        handler._event_producer += self._event_producer  # noqa: SLF001
         handler.enable()
 
         self.handlers[connection_id] = handler
@@ -147,8 +146,7 @@ class HsmsConnectionManager:
         return handler
 
     def remove_peer(self, name, address, port):
-        """
-        Remove a previously added connection.
+        """Remove a previously added connection.
 
         :param name: Name of the peers configuration
         :type name: string

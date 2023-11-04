@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 01 function 13."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import MDLN
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F13(SecsStreamFunction):
-    """
-    establish communication - request.
+    """establish communication - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F13
         [

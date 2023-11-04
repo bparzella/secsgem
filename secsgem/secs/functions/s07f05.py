@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 07 function 05."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F05(SecsStreamFunction):
-    """
-    process program - request.
+    """process program - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F05
         PPID: A/B[120]

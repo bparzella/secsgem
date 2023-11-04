@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 21."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import RCMD
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F21(SecsStreamFunction):
-    """
-    Remote command send.
+    """Remote command send.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F21
         RCMD: U1/I1/A

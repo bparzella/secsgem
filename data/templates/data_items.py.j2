@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class {{ data.name }}(DataItemBase):{{ data.linter_message }}
-    """
-    {{ data.description }}.
+    """{{ data.description }}.
 
 {% if data.help %}
     {{ data.help }}

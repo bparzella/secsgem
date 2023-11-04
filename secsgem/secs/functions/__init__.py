@@ -17,6 +17,8 @@
 from .base import SecsStreamFunction
 from .streams_functions import StreamsFunctions
 
+# isort: split
+
 from .s00f00 import SecsS00F00
 from .s01f00 import SecsS01F00
 from .s01f01 import SecsS01F01
@@ -153,7 +155,7 @@ from .s14f03 import SecsS14F03
 from .s14f04 import SecsS14F04
 
 __all__ = [
-    "SecsStreamFunction", 
+    "SecsStreamFunction",
     "StreamsFunctions",
     "SecsS00F00",
     "SecsS01F00",

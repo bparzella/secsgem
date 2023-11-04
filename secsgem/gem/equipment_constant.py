@@ -19,19 +19,21 @@ import typing
 import secsgem.secs
 
 
-class EquipmentConstant:  # pylint: disable=too-many-instance-attributes
+class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Equipment constant definition."""
 
-    def __init__(self,
-                 ecid: typing.Union[int, str],
-                 name: str,
-                 min_value: typing.Union[int, float],
-                 max_value: typing.Union[int, float],
-                 default_value: typing.Union[int, float],
-                 unit: str,
-                 value_type: typing.Type[secsgem.secs.variables.Base],
-                 use_callback: bool = True,
-                 **kwargs):
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        ecid: typing.Union[int, str],
+        name: str,
+        min_value: typing.Union[int, float],
+        max_value: typing.Union[int, float],
+        default_value: typing.Union[int, float],
+        unit: str,
+        value_type: typing.Type[secsgem.secs.variables.Base],
+        use_callback: bool = True,
+        **kwargs
+    ):
         """Initialize an equipment constant.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
@@ -52,6 +54,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes
             unit: unit (see SEMI E5, Units of Measure)
             value_type: type of the status variable
             use_callback: use the GemEquipmentHandler callbacks to get and set variable (True) or use internal value
+            **kwargs: additional attributes for object
 
         """
         self.ecid = ecid

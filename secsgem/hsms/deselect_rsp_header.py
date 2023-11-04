@@ -19,8 +19,7 @@ from .header import HsmsHeader, HsmsSType
 
 
 class HsmsDeselectRspHeader(HsmsHeader):
-    """
-    Header for Deselect Response.
+    """Header for Deselect Response.
 
     Header for message with SType 4.
     """

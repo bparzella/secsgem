@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class LIMITMIN(DataItemBase):
-    """
-    Minimum allowed for limit.
+    """Minimum allowed for limit.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

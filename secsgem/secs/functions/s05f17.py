@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 05 function 17."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import EXID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F17(SecsStreamFunction):
-    """
-    exception recover abort - request.
+    """exception recover abort - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F17
         EXID: A[20]

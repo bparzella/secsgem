@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 07 function 04."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ACKC7
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F04(SecsStreamFunction):
-    """
-    process program - acknowledge.
+    """process program - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F04
         ACKC7: B[1]

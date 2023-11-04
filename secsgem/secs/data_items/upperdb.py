@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class UPPERDB(DataItemBase):
-    """
-    Limit for variable upper deadband.
+    """Limit for variable upper deadband.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

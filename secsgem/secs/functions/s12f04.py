@@ -15,33 +15,33 @@
 #####################################################################
 """Class for stream 12 function 04."""
 
+from secsgem.secs.data_items import (
+    BCEQU,
+    COLCT,
+    DUTMS,
+    FNLOC,
+    IDTYP,
+    MID,
+    MLCL,
+    NULBC,
+    ORLOC,
+    PRDCT,
+    REFP,
+    ROWCT,
+    RPSEL,
+    XDIES,
+    YDIES,
+)
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import FNLOC
-from secsgem.secs.data_items import ORLOC
-from secsgem.secs.data_items import RPSEL
-from secsgem.secs.data_items import REFP
-from secsgem.secs.data_items import DUTMS
-from secsgem.secs.data_items import XDIES
-from secsgem.secs.data_items import YDIES
-from secsgem.secs.data_items import ROWCT
-from secsgem.secs.data_items import COLCT
-from secsgem.secs.data_items import PRDCT
-from secsgem.secs.data_items import BCEQU
-from secsgem.secs.data_items import NULBC
-from secsgem.secs.data_items import MLCL
 
 
 class SecsS12F04(SecsStreamFunction):
-    """
-    map setup data.
+    """map setup data.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F04
         {

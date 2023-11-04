@@ -30,8 +30,7 @@ class SecsIBlock(secsgem.common.Block[SecsIHeader]):
 
 
 class SecsIMessage(secsgem.common.Message[SecsIBlock]):
-    """
-    Class for SECS I message.
+    """Class for SECS I message.
 
     Contains all required data and functions.
     """

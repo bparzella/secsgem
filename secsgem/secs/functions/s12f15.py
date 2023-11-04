@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 12 function 15."""
 
+from secsgem.secs.data_items import IDTYP, MID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
 
 
 class SecsS12F15(SecsStreamFunction):
-    """
-    map data type 2 - request.
+    """map data type 2 - request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F15
         {

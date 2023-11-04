@@ -15,21 +15,17 @@
 #####################################################################
 """Class for stream 02 function 42."""
 
+from secsgem.secs.data_items import CPACK, CPNAME, HCACK
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import HCACK
-from secsgem.secs.data_items import CPNAME
-from secsgem.secs.data_items import CPACK
 
 
 class SecsS02F42(SecsStreamFunction):
-    """
-    host command - acknowledge.
+    """host command - acknowledge.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F42
         {

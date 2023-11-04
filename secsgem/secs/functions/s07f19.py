@@ -19,11 +19,9 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F19(SecsStreamFunction):
-    """
-    current equipment process program - request.
+    """current equipment process program - request.
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F19
         Header only

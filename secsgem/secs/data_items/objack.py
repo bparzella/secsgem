@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class OBJACK(DataItemBase):
-    """
-    Object acknowledgement code.
+    """Object acknowledgement code.
 
     :Type: :class:`U1 <secsgem.secs.variables.U1>`
     :Length: 1

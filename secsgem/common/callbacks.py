@@ -14,28 +14,39 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains callback handling routines."""
+from __future__ import annotations
+
 import typing
 
 
 class _CallbackCallWrapper:
-    def __init__(self, handler: "CallbackHandler", name: str):
-        self.name = name
-        self.handler = handler
+    def __init__(self, handler: CallbackHandler, name: str):
+        self._name = name
+        self._handler = handler
 
-    def __call__(self, *args, **kwargs):
-        return self.handler._call(self.name, *args, **kwargs)  # noqa
+    def __call__(self, *args: tuple, **kwargs: dict) -> typing.Any:
+        return self.handler._call(self.name, *args, **kwargs)  # noqa: SLF001
+
+    @property
+    def name(self) -> str:
+        """Get the callback name."""
+        return self._name
+
+    @property
+    def handler(self) -> CallbackHandler:
+        """Get the handler for the callback."""
+        return self._handler
 
 
 class CallbackHandler:
-    """
-    Handler for callbacks for HSMS/SECS/GEM events.
+    """Handler for callbacks for HSMS/SECS/GEM events.
 
     This handler manages callbacks for events that can happen on a handler for a connection.
     """
 
     def __init__(self) -> None:
         """Initialize the handler."""
-        self._callbacks: typing.Dict[str, typing.Callable] = {}
+        self._callbacks: dict[str, typing.Callable] = {}
         self.target: object = None
         self._object_intitialized = True
 
@@ -47,7 +58,7 @@ class CallbackHandler:
             value: callback function
 
         """
-        if '_object_intitialized' not in self.__dict__ or name in self.__dict__:
+        if "_object_intitialized" not in self.__dict__ or name in self.__dict__:
             dict.__setattr__(self, name, value)
             return
 
@@ -58,8 +69,7 @@ class CallbackHandler:
             self._callbacks[name] = value
 
     def __getattr__(self, name: str) -> typing.Callable:
-        """
-        Get a callable function for an event.
+        """Get a callable function for an event.
 
         Args:
             name: name of the event
@@ -81,11 +91,10 @@ class CallbackHandler:
                 self._counter += 1
                 return self._keys[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __iter__(self) -> _CallbacksIter:
-        """
-        Get an iterator for the callbacks.
+        """Get an iterator for the callbacks.
 
         Returns:
             callback iterator
@@ -94,8 +103,7 @@ class CallbackHandler:
         return self._CallbacksIter(self._callbacks.keys())
 
     def __contains__(self, callback: str) -> bool:
-        """
-        Check if a callback is present.
+        """Check if a callback is present.
 
         Args:
             callback: name of the event

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CPNAME(DataItemBase):
-    """
-    Command parameter name.
+    """Command parameter name.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 07 function 20."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F20(SecsStreamFunction):
-    """
-    current equipment process program - data.
+    """current equipment process program - data.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F20
         [

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 18."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import TIME
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F18(SecsStreamFunction):
-    """
-    date and time - data.
+    """date and time - data.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F18
         TIME: A[32]

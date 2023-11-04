@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 47."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import VID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F47(SecsStreamFunction):
-    """
-    Variable limit attribute request.
+    """Variable limit attribute request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F47
         [

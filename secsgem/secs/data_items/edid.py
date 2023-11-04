@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class EDID(DataItemBase):
-    """
-    Expected data identification.
+    """Expected data identification.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

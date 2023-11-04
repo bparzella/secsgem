@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 12 function 05."""
 
+from secsgem.secs.data_items import IDTYP, MAPFT, MID, MLCL
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import MAPFT
-from secsgem.secs.data_items import MLCL
 
 
 class SecsS12F05(SecsStreamFunction):
-    """
-    map transmit inquire.
+    """map transmit inquire.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F05
         {

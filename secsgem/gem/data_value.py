@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM data value."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs
 
@@ -23,9 +23,9 @@ class DataValue:
     """Data value definition."""
 
     def __init__(self,
-                 dvid: typing.Union[int, str],
+                 dvid: int | str,
                  name: str,
-                 value_type: typing.Type[secsgem.secs.variables.Base],
+                 value_type: type[secsgem.secs.variables.Base],
                  use_callback: bool = True,
                  **kwargs):
         """Initialize a data value.
@@ -43,20 +43,46 @@ class DataValue:
             name: long name of the data value
             value_type: type of the data value
             use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+            **kwargs: additional attributes for object
 
         """
-        self.dvid = dvid
-        self.name = name
-        self.value_type = value_type
-        self.use_callback = use_callback
+        self._dvid = dvid
+        self._name = name
+        self._value_type = value_type
+        self._use_callback = use_callback
         self.value = 0
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self._id_type: type[secsgem.secs.variables.Base]
 
-        if isinstance(self.dvid, int):
-            self.id_type = secsgem.secs.variables.U4
+        if isinstance(self._dvid, int):
+            self._id_type = secsgem.secs.variables.U4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self._id_type = secsgem.secs.variables.String
 
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    @property
+    def dvid(self) -> int | str:
+        """Get the data value id."""
+        return self._dvid
+
+    @property
+    def name(self) -> str:
+        """Get the data value name."""
+        return self._name
+
+    @property
+    def value_type(self) -> type[secsgem.secs.variables.Base]:
+        """Get the data value type."""
+        return self._value_type
+
+    @property
+    def use_callback(self) -> bool:
+        """Get if data value uses callback."""
+        return self._use_callback
+
+    @property
+    def id_type(self) -> type[secsgem.secs.variables.Base]:
+        """Get the data value id type."""
+        return self._id_type

@@ -15,19 +15,17 @@
 #####################################################################
 """Class for stream 02 function 25."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ABS
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F25(SecsStreamFunction):
-    """
-    Loopback diagnostic request.
+    """Loopback diagnostic request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F25
         ABS: B

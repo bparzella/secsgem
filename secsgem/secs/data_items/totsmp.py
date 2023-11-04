@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TOTSMP(DataItemBase):
-    """
-    Total samples.
+    """Total samples.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

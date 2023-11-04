@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 06 function 05."""
 
+from secsgem.secs.data_items import DATAID, DATALENGTH
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import DATALENGTH
 
 
 class SecsS06F05(SecsStreamFunction):
-    """
-    multi block data inquiry.
+    """multi block data inquiry.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F05
         {

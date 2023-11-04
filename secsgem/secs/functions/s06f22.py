@@ -15,20 +15,17 @@
 #####################################################################
 """Class for stream 06 function 22."""
 
+from secsgem.secs.data_items import VID, V
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import VID
-from secsgem.secs.data_items import V
 
 
 class SecsS06F22(SecsStreamFunction):
-    """
-    annotated individual report data.
+    """annotated individual report data.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F22
         [

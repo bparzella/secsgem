@@ -20,7 +20,8 @@ import abc
 import struct
 import typing
 
-from .header import Header
+if typing.TYPE_CHECKING:
+    from .header import Header
 
 BlockHeaderT = typing.TypeVar("BlockHeaderT", bound="Header")
 BlockT = typing.TypeVar("BlockT", bound="Block")
@@ -31,13 +32,12 @@ MessageT = typing.TypeVar("MessageT", bound="Message")
 class Block(abc.ABC, typing.Generic[BlockHeaderT]):
     """Base class for data block."""
 
-    header_type: typing.Type[BlockHeaderT]
+    header_type: type[BlockHeaderT]
     length_format: str
     checksum_format: str
 
     def __init__(self, header: BlockHeaderT, data: bytes):
-        """
-        Initialize a block header.
+        """Initialize a block header.
 
         Args:
             header: block header
@@ -79,7 +79,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
         """
         data_length = len(self.data)
 
-        struct_args: typing.Tuple = (
+        struct_args: tuple = (
             self.header.length + data_length,
             self.header.encode(),
             self.data
@@ -88,15 +88,13 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
         if self.checksum_format != "":
             struct_args += (self.checksum, )
 
-        encoded_data = struct.pack(
+        return struct.pack(
             f">{self.length_format}{self.header.length}s{data_length}s{self.checksum_format}",
             *struct_args
         )
 
-        return encoded_data
-
     @classmethod
-    def decode(cls: typing.Type[BlockT], data: bytes) -> typing.Optional[BlockT]:
+    def decode(cls: type[BlockT], data: bytes) -> BlockT | None:
         """Decode byte array hsms packet to HsmsPacket object.
 
         Args:
@@ -117,9 +115,8 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
 
         obj = cls(header, data_fields[2])
 
-        if cls.checksum_format != "":
-            if obj.checksum != data_fields[3]:
-                return None
+        if cls.checksum_format != "" and obj.checksum != data_fields[3]:
+            return None
 
         return obj
 
@@ -128,21 +125,20 @@ class Message(abc.ABC, typing.Generic[BlockT]):
     """Abstract base class for a message."""
 
     block_size = -1
-    block_type: typing.Type[BlockT]
+    block_type: type[BlockT]
 
     def __init__(self, header: BlockHeaderT, data: bytes):
-        """
-        Initialize a Message object.
+        """Initialize a Message object.
 
         Args:
             header: header used for this message
             data: data part used for streams and functions (SType 0)
 
         """
-        self._blocks: typing.List[BlockT] = self._split_blocks(data, header)
+        self._blocks: list[BlockT] = self._split_blocks(data, header)
 
     @classmethod
-    def _split_blocks(cls, data: bytes, header: BlockHeaderT) -> typing.List[BlockT]:
+    def _split_blocks(cls, data: bytes, header: BlockHeaderT) -> list[BlockT]:
         if cls.block_size == -1:
             return [cls.block_type(header, data)]
 
@@ -160,11 +156,11 @@ class Message(abc.ABC, typing.Generic[BlockT]):
         return blocks
 
     @classmethod
-    def from_block(cls: typing.Type[MessageT], block: Block) -> MessageT:
+    def from_block(cls: type[MessageT], block: Block) -> MessageT:
         """Initialize Message object from Block object.
 
         Args:
-            block to initialize from
+            block: block to initialize from
 
         Returns:
             Message object
@@ -191,7 +187,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
         raise NotImplementedError("Message.complete missing implementation")
 
     @property
-    def blocks(self) -> typing.List[BlockT]:
+    def blocks(self) -> list[BlockT]:
         """Get the blocks."""
         return self._blocks
 
@@ -201,5 +197,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
-        return f"{self.__class__.__name__}" \
-               f"({{'header': {self.header.__repr__()}, 'data': '{self.data.decode('utf-8')}'}})"
+        return (
+            f"{self.__class__.__name__}"
+            f"({{'header': {self.header.__repr__()}, 'data': '{self.data.decode('utf-8')}'}})"
+        )

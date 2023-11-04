@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 12 function 16."""
 
+from secsgem.secs.data_items import BINLT, IDTYP, MID, STRP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import STRP
-from secsgem.secs.data_items import BINLT
 
 
 class SecsS12F16(SecsStreamFunction):
-    """
-    map data type 2.
+    """map data type 2.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F16
         {

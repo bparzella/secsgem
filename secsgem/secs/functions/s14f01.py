@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 14 function 01."""
 
+from secsgem.secs.data_items import ATTRDATA, ATTRID, ATTRRELN, OBJID, OBJSPEC, OBJTYPE
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJSPEC
-from secsgem.secs.data_items import OBJTYPE
-from secsgem.secs.data_items import OBJID
-from secsgem.secs.data_items import ATTRID
-from secsgem.secs.data_items import ATTRDATA
-from secsgem.secs.data_items import ATTRRELN
 
 
 class SecsS14F01(SecsStreamFunction):
-    """
-    GetAttr request.
+    """GetAttr request.
 
     Args:
         value: parameters for this function (see example)
 
     Examples:
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F01
         {

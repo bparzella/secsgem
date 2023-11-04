@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SDBIN(DataItemBase):
-    """
-    Send bin information.
+    """Send bin information.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1
