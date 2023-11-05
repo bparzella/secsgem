@@ -229,9 +229,9 @@ class GemHostHandler(GemHandler):
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
-        for report in message.RPT:
+        for report in function.RPT:
             report_dvs = self.report_subscriptions[report.RPTID.get()]
             report_values = report.V.get()
 
@@ -242,8 +242,8 @@ class GemHostHandler(GemHandler):
                                "value": report_values[index],
                                "name": self.get_dvid_name(data_value_id)})
 
-            data = {"ceid": message.CEID, "rptid": report.RPTID, "values": values,
-                    "name": self.get_ceid_name(message.CEID), "handler": self.protocol, "peer": self}
+            data = {"ceid": function.CEID, "rptid": report.RPTID, "values": values,
+                    "name": self.get_ceid_name(function.CEID), "handler": self.protocol, "peer": self}
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)

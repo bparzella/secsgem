@@ -392,14 +392,14 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
+        if len(function) == 0:
             responses = [self._get_sv_value(status_variable) for status_variable in self._status_variables.values()]
         else:
-            for status_variable_id in message:
+            for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.SV, []))
                 else:
@@ -420,18 +420,18 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
+        if len(function) == 0:
             responses = [{
                 "SVID": status_variable.svid,
                 "SVNAME": status_variable.name,
                 "UNITS": status_variable.unit
             } for status_variable in self._status_variables.values()]
         else:
-            for status_variable_id in message:
+            for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
                     responses.append({"SVID": status_variable_id, "SVNAME": "", "UNITS": ""})
                 else:
@@ -503,7 +503,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         # 0  = Accept
         # 1  = Denied. Insufficient space.
@@ -514,7 +514,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         drack = 0
 
         # pre check message for errors
-        for report in message.DATA:
+        for report in function.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
                 drack = 3
             else:
@@ -528,13 +528,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return result
 
         # no data -> remove all reports and links
-        if not message.DATA:
+        if not function.DATA:
             self._registered_collection_events.clear()
             self._registered_reports.clear()
 
             return result
 
-        for report in message.DATA:
+        for report in function.DATA:
             # no vids -> remove this reports and links
             if not report.VID:
                 # remove report from linked collection events
@@ -565,7 +565,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Denied. Insufficient space
@@ -577,7 +577,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         lrack = 0
 
         # pre check message for errors
-        for event in message.DATA:
+        for event in function.DATA:
             if event.CEID.get() not in self._collection_events:
                 lrack = 4
             for rptid in event.RPTID:
@@ -590,7 +590,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         # pre check okay
         if lrack == 0:
-            for event in message.DATA:
+            for event in function.DATA:
                 # no report ids, remove all links for collection event
                 if not event.RPTID:
                     if event.CEID.get() in self._registered_collection_events:
@@ -618,13 +618,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Denied. At least one CEID does not exist
         erack = 0
 
-        if not self._set_ce_state(message.CEED.get(), message.CEID.get()):
+        if not self._set_ce_state(function.CEED.get(), function.CEID.get()):
             erack = 1
 
         return self.stream_function(2, 38)(erack)
@@ -641,9 +641,9 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
-        ceid = message.get()
+        ceid = function.get()
 
         reports = []
 
@@ -801,15 +801,15 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
+        if len(function) == 0:
             responses = [self._get_ec_value(equipment_constant)
                          for equipment_constant in self._equipment_constants.values()]
         else:
-            for equipment_constant_id in message:
+            for equipment_constant_id in function:
                 if equipment_constant_id not in self._equipment_constants:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
                 else:
@@ -830,11 +830,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         eac = 0
 
-        for equipment_constant in message:
+        for equipment_constant in function:
             if equipment_constant.ECID not in self._equipment_constants:
                 eac = 1
             else:
@@ -847,7 +847,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                     eac = 3
 
         if eac == 0:
-            for equipment_constant in message:
+            for equipment_constant in function:
                 self._set_ec_value(self._equipment_constants[equipment_constant.ECID], equipment_constant.ECV.get())
 
         return self.stream_function(2, 16)(eac)
@@ -864,11 +864,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
+        if len(function) == 0:
             responses = [{
                 "ECID": eq_constant.ecid,
                 "ECNAME": eq_constant.name,
@@ -878,7 +878,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                 "UNITS": eq_constant.unit
             } for eq_constant in self._equipment_constants.values()]
         else:
-            for ecid in message:
+            for ecid in function:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
@@ -960,17 +960,17 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
         # 0  = Accepted
         # 1  = Error
         result = secsgem.secs.data_items.ACKC5.ACCEPTED
 
-        alid = message.ALID.get()
+        alid = function.ALID.get()
         if alid not in self._alarms:
             result = secsgem.secs.data_items.ACKC5.ERROR
         else:
-            self.alarms[alid].enabled = message.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
+            self.alarms[alid].enabled = function.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
 
         return self.stream_function(5, 4)(result)
 
@@ -986,9 +986,9 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
-        alids = message.get()
+        alids = function.get()
 
         if len(alids) == 0:
             alids = list(self.alarms.keys())
@@ -1049,9 +1049,9 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         del handler  # unused parameters
 
-        message = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.decode(message)
 
-        rcmd_name = message.RCMD.get()
+        rcmd_name = function.RCMD.get()
         rcmd_callback_name = "rcmd_" + rcmd_name
 
         if rcmd_name not in self._remote_commands:
@@ -1062,7 +1062,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             self._logger.warning("callback for remote command %s not available", rcmd_name)
             return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
-        for param in message.PARAMS:
+        for param in function.PARAMS:
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
                 self._logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.PARAMETER_INVALID,
@@ -1070,12 +1070,12 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self.send_response(self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.ACK_FINISH_LATER,
                                                         "PARAMS": []}),
-                           message.header.system)
+                           function.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
 
         kwargs = {}
-        for param in message.PARAMS.get():
+        for param in function.PARAMS.get():
             kwargs[param["CPNAME"]] = param["CPVAL"]
 
         callback(**kwargs)
