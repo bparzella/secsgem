@@ -19,6 +19,7 @@ from __future__ import annotations
 import abc
 import enum
 import typing
+from typing import Any
 
 from .timeouts import Timeouts
 
@@ -40,11 +41,12 @@ class DeviceType(enum.Enum):
 class Setting:
     """Setting descriptor."""
 
-    def __init__(self,
+    def __init__(self,  # pylint: disable=too-many-arguments
                  name: str,
                  default_value: typing.Any,
                  help_text: str,
-                 default_class: type | None = None) -> None:
+                 default_class: type | None = None,
+                 writeable: bool = False) -> None:
         """Initialize setting descriptor.
 
         Args:
@@ -52,12 +54,14 @@ class Setting:
             default_value: setting default value
             help_text: text to output in documentation
             default_class: if set, setting will be instanciated with this class and kwargs
+            writeable: setting can be updated
 
         """
         self._name = name
         self._default_value = default_value
         self._help_text = help_text
         self._default_class = default_class
+        self._writeable = writeable
 
     @property
     def name(self) -> str:
@@ -78,6 +82,11 @@ class Setting:
     def default_class(self) -> type | None:
         """Class to initialize with kwargs as default."""
         return self._default_class
+
+    @property
+    def writeable(self) -> type | None:
+        """Setting can be updated."""
+        return self.writeable
 
 
 class Settings(abc.ABC):
@@ -101,6 +110,7 @@ class Settings(abc.ABC):
             Setting("device_type", DeviceType.HOST, "Device type"),
             Setting("streams_functions", None, "Container with streams/functions"),
             Setting("session_id", 0, "session / device ID to use for connection"),
+            Setting("establish_communication_timeout", 10, "Time to wait between CA requests", writeable=True)
         ]
 
     @classmethod
@@ -123,7 +133,7 @@ class Settings(abc.ABC):
         Pass parameter values as keyword arguments.
 
         """
-        self._data = {}
+        super().__setattr__("_data", {})
 
         for attribute in self._attributes():
             if attribute.default_class is not None:
@@ -181,6 +191,32 @@ class Settings(abc.ABC):
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
 
         return self._data[name]
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        """Update an attribute.
+
+        This can only be called if the attribute is writeable.
+
+        Args:
+            name: attribute name
+            value: new attribute value
+
+        """
+        if name not in self._data:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
+        attribute = [attribute for attribute in self._attributes() if attribute.name == name]
+
+        if len(attribute) < 1:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
+        if len(attribute) > 1:
+            raise AttributeError(f"'{self.__class__.__name__}' object has attribute '{name}' multiple times")
+
+        if not attribute[0].writeable:
+            raise AttributeError(f"Attribute '{self.__class__.__name__}.{name}' is not writeable")
+
+        self._data[name] = value
 
 
 class ExistingProtocolSettings(Settings):
