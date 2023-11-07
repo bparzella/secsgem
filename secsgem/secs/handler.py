@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,6 @@
 #####################################################################
 """Handler for SECS commands. Used in combination with :class:`secsgem.hsms.HsmsConnectionManager`."""
 import logging
-import threading
 import typing
 
 import secsgem.common
@@ -268,9 +267,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         message = data["message"]
 
         # check if callbacks available for this stream and function
-        threading.Thread(
-            target=self._handle_stream_function, args=(message, ),
-            name=f"secsgem_secsHandler_callback_S{message.header.stream}F{message.header.function}").start()
+        self._handle_stream_function(message)
 
     def disable_ceids(self):
         """Disable all Collection Events."""

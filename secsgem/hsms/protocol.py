@@ -1,7 +1,7 @@
 #####################################################################
 # protocol.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@ import typing
 
 import secsgem.common
 
-from .connectionstatemachine import ConnectionStateMachine
+from .connection_state_machine import ConnectionState, ConnectionStateMachine
 from .deselect_req_header import HsmsDeselectReqHeader
 from .deselect_rsp_header import HsmsDeselectRspHeader
 from .header import HsmsSType
@@ -90,12 +90,14 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._linktest_timeout = 30
 
         # select request thread for active connections, to avoid blocking state changes
-        self._select_req_thread = None
+        self._select_req_thread: threading.Thread | None = None
 
         # hsms connection state fsm
-        self._connection_state = ConnectionStateMachine({"on_enter_CONNECTED": self._on_state_connect,
-                                                         "on_exit_CONNECTED": self._on_state_disconnect,
-                                                         "on_enter_CONNECTED_SELECTED": self._on_state_select})
+        self._connection_state = ConnectionStateMachine()
+
+        self._connection_state.connected.events.enter.register(self._on_state_connect)
+        self._connection_state.connected.events.leave.register(self._on_state_disconnect)
+        self._connection_state.connected_selected.events.enter.register(self._on_state_select)
 
     @property
     def connection_state(self) -> ConnectionStateMachine:
@@ -116,7 +118,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._linktest_timer.name = "secsgem_hsmsProtocol_linktestTimer"
         self._linktest_timer.start()
 
-    def _on_state_connect(self):
+    def _on_state_connect(self, _: dict[str, typing.Any]):
         """Handle connection state model got event connect.
 
         :param data: event attributes
@@ -133,7 +135,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             self._select_req_thread.daemon = True  # kill thread automatically on main program termination
             self._select_req_thread.start()
 
-    def _on_state_disconnect(self):
+    def _on_state_disconnect(self, _: dict[str, typing.Any]):
         """Handle connection state model got event disconnect.
 
         :param data: event attributes
@@ -145,7 +147,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
         self._linktest_timer = None
 
-    def _on_state_select(self):
+    def _on_state_select(self, _: dict[str, typing.Any]):
         """Handle connection state model got event select.
 
         :param data: event attributes
@@ -271,7 +273,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             decoded_message = self._settings.streams_functions.decode(message)
             self._communication_logger.info("< %s\n%s", message, decoded_message, extra=self._get_log_extra())
 
-            if not self._connection_state.is_CONNECTED_SELECTED():
+            if self._connection_state.current != ConnectionState.CONNECTED_SELECTED:
                 self._logger.warning("received message when not selected")
 
                 out_message = HsmsMessage(HsmsRejectReqHeader(message.header.system, message.header.s_type, 4), b"")

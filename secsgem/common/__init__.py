@@ -1,7 +1,7 @@
 #####################################################################
 # __init__.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -20,13 +20,13 @@ from .byte_queue import ByteQueue
 from .callbacks import CallbackHandler
 from .connection import Connection
 from .events import EventProducer
-from .fysom import Fysom
 from .header import Header
 from .helpers import format_hex, function_name, indent_block, is_errorcode_ewouldblock, is_windows
 from .message import Block, Message
 from .protocol import Protocol
 from .protocol_dispatcher import ProtocolDispatcher
 from .settings import DeviceType, Settings
+from .state_machine import State, StateMachine, Transition, UnknownTransitionError, WrongSourceStateError
 from .timeouts import Timeouts
 
 __all__ = [
@@ -35,12 +35,12 @@ __all__ = [
     "CallbackHandler",
     "Connection",
     "EventProducer",
-    "Fysom",
     "Header",
     "format_hex", "function_name", "indent_block", "is_windows", "is_errorcode_ewouldblock",
     "Message", "Block",
     "Protocol",
     "ProtocolDispatcher",
     "Settings", "DeviceType",
+    "State", "StateMachine", "Transition", "UnknownTransitionError", "WrongSourceStateError",
     "Timeouts",
 ]

@@ -1,7 +1,7 @@
 #####################################################################
 # equipmenthandler.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -28,6 +28,8 @@ from .alarm import Alarm
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
+from .communication_state_machine import CommunicationState
+from .control_state_machine import ControlState, ControlStateMachine
 from .data_value import DataValue
 from .equipment_constant import EquipmentConstant
 from .handler import GemHandler
@@ -73,12 +75,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self._is_host = False
 
-        self._initial_control_states = ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-        self._initial_control_state = initial_control_state
-
-        self._online_control_states = ["LOCAL", "REMOTE"]
-        self._online_control_state = initial_online_control_state
-
         self._time_format = 1
 
         self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {
@@ -118,72 +114,42 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self._registered_reports: typing.Dict[typing.Union[int, str], CollectionEventReport] = {}
         self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
 
-        self._control_state = secsgem.common.Fysom({
-            "initial": "INIT",
-            "events": [
-                {"name": "start", "src": "INIT", "dst": "CONTROL"},  # 1
-                {"name": "initial_offline", "src": "CONTROL", "dst": "OFFLINE"},  # 1
-                {"name": "initial_equipment_offline", "src": "OFFLINE", "dst": "EQUIPMENT_OFFLINE"},  # 2
-                {"name": "initial_attempt_online", "src": "OFFLINE", "dst": "ATTEMPT_ONLINE"},  # 2
-                {"name": "initial_host_offline", "src": "OFFLINE", "dst": "HOST_OFFLINE"},  # 2
-                {"name": "switch_online", "src": "EQUIPMENT_OFFLINE", "dst": "ATTEMPT_ONLINE"},  # 3
-                {"name": "attempt_online_fail_equipment_offline", "src": "ATTEMPT_ONLINE",
-                 "dst": "EQUIPMENT_OFFLINE"},  # 4
-                {"name": "attempt_online_fail_host_offline", "src": "ATTEMPT_ONLINE", "dst": "HOST_OFFLINE"},  # 4
-                {"name": "attempt_online_success", "src": "ATTEMPT_ONLINE", "dst": "ONLINE"},  # 5
-                {"name": "switch_offline", "src": ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 "dst": "EQUIPMENT_OFFLINE"},  # 6, 12
-                {"name": "initial_online", "src": "CONTROL", "dst": "ONLINE"},  # 1
-                {"name": "initial_online_local", "src": "ONLINE", "dst": "ONLINE_LOCAL"},  # 7
-                {"name": "initial_online_remote", "src": "ONLINE", "dst": "ONLINE_REMOTE"},  # 7
-                {"name": "switch_online_local", "src": "ONLINE_REMOTE", "dst": "ONLINE_LOCAL"},  # 8
-                {"name": "switch_online_remote", "src": "ONLINE_LOCAL", "dst": "ONLINE_REMOTE"},  # 9
-                {"name": "remote_offline", "src": ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 "dst": "HOST_OFFLINE"},  # 10
-                {"name": "remote_online", "src": "HOST_OFFLINE", "dst": "ONLINE"},  # 11
-            ],
-            "callbacks": {
-                "onCONTROL": self._on_control_state_control,  # 1, forward online/offline depending on configuration
-                "onOFFLINE": self._on_control_state_offline,  # 2, forward to configured offline state
-                "onATTEMPT_ONLINE": self._on_control_state_attempt_online,  # 3, send S01E01
-                "onONLINE": self._on_control_state_online,  # 7, forward to configured online state
-                "oninitial_online_local": self._on_control_state_initial_online_local,  # 7, send collection event
-                "onswitch_online_local": self._on_control_state_initial_online_local,  # 8, send collection event
-                "oninitial_online_remote": self._on_control_state_initial_online_remote,  # 8, send collection event
-                "onswitch_online_remote": self._on_control_state_initial_online_remote,  # 9, send collection event
-            },
-            "autoforward": [
-                # {'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
-                # {'src': 'EQUIPMENT_INITIATED_CONNECT', 'dst': 'WAIT_CRA'},  # 5
-                # {'src': 'HOST_INITIATED_CONNECT', 'dst': 'WAIT_CR_FROM_HOST'},  # 10
-            ]
-        })
+        self._control_state = ControlStateMachine(initial_control_state, initial_online_control_state)
+
+        # 3, send S01E01
+        self._control_state.attempt_online.events.enter.register(self._on_control_state_attempt_online)
+
+        # 7, send collection event
+        self._control_state.transition("initial_online_local").events.called.register(
+            self._on_control_state_initial_online_local
+        )
+
+        # 8, send collection event
+        self._control_state.transition("switch_online_local").events.called.register(
+            self._on_control_state_initial_online_local
+        )
+
+        # 8, send collection event
+        self._control_state.transition("initial_online_remote").events.called.register(
+            self._on_control_state_initial_online_remote
+        )
+
+        # 9, send collection event
+        self._control_state.transition("switch_online_remote").events.called.register(
+            self._on_control_state_initial_online_remote
+        )
 
         self._control_state.start()
 
     @property
-    def control_state(self) -> secsgem.common.Fysom:
+    def control_state(self) -> ControlStateMachine:
         """Get control state."""
         return self._control_state
 
     # control state model
 
-    def _on_control_state_control(self, _):
-        if self._initial_control_state == "ONLINE":
-            self._control_state.initial_online()
-        else:
-            self._control_state.initial_offline()
-
-    def _on_control_state_offline(self, _):
-        if self._initial_control_state == "EQUIPMENT_OFFLINE":
-            self._control_state.initial_equipment_offline()
-        elif self._initial_control_state == "ATTEMPT_ONLINE":
-            self._control_state.initial_attempt_online()
-        elif self._initial_control_state == "HOST_OFFLINE":
-            self._control_state.initial_host_offline()
-
     def _on_control_state_attempt_online(self, _):
-        if not self._communication_state.isstate("COMMUNICATING"):
+        if self._communication_state.current != CommunicationState.COMMUNICATING:
             self._control_state.attempt_online_fail_host_offline()
             return
 
@@ -198,12 +164,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return
 
         self._control_state.attempt_online_success()
-
-    def _on_control_state_online(self, _):
-        if self._online_control_state == "REMOTE":
-            self._control_state.initial_online_remote()
-        else:
-            self._control_state.initial_online_local()
 
     def _on_control_state_initial_online_local(self, _):
         self.trigger_collection_events([CEID_CONTROL_STATE_LOCAL])
@@ -223,12 +183,10 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def control_switch_online_local(self):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_local()
-        self._online_control_state = "LOCAL"
 
     def control_switch_online_remote(self):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_remote()
-        self._online_control_state = "REMOTE"
 
     def _on_s01f15(self,
                    handler: secsgem.secs.SecsHandler,
@@ -264,7 +222,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         onlack = 1
 
-        if self._control_state.isstate("HOST_OFFLINE"):
+        if self._control_state.current == ControlState.HOST_OFFLINE:
             self._control_state.remote_online()
             onlack = 0
         elif self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
@@ -763,7 +721,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            return equipment_constant.value_type(self._establish_communication_timeout)
+            return equipment_constant.value_type(self.settings.establish_communication_timeout)
         if equipment_constant.ecid == ECID_TIME_FORMAT:
             return equipment_constant.value_type(self._time_format)
 
@@ -780,7 +738,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            self._establish_communication_timeout = int(value)
+            self.settings.establish_communication_timeout = int(value)
         if equipment_constant.ecid == ECID_TIME_FORMAT:
             self._time_format = int(value)
 
@@ -1113,15 +1071,15 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         :returns: control state
         :rtype: integer
         """
-        if self._control_state.isstate("EQUIPMENT_OFFLINE"):
+        if self._control_state.current == ControlState.EQUIPMENT_OFFLINE:
             return 1
-        if self._control_state.isstate("ATTEMPT_ONLINE"):
+        if self._control_state.current == ControlState.ATTEMPT_ONLINE:
             return 2
-        if self._control_state.isstate("HOST_OFFLINE"):
+        if self._control_state.current == ControlState.HOST_OFFLINE:
             return 3
-        if self._control_state.isstate("ONLINE_LOCAL"):
+        if self._control_state.current == ControlState.ONLINE_LOCAL:
             return 4
-        if self._control_state.isstate("ONLINE_REMOTE"):
+        if self._control_state.current == ControlState.ONLINE_REMOTE:
             return 5
 
         return -1

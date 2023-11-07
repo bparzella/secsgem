@@ -1,7 +1,7 @@
 #####################################################################
 # event.py
 #
-# (c) Copyright 2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2016-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains helper functions."""
+from __future__ import annotations
+
 import typing
 
 
@@ -22,9 +24,9 @@ class Event:
 
     def __init__(self) -> None:
         """Initialize the event class."""
-        self._callbacks: typing.List[typing.Callable[[typing.Dict[str, typing.Any]], None]] = []
+        self._callbacks: list[typing.Callable[[dict[str, typing.Any]], None]] = []
 
-    def register(self, callback: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> None:
+    def register(self, callback: typing.Callable[[dict[str, typing.Any]], None]) -> None:
         """Add a new callback to event.
 
         Args:
@@ -33,7 +35,7 @@ class Event:
         """
         self._callbacks.append(callback)
 
-    def __iadd__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
+    def __iadd__(self, other: typing.Callable[[dict[str, typing.Any]], None]) -> Event:
         """Add a new callback to event.
 
         Args:
@@ -46,7 +48,7 @@ class Event:
         self.register(other)
         return self
 
-    def unregister(self, callback: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> None:
+    def unregister(self, callback: typing.Callable[[dict[str, typing.Any]], None]) -> None:
         """Remove a callback from the event.
 
         Args:
@@ -55,7 +57,7 @@ class Event:
         """
         self._callbacks.remove(callback)
 
-    def __isub__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
+    def __isub__(self, other: typing.Callable[[dict[str, typing.Any]], None]) -> Event:
         """Remove a callback from event.
 
         Args:
@@ -68,7 +70,7 @@ class Event:
         self.unregister(other)
         return self
 
-    def __call__(self, data: typing.Dict[str, typing.Any]):
+    def __call__(self, data: dict[str, typing.Any]):
         """Raise the event and call all callbacks."""
         for callback in self._callbacks:
             callback(data)
@@ -87,14 +89,14 @@ class Targets:
 
     def __init__(self) -> None:
         """Initialize the target class."""
-        self._targets: typing.List[object] = []
+        self._targets: list[object] = []
 
-    def __iadd__(self, other: object) -> "Targets":
+    def __iadd__(self, other: object) -> Targets:
         """Add a targets."""
         self._targets.append(other)
         return self
 
-    def __isub__(self, other: object) -> "Targets":
+    def __isub__(self, other: object) -> Targets:
         """Remove a target."""
         self._targets.remove(other)
         return self
@@ -128,7 +130,7 @@ class EventProducer:
     def __init__(self) -> None:
         """Initialize the event producer class."""
         self._targets = Targets()
-        self._events: typing.Dict[str, Event] = {}
+        self._events: dict[str, Event] = {}
 
     def __getattr__(self, name: str) -> Event:
         """Get an event as member of the EventProducer object."""
@@ -137,7 +139,7 @@ class EventProducer:
 
         return self._events[name]
 
-    def __iadd__(self, other) -> "EventProducer":
+    def __iadd__(self, other) -> EventProducer:
         """Add a the callbacks and targets of another EventProducer to this one."""
         for event_name in other._events:
             if event_name not in self._events:
@@ -150,7 +152,7 @@ class EventProducer:
             self._targets += target
         return self
 
-    def fire(self, event: str, data: typing.Dict[str, typing.Any]):
+    def fire(self, event: str, data: dict[str, typing.Any]):
         """Fire a event.
 
         calls all the available handlers for a specific event
