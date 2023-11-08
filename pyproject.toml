@@ -69,7 +69,8 @@ extend-exclude = [
     "tests",
     "data",
     "docs",
-    "samples"
+    "samples",
+    ".venv",
 ]
 
 [tool.ruff.lint]
@@ -147,6 +148,7 @@ ignore-paths = [
     "data",
     "docs",
     "samples",
+    ".venv",
 ]
 
 [tool.mypy]
@@ -156,4 +158,5 @@ exclude = [
     "data",
     "docs",
     "samples",
+    ".venv",
 ]
