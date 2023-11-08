@@ -1042,10 +1042,10 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return None
 
-    def _on_rcmd_START(self):  # noqa: N802
+    def _on_rcmd_START(self):  # noqa: N802 pylint: disable=invalid-name
         self._logger.warning("remote command START not implemented, this is required for GEM compliance")
 
-    def _on_rcmd_STOP(self):  # noqa: N802
+    def _on_rcmd_STOP(self):  # noqa: N802 pylint: disable=invalid-name
         self._logger.warning("remote command STOP not implemented, this is required for GEM compliance")
 
     # helpers
