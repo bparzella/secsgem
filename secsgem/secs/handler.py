@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Handler for SECS commands. Used in combination with :class:`secsgem.hsms.HsmsConnectionManager`."""
+"""Handler for SECS commands."""
 import logging
 import typing
 
@@ -372,7 +372,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         message = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
 
-        return self.secs_decode(message).get()
+        return self.settings.streams_functions.decode(message).get()
 
     def set_ec(self, ec_id, value):
         """Set contents of one Equipment Constant.

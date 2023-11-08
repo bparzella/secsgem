@@ -54,5 +54,3 @@ You create a new class inherited from it and update the function list of that cl
             })
 
 You can also add new methods and properties to the class if required.
-
-This new class can be used with the :class:`secsgem.hsms.connectionmanager.HsmsConnectionManager` (see parameter connection_handler of :func:`secsgem.hsms.connectionmanager.HsmsConnectionManager.add_peer`)

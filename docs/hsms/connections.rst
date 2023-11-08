@@ -7,8 +7,7 @@ The active connection is the one making the connection, the passive one is waiti
 The implementation for the active connection is :class:`secsgem.hsms.connections.HsmsActiveConnection`.
 For the passive connection there are two implementations:
 
-* :class:`secsgem.hsms.connections.HsmsPassiveConnection` handles only one connection at a time.
-* :class:`secsgem.hsms.connections.HsmsMultiPassiveConnection` together with :class:`secsgem.hsms.connections.HsmsMultiPassiveServer` handle multiple connections from different peers.
+* :class:`secsgem.hsms.connections.HsmsPassiveConnection` handles one connection at a time.
 
 All connection classes are based on the :class:`secsgem.hsms.connections.HsmsConnection` class, which provides common functionality for all connection types.
 
@@ -77,40 +76,3 @@ Example::
     Connection terminated
     >>> conn.disable()
 
-Multi-passive connection
-------------------------
-
-In this mode one listening port handles the incoming connections for more than one peer.
-A instance of :class:`secsgem.hsms.connections.HsmsMultiPassiveServer` is created and connection is created using its :func:`secsgem.hsms.connections.HsmsMultiPassiveServer.create_connection` method.
-The parameters of the method are the same as for the `Passive connection`_. For every available peer a connection must be created using this method.
-
-Example::
-
-    >>> delegate = DelegateSample()
-    >>> server = secsgem.HsmsMultiPassiveServer(5000)
-    >>> conn = server.create_connection('10.211.55.33', 5000, 0, delegate)
-    >>> conn.enable()
-    >>> server.start()
-    Connection established
-    Packet received header: {session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, require_response:0}
-    Packet received header: {session_id:0x0000, stream:00, function:03, p_type:0x00, s_type:0x07, system:0x00000000, require_response:0}
-    Connection about to be terminated
-    Connection terminated
-    >>> conn.disable()
-    >>> server.stop()
-
-Connection manager
-------------------
-
-The :class:`secsgem.hsms.connectionmanager.HsmsConnectionManager` can be used to manage multiple active and passive connections.
-It creates and removes :class:`secsgem.hsms.connections.HsmsActiveConnection` and :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`/:class:`secsgem.hsms.connections.HsmsMultiPassiveConnection` dynamically.
-
-    >>> manager=secsgem.HsmsConnectionManager()
-    >>> handler=manager.add_peer("connection", '10.211.55.33', 5000, False, 0)
-    >>> handler.enable()
-    >>> handler.send_linktest_req()
-    secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 13, 'session_id': 65535, 'require_response': False, 's_type': 6}), 'data': ''})
-    >>> handler.disable()
-    >>> manager.stop()
-
-Connection manager works with :doc:`handlers <handler>` which take care of a lot of the required communication on the matching level (:class:`secsgem.hsms.protocol.HsmsProtocol`, :class:`secsgem.secs.handler.SecsHandler` and :class:`secsgem.gem.handler.GemHandler`).

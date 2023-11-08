@@ -17,7 +17,6 @@
 
 from secsgem.common.settings import DeviceType
 
-from .connectionmanager import HsmsConnectionManager
 from .deselect_req_header import HsmsDeselectReqHeader
 from .deselect_rsp_header import HsmsDeselectRspHeader
 from .header import HsmsHeader
@@ -32,10 +31,11 @@ from .separate_req_header import HsmsSeparateReqHeader
 from .settings import HsmsConnectMode, HsmsSettings
 from .stream_function_header import HsmsStreamFunctionHeader
 
-__all__ = ["HsmsConnectionManager",
-           "HsmsProtocol",
-           "HsmsMessage",
-           "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
-           "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
-           "HsmsSelectReqHeader", "HsmsHeader",
-           "HsmsSettings", "HsmsConnectMode", "DeviceType"]
+__all__ = [
+    "HsmsProtocol",
+    "HsmsMessage",
+    "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
+    "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
+    "HsmsSelectReqHeader", "HsmsHeader",
+    "HsmsSettings", "HsmsConnectMode", "DeviceType"
+]
