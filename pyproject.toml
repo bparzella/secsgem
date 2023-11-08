@@ -94,7 +94,7 @@ extend-select = [
   "C4",  # flake8 - comprehensions
   "DTZ",  # flake8 - datetimez
 #  "EM",  # flake8 - errmsg
-#  "FA",  # flake8 - future annotations
+  "FA",  # flake8 - future annotations
   "ISC",  # flake8 - implicit str concat
   "ICN",  # flake8 - import conventions
   "G",  # flake8 - logging format

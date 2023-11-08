@@ -14,8 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM host."""
+from __future__ import annotations
+
 import collections
-import typing
 
 import secsgem.common
 import secsgem.secs
@@ -37,7 +38,7 @@ class GemHostHandler(GemHandler):
 
         self.is_host = True
 
-        self.report_subscriptions: typing.Dict[typing.Union[int, str], typing.List[typing.Union[int, str]]] = {}
+        self.report_subscriptions: dict[int | str, list[int | str]] = {}
 
     def clear_collection_events(self) -> None:
         """Clear all collection events."""
@@ -53,9 +54,9 @@ class GemHostHandler(GemHandler):
         self.disable_ceid_reports()
 
     def subscribe_collection_event(self,
-                                   ceid: typing.Union[int, str],
-                                   dvs: typing.List[typing.Union[int, str]],
-                                   report_id: typing.Optional[typing.Union[int, str]] = None):
+                                   ceid: int | str,
+                                   dvs: list[int | str],
+                                   report_id: int | str | None = None):
         """Subscribe to a collection event.
 
         :param ceid: ID of the collection event
@@ -86,8 +87,8 @@ class GemHostHandler(GemHandler):
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
     def send_remote_command(self,
-                            rcmd: typing.Union[int, str],
-                            params: typing.List[str]):
+                            rcmd: int | str,
+                            params: list[str]):
         """Send a remote command.
 
         :param rcmd: Name of command
@@ -110,7 +111,7 @@ class GemHostHandler(GemHandler):
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(s2f41))
 
     def delete_process_programs(self,
-                                ppids: typing.List[typing.Union[int, str]]):
+                                ppids: list[int | str]):
         """Delete a list of process program.
 
         :param ppids: Process programs to delete
@@ -130,7 +131,7 @@ class GemHostHandler(GemHandler):
         return self.settings.streams_functions.decode(
             self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
 
-    def go_online(self) -> typing.Optional[str]:
+    def go_online(self) -> str | None:
         """Set control state to online."""
         self._logger.info("Go online")
 
@@ -141,7 +142,7 @@ class GemHostHandler(GemHandler):
 
         return resp.get()
 
-    def go_offline(self) -> typing.Optional[str]:
+    def go_offline(self) -> str | None:
         """Set control state to offline."""
         self._logger.info("Go offline")
 
@@ -149,7 +150,7 @@ class GemHostHandler(GemHandler):
         return self.settings.streams_functions.decode(
             self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
 
-    def enable_alarm(self, alid: typing.Union[int, str]):
+    def enable_alarm(self, alid: int | str):
         """Enable alarm.
 
         :param alid: alarm id to enable
@@ -160,7 +161,7 @@ class GemHostHandler(GemHandler):
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
             {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
 
-    def disable_alarm(self, alid: typing.Union[int, str]):
+    def disable_alarm(self, alid: int | str):
         """Disable alarm.
 
         :param alid: alarm id to disable
@@ -172,7 +173,7 @@ class GemHostHandler(GemHandler):
             {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
 
     def list_alarms(self,
-                    alids: typing.Optional[typing.List[typing.Union[int, str]]] = None):
+                    alids: list[int | str] | None = None):
         """List alarms.
 
         :param alids: alarms to list details for
@@ -200,7 +201,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s05f01(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 1, Alarm request.
 
         Args:
@@ -219,7 +220,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s06f11(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 6, Function 11, Establish Communication Request.
 
         Args:
@@ -254,7 +255,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s10f01(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 10, Function 1, Terminal Request.
 
         Args:

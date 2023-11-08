@@ -15,6 +15,8 @@
 #####################################################################
 # pylint: disable=too-many-lines
 """Handler for GEM equipment."""
+from __future__ import annotations
+
 import typing
 from datetime import datetime
 
@@ -24,17 +26,19 @@ import secsgem.common
 import secsgem.secs.data_items
 import secsgem.secs.variables
 
-from .alarm import Alarm
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
 from .communication_state_machine import CommunicationState
 from .control_state_machine import ControlState, ControlStateMachine
-from .data_value import DataValue
 from .equipment_constant import EquipmentConstant
 from .handler import GemHandler
 from .remote_command import RemoteCommand
 from .status_variable import StatusVariable
+
+if typing.TYPE_CHECKING:
+    from .alarm import Alarm
+    from .data_value import DataValue
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
@@ -77,10 +81,10 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self._time_format = 1
 
-        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {
+        self._data_values: dict[int | str, DataValue] = {
         }
 
-        self._status_variables: typing.Dict[typing.Union[int, str], StatusVariable] = {
+        self._status_variables: dict[int | str, StatusVariable] = {
             SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", secsgem.secs.variables.String),
             SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", secsgem.secs.variables.Binary),
             SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.variables.Array),
@@ -88,7 +92,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", secsgem.secs.variables.Array),
         }
 
-        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {
+        self._collection_events: dict[int | str, CollectionEvent] = {
             CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
             CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
             CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
@@ -96,23 +100,23 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             CEID_CMD_STOP_DONE: CollectionEvent(CEID_CMD_STOP_DONE, "CmdStopDone", []),
         }
 
-        self._equipment_constants: typing.Dict[typing.Union[int, str], EquipmentConstant] = {
+        self._equipment_constants: dict[int | str, EquipmentConstant] = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
                                                                      "sec", secsgem.secs.variables.I2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4),
         }
 
-        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {
+        self._alarms: dict[int | str, Alarm] = {
         }
 
-        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {
+        self._remote_commands: dict[int | str, RemoteCommand] = {
             RCMD_START: RemoteCommand(RCMD_START, "Start", [], CEID_CMD_START_DONE),
             RCMD_STOP: RemoteCommand(RCMD_STOP, "Stop", [], CEID_CMD_STOP_DONE),
         }
 
-        self._registered_reports: typing.Dict[typing.Union[int, str], CollectionEventReport] = {}
-        self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
+        self._registered_reports: dict[int | str, CollectionEventReport] = {}
+        self._registered_collection_events: dict[int | str, CollectionEventLink] = {}
 
         self._control_state = ControlStateMachine(initial_control_state, initial_online_control_state)
 
@@ -190,7 +194,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 15, Request offline.
 
         Args:
@@ -210,7 +214,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 17, Request online.
 
         Args:
@@ -235,7 +239,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # data values
 
     @property
-    def data_values(self) -> typing.Dict[typing.Union[int, str], DataValue]:
+    def data_values(self) -> dict[int | str, DataValue]:
         """Get list of the data values.
 
         Returns:
@@ -281,7 +285,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # status variables
 
     @property
-    def status_variables(self) -> typing.Dict[typing.Union[int, str], StatusVariable]:
+    def status_variables(self) -> dict[int | str, StatusVariable]:
         """Get list of the status variables.
 
         Returns:
@@ -342,7 +346,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 3, Equipment status request.
 
         Args:
@@ -370,7 +374,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f11(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 11, SV namelist request.
 
         Args:
@@ -405,7 +409,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # collection events
 
     @property
-    def collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEvent]:
+    def collection_events(self) -> dict[int | str, CollectionEvent]:
         """Get list of the collection events.
 
         Returns:
@@ -415,7 +419,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return self._collection_events
 
     @property
-    def registered_reports(self) -> typing.Dict[typing.Union[int, str], CollectionEventReport]:
+    def registered_reports(self) -> dict[int | str, CollectionEventReport]:
         """Get list of the subscribed reports.
 
         Returns:
@@ -425,7 +429,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return self._registered_reports
 
     @property
-    def registered_collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEventLink]:
+    def registered_collection_events(self) -> dict[int | str, CollectionEventLink]:
         """Get list of the subscribed collection events.
 
         Returns:
@@ -434,7 +438,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         return self._registered_collection_events
 
-    def trigger_collection_events(self, ceids: typing.List[typing.Union[int, str]]):
+    def trigger_collection_events(self, ceids: list[int | str]):
         """Triggers the supplied collection events.
 
         Args:
@@ -453,7 +457,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 33, Define Report.
 
         Args:
@@ -509,7 +513,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f35(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 35, Link event report.
 
         Args:
@@ -555,7 +559,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         Args:
@@ -576,7 +580,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 6, Function 15, event report request.
 
         Args:
@@ -597,7 +601,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
-    def _set_ce_state(self, ceed: bool, ceids: typing.List[typing.Union[int, str]]) -> bool:
+    def _set_ce_state(self, ceed: bool, ceids: list[int | str]) -> bool:
         """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
 
         Args:
@@ -621,7 +625,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return result
 
-    def _build_collection_event(self, ceid: typing.Union[int, str]):
+    def _build_collection_event(self, ceid: int | str):
         """Build reports for a collection event.
 
         Args:
@@ -651,7 +655,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # equipment constants
 
     @property
-    def equipment_constants(self) -> typing.Dict[typing.Union[int, str], EquipmentConstant]:
+    def equipment_constants(self) -> dict[int | str, EquipmentConstant]:
         """The list of the equipments contstants.
 
         Returns:
@@ -682,7 +686,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def on_ec_value_update(self,
                            equipment_constant_id: secsgem.secs.variables.Base,
                            equipment_constant: EquipmentConstant,
-                           value: typing.Union[int, float]):
+                           value: int | float):
         """Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
@@ -716,7 +720,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return self.on_ec_value_request(equipment_constant.id_type(equipment_constant.ecid), equipment_constant)
         return equipment_constant.value_type(equipment_constant.value)
 
-    def _set_ec_value(self, equipment_constant: EquipmentConstant, value: typing.Union[int, float]):
+    def _set_ec_value(self, equipment_constant: EquipmentConstant, value: int | float):
         """Get the equipment constant value depending on its configuation.
 
         Args:
@@ -736,7 +740,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 13, Equipment constant request.
 
         Args:
@@ -765,7 +769,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 15, Equipment constant send.
 
         Args:
@@ -799,7 +803,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f29(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 29, EC namelist request.
 
         Args:
@@ -838,7 +842,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # alarms
 
     @property
-    def alarms(self) -> typing.Dict[typing.Union[int, str], Alarm]:
+    def alarms(self) -> dict[int | str, Alarm]:
         """Get the list of the alarms.
 
         Returns:
@@ -847,7 +851,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         """
         return self._alarms
 
-    def set_alarm(self, alid: typing.Union[int, str]):
+    def set_alarm(self, alid: int | str):
         """Set the list of the alarms.
 
         Args:
@@ -872,7 +876,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self.trigger_collection_events([self.alarms[alid].ce_on])
 
-    def clear_alarm(self, alid: typing.Union[int, str]):
+    def clear_alarm(self, alid: int | str):
         """Clear the list of the alarms.
 
         Args:
@@ -895,7 +899,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f03(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 3, Alarm en-/disabled.
 
         Args:
@@ -919,7 +923,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f05(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 5, Alarm list.
 
         Args:
@@ -946,7 +950,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s05f07(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 7, Enabled alarm list.
 
         Args:
@@ -967,7 +971,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # remote commands
 
     @property
-    def remote_commands(self) -> typing.Dict[typing.Union[int, str], RemoteCommand]:
+    def remote_commands(self) -> dict[int | str, RemoteCommand]:
         """Get list of the remote commands.
 
         Returns:
@@ -978,7 +982,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f41(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 41, host command send.
 
         The remote command handing differs from usual stream function handling, because we send the ack with later
@@ -1069,7 +1073,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return -1
 
-    def _get_events_enabled(self) -> typing.List[typing.Union[int, str]]:
+    def _get_events_enabled(self) -> list[int | str]:
         """List of the enabled collection events.
 
         :returns: collection event
@@ -1083,7 +1087,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return enabled_ceid
 
-    def _get_alarms_enabled(self) -> typing.List[typing.Union[int, str]]:
+    def _get_alarms_enabled(self) -> list[int | str]:
         """List of the enabled alarms.
 
         :returns: alarms
@@ -1097,7 +1101,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return enabled_alarms
 
-    def _get_alarms_set(self) -> typing.List[typing.Union[int, str]]:
+    def _get_alarms_set(self) -> list[int | str]:
         """List of the set alarms.
 
         :returns: alarms

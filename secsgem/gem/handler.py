@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM commands."""
+from __future__ import annotations
+
 import logging
 import threading
 import typing
@@ -52,7 +54,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         self._report_id_counter = 1000
 
-        self._wait_event_list: typing.List[threading.Event] = []
+        self._wait_event_list: list[threading.Event] = []
 
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
@@ -63,7 +65,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         """Get the communication state model."""
         return self._communication_state
 
-    def serialize_data(self) -> typing.Dict[str, typing.Any]:
+    def serialize_data(self) -> dict[str, typing.Any]:
         """Get serialized data.
 
         Returns:
@@ -90,7 +92,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         self._logger.info("Connection disabled")
 
-    def _on_message_received(self, data: typing.Dict[str, typing.Any]):
+    def _on_message_received(self, data: dict[str, typing.Any]):
         """Message received from protocol layer.
 
         Args:
@@ -165,7 +167,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         return 0
 
     def send_process_program(self,
-                             ppid: typing.Union[int, str],
+                             ppid: int | str,
                              ppbody: str):
         """Send a process program.
 
@@ -181,7 +183,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
             {"PPID": ppid, "PPBODY": ppbody}))).get()
 
     def request_process_program(self,
-                                ppid: typing.Union[int, str]) -> typing.Tuple[typing.Union[int, str], str]:
+                                ppid: int | str) -> tuple[int | str, str]:
         """Request a process program.
 
         ppid: Transferred process programs ID
@@ -193,7 +195,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         s7f6 = self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(7, 5)(ppid)))
         return s7f6.PPID.get(), s7f6.PPBODY.get()
 
-    def waitfor_communicating(self, timeout: typing.Optional[float] = None) -> bool:
+    def waitfor_communicating(self, timeout: float | None = None) -> bool:
         """Wait until connection gets into communicating state. Returns immediately if state is communicating.
 
         Args:
@@ -218,7 +220,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f01(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 1, Are You There.
 
         Args:
@@ -235,7 +237,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f13(self,
                    handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 13, Establish Communication Request.
 
         Args:

@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Timeout class."""
-import typing
+from __future__ import annotations
 
 
 class _Timeout:
@@ -62,7 +62,7 @@ class Timeouts:
     """
 
     @classmethod
-    def timeouts(cls) -> typing.List[_Timeout]:
+    def timeouts(cls) -> list[_Timeout]:
         """Get a list of default timeouts."""
         return [
             _Timeout("t1", 5.0, "Inter-Character Timeout"),

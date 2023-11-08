@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs.variables
 
@@ -23,9 +23,9 @@ class CollectionEvent:  # pylint: disable=too-few-public-methods
     """Collection event definition."""
 
     def __init__(self,
-                 ceid: typing.Union[int, str],
+                 ceid: int | str,
                  name: str,
-                 data_values: typing.List[typing.Union[int, str]],
+                 data_values: list[int | str],
                  **kwargs):
         """Initialize a collection event.
 
@@ -48,7 +48,7 @@ class CollectionEvent:  # pylint: disable=too-few-public-methods
         self.name = name
         self.data_values = data_values
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.ceid, int):
             self.id_type = secsgem.secs.variables.U4

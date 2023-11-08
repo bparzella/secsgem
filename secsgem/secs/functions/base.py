@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Base class for for SECS stream and functions."""
+from __future__ import annotations
+
 import typing
 
 import secsgem.common
@@ -48,7 +50,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     _stream = 0
     _function = 0
 
-    _data_format: typing.Optional[DataItemRecursive] = None
+    _data_format: DataItemRecursive | None = None
 
     _to_host = True
     _to_equipment = True

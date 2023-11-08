@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM alarm."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs
 
@@ -24,12 +24,12 @@ class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-meth
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
-        alid: typing.Union[str, int],
+        alid: str | int,
         name: str,
         text: str,
         code: int,
-        ce_on: typing.Union[str, int],
-        ce_off: typing.Union[str, int],
+        ce_on: str | int,
+        ce_off: str | int,
         **kwargs
     ):
         """Initialize an alarm.
@@ -55,7 +55,7 @@ class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-meth
         self.enabled = False
         self.set = False
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.alid, int):
             self.id_type = secsgem.secs.variables.U4

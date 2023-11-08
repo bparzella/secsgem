@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS variable base type."""
-import typing
+from __future__ import annotations
 
 
 class Base:
@@ -25,7 +25,7 @@ class Base:
     """
 
     format_code = -1
-    preferred_types: typing.Optional[typing.List[typing.Type]]
+    preferred_types: list[type] | None
 
 
     def __init__(self, value=None):

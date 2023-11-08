@@ -14,7 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM equipment constant."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs
 
@@ -24,13 +24,13 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
-        ecid: typing.Union[int, str],
+        ecid: int | str,
         name: str,
-        min_value: typing.Union[int, float],
-        max_value: typing.Union[int, float],
-        default_value: typing.Union[int, float],
+        min_value: int | float,
+        max_value: int | float,
+        default_value: int | float,
         unit: str,
-        value_type: typing.Type[secsgem.secs.variables.Base],
+        value_type: type[secsgem.secs.variables.Base],
         use_callback: bool = True,
         **kwargs,
     ):
@@ -67,7 +67,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
         self.use_callback = use_callback
         self.value = default_value
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.ecid, int):
             self.id_type = secsgem.secs.variables.U4

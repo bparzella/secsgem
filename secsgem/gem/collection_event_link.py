@@ -14,10 +14,13 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event link."""
+from __future__ import annotations
+
 import typing
 
-from .collection_event import CollectionEvent
-from .collection_event_report import CollectionEventReport
+if typing.TYPE_CHECKING:
+    from .collection_event import CollectionEvent
+    from .collection_event_report import CollectionEventReport
 
 
 class CollectionEventLink:
@@ -25,7 +28,7 @@ class CollectionEventLink:
 
     def __init__(self,
                  collection_event: CollectionEvent,
-                 reports: typing.List[CollectionEventReport],
+                 reports: list[CollectionEventReport],
                  **kwargs):
         """Initialize a collection event link.
 

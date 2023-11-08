@@ -14,8 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS numeric variable base type."""
+from __future__ import annotations
+
 import struct
-import typing
 
 from .base import Base
 
@@ -25,9 +26,9 @@ class BaseNumber(Base):
 
     format_code = 0
     text_code = ""
-    _base_type: typing.Union[typing.Type[int], typing.Type[float]] = int
-    _min: typing.Union[int, float] = 0
-    _max: typing.Union[int, float] = 0
+    _base_type: type[int] | type[float] = int
+    _min: int | float = 0
+    _max: int | float = 0
     _bytes = 0
     _struct_code = ""
 

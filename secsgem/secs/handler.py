@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for SECS commands."""
+from __future__ import annotations
+
 import logging
 import typing
 
@@ -47,10 +49,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {}
-        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {}
-        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {}
-        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {}
+        self._collection_events: dict[int | str, CollectionEvent] = {}
+        self._data_values: dict[int | str, DataValue] = {}
+        self._alarms: dict[int | str, Alarm] = {}
+        self._remote_commands: dict[int | str, RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
@@ -257,7 +259,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
             self.logger.exception("Callback aborted because of exception, abort sent")
             self.send_response(self.stream_function(message.header.stream, 0)(), message.header.system)
 
-    def _on_message_received(self, data: typing.Dict[str, typing.Any]):
+    def _on_message_received(self, data: dict[str, typing.Any]):
         """Message received from protocol layer.
 
         Args:
