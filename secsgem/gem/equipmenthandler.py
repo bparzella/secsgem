@@ -470,11 +470,11 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         # pre check message for errors
         for report in function.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
-                drack = secsgem.secs.data_items.ERACK.RPTID_REDEFINED
+                drack = secsgem.secs.data_items.DRACK.RPTID_REDEFINED
             else:
                 for vid in report.VID:
                     if (vid not in self._data_values) and (vid not in self._status_variables):
-                        drack = secsgem.secs.data_items.ERACK.VID_UNKNOWN
+                        drack = secsgem.secs.data_items.DRACK.VID_UNKNOWN
 
         result = self.stream_function(2, 34)(drack)
 
