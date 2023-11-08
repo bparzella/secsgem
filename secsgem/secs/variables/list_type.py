@@ -1,7 +1,7 @@
 #####################################################################
 # list_type.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,10 +19,6 @@ from collections import OrderedDict
 
 import secsgem.common
 
-from . import (
-    array,  # pylint: disable=cyclic-import
-    functions,  # pylint: disable=cyclic-import
-)
 from .base import Base
 
 
@@ -79,6 +75,8 @@ class List(Base):
         :returns: returns the string representation of the function
         :rtype: string
         """
+        from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
+
         array_name = f"{List.get_name_from_format(data_format)}: " if showname else ""
 
         if isinstance(data_format, list):
@@ -88,7 +86,7 @@ class List(Base):
                     continue
                 if isinstance(item, list):
                     if len(item) == 1:
-                        items.append(secsgem.common.indent_block(array.Array.get_format(item[0], True), 4))
+                        items.append(secsgem.common.indent_block(Array.get_format(item[0], True), 4))
                     else:
                         items.append(secsgem.common.indent_block(List.get_format(item, True), 4))
                 else:
@@ -136,6 +134,9 @@ class List(Base):
             self.data[index].set(value)
 
     def _generate(self, data_format):
+        from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
+        from .functions import generate  # pylint: disable=import-outside-toplevel,cyclic-import
+
         if data_format is None:
             return None
 
@@ -145,8 +146,8 @@ class List(Base):
                 self.name = item
                 continue
 
-            item_value = functions.generate(item)
-            if isinstance(item_value, array.Array):
+            item_value = generate(item)
+            if isinstance(item_value, Array):
                 result_data[item_value.name] = item_value
             elif isinstance(item_value, List):
                 result_data[List.get_name_from_format(item)] = item_value

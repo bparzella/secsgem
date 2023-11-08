@@ -1,7 +1,7 @@
 #####################################################################
 # array.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,8 @@
 
 import secsgem.common
 
-from . import (
-    functions,  # pylint: disable=cyclic-import
-    list_type,  # pylint: disable=cyclic-import
-)
 from .base import Base
+from .list_type import List
 
 
 class Array(Base):
@@ -65,7 +62,7 @@ class Array(Base):
         self.count = count
         self.data = []
         if isinstance(data_format, list):
-            self.name = list_type.List.get_name_from_format(data_format)
+            self.name = List.get_name_from_format(data_format)
         elif hasattr(data_format, "__name__"):
             self.name = data_format.__name__
         else:
@@ -84,7 +81,7 @@ class Array(Base):
         if showname:
             array_name = "{}: "
             if isinstance(data_format, list):
-                array_name = array_name.format(list_type.List.get_name_from_format(data_format))
+                array_name = array_name.format(List.get_name_from_format(data_format))
             else:
                 array_name = array_name.format(data_format.__name__)
         else:
@@ -93,7 +90,7 @@ class Array(Base):
         if isinstance(data_format, list):
             return (
                 f"{array_name}[\n"
-                f"{secsgem.common.indent_block(list_type.List.get_format(data_format), 4)}\n"
+                f"{secsgem.common.indent_block(List.get_format(data_format), 4)}\n"
                 f"    ...\n]"
             )
 
@@ -142,7 +139,9 @@ class Array(Base):
         :param value: new value
         :type value: various
         """
-        new_object = functions.generate(self.item_decriptor)
+        from .functions import generate  # pylint: disable=import-outside-toplevel,cyclic-import
+
+        new_object = generate(self.item_decriptor)
         new_object.set(data)
         self.data.append(new_object)
 
@@ -161,7 +160,8 @@ class Array(Base):
         self.data = []
 
         for item in value:
-            new_object = functions.generate(self.item_decriptor)
+            from .functions import generate  # pylint: disable=import-outside-toplevel,cyclic-import
+            new_object = generate(self.item_decriptor)
             new_object.set(item)
             self.data.append(new_object)
 
@@ -196,13 +196,15 @@ class Array(Base):
         :returns: new start position
         :rtype: integer
         """
+        from .functions import generate  # pylint: disable=import-outside-toplevel,cyclic-import
+
         (text_pos, _, length) = self.decode_item_header(data, start)
 
         # list
         self.data = []
 
         for _ in range(length):
-            new_object = functions.generate(self.item_decriptor)
+            new_object = generate(self.item_decriptor)
             text_pos = new_object.decode(data, text_pos)
             self.data.append(new_object)
 

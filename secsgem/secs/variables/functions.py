@@ -1,7 +1,7 @@
 #####################################################################
 # functions.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -17,11 +17,7 @@
 
 import inspect
 
-from . import (
-    array,  # pylint: disable=cyclic-import
-    base,
-    list_type,  # pylint: disable=cyclic-import
-)
+from .base import Base
 
 
 def generate(data_format):
@@ -32,15 +28,18 @@ def generate(data_format):
     :returns: created variable
     :rtype: Base based class
     """
+    from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
+    from .list_type import List  # pylint: disable=import-outside-toplevel,cyclic-import
+
     if data_format is None:
         return None
 
     if isinstance(data_format, list):
         if len(data_format) == 1:
-            return array.Array(data_format[0])
-        return list_type.List(data_format)
+            return Array(data_format[0])
+        return List(data_format)
     if inspect.isclass(data_format):
-        if issubclass(data_format, base.Base):
+        if issubclass(data_format, Base):
             return data_format()
         raise TypeError(f"Can't generate item of class {data_format.__name__}")
     raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")
@@ -53,16 +52,20 @@ def get_format(data_format, showname=False):
     :rtype: string
     """
     del showname  # unused variable
+
+    from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
+    from .list_type import List  # pylint: disable=import-outside-toplevel,cyclic-import
+
     if data_format is None:
         return None
 
     if isinstance(data_format, list):
         if len(data_format) == 1:
-            return array.Array.get_format(data_format[0])
-        return list_type.List.get_format(data_format)
+            return Array.get_format(data_format[0])
+        return List.get_format(data_format)
 
     if inspect.isclass(data_format):
-        if issubclass(data_format, base.Base):
+        if issubclass(data_format, Base):
             return data_format.get_format()
         raise TypeError(f"Can't generate data_format for class {data_format.__name__}")
 
