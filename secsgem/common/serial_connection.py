@@ -1,5 +1,5 @@
 #####################################################################
-# connection.py
+# serial_connection.py
 #
 # (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains objects and functions to create and handle serial secs I connection."""
+"""Contains objects and functions to create and handle serial connections."""
 from __future__ import annotations
 
 import logging
@@ -23,19 +23,20 @@ import typing
 
 import serial
 
-import secsgem.common
+from .connection import Connection
+from .helpers import format_hex
 
 if typing.TYPE_CHECKING:
-    from .settings import SecsISettings
+    from .settings import Settings
 
 
-class SecsIConnection(secsgem.common.Connection):  # pylint: disable=too-many-instance-attributes
-    """Connection class used for secs I connections."""
+class SerialConnection(Connection):  # pylint: disable=too-many-instance-attributes
+    """Connection class used for serial connections."""
 
     _receiver_timeout = 0.5
 
-    def __init__(self, settings: SecsISettings):
-        """Initialize a secs connection.
+    def __init__(self, settings: Settings):
+        """Initialize a serial connection.
 
         Args:
             settings: protocol and communication settings
@@ -153,7 +154,7 @@ class SecsIConnection(secsgem.common.Connection):  # pylint: disable=too-many-in
             data = self._port.read(self._port.in_waiting) if self._port.in_waiting > 0 else self._port.read()
 
             if len(data) > 0:
-                self._bytestream_logger.debug("< %s", secsgem.common.format_hex(data))
+                self._bytestream_logger.debug("< %s", format_hex(data))
                 self.on_data({"source": self, "data": data})
 
     def send_data(self, data: bytes) -> bool:
@@ -166,7 +167,7 @@ class SecsIConnection(secsgem.common.Connection):  # pylint: disable=too-many-in
             True if succeeded, False if failed
 
         """
-        self._bytestream_logger.debug("> %s", secsgem.common.format_hex(data))
+        self._bytestream_logger.debug("> %s", format_hex(data))
         self._port.write(data)
 
         return True

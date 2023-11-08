@@ -1,7 +1,7 @@
 #####################################################################
 # multi_passive_connection.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,10 +18,10 @@
 import socket
 import typing
 
-from .connection import HsmsConnection
+from secsgem.common.tcp_connection import TcpConnection
 
 
-class HsmsMultiPassiveConnection(HsmsConnection):
+class HsmsMultiPassiveConnection(TcpConnection):
     """Connection class for single connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`.
 
     Handles connections incoming connection from :class:`secsgem.hsms.connections.HsmsMultiPassiveServer`
@@ -47,7 +47,7 @@ class HsmsMultiPassiveConnection(HsmsConnection):
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
+        TcpConnection.__init__(self, True, address, port, session_id, delegate)
 
         # initially not enabled
         self.enabled = False

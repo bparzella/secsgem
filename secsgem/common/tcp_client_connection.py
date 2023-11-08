@@ -1,7 +1,7 @@
 #####################################################################
-# active_connection.py
+# tcp_client_connection.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Hsms active connection."""
+"""TCP client connection."""
 from __future__ import annotations
 
 import socket
@@ -21,29 +21,29 @@ import threading
 import time
 import typing
 
-from .connection import HsmsConnection
+from .tcp_connection import TcpConnection
 
 if typing.TYPE_CHECKING:
-    from .settings import HsmsSettings
+    import secsgem.common
 
 
-class HsmsActiveConnection(HsmsConnection):
-    """Client class for single active (outgoing) connection."""
+class TcpClientConnection(TcpConnection):
+    """Client class for single tcp client connection."""
 
-    def __init__(self, settings: HsmsSettings):
-        """Initialize a active hsms connection.
+    def __init__(self, settings: secsgem.common.Settings):
+        """Initialize a TCP client connection.
 
         Args:
             settings: protocol and communication settings
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, settings)
+        TcpConnection.__init__(self, settings)
 
         # initially not enabled
         self.enabled = False
 
-        # reconnect thread required for active connection
+        # reconnect thread required for client connection
         self.connection_thread = None
         self.stop_connection_thread = False
 
@@ -63,7 +63,7 @@ class HsmsActiveConnection(HsmsConnection):
     def enable(self):
         """Enable the connection.
 
-        Starts the connection process to the passive remote.
+        Starts the client connection process to the remote.
         """
         # only start if not already enabled
         if not self.enabled:
@@ -120,11 +120,11 @@ class HsmsActiveConnection(HsmsConnection):
     def __start_connect_thread(self):
         self.connection_thread = threading.Thread(
             target=self.__connect_thread,
-            name=f"secsgem_HsmsActiveConnection_connectThread_{self._settings.address}")
+            name=f"secsgem_tcpClientConnection_connectThread_{self._settings.address}")
         self.connection_thread.start()
 
     def __connect_thread(self):
-        """Thread function to (re)connect active connection to remote host.
+        """Thread function to (re)connect client connection to remote host.
 
         .. warning:: Do not call this directly, for internal use only.
         """

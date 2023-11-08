@@ -16,18 +16,10 @@
 """SECS-I settings class."""
 from __future__ import annotations
 
-import typing
-
-from secsgem.common.settings import Setting, Settings
-
-from .connection import SecsIConnection
-
-if typing.TYPE_CHECKING:
-    from secsgem.common.connection import Connection
-    from secsgem.common.protocol import Protocol
+import secsgem.common
 
 
-class SecsISettings(Settings):
+class SecsISettings(secsgem.common.Settings):
     """Settings for SECS-I connection.
 
     These attributes can be initialized in the constructor and accessed as property.
@@ -49,23 +41,23 @@ class SecsISettings(Settings):
     """
 
     @classmethod
-    def _attributes(cls) -> list[Setting]:
+    def _attributes(cls) -> list[secsgem.common.Setting]:
         """Get the available settings for the class."""
         return [
             *super()._attributes(),
-            Setting("port", None, "Serial port"),
-            Setting("speed", 9600, "Serial port baud rate"),
+            secsgem.common.Setting("port", None, "Serial port"),
+            secsgem.common.Setting("speed", 9600, "Serial port baud rate"),
         ]
 
-    def create_protocol(self) -> Protocol:
+    def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
         from .protocol import SecsIProtocol  # pylint: disable=import-outside-toplevel
 
         return SecsIProtocol(self)
 
-    def create_connection(self) -> Connection:
+    def create_connection(self) -> secsgem.common.Connection:
         """Connection class for this configuration."""
-        return SecsIConnection(self)
+        return secsgem.common.SerialConnection(self)
 
     @property
     def name(self) -> str:

@@ -17,16 +17,8 @@
 from __future__ import annotations
 
 import enum
-import typing
 
-from secsgem.common.settings import Setting, Settings
-
-from .active_connection import HsmsActiveConnection
-from .passive_connection import HsmsPassiveConnection
-
-if typing.TYPE_CHECKING:
-    from secsgem.common.connection import Connection
-    from secsgem.common.protocol import Protocol
+import secsgem.common
 
 
 class HsmsConnectMode(enum.Enum):
@@ -40,7 +32,7 @@ class HsmsConnectMode(enum.Enum):
         return "Active" if self == self.ACTIVE else "Passive"
 
 
-class HsmsSettings(Settings):
+class HsmsSettings(secsgem.common.Settings):
     """Settings for HSMS connection.
 
     These attributes can be initialized in the constructor and accessed as property.
@@ -62,26 +54,26 @@ class HsmsSettings(Settings):
     """
 
     @classmethod
-    def _attributes(cls) -> list[Setting]:
+    def _attributes(cls) -> list[secsgem.common.Setting]:
         """Get the available settings for the class."""
         return [
             *super()._attributes(),
-            Setting("connect_mode", HsmsConnectMode.ACTIVE, "Hsms connect mode"),
-            Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
-            Setting("port", 5000, "TCP port of remote host"),
+            secsgem.common.Setting("connect_mode", HsmsConnectMode.ACTIVE, "Hsms connect mode"),
+            secsgem.common.Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
+            secsgem.common.Setting("port", 5000, "TCP port of remote host"),
         ]
 
-    def create_protocol(self) -> Protocol:
+    def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
         from .protocol import HsmsProtocol  # pylint: disable=import-outside-toplevel
 
         return HsmsProtocol(self)
 
-    def create_connection(self) -> Connection:
+    def create_connection(self) -> secsgem.common.Connection:
         """Connection class for this configuration."""
         if self.connect_mode == HsmsConnectMode.ACTIVE:
-            return HsmsActiveConnection(self)
-        return HsmsPassiveConnection(self)
+            return secsgem.common.TcpClientConnection(self)
+        return secsgem.common.TcpServerConnection(self)
 
     @property
     def name(self) -> str:

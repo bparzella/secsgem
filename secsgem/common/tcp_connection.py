@@ -1,7 +1,7 @@
 #####################################################################
-# connection.py
+# tcp_connection.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,7 +13,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Contains objects and functions to create and handle hsms connection."""
+"""Contains objects and functions to create and handle tcp connection."""
 from __future__ import annotations
 
 import logging
@@ -22,22 +22,24 @@ import threading
 import time
 import typing
 
-import secsgem.common
+from .connection import Connection
+from .helpers import format_hex, is_errorcode_ewouldblock
 
 if typing.TYPE_CHECKING:
     import socket
 
-    from .settings import HsmsSettings
+    from .settings import Settings
+    from .timeouts import Timeouts
 
 
-class HsmsConnection(secsgem.common.Connection):
-    """Connection class used for active and passive hsms connections."""
+class TcpConnection(Connection):
+    """Base connection class used for TCP connection types."""
 
     select_timeout = 0.5
-    """ Timeout for select calls ."""
+    """Timeout for select calls ."""
 
-    def __init__(self, settings: HsmsSettings):
-        """Initialize a hsms connection.
+    def __init__(self, settings: Settings):
+        """Initialize a TCP connection.
 
         Args:
             settings: protocol and communication settings
@@ -58,12 +60,12 @@ class HsmsConnection(secsgem.common.Connection):
     @property
     def _socket(self) -> socket.socket:
         if self._sock is None:
-            raise ConnectionError(f"Hsms socket is not connected: {self}")
+            raise ConnectionError(f"TCP socket is not connected: {self}")
 
         return self._sock
 
     @property
-    def timeouts(self) -> secsgem.common.Timeouts:
+    def timeouts(self) -> Timeouts:
         """Get connection timeouts."""
         return self._settings.timeouts
 
@@ -93,15 +95,10 @@ class HsmsConnection(secsgem.common.Connection):
         """Start the thread for receiving and handling incoming messages.
 
         Will also do the initial Select and Linktest requests.
-
-        .. warning:: Do not call this directly, will be called from HSMS client/server class.
-        .. seealso:: :class:`secsgem.hsms.connections.HsmsActiveConnection`,
-            :class:`secsgem.hsms.connections.HsmsPassiveConnection`,
-            :class:`secsgem.hsms.connections.HsmsMultiPassiveConnection`
         """
         # start data receiving thread
         threading.Thread(target=self.__receiver_thread, args=(),
-                         name=f"secsgem_hsmsConnection_receiver_{self._settings.address}:{self._settings.port}").start()
+                         name=f"secsgem_tcpConnection_receiver_{self._settings.address}:{self._settings.port}").start()
 
         # wait until thread is running
         while not self._thread_running:
@@ -151,12 +148,12 @@ class HsmsConnection(secsgem.common.Connection):
                 # retry will be cleared if send succeeded
                 retry = False
             except OSError as exc:
-                if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
+                if not is_errorcode_ewouldblock(exc.errno):
                     # raise if not EWOULDBLOCK
                     return False
                 # it is EWOULDBLOCK, so retry sending
 
-            self._bytestream_logger.debug("> %s", secsgem.common.format_hex(data))
+            self._bytestream_logger.debug("> %s", format_hex(data))
 
         return True
 
@@ -182,20 +179,16 @@ class HsmsConnection(secsgem.common.Connection):
                         self._stop_thread = True
                         continue
 
-                    self._bytestream_logger.debug("< %s", secsgem.common.format_hex(recv_data))
+                    self._bytestream_logger.debug("< %s", format_hex(recv_data))
 
                     # add received data to input buffer
                     self.on_data({"source": self, "data": recv_data})
                 except OSError as exc:
-                    if not secsgem.common.is_errorcode_ewouldblock(exc.errno):
+                    if not is_errorcode_ewouldblock(exc.errno):
                         raise exc
 
     def __receiver_thread(self):
-        """Thread for receiving incoming data and adding it to the receive buffer.
-
-        .. warning:: Do not call this directly, will be called from
-        :func:`secsgem.hsmsConnections.hsmsConnection._startReceiver` method.
-        """
+        """Thread for receiving incoming data and adding it to the receive buffer."""
         self._thread_running = True
 
         try:

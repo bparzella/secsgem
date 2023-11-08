@@ -25,8 +25,11 @@ from .helpers import format_hex, function_name, indent_block, is_errorcode_ewoul
 from .message import Block, Message
 from .protocol import Protocol
 from .protocol_dispatcher import ProtocolDispatcher
-from .settings import DeviceType, Settings
+from .serial_connection import SerialConnection
+from .settings import DeviceType, Setting, Settings
 from .state_machine import State, StateMachine, Transition, UnknownTransitionError, WrongSourceStateError
+from .tcp_client_connection import TcpClientConnection
+from .tcp_server_connection import TcpServerConnection
 from .timeouts import Timeouts
 
 __all__ = [
@@ -40,7 +43,10 @@ __all__ = [
     "Message", "Block",
     "Protocol",
     "ProtocolDispatcher",
-    "Settings", "DeviceType",
+    "SerialConnection",
+    "Settings", "Setting", "DeviceType",
     "State", "StateMachine", "Transition", "UnknownTransitionError", "WrongSourceStateError",
+    "TcpClientConnection",
+    "TcpServerConnection",
     "Timeouts",
 ]
