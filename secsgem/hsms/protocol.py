@@ -304,7 +304,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             "connect_mode": self._settings.connect_mode,
             "session_id": self._settings.session_id,
             "name": self._settings.name,
-            "connected": self._connected
+            "connected": self._connected,
         }
 
     def _process_send_queue(self):
@@ -329,7 +329,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
     def _create_message_for_function(
             self,
             function: SecsStreamFunction,
-            system_id: int
+            system_id: int,
     ) -> secsgem.common.Message:
         """Create a protocol specific message for a function.
 
@@ -347,7 +347,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
                 function.stream,
                 function.function,
                 function.is_reply_required,
-                self._settings.session_id
+                self._settings.session_id,
             ),
             function.encode())
 

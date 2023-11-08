@@ -112,7 +112,7 @@ require_response:False})
             "block": self._block,
             "from_equipment": self._from_equipment,
             "require_response": self._require_response,
-            "last_block": self._last_block
+            "last_block": self._last_block,
         }
 
     def __str__(self) -> str:
@@ -167,7 +167,7 @@ require_response:False})
             stream,
             self.function,
             block,
-            self.system
+            self.system,
         )
 
     @classmethod

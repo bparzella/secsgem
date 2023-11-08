@@ -28,7 +28,7 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
         unit,
         value_type,
         use_callback=True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize a status variable.
 

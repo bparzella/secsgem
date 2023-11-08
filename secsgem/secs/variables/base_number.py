@@ -82,7 +82,7 @@ class BaseNumber(Base):
         return hash(str(self.value))
 
     def _check_single_item_support(self, value):
-        if isinstance(value, float) and self._base_type == int:
+        if isinstance(value, float) and self._base_type is int:
             return False
 
         if isinstance(value, bool):
@@ -135,7 +135,7 @@ class BaseNumber(Base):
         :param value: new value
         :type value: list/integer/float
         """
-        if isinstance(value, float) and self._base_type == int:
+        if isinstance(value, float) and self._base_type is int:
             raise ValueError(f"Invalid value {value}")
 
         if isinstance(value, (list, tuple)):

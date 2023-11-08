@@ -215,6 +215,3 @@ class TcpConnection(Connection):
         self._connected = False
         self._thread_running = False
         self._stop_thread = False
-
-        # notify inherited classes of disconnection
-        #self.on_disconnected({'source': self})

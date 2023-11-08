@@ -113,7 +113,7 @@ extend-select = [
   "PTH",  # flake8 - use pathlib
   "TD",  # flake8 - todos
   "FIX",  # flake8 - fixme
-#  "ERA",  # eradicate
+  "ERA",  # eradicate
   "PGH",  # pygrep hooks
 #  "PL",  # pylint
 #  "TRY",  # tryceratorps

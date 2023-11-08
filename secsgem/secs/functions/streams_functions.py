@@ -27,7 +27,7 @@ class StreamsFunctions:
 
     def __init__(
         self,
-        functions: typing.Optional[typing.List[typing.Type[SecsStreamFunction]]] = None
+        functions: typing.Optional[typing.List[typing.Type[SecsStreamFunction]]] = None,
     ) -> None:
         """Initialize streams functions container."""
         if functions is None:

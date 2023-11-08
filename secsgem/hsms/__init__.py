@@ -37,5 +37,5 @@ __all__ = [
     "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
     "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
     "HsmsSelectReqHeader", "HsmsHeader",
-    "HsmsSettings", "HsmsConnectMode", "DeviceType"
+    "HsmsSettings", "HsmsConnectMode", "DeviceType",
 ]

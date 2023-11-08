@@ -33,7 +33,7 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
             self,
             receiver_target: typing.Callable,
             dispatcher_target: typing.Callable,
-            settings: Settings
+            settings: Settings,
     ) -> None:
         """Initialize thread object.
 
@@ -67,14 +67,14 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
             target=self._receiver_thread_function,
             args=(),
             name=self._settings.generate_thread_name("protocol_receiver"),
-            daemon=True
+            daemon=True,
         )
 
         self._dispatcher_thread = threading.Thread(
             target=self._dispatcher_thread_function,
             args=(),
             name=self._settings.generate_thread_name("protocol_dispatcher"),
-            daemon=True
+            daemon=True,
         )
 
         self._receiver_thread.start()

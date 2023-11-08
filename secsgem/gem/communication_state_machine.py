@@ -116,7 +116,7 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
                 [
                     self.wait_cr_from_host,
                     self.wait_delay,
-                    self.wait_cra
+                    self.wait_cra,
                 ],
                 self.communicating),  # 14
         ]

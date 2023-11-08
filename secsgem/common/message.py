@@ -82,7 +82,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
         struct_args: tuple = (
             self.header.length + data_length,
             self.header.encode(),
-            self.data
+            self.data,
         )
 
         if self.checksum_format != "":
@@ -90,7 +90,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
 
         return struct.pack(
             f">{self.length_format}{self.header.length}s{data_length}s{self.checksum_format}",
-            *struct_args
+            *struct_args,
         )
 
     @classmethod
@@ -108,7 +108,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
 
         data_fields = struct.unpack(
             f">{cls.length_format}{cls.header_type.length}s{data_length}s{cls.checksum_format}",
-            data
+            data,
         )
 
         header = cls.header_type.decode(data_fields[1])
@@ -148,7 +148,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
         for index, block_data in enumerate(data_blocks):
             header_data = {
                 "block": index + 1,
-                "last_block": (index + 1) == len(data_blocks)
+                "last_block": (index + 1) == len(data_blocks),
             }
             block_header = header.updated_with(**header_data)
             blocks.append(cls.block_type(block_header, block_data))

@@ -121,22 +121,22 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         # 7, send collection event
         self._control_state.transition("initial_online_local").events.called.register(
-            self._on_control_state_initial_online_local
+            self._on_control_state_initial_online_local,
         )
 
         # 8, send collection event
         self._control_state.transition("switch_online_local").events.called.register(
-            self._on_control_state_initial_online_local
+            self._on_control_state_initial_online_local,
         )
 
         # 8, send collection event
         self._control_state.transition("initial_online_remote").events.called.register(
-            self._on_control_state_initial_online_remote
+            self._on_control_state_initial_online_remote,
         )
 
         # 9, send collection event
         self._control_state.transition("switch_online_remote").events.called.register(
-            self._on_control_state_initial_online_remote
+            self._on_control_state_initial_online_remote,
         )
 
         self._control_state.start()
@@ -202,7 +202,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         oflack = 0
 
-        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+        if self._control_state.current in [ControlState.ONLINE, ControlState.ONLINE_LOCAL, ControlState.ONLINE_REMOTE]:
             self._control_state.remote_offline()
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
@@ -225,7 +225,9 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         if self._control_state.current == ControlState.HOST_OFFLINE:
             self._control_state.remote_online()
             onlack = 0
-        elif self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+        elif self._control_state.current in [ControlState.ONLINE,
+                                             ControlState.ONLINE_LOCAL,
+                                             ControlState.ONLINE_REMOTE]:
             onlack = 2
 
         return self.stream_function(1, 18)(onlack)
@@ -386,7 +388,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             responses = [{
                 "SVID": status_variable.svid,
                 "SVNAME": status_variable.name,
-                "UNITS": status_variable.unit
+                "UNITS": status_variable.unit,
             } for status_variable in self._status_variables.values()]
         else:
             for status_variable_id in function:
@@ -463,22 +465,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accept
-        # 1  = Denied. Insufficient space.
-        # 2  = Denied. Invalid format.
-        # 3  = Denied. At least one RPTID already defined.
-        # 4  = Denied. At least VID does not exist.
-        # >4 = Other errors
-        drack = 0
+        drack = secsgem.secs.data_items.DRACK.ACK
 
         # pre check message for errors
         for report in function.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
-                drack = 3
+                drack = secsgem.secs.data_items.ERACK.RPTID_REDEFINED
             else:
                 for vid in report.VID:
                     if (vid not in self._data_values) and (vid not in self._status_variables):
-                        drack = 4
+                        drack = secsgem.secs.data_items.ERACK.VID_UNKNOWN
 
         result = self.stream_function(2, 34)(drack)
 
@@ -525,26 +521,19 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Denied. Insufficient space
-        # 2  = Denied. Invalid format
-        # 3  = Denied. At least one CEID link already defined
-        # 4  = Denied. At least one CEID does not exist
-        # 5  = Denied. At least one RPTID does not exist
-        # >5 = Other errors
-        lrack = 0
+        lrack = secsgem.secs.data_items.LRACK.ACK
 
         # pre check message for errors
         for event in function.DATA:
             if event.CEID.get() not in self._collection_events:
-                lrack = 4
+                lrack = secsgem.secs.data_items.LRACK.CEID_UNKNOWN
             for rptid in event.RPTID:
                 if event.CEID.get() in self._registered_collection_events:
                     collection_event = self._registered_collection_events[event.CEID.get()]
                     if rptid.get() in collection_event.reports:
-                        lrack = 3
+                        lrack = secsgem.secs.data_items.LRACK.CEID_LINKED
                 if rptid.get() not in self._registered_reports:
-                    lrack = 5
+                    lrack = secsgem.secs.data_items.LRACK.RPTID_UNKNOWN
 
         # pre check okay
         if lrack == 0:
@@ -578,12 +567,10 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Denied. At least one CEID does not exist
-        erack = 0
+        erack = secsgem.secs.data_items.ERACK.ACCEPTED
 
         if not self._set_ce_state(function.CEED.get(), function.CEID.get()):
-            erack = 1
+            erack = secsgem.secs.data_items.ERACK.CEID_UNKNOWN
 
         return self.stream_function(2, 38)(erack)
 
@@ -833,7 +820,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                 "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
                 "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
                 "ECDEF": eq_constant.default_value,
-                "UNITS": eq_constant.unit
+                "UNITS": eq_constant.unit,
             } for eq_constant in self._equipment_constants.values()]
         else:
             for ecid in function:
@@ -878,7 +865,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                 {
                     "ALCD": self.alarms[alid].code | secsgem.secs.data_items.ALCD.ALARM_SET,
                     "ALID": alid,
-                    "ALTX": self.alarms[alid].text
+                    "ALTX": self.alarms[alid].text,
                 }))
 
         self.alarms[alid].set = True
@@ -920,8 +907,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Error
         result = secsgem.secs.data_items.ACKC5.ACCEPTED
 
         alid = function.ALID.get()
@@ -954,7 +939,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         result = [{
             "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
             "ALID": alid,
-            "ALTX": self.alarms[alid].text
+            "ALTX": self.alarms[alid].text,
         } for alid in alids]
 
         return self.stream_function(5, 6)(result)
@@ -974,7 +959,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         result = [{
             "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
             "ALID": alid,
-            "ALTX": self.alarms[alid].text
+            "ALTX": self.alarms[alid].text,
         } for alid in list(self.alarms.keys()) if self.alarms[alid].enabled]
 
         return self.stream_function(5, 8)(result)
@@ -1132,8 +1117,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         super().on_connection_closed(connection)
 
         # update control state
-        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+        if self._control_state.current in [ControlState.ONLINE, ControlState.ONLINE_LOCAL, ControlState.ONLINE_REMOTE]:
             self._control_state.switch_offline()
 
-        if self._control_state.current in ["EQUIPMENT_OFFLINE"]:
+        if self._control_state.current == ControlState.EQUIPMENT_OFFLINE:
             self._control_state.switch_online()

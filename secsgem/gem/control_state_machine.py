@@ -41,7 +41,7 @@ class ControlStateMachine(secsgem.common.StateMachine):  # pylint: disable=too-m
     def __init__(
         self,
         initial_control_state: str = "ATTEMPT_ONLINE",
-        initial_online_control_state: str = "REMOTE"
+        initial_online_control_state: str = "REMOTE",
     ) -> None:
         """Initialize state machine."""
         super().__init__()

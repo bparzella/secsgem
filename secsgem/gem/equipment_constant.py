@@ -32,7 +32,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
         unit: str,
         value_type: typing.Type[secsgem.secs.variables.Base],
         use_callback: bool = True,
-        **kwargs
+        **kwargs,
     ):
         """Initialize an equipment constant.
 

@@ -71,7 +71,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
     def _create_message_for_function(
             self,
             function: SecsStreamFunction,
-            system_id: int
+            system_id: int,
     ) -> secsgem.common.Message:
         """Create a protocol specific message for a function.
 
@@ -90,9 +90,9 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
                 function.stream,
                 function.function,
                 require_response=function.is_reply_required,
-                from_equipment=(self._settings.device_type == secsgem.common.DeviceType.EQUIPMENT)
+                from_equipment=(self._settings.device_type == secsgem.common.DeviceType.EQUIPMENT),
             ),
-            function.encode()
+            function.encode(),
         )
 
     def serialize_data(self) -> dict[str, typing.Any]:

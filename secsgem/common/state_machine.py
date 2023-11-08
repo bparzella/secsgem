@@ -62,7 +62,7 @@ class State:
         state: enum.Enum,
         name: str,
         parent: State | None = None,
-        initial: bool = False
+        initial: bool = False,
     ) -> None:
         """Initialize state object.
 

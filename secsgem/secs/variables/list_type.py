@@ -217,7 +217,7 @@ class List(Base):
                 self.data[list(self.data.keys())[counter]].set(itemvalue)
                 counter += 1
         else:
-            raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
+            raise TypeError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
     def get(self):
         """Return the internal value.

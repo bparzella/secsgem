@@ -152,7 +152,7 @@ class Array(Base):
         :type value: list
         """
         if not isinstance(value, list):
-            raise ValueError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
+            raise TypeError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 
         if self.count >= 0 and not len(value) == self.count:
             raise ValueError(f"Value has invalid field count (expected: {self.count}, actual: {len(value)})")

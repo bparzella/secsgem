@@ -87,7 +87,7 @@ class SerialConnection(Connection):  # pylint: disable=too-many-instance-attribu
         self._receiver_thread = threading.Thread(
             target=self._receiver_thread_function,
             args=(),
-            name=f"secsgem_secsIConnection_receiver_{self._settings.port}@{self._settings.speed}"
+            name=f"secsgem_secsIConnection_receiver_{self._settings.port}@{self._settings.speed}",
         )
         self._receiver_thread.daemon = True
         self._receiver_thread.start()

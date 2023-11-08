@@ -110,7 +110,7 @@ class Settings(abc.ABC):
             Setting("device_type", DeviceType.HOST, "Device type"),
             Setting("streams_functions", None, "Container with streams/functions"),
             Setting("session_id", 0, "session / device ID to use for connection"),
-            Setting("establish_communication_timeout", 10, "Time to wait between CA requests", writeable=True)
+            Setting("establish_communication_timeout", 10, "Time to wait between CA requests", writeable=True),
         ]
 
     @classmethod

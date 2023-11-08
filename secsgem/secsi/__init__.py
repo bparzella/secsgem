@@ -20,5 +20,5 @@ from .settings import SecsISettings
 
 __all__ = [
     "SecsIProtocol",
-    "SecsISettings"
+    "SecsISettings",
 ]

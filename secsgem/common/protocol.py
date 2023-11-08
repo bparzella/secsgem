@@ -68,7 +68,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         self._thread = ProtocolDispatcher(
             self._process_data,
             self._dispatch_block,
-            self._settings
+            self._settings,
         )
 
     @property
@@ -226,7 +226,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
     def _create_message_for_function(
             self,
             function: SecsStreamFunction,
-            system_id: int
+            system_id: int,
     ) -> Message:
         """Create a protocol specific message for a function.
 

@@ -53,7 +53,7 @@ class HsmsSType(enum.Enum):
             cls.LINKTEST_REQ: "Linktest.req",
             cls.LINKTEST_RSP: "Linktest.rsp",
             cls.REJECT_REQ: "Reject.req",
-            cls.SEPARATE_REQ: "Separate.req"
+            cls.SEPARATE_REQ: "Separate.req",
         }
 
     @property
@@ -149,7 +149,7 @@ require_response:False})
             "function": self._function,
             "requires_response": self._require_response,
             "p_type": self._p_type,
-            "s_type": self._s_type
+            "s_type": self._s_type,
         }
 
     def encode(self) -> bytes:
@@ -178,7 +178,7 @@ require_response:False})
             self.function,
             self.p_type,
             self.s_type.value,
-            self.system
+            self.system,
         )
 
     @classmethod
@@ -201,5 +201,5 @@ require_response:False})
             res[2],
             (((res[1] & 0b10000000) >> 7) == 1),
             res[3],
-            HsmsSType(res[4])
+            HsmsSType(res[4]),
         )
