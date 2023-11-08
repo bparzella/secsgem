@@ -22,9 +22,11 @@ import threading
 import time
 import typing
 
-import secsgem.common
-
+from .helpers import is_windows
 from .tcp_connection import TcpConnection
+
+if typing.TYPE_CHECKING:
+    from .settings import Settings
 
 
 class TcpServerConnection(TcpConnection):
@@ -34,7 +36,7 @@ class TcpServerConnection(TcpConnection):
     After the connection is established the listening socket is closed.
     """
 
-    def __init__(self, settings: secsgem.common.Settings):
+    def __init__(self, settings: Settings):
         """Initialize a TCP server connection.
 
         Args:
@@ -113,7 +115,7 @@ class TcpServerConnection(TcpConnection):
         """
         self._server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not secsgem.common.is_windows():
+        if not is_windows():
             self._server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
         self._server_sock.bind((self._settings.address, self._settings.port))

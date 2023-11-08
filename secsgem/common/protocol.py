@@ -22,9 +22,10 @@ import queue
 import random
 import typing
 
-import secsgem.common
-
+from .block_send_info import BlockSendInfo
+from .byte_queue import ByteQueue
 from .events import EventProducer
+from .protocol_dispatcher import ProtocolDispatcher
 
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
@@ -60,11 +61,11 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         self._response_queues: dict[int, queue.Queue[MessageT]] = {}
 
-        self._receive_buffer = secsgem.common.ByteQueue()
-        self._send_queue: queue.Queue[secsgem.common.BlockSendInfo] = queue.Queue()
+        self._receive_buffer = ByteQueue()
+        self._send_queue: queue.Queue[BlockSendInfo] = queue.Queue()
         self._incomplete_messages: dict[int, MessageT] = {}
 
-        self._thread = secsgem.common.ProtocolDispatcher(
+        self._thread = ProtocolDispatcher(
             self._process_data,
             self._dispatch_block,
             self._settings
@@ -226,7 +227,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
             self,
             function: SecsStreamFunction,
             system_id: int
-    ) -> secsgem.common.Message:
+    ) -> Message:
         """Create a protocol specific message for a function.
 
         Args:
@@ -239,7 +240,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         """
         raise NotImplementedError("Protocol._create_message_for_function missing implementation")
 
-    def send_message(self, message: secsgem.common.Message) -> bool:
+    def send_message(self, message: Message) -> bool:
         """Send a message to the remote host.
 
         Args:
@@ -250,7 +251,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         """
         for block in message.blocks:
-            block_send_info = secsgem.common.BlockSendInfo(block.encode())
+            block_send_info = BlockSendInfo(block.encode())
             self._send_queue.put(block_send_info)
             self._thread.trigger_receiver()
 
@@ -259,7 +260,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         return True
 
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> secsgem.common.Message | None:
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> Message | None:
         """Send the message and wait for the response.
 
         Args:
