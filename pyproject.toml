@@ -140,7 +140,13 @@ convention = "google"
 max-line-length = 120
 disable = [
   "duplicate-code",
-  "C0204",
+  "bad-mcs-classmethod-argument",
+]
+ignore-paths = [
+    "tests",
+    "data",
+    "docs",
+    "samples",
 ]
 
 [tool.mypy]
