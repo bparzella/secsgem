@@ -86,7 +86,7 @@ class Setting:
     @property
     def writeable(self) -> type | None:
         """Setting can be updated."""
-        return self.writeable
+        return self._writeable
 
 
 class Settings(abc.ABC):
