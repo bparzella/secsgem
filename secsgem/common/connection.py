@@ -92,6 +92,22 @@ class Connection(abc.ABC):
         return self._disconnecting
 
     @abc.abstractmethod
+    def enable(self):
+        """Enable the connection.
+
+        Open port and start receiver thread.
+        """
+        raise NotImplementedError("Connection.enable missing implementation")
+
+    @abc.abstractmethod
+    def disable(self):
+        """Disable the connection.
+
+        Close port and stop receiver thread.
+        """
+        raise NotImplementedError("Connection.disable missing implementation")
+
+    @abc.abstractmethod
     def send_data(self, data: bytes) -> bool:
         """Send data to the remote host.
 
