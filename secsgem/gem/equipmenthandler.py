@@ -17,6 +17,7 @@
 """Handler for GEM equipment."""
 from __future__ import annotations
 
+import threading
 import typing
 from datetime import datetime
 
@@ -445,15 +446,19 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             ceids: List of collection events
 
         """
-        if not isinstance(ceids, list):
-            ceids = [ceids]
+        def _ce_sender():
+            nonlocal ceids
+            if not isinstance(ceids, list):
+                ceids = [ceids]
 
-        for ceid in ceids:
-            if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
-                reports = self._build_collection_event(ceid)
+            for ceid in ceids:
+                if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
+                    reports = self._build_collection_event(ceid)
 
-                self.send_and_waitfor_response(self.stream_function(6, 11)(
-                    {"DATAID": 1, "CEID": ceid, "RPT": reports}))
+                    self.send_and_waitfor_response(self.stream_function(6, 11)(
+                        {"DATAID": 1, "CEID": ceid, "RPT": reports}))
+
+        threading.Thread(target=_ce_sender, daemon=True).start()
 
     def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
@@ -1017,7 +1022,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self.send_response(self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.ACK_FINISH_LATER,
                                                         "PARAMS": []}),
-                           function.header.system)
+                           message.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
 
