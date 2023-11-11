@@ -27,7 +27,14 @@ class Header(abc.ABC):
 
     length = -1
 
-    def __init__(self, system: int, session_id: int, stream: int, function: int, require_response: bool):
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        system: int,
+        session_id: int,
+        stream: int,
+        function: int,
+        require_response: bool
+    ):
         """Initialize a hsms header.
 
         Args:
