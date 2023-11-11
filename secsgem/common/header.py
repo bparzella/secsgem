@@ -27,7 +27,7 @@ class Header(abc.ABC):
 
     length = -1
 
-    def __init__(self, system: int, session_id: int, stream: int, function: int):
+    def __init__(self, system: int, session_id: int, stream: int, function: int, require_response: bool):
         """Initialize a hsms header.
 
         Args:
@@ -35,12 +35,15 @@ class Header(abc.ABC):
             session_id: device / session ID
             stream: stream
             function: function
+            require_response: True when a response is required
 
         """
         self._session_id = session_id
         self._stream = stream
         self._function = function
         self._system = system
+        self._require_response = require_response
+
 
     @property
     def session_id(self) -> int:
@@ -61,6 +64,11 @@ class Header(abc.ABC):
     def system(self) -> int:
         """Get system."""
         return self._system
+
+    @property
+    def require_response(self) -> bool:
+        """Get require response flag."""
+        return self._require_response
 
     @abc.abstractmethod
     def encode(self) -> bytes:

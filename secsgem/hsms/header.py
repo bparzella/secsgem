@@ -98,8 +98,7 @@ class HsmsHeader(secsgem.common.Header):
 require_response:False})
 
         """
-        super().__init__(system, session_id, stream, function)
-        self._require_response = requires_response
+        super().__init__(system, session_id, stream, function, requires_response)
         self._p_type = p_type
         self._s_type = s_type
 
@@ -118,11 +117,6 @@ require_response:False})
     def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__}({self.__str__()})"
-
-    @property
-    def require_response(self) -> bool:
-        """Get require response flag."""
-        return self._require_response
 
     @property
     def p_type(self) -> int:

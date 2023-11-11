@@ -56,15 +56,14 @@ class SecsIHeader(secsgem.common.Header):
             >>> import secsgem.secsi
             >>>
             >>> secsgem.secsi.SecsIHeader(3, 100)
-            HsmsHeader({session_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
-require_response:False})
+            SecsIHeader({session_id:0x0064, stream:00, function:00, system:0x00000003, block:0x0000, from_host:False, \
+require_response:False, last_block:True})
 
         """
-        super().__init__(system, session_id, stream, function)
+        super().__init__(system, session_id, stream, function, require_response)
 
         self._block = block
         self._from_equipment = from_equipment
-        self._require_response = require_response
         self._last_block = last_block
 
     @property
@@ -79,14 +78,6 @@ require_response:False})
         This is the reverse bit (r-bit).
         """
         return self._from_equipment
-
-    @property
-    def require_response(self) -> bool:
-        """Get if the message requires a response.
-
-        This is the wait bit (w-bit).
-        """
-        return self._require_response
 
     @property
     def last_block(self) -> bool:
@@ -144,9 +135,9 @@ require_response:False})
             >>> import secsgem.secsi
             >>> import secsgem.common
             >>>
-            >>> header = secsgem.secsi.SecsIHeader(2)
+            >>> header = secsgem.secsi.SecsIHeader(2, 100)
             >>> secsgem.common.format_hex(header.encode())
-            'ff:ff:00:00:00:05:00:00:00:02'
+            '00:64:00:00:80:00:00:00:00:02'
 
         """
         session_id = self.session_id
