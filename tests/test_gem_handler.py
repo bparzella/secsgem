@@ -19,15 +19,18 @@ import unittest
 
 import secsgem.hsms
 import secsgem.secs
+import secsgem.gem.communication_state_machine
 import secsgem.gem
 
-from test_connection import HsmsTestServer
+from mock_protocol import MockProtocol
+from mock_settings import MockSettings
+
 
 class GemHandlerPassiveGroup:
     def __init__(self):
         #hide warnings
         self.client = None
-        self.server = None
+        self.settings = None
 
     #hide warnings
     def assertEqual(self, par1, par2):
@@ -55,142 +58,144 @@ class GemHandlerPassiveGroup:
         print(self.client)    # cover repr and serialize_data
 
     def testEnableDisable(self):
-        self.assertEqual(self.client.communication_state.current, "NOT_COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.NOT_COMMUNICATING
+        )
 
-        self.server.stop()
         self.client.disable()
 
-        self.assertEqual(self.client.communication_state.current, "DISABLED")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.DISABLED
+        )
 
-        self.server.start()
         self.client.enable()
 
-        self.assertEqual(self.client.communication_state.current, "NOT_COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.NOT_COMMUNICATING
+        )
 
     def testConnection(self):
-        self.server.simulate_connect()
+        self.settings.protocol.simulate_connect()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
-
-        packet = self.server.expect_packet(system_id=system_id)
-
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x02)
-        self.assertEqual(packet.header.session_id, 0xffff)
-
-        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
+        )
 
     def establishCommunication(self):
-        self.server.simulate_connect()
+        self.settings.protocol.simulate_connect()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        packet = self.settings.protocol.expect_message(function=13)
 
-        packet = self.server.expect_packet(system_id=system_id)
-
-        packet = self.server.expect_packet(function=13)
-
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS01F14([0])))
+        self.settings.protocol.simulate_message(
+            self.settings.protocol.create_message_for_function(
+                secsgem.secs.functions.SecsS01F14([0]),
+                packet.header.system,
+            )
+        )
 
     def testReceivingS01F13(self):
-        self.server.simulate_connect()
+        self.settings.protocol.simulate_connect()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
+        )
 
-        packet = self.server.expect_packet(system_id=system_id)
+        message = self.settings.protocol.expect_message(function=13)
 
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x02)
-        self.assertEqual(packet.header.session_id, 0xffff)
+        self.assertIsNot(message, None)
+        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.stream, 0x01)
+        self.assertEqual(message.header.function, 0x0d)
 
-        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
+        )
 
-        packet = self.server.expect_packet(function=13)
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F14([0]), message.header.system))
 
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x00)
-        self.assertEqual(packet.header.session_id, 0x0)
-        self.assertEqual(packet.header.stream, 0x01)
-        self.assertEqual(packet.header.function, 0x0d)
-
-        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
-
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS01F14([0])))
-
-        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.COMMUNICATING
+        )
 
     def testSendingS01F13(self):
-        self.server.simulate_connect()
+        self.settings.protocol.simulate_connect()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsSelectReqHeader(system_id)))
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
+        )
 
-        packet = self.server.expect_packet(system_id=system_id)
-
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x02)
-        self.assertEqual(packet.header.session_id, 0xffff)
-
-        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
-
-        s01f13ReceivedPacket = self.server.expect_packet(function=13)
+        s01f13ReceivedPacket = self.settings.protocol.expect_message(function=13)
 
         self.assertIsNot(s01f13ReceivedPacket, None)
-        self.assertEqual(s01f13ReceivedPacket.header.s_type.value, 0x00)
         self.assertEqual(s01f13ReceivedPacket.header.session_id, 0x0)
         self.assertEqual(s01f13ReceivedPacket.header.stream, 0x01)
         self.assertEqual(s01f13ReceivedPacket.header.function, 0x0d)
 
-        self.assertEqual(self.client.communication_state.current, "WAIT_CRA")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
+        )
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F13()))
+        system_id = 1
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F13(), system_id))
 
-        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.COMMUNICATING
+        )
 
-        packet = self.server.expect_packet(system_id=system_id)
+        packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x00)
         self.assertEqual(packet.header.session_id, 0x0)
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0e)
 
-        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.COMMUNICATING
+        )
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(s01f13ReceivedPacket.header.system, secsgem.secs.functions.SecsS01F14([0])))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F14([0]), s01f13ReceivedPacket.header.system))
 
-        self.assertEqual(self.client.communication_state.current, "COMMUNICATING")
+        self.assertEqual(
+            self.client.communication_state.current,
+            secsgem.gem.communication_state_machine.CommunicationState.COMMUNICATING
+        )
 
     def testAreYouThereHandler(self):
         self.establishCommunication()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F01()))
+        system_id = 1
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F01(), system_id))
 
-        packet = self.server.expect_packet(system_id=system_id)
+        message = self.settings.protocol.expect_message(system_id=system_id)
 
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x00)
-        self.assertEqual(packet.header.session_id, 0x0)
-        self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.function, 2)
+        self.assertIsNot(message, None)
+        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.stream, 1)
+        self.assertEqual(message.header.function, 2)
 
     def testEstablishCommunicationHandler(self):
         self.establishCommunication()
 
-        system_id = self.server.get_next_system_counter()
-        self.server.simulate_packet(self.server.generate_stream_function_packet(system_id, secsgem.secs.functions.SecsS01F13()))
+        system_id = 1
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F13(), system_id))
 
-        packet = self.server.expect_packet(system_id=system_id)
+        message = self.settings.protocol.expect_message(system_id=system_id)
 
-        self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.s_type.value, 0x00)
-        self.assertEqual(packet.header.session_id, 0x0)
-        self.assertEqual(packet.header.stream, 1)
-        self.assertEqual(packet.header.function, 14)
+        self.assertIsNot(message, None)
+        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.stream, 1)
+        self.assertEqual(message.header.function, 14)
 
     def testWaitForCommunicatingAlreadyCommunicating(self):
         self.establishCommunication()
@@ -217,20 +222,19 @@ class GemHandlerPassiveGroup:
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
-        packet = self.server.expect_packet(stream=7)
+        message = self.settings.protocol.expect_message(stream=7)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.ACCEPTED)))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.ACCEPTED), message.header.system))
 
-        clientCommandThread.join(1)
+        clientCommandThread.join(10)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type.value, 0x00)
-        self.assertEqual(packet.header.session_id, 0x0)
-        self.assertEqual(packet.header.stream, 7)
-        self.assertEqual(packet.header.function, 3)
+        self.assertIsNotNone(message)
+        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.stream, 7)
+        self.assertEqual(message.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = message.data
 
         self.assertEqual(function.PPID.get(), ppid)
         self.assertEqual(function.PPBODY.get(), ppbody)
@@ -245,20 +249,19 @@ class GemHandlerPassiveGroup:
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
-        packet = self.server.expect_packet(stream=7)
+        message = self.settings.protocol.expect_message(stream=7)
 
-        self.server.simulate_packet(self.server.generate_stream_function_packet(packet.header.system, secsgem.secs.functions.SecsS07F06({"PPID": ppid, "PPBODY": ppbody})))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F06({"PPID": ppid, "PPBODY": ppbody}), message.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        self.assertIsNotNone(packet)
-        self.assertEqual(packet.header.s_type.value, 0x00)
-        self.assertEqual(packet.header.session_id, 0x0)
-        self.assertEqual(packet.header.stream, 7)
-        self.assertEqual(packet.header.function, 5)
+        self.assertIsNotNone(message)
+        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.stream, 7)
+        self.assertEqual(message.header.function, 5)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = message.data
 
         self.assertEqual(function.get(), ppid)
 
@@ -268,13 +271,11 @@ class TestGemHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     def setUp(self):
         self.assertIsNotNone(self.__testClass)
 
-        self.server = HsmsTestServer()
+        self.settings = MockSettings(MockProtocol)
 
-        self.client = self.__testClass(self.server.settings)
+        self.client = self.__testClass(self.settings)
 
-        self.server.start()
         self.client.enable()
 
     def tearDown(self):
         self.client.disable()
-        self.server.stop()

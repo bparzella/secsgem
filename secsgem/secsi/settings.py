@@ -29,7 +29,7 @@ class SecsISettings(secsgem.common.Settings):
         >>>
         >>> settings = secsgem.secsi.SecsISettings(port="COM1")
         >>> settings.port
-        'COM1"
+        'COM1'
         >>> settings.speed
         9600
 

@@ -47,20 +47,10 @@ class HsmsTestConnection(secsgem.common.Connection):
 
     """
 
-    def __init__(self, settings: HsmsTestServerSettings, delegate: object):
-        self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-
-        self._settings = settings
-        self._delegate = delegate
+    def __init__(self, settings: HsmsTestServerSettings):
+        super().__init__(settings)
 
         self._enabled = False
-
-        self.disconnecting = False
-
-        self._system_counter = 0
-
-        self._connected = False
-
         self._fail_send = False
 
         self._packets = []
@@ -125,25 +115,31 @@ class HsmsTestServerSettings(secsgem.common.Settings):
             secsgem.common.settings.Setting("session_id", 0, "session / device ID to use for connection")
         ]
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self._last_protocol = None
-
     def create_protocol(self) -> HsmsProtocol:
         """Protocol class for this configuration."""
-        self._last_protocol = HsmsProtocol(self)
-
-        return self._last_protocol
+        return HsmsProtocol(self)
 
     def create_connection(self) -> HsmsTestConnection:
         """Connection class for this configuration."""
-        return self.server.create_connection(self, self._last_protocol)
+        return self.server.create_connection(self)
 
     @property
     def name(self) -> str:
         """Name of this configuration."""
-        return f"HSMS-TestServerSettings"
-    
+        return "HSMS-TestServerSettings"
+
+    def generate_thread_name(self, functionality: str) -> str:
+        """Generate a unique thread name for this configuration and a provided functionality.
+
+        Args:
+            functionality: name of the functionality to generate thread name for
+
+        Returns:
+            generated thread name
+
+        """
+        return f"secsgem_Test_{functionality}"
+
     @property
     def is_active(self) -> bool:
         return self.connect_mode == secsgem.hsms.HsmsConnectMode.ACTIVE
@@ -158,8 +154,8 @@ class HsmsTestServer:
         self.connection = None
         self.connect_mode = connect_mode
 
-    def create_connection(self, settings: HsmsTestServerSettings, protocol: typing.Optional[HsmsProtocol]):
-        connection = HsmsTestConnection(settings, protocol)
+    def create_connection(self, settings: HsmsTestServerSettings):
+        connection = HsmsTestConnection(settings)
         connection.handler = self
 
         self.connection = connection

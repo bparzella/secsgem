@@ -19,11 +19,10 @@ from __future__ import annotations
 import typing
 
 from ._all import secs_streams_functions
+from .base import SecsStreamFunction
 
 if typing.TYPE_CHECKING:
     import secsgem.common
-
-    from .base import SecsStreamFunction
 
 
 class StreamsFunctions:
@@ -87,6 +86,9 @@ class StreamsFunctions:
         func = self.function(message.header.stream, message.header.function)
         if func is None:
             return None
+
+        if isinstance(message.data, SecsStreamFunction):
+            return message.data
 
         function = func()
         function.decode(message.data)

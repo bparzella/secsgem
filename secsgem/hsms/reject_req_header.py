@@ -37,7 +37,7 @@ class HsmsRejectReqHeader(HsmsHeader):
         Example:
             >>> import secsgem.hsms
             >>>
-            >>> secsgem.hsms.HsmsRejectReqHeader(17, 3, 4)
+            >>> secsgem.hsms.HsmsRejectReqHeader(17, secsgem.hsms.HsmsSType.DESELECT_REQ, 4)
             HsmsRejectReqHeader({session_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, \
 system:0x00000011, require_response:False})
         """
