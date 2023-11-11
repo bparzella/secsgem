@@ -64,27 +64,22 @@ class ControlStateMachine(secsgem.common.StateMachine):  # pylint: disable=too-m
             "OFFLINE")
         self.equipment_offline = secsgem.common.State(
             ControlState.EQUIPMENT_OFFLINE,
-            "EQUIPMENT_OFFLINE",
-            parent=self.offline)
+            "EQUIPMENT_OFFLINE")
         self.attempt_online = secsgem.common.State(
             ControlState.ATTEMPT_ONLINE,
-            "ATTEMPT_ONLINE",
-            parent=self.offline)
+            "ATTEMPT_ONLINE")
         self.host_offline = secsgem.common.State(
             ControlState.HOST_OFFLINE,
-            "HOST_OFFLINE",
-            parent=self.offline)
+            "HOST_OFFLINE")
         self.online = secsgem.common.State(
             ControlState.ONLINE,
             "ONLINE")
         self.online_local = secsgem.common.State(
             ControlState.ONLINE_LOCAL,
-            "ONLINE_LOCAL",
-            parent=self.online)
+            "ONLINE_LOCAL")
         self.online_remote = secsgem.common.State(
             ControlState.ONLINE_REMOTE,
-            "ONLINE_REMOTE",
-            parent=self.online)
+            "ONLINE_REMOTE")
 
         # transition 1
         self._current_state: secsgem.common.State = self.init
