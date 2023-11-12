@@ -29,7 +29,6 @@ if typing.TYPE_CHECKING:
     import socket
 
     from .settings import Settings
-    from .timeouts import Timeouts
 
 
 class TcpConnection(Connection):
@@ -63,11 +62,6 @@ class TcpConnection(Connection):
             raise ConnectionError(f"TCP socket is not connected: {self}")
 
         return self._sock
-
-    @property
-    def timeouts(self) -> Timeouts:
-        """Get connection timeouts."""
-        return self._settings.timeouts
 
     def _serialize_data(self):
         """Return data for serialization.

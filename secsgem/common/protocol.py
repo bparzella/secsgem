@@ -32,7 +32,6 @@ if typing.TYPE_CHECKING:
     from .connection import Connection
     from .message import Block, Message
     from .settings import Settings
-    from .timeouts import Timeouts
 
 MessageT = typing.TypeVar("MessageT", bound="Message")
 BlockT = typing.TypeVar("BlockT", bound="Block")
@@ -155,11 +154,6 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
     def disable(self):
         """Disable the connection."""
         self._connection.disable()
-
-    @property
-    def timeouts(self) -> Timeouts:
-        """Property for timeout."""
-        return self._settings.timeouts
 
     @abc.abstractmethod
     def serialize_data(self) -> dict[str, typing.Any]:
@@ -284,7 +278,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
             return None
 
         try:
-            response = response_queue.get(True, self.timeouts.t3)
+            response = response_queue.get(True, self._settings.timeouts.t3)
         except queue.Empty:
             response = None
 

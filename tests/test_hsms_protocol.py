@@ -327,28 +327,28 @@ class TestHsmsProtocolActive(unittest.TestCase):
     def testPacketSendingTimeout(self):
         self.settings.connection.simulate_connect()
 
-        self.client.timeouts.t3 = 0.1
+        self.client._settings.timeouts.t3 = 0.1
 
         self.assertEqual(self.client.send_and_waitfor_response(secsgem.secs.functions.SecsS01F01()), None)
 
     def testSelectReqSendingTimeout(self):
         self.settings.connection.simulate_connect()
 
-        self.client.timeouts.t6 = 0.1
+        self.client._settings.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_select_req(), None)
 
     def testLinktestReqSendingTimeout(self):
         self.settings.connection.simulate_connect()
 
-        self.client.timeouts.t6 = 0.1
+        self.client._settings.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_linktest_req(), None)
 
     def testDeelectReqSendingTimeout(self):
         self.settings.connection.simulate_connect()
 
-        self.client.timeouts.t6 = 0.1
+        self.client._settings.timeouts.t6 = 0.1
 
         self.assertEqual(self.client.send_deselect_req(), None)
 

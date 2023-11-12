@@ -129,14 +129,14 @@ class TcpClientConnection(TcpConnection):
         .. warning:: Do not call this directly, for internal use only.
         """
         # wait for timeout if this is not the first connection
-        if not self.first_connection and not self.__idle(self.timeouts.t5):
+        if not self.first_connection and not self.__idle(self._settings.timeouts.t5):
             return
 
         self.first_connection = False
 
         # try to connect to remote
         while not self.__connect():
-            if not self.__idle(self.timeouts.t5):
+            if not self.__idle(self._settings.timeouts.t5):
                 return
 
     def __connect(self):

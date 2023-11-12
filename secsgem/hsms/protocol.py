@@ -371,7 +371,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             return None
 
         try:
-            response = response_queue.get(True, self.timeouts.t6)
+            response = response_queue.get(True, self._settings.timeouts.t6)
         except queue.Empty:
             response = None
 
@@ -411,7 +411,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             return None
 
         try:
-            response = response_queue.get(True, self.timeouts.t6)
+            response = response_queue.get(True, self._settings.timeouts.t6)
         except queue.Empty:
             response = None
 
@@ -450,7 +450,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             return None
 
         try:
-            response = response_queue.get(True, self.timeouts.t6)
+            response = response_queue.get(True, self._settings.timeouts.t6)
         except queue.Empty:
             response = None
 
