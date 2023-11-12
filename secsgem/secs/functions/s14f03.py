@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 14 function 03."""
 
+from secsgem.secs.data_items import ATTRDATA, ATTRID, OBJID, OBJSPEC, OBJTYPE
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJSPEC
-from secsgem.secs.data_items import OBJTYPE
-from secsgem.secs.data_items import OBJID
-from secsgem.secs.data_items import ATTRID
-from secsgem.secs.data_items import ATTRDATA
 
 
 class SecsS14F03(SecsStreamFunction):
-    """
-    SetAttr request.
+    """SetAttr request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
-    - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
-    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
-    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F03
         {
@@ -55,15 +44,13 @@ class SecsS14F03(SecsStreamFunction):
             ]
         }
 
-    **Example**::
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F03({
         ...       "OBJSPEC": '',
         ...       "OBJTYPE": 'StripMap',
         ...       "OBJID": ['MAP001'],
         ...       "ATTRIBS": [{
-        ...           "ATTRID": "CellStatus", 
+        ...           "ATTRID": "CellStatus",
         ...           "ATTRDATA": "3"}]})
         S14F3 W
           <L [4]
@@ -80,8 +67,13 @@ class SecsS14F03(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+        - :class:`OBJTYPE <secsgem.secs.data_items.OBJTYPE>`
+        - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+        - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+        - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+
     """
 
     _stream = 14

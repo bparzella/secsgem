@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ACKC5(DataItemBase):
-    """
-    Acknowledge code for stream 5.
+    """Acknowledge code for stream 5.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

@@ -14,8 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS numeric variable base type."""
+from __future__ import annotations
+
 import struct
-import typing
 
 from .base import Base
 
@@ -25,15 +26,14 @@ class BaseNumber(Base):
 
     format_code = 0
     text_code = ""
-    _base_type: typing.Union[typing.Type[int], typing.Type[float]] = int
-    _min: typing.Union[int, float] = 0
-    _max: typing.Union[int, float] = 0
+    _base_type: type[int] | type[float] = int
+    _min: int | float = 0
+    _max: int | float = 0
     _bytes = 0
     _struct_code = ""
 
     def __init__(self, value=None, count=-1):
-        """
-        Initialize a numeric secs variable.
+        """Initialize a numeric secs variable.
 
         :param value: initial value
         :type value: list/integer/float
@@ -83,7 +83,7 @@ class BaseNumber(Base):
         return hash(str(self.value))
 
     def _check_single_item_support(self, value):
-        if isinstance(value, float) and self._base_type == int:
+        if isinstance(value, float) and self._base_type is int:
             return False
 
         if isinstance(value, bool):
@@ -109,8 +109,7 @@ class BaseNumber(Base):
         return True
 
     def supports_value(self, value) -> bool:
-        """
-        Check if the current instance supports the provided value.
+        """Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -124,27 +123,20 @@ class BaseNumber(Base):
     def _supports_value_list(self, value) -> bool:
         if 0 <= self.count < len(value):
             return False
-        for item in value:
-            if not self._check_single_item_support(item):
-                return False
-        return True
+        return all(self._check_single_item_support(item) for item in value)
 
     def _supports_value_bytearray(self, value) -> bool:
         if 0 <= self.count < len(value):
             return False
-        for item in value:
-            if item < self._min or item > self._max:
-                return False
-        return True
+        return all(not (item < self._min or item > self._max) for item in value)
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: list/integer/float
         """
-        if isinstance(value, float) and self._base_type == int:
+        if isinstance(value, float) and self._base_type is int:
             raise ValueError(f"Invalid value {value}")
 
         if isinstance(value, (list, tuple)):
@@ -184,8 +176,7 @@ class BaseNumber(Base):
         self.value = new_list
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: list/integer/float
@@ -196,8 +187,7 @@ class BaseNumber(Base):
         return self.value
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -210,8 +200,7 @@ class BaseNumber(Base):
         return result
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string

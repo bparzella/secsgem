@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SV(DataItemBase):
-    """
-    Status variable value.
+    """Status variable value.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

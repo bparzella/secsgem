@@ -15,30 +15,17 @@
 #####################################################################
 """Class for stream 02 function 30."""
 
+from secsgem.secs.data_items import ECDEF, ECID, ECMAX, ECMIN, ECNAME, UNITS
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ECID
-from secsgem.secs.data_items import ECNAME
-from secsgem.secs.data_items import ECMIN
-from secsgem.secs.data_items import ECMAX
-from secsgem.secs.data_items import ECDEF
-from secsgem.secs.data_items import UNITS
 
 
 class SecsS02F30(SecsStreamFunction):
-    """
-    equipment constant namelist.
+    """equipment constant namelist.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ECID <secsgem.secs.data_items.ECID>`
-    - :class:`ECNAME <secsgem.secs.data_items.ECNAME>`
-    - :class:`ECMIN <secsgem.secs.data_items.ECMIN>`
-    - :class:`ECMAX <secsgem.secs.data_items.ECMAX>`
-    - :class:`ECDEF <secsgem.secs.data_items.ECDEF>`
-    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F30
         [
@@ -52,8 +39,6 @@ class SecsS02F30(SecsStreamFunction):
             }
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F30([
@@ -89,8 +74,14 @@ class SecsS02F30(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`ECID <secsgem.secs.data_items.ECID>`
+        - :class:`ECNAME <secsgem.secs.data_items.ECNAME>`
+        - :class:`ECMIN <secsgem.secs.data_items.ECMIN>`
+        - :class:`ECMAX <secsgem.secs.data_items.ECMAX>`
+        - :class:`ECDEF <secsgem.secs.data_items.ECDEF>`
+        - :class:`UNITS <secsgem.secs.data_items.UNITS>`
+
     """
 
     _stream = 2

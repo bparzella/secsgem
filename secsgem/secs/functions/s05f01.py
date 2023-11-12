@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 05 function 01."""
 
+from secsgem.secs.data_items import ALCD, ALID, ALTX
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ALCD
-from secsgem.secs.data_items import ALID
-from secsgem.secs.data_items import ALTX
 
 
 class SecsS05F01(SecsStreamFunction):
-    """
-    alarm report - send.
+    """alarm report - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ALCD <secsgem.secs.data_items.ALCD>`
-    - :class:`ALID <secsgem.secs.data_items.ALID>`
-    - :class:`ALTX <secsgem.secs.data_items.ALTX>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F01
         {
@@ -40,8 +33,6 @@ class SecsS05F01(SecsStreamFunction):
             ALID: U1/U2/U4/U8/I1/I2/I4/I8
             ALTX: A[120]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F01({
@@ -56,8 +47,11 @@ class SecsS05F01(SecsStreamFunction):
             <A "text">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`ALCD <secsgem.secs.data_items.ALCD>`
+        - :class:`ALID <secsgem.secs.data_items.ALID>`
+        - :class:`ALTX <secsgem.secs.data_items.ALTX>`
+
     """
 
     _stream = 5

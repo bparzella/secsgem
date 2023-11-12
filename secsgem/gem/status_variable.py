@@ -18,12 +18,19 @@
 import secsgem.secs
 
 
-class StatusVariable:
+class StatusVariable:  # pylint: disable=too-few-public-methods
     """Status variable definition."""
 
-    def __init__(self, svid, name, unit, value_type, use_callback=True, **kwargs):
-        """
-        Initialize a status variable.
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        svid,
+        name,
+        unit,
+        value_type,
+        use_callback=True,
+        **kwargs,
+    ):
+        """Initialize a status variable.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 

@@ -17,14 +17,13 @@
 
 import unicodedata
 
-from .base_text import BaseText
+import secsgem.common.codec_jis_x_0201  # noqa: F401 pylint: disable=unused-import
 
-import secsgem.common.codec_jis_x_0201  # noqa
+from .base_text import BaseText
 
 
 class JIS8(BaseText):
-    """
-    Secs type for string data.
+    """Secs type for string data.
 
     :param value: initial value
     :type value: string

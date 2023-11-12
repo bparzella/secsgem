@@ -15,26 +15,17 @@
 #####################################################################
 """Class for stream 12 function 11."""
 
+from secsgem.secs.data_items import BINLT, IDTYP, MID, XYPOS
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import XYPOS
-from secsgem.secs.data_items import BINLT
 
 
 class SecsS12F11(SecsStreamFunction):
-    """
-    map data type 3 - send.
+    """map data type 3 - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`XYPOS <secsgem.secs.data_items.XYPOS>`
-    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F11
         {
@@ -48,8 +39,6 @@ class SecsS12F11(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F11({
@@ -74,8 +63,12 @@ class SecsS12F11(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`XYPOS <secsgem.secs.data_items.XYPOS>`
+        - :class:`BINLT <secsgem.secs.data_items.BINLT>`
+
     """
 
     _stream = 12

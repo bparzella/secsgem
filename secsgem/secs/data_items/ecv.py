@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECV(DataItemBase):
-    """
-    Equipment constant value.
+    """Equipment constant value.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

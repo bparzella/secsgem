@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class MID(DataItemBase):
-    """
-    Material ID.
+    """Material ID.
 
     :Types:
        - :class:`String <secsgem.secs.variables.String>`

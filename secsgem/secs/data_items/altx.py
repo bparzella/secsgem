@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ALTX(DataItemBase):
-    """
-    Alarm text.
+    """Alarm text.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 120

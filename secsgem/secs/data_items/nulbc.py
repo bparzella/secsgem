@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class NULBC(DataItemBase):
-    """
-    Column count in dies.
+    """Column count in dies.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

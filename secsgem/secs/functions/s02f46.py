@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 02 function 46."""
 
+from secsgem.secs.data_items import LIMITACK, LIMITID, LVACK, VID, VLAACK
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import VLAACK
-from secsgem.secs.data_items import VID
-from secsgem.secs.data_items import LVACK
-from secsgem.secs.data_items import LIMITID
-from secsgem.secs.data_items import LIMITACK
 
 
 class SecsS02F46(SecsStreamFunction):
-    """
-    Define variable limit attributes - acknowledge.
+    """Define variable limit attributes - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VLAACK <secsgem.secs.data_items.VLAACK>`
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`LVACK <secsgem.secs.data_items.LVACK>`
-    - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
-    - :class:`LIMITACK <secsgem.secs.data_items.LIMITACK>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F46
         {
@@ -54,11 +43,9 @@ class SecsS02F46(SecsStreamFunction):
             ]
         }
 
-    **Example**::
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F46({
-        ...     "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR, 
+        ...     "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR,
         ...     "DATA": [{
         ...         "VID": 2,
         ...         "LVACK": secsgem.secs.data_items.LVACK.VARIABLE_UNKNOWN,
@@ -82,8 +69,13 @@ class SecsS02F46(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`VLAACK <secsgem.secs.data_items.VLAACK>`
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`LVACK <secsgem.secs.data_items.LVACK>`
+        - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
+        - :class:`LIMITACK <secsgem.secs.data_items.LIMITACK>`
+
     """
 
     _stream = 2

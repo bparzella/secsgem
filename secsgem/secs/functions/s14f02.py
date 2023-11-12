@@ -15,30 +15,17 @@
 #####################################################################
 """Class for stream 14 function 02."""
 
+from secsgem.secs.data_items import ATTRDATA, ATTRID, ERRCODE, ERRTEXT, OBJACK, OBJID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import OBJID
-from secsgem.secs.data_items import ATTRID
-from secsgem.secs.data_items import ATTRDATA
-from secsgem.secs.data_items import OBJACK
-from secsgem.secs.data_items import ERRCODE
-from secsgem.secs.data_items import ERRTEXT
 
 
 class SecsS14F02(SecsStreamFunction):
-    """
-    GetAttr data.
+    """GetAttr data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`OBJID <secsgem.secs.data_items.OBJID>`
-    - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
-    - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
-    - :class:`OBJACK <secsgem.secs.data_items.OBJACK>`
-    - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
-    - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F02
         {
@@ -66,8 +53,6 @@ class SecsS14F02(SecsStreamFunction):
                 ]
             }
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS14F02({
@@ -115,8 +100,14 @@ class SecsS14F02(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`OBJID <secsgem.secs.data_items.OBJID>`
+        - :class:`ATTRID <secsgem.secs.data_items.ATTRID>`
+        - :class:`ATTRDATA <secsgem.secs.data_items.ATTRDATA>`
+        - :class:`OBJACK <secsgem.secs.data_items.OBJACK>`
+        - :class:`ERRCODE <secsgem.secs.data_items.ERRCODE>`
+        - :class:`ERRTEXT <secsgem.secs.data_items.ERRTEXT>`
+
     """
 
     _stream = 14

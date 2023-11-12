@@ -14,37 +14,37 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM alarm."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs
 
 
-class Alarm:  # pylint: disable=too-many-instance-attributes
+class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Alarm definition."""
 
-    def __init__(self,
-                 alid: typing.Union[str, int],
-                 name: str,
-                 text: str,
-                 code: int,
-                 ce_on: typing.Union[str, int],
-                 ce_off: typing.Union[str, int],
-                 **kwargs):
-        """
-        Initialize an alarm.
+    def __init__(  # pylint: disable=too-many-arguments
+        self,
+        alid: str | int,
+        name: str,
+        text: str,
+        code: int,
+        ce_on: str | int,
+        ce_off: str | int,
+        **kwargs
+    ):
+        """Initialize an alarm.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
-        :param alid: ID of the alarm
-        :type alid: various
-        :param name: long name of the alarm
-        :type name: string
-        :param text: alarm text
-        :type text: string
-        :param ce_on: collection event for alarm set
-        :type ce_on: types supported by data item CEID
-        :param ce_off: collection event for alarm cleared
-        :type ce_off: types supported by data item CEID
+        Args:
+            alid: ID of the alarm
+            name: long name of the alarm
+            text: alarm text
+            code: alarm code
+            ce_on: collection event for alarm set
+            ce_off: collection event for alarm cleared
+            **kwargs: additional attributes for object
+
         """
         self.alid = alid
         self.name = name
@@ -55,7 +55,7 @@ class Alarm:  # pylint: disable=too-many-instance-attributes
         self.enabled = False
         self.set = False
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.alid, int):
             self.id_type = secsgem.secs.variables.U4

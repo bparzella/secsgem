@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class IDTYP(DataItemBase):
-    """
-    ID type.
+    """ID type.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

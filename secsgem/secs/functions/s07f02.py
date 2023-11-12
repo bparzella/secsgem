@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 07 function 02."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPGNT
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F02(SecsStreamFunction):
-    """
-    process program load - grant.
+    """process program load - grant.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPGNT <secsgem.secs.data_items.PPGNT>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F02
         PPGNT: B[1]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F02(secsgem.secs.data_items.PPGNT.OK)
         S7F2
           <B 0x0> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`PPGNT <secsgem.secs.data_items.PPGNT>`
+
     """
 
     _stream = 7

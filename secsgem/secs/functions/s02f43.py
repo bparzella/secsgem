@@ -15,22 +15,17 @@
 #####################################################################
 """Class for stream 02 function 43."""
 
+from secsgem.secs.data_items import FCNID, STRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import STRID
-from secsgem.secs.data_items import FCNID
 
 
 class SecsS02F43(SecsStreamFunction):
-    """
-    reset spooling streams and functions - send.
+    """reset spooling streams and functions - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`STRID <secsgem.secs.data_items.STRID>`
-    - :class:`FCNID <secsgem.secs.data_items.FCNID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F43
         [
@@ -43,8 +38,6 @@ class SecsS02F43(SecsStreamFunction):
             }
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F43([{"STRID": 1, "FCNID": [10, 20]}, {"STRID": 2, "FCNID": [30, 40]}])
@@ -66,8 +59,10 @@ class SecsS02F43(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`STRID <secsgem.secs.data_items.STRID>`
+        - :class:`FCNID <secsgem.secs.data_items.FCNID>`
+
     """
 
     _stream = 2

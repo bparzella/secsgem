@@ -19,23 +19,17 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F17(SecsStreamFunction):
-    """
-    request online.
+    """request online.
 
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F17
         Header only
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F17()
         S1F17 W .
 
-    :param value: function has no parameters
-    :type value: None
     """
 
     _stream = 1

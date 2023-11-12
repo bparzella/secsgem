@@ -15,29 +15,28 @@
 #####################################################################
 """SECS dynamic variable type."""
 
-from .base import Base
 from .array import Array
+from .base import Base
 from .binary import Binary
 from .boolean import Boolean
+from .f4 import F4
+from .f8 import F8
+from .i1 import I1
+from .i2 import I2
+from .i4 import I4
+from .i8 import I8
 from .string import String
 from .u1 import U1
 from .u2 import U2
 from .u4 import U4
 from .u8 import U8
-from .i1 import I1
-from .i2 import I2
-from .i4 import I4
-from .i8 import I8
-from .f4 import F4
-from .f8 import F8
 
 
 class Dynamic(Base):
     """Variable with interchangable type."""
 
     def __init__(self, types, value=None, count=-1):
-        """
-        Initialize a dynamic secs variable.
+        """Initialize a dynamic secs variable.
 
         :param types: list of supported types, default first. empty means all types are support, String default
         :type types: list of :class:`secsgem.secs.variables.Base` classes
@@ -103,20 +102,18 @@ class Dynamic(Base):
     def preferred_type(self):
         """Get the preferred type."""
         types = []
-        for typ in self.__allowedtypes__:
+        for typ in self.types:
             types += typ.preferred_types
 
         return types[0]
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.Base` class,
         to avoid confusion.
 
-        **Example**::
-
+        Example:
             >>> import secsgem.secs
             >>>
             >>> var = secsgem.secs.variables.Dynamic([secsgem.secs.variables.String,
@@ -156,8 +153,7 @@ class Dynamic(Base):
             self.value.set(value)
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: various
@@ -168,8 +164,7 @@ class Dynamic(Base):
         return None
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -177,8 +172,7 @@ class Dynamic(Base):
         return self.value.encode()
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string
@@ -227,9 +221,8 @@ class Dynamic(Base):
 
         # first try to find the preferred type for the kind of value
         for var_type in var_types:
-            if isinstance(value, tuple(var_type.preferred_types)):
-                if var_type(count=self.count).supports_value(value):
-                    return var_type
+            if isinstance(value, tuple(var_type.preferred_types)) and var_type(count=self.count).supports_value(value):
+                return var_type
 
         # when no preferred type was found, then try to match any available type
         for var_type in var_types:
@@ -245,8 +238,7 @@ class Dynamic(Base):
 
 
 class ANYVALUE(Dynamic):
-    """
-    Dummy data item for generation of unknown types.
+    """Dummy data item for generation of unknown types.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`
@@ -267,8 +259,7 @@ class ANYVALUE(Dynamic):
     """
 
     def __init__(self, value=None):
-        """
-        Initialize an ANYVALUE variable.
+        """Initialize an ANYVALUE variable.
 
         :param value: value of the variable
         """

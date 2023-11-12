@@ -21,8 +21,7 @@ from .base_text import BaseText
 
 
 class String(BaseText):
-    """
-    Secs type for string data.
+    """Secs type for string data.
 
     :param value: initial value
     :type value: string

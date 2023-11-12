@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DSPER(DataItemBase):
-    """
-    Data sample period.
+    """Data sample period.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

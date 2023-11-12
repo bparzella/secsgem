@@ -9,7 +9,7 @@ It also replies to incoming HSMS requests like linktest automatically.
     ...     print "Connected"
     ...
     >>> client = secsgem.hsms.HsmsProtocol("10.211.55.33", 5000, False, 0, "test")
-    >>> client.events.hsms_connected += on_connect
+    >>> client.events.connected += on_connect
     >>> client.enable()
     Connected
     >>> client.send_linktest_req()
@@ -27,11 +27,11 @@ The handler sends the following events:
 +-------------------+----------------------------+
 | Event name        | Description                |
 +===================+============================+
-| hsms_connected    | Connection was established |
+| connected         | Connection was established |
 +-------------------+----------------------------+
-| hsms_selected     | Connection was selected    |
+| communicating     | Connection was selected    |
 +-------------------+----------------------------+
-| hsms_disconnected | Connection was terminated  |
+| disconnected      | Connection was terminated  |
 +-------------------+----------------------------+
 
 For an example on how to use these events see the code fragment above.

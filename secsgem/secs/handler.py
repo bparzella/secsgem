@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,63 +13,49 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Handler for SECS commands. Used in combination with :class:`secsgem.hsms.HsmsConnectionManager`."""
-import copy
+"""Handler for SECS commands."""
+from __future__ import annotations
+
 import logging
-import threading
 import typing
 
 import secsgem.common
 import secsgem.hsms
 
-from . import functions
-
 if typing.TYPE_CHECKING:
+    from ..gem.alarm import Alarm
     from ..gem.collection_event import CollectionEvent
     from ..gem.data_value import DataValue
-    from ..gem.alarm import Alarm
     from ..gem.remote_command import RemoteCommand
 
 
-class SecsHandler:  # pylint: disable=too-many-instance-attributes
-    """
-    Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
+class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
+    """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
 
     Inherit from this class and override required functions.
     """
 
-    def __init__(self, connection: secsgem.common.Protocol):
-        """
-        Initialize a secs handler.
+    def __init__(self, settings: secsgem.common.Settings):
+        """Initialize a secs handler.
 
-        :param connection: connection to use
+        Args:
+            settings: settings defining protocol and connection
+
         """
-        self._protocol = connection
-        self._protocol.events.hsms_packet_received += self._on_hsms_packet_received
-        self._protocol.secs_decode = self.secs_decode
+        self.settings = settings
+
+        self._protocol = settings.create_protocol()
+        self._protocol.events.message_received += self._on_message_received
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
-        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {}
-        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {}
-        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {}
-        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {}
+        self._collection_events: dict[int | str, CollectionEvent] = {}
+        self._data_values: dict[int | str, DataValue] = {}
+        self._alarms: dict[int | str, Alarm] = {}
+        self._remote_commands: dict[int | str, RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
-
-        self.secs_streams_functions = copy.deepcopy(functions.secs_streams_functions)
-
-    @classmethod
-    def hsms(cls, address, port, active, session_id, name, custom_connection_handler=None, **kwargs) -> "SecsHandler":
-        """
-        Initialize a secs handler using a hsms connection.
-
-        All arguments will be passed to the HSMS handler.
-        """
-        return cls(
-            secsgem.hsms.HsmsProtocol(address, port, active, session_id, name, custom_connection_handler),
-            **kwargs)
 
     @staticmethod
     def _generate_sf_callback_name(stream: int, function: int) -> str:
@@ -111,8 +97,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self._callback_handler
 
     def register_stream_function(self, stream: int, function: int, callback):
-        """
-        Register the function callback for stream and function.
+        """Register the function callback for stream and function.
 
         :param stream: stream to register callback for
         :type stream: integer
@@ -125,8 +110,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         setattr(self._callback_handler, name, callback)
 
     def unregister_stream_function(self, stream, function):
-        """
-        Unregister the function callback for stream and function.
+        """Unregister the function callback for stream and function.
 
         :param stream: stream to unregister callback for
         :type stream: integer
@@ -138,12 +122,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def collection_events(self):
-        """
-        Get available collection events.
+        """Get available collection events.
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.collection_events[123] = {'name': 'collectionEventName', 'dvids': [1, 5] }
 
         **Key**
@@ -165,12 +149,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def data_values(self):
-        """
-        Get available data values.
+        """Get available data values.
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.data_values[5] = {'name': 'dataValueName', 'ceid': 123 }
 
         **Key**
@@ -192,12 +176,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def alarms(self):
-        """
-        Get available alarms.
+        """Get available alarms.
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
 
         **Key**
@@ -219,12 +203,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
     @property
     def remote_commands(self):
-        """
-        Get available remote commands.
+        """Get available remote commands.
 
         *Example*::
 
-            >>> handler = SecsHandler.hsms("127.0.0.1", 5000, False, 0, "test")
+            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
+            >>> handler = SecsHandler(settings)
             >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], \
 'ceids': [200, 343]}
 
@@ -255,39 +239,37 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         return self._remote_commands
 
-    def _handle_stream_function(self, packet):
-        sf_callback_index = self._generate_sf_callback_name(packet.header.stream, packet.header.function)
+    def _handle_stream_function(self, message):
+        sf_callback_index = self._generate_sf_callback_name(message.header.stream, message.header.function)
 
         # return S09F05 if no callback present
         if sf_callback_index not in self._callback_handler:
-            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, packet.header)
-            if packet.header.require_response:
-                self.send_response(self.stream_function(9, 5)(packet.header.encode()), packet.header.system)
+            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, message.header)
+            if message.header.require_response:
+                self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
 
             return
 
         try:
             callback = getattr(self._callback_handler, sf_callback_index)
-            result = callback(self, packet)
+            result = callback(self, message)
             if result is not None:
-                self.send_response(result, packet.header.system)
+                self.send_response(result, message.header.system)
         except Exception:  # pylint: disable=broad-except
-            self.logger.exception('Callback aborted because of exception, abort sent')
-            self.send_response(self.stream_function(packet.header.stream, 0)(), packet.header.system)
+            self.logger.exception("Callback aborted because of exception, abort sent")
+            self.send_response(self.stream_function(message.header.stream, 0)(), message.header.system)
 
-    def _on_hsms_packet_received(self, data):
-        """
-        Packet received from hsms layer.
+    def _on_message_received(self, data: dict[str, typing.Any]):
+        """Message received from protocol layer.
 
-        :param data: received data
-        :type data: :class:`secsgem.common.Packet`
+        Args:
+            data: received data
+
         """
-        packet = data["packet"]
+        message = data["message"]
 
         # check if callbacks available for this stream and function
-        threading.Thread(
-            target=self._handle_stream_function, args=(packet, ),
-            name=f"secsgem_secsHandler_callback_S{packet.header.stream}F{packet.header.function}").start()
+        self._handle_stream_function(message)
 
     def disable_ceids(self):
         """Disable all Collection Events."""
@@ -302,8 +284,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
     def list_svs(self, svs=None):
-        """
-        Get list of available Service Variables.
+        """Get list of available Service Variables.
 
         :returns: available Service Variables
         :rtype: list
@@ -313,13 +294,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         if svs is None:
             svs = []
 
-        packet = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_svs(self, svs):
-        """
-        Request contents of supplied Service Variables.
+        """Request contents of supplied Service Variables.
 
         :param svs: Service Variables to request
         :type svs: list
@@ -328,13 +308,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         self.logger.info("Get value of service variables %s", svs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_sv(self, sv_id):
-        """
-        Request contents of one Service Variable.
+        """Request contents of one Service Variable.
 
         :param sv_id: id of Service Variable
         :type sv_id: int
@@ -346,8 +325,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.request_svs([sv_id])[0]
 
     def list_ecs(self, ecs=None):
-        """
-        Get list of available Equipment Constants.
+        """Get list of available Equipment Constants.
 
         :returns: available Equipment Constants
         :rtype: list
@@ -356,13 +334,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
 
         if ecs is None:
             ecs = []
-        packet = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_ecs(self, ecs):
-        """
-        Request contents of supplied Equipment Constants.
+        """Request contents of supplied Equipment Constants.
 
         :param ecs: Equipment Constants to request
         :type ecs: list
@@ -371,13 +348,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         """
         self.logger.info("Get value of equipment constants %s", ecs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
 
-        return self.secs_decode(packet)
+        return self.settings.streams_functions.decode(message)
 
     def request_ec(self, ec_id):
-        """
-        Request contents of one Equipment Constant.
+        """Request contents of one Equipment Constant.
 
         :param ec_id: id of Equipment Constant
         :type ec_id: int
@@ -389,21 +365,19 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.request_ecs([ec_id])
 
     def set_ecs(self, ecs):
-        """
-        Set contents of supplied Equipment Constants.
+        """Set contents of supplied Equipment Constants.
 
         :param ecs: list containing list of id / value pairs
         :type ecs: list
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
-        packet = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
 
-        return self.secs_decode(packet).get()
+        return self.settings.streams_functions.decode(message).get()
 
     def set_ec(self, ec_id, value):
-        """
-        Set contents of one Equipment Constant.
+        """Set contents of one Equipment Constant.
 
         :param ec_id: id of Equipment Constant
         :type ec_id: int
@@ -415,8 +389,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.set_ecs([[ec_id, value]])
 
     def send_equipment_terminal(self, terminal_id, text):
-        """
-        Set text to equipment terminal.
+        """Set text to equipment terminal.
 
         :param terminal_id: ID of terminal
         :type terminal_id: int
@@ -428,32 +401,28 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
     def get_ceid_name(self, ceid):
-        """
-        Get the name of a collection event.
+        """Get the name of a collection event.
 
         :param ceid: ID of collection event
         :type ceid: integer
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if ceid in self._collection_events:
-            if "name" in self._collection_events[ceid]:
-                return self._collection_events[ceid]["name"]
+        if ceid in self._collection_events and "name" in self._collection_events[ceid]:
+            return self._collection_events[ceid]["name"]
 
         return ""
 
     def get_dvid_name(self, dvid):
-        """
-        Get the name of a data value.
+        """Get the name of a data value.
 
         :param dvid: ID of data value
         :type dvid: integer
         :returns: Name of the event or empty string if not found
         :rtype: string
         """
-        if dvid in self._data_values:
-            if "name" in self._data_values[dvid]:
-                return self._data_values[dvid]["name"]
+        if dvid in self._data_values and "name" in self._data_values[dvid]:
+            return self._data_values[dvid]["name"]
 
         return ""
 
@@ -464,8 +433,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
     def stream_function(self, stream, function):
-        """
-        Get class for stream and function.
+        """Get class for stream and function.
 
         :param stream: stream to get function for
         :type stream: int
@@ -474,37 +442,4 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes
         :return: matching stream and function class
         :rtype: secsSxFx class
         """
-        if stream not in self.secs_streams_functions:
-            self.logger.warning("unknown function S%02dF%02d", stream, function)
-            return None
-
-        if function not in self.secs_streams_functions[stream]:
-            self.logger.warning("unknown function S%02dF%02d", stream, function)
-            return None
-
-        return self.secs_streams_functions[stream][function]
-
-    def secs_decode(self, packet):
-        """
-        Get object of decoded stream and function class, or None if no class is available.
-
-        :param packet: packet to get object for
-        :type packet: :class:`secsgem.common.Packet`
-        :return: matching stream and function object
-        :rtype: secsSxFx object
-        """
-        if packet is None:
-            return None
-
-        if packet.header.stream not in self.secs_streams_functions:
-            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-            return None
-
-        if packet.header.function not in self.secs_streams_functions[packet.header.stream]:
-            self.logger.warning("unknown function S%02dF%02d", packet.header.stream, packet.header.function)
-            return None
-
-        function = self.secs_streams_functions[packet.header.stream][packet.header.function]()
-        function.decode(packet.data)
-
-        return function
+        return self.settings.streams_functions.function(stream, function)

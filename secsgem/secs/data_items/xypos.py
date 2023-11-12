@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class XYPOS(DataItemBase):
-    """
-    X/Y coordinate position.
+    """X/Y coordinate position.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

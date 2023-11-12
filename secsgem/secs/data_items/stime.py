@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class STIME(DataItemBase):
-    """
-    Sample time.
+    """Sample time.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

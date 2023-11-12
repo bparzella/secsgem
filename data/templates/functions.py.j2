@@ -15,35 +15,24 @@
 #####################################################################
 """Class for stream {{ "{:02}".format(data.stream) }} function {{ "{:02}".format(data.function) }}."""
 
+{% if data.data_items %}
+from secsgem.secs.data_items import {% for data_item in data.data_items_sorted %}{{ data_item.name }}{{ ", " if not loop.last else "" }}{% endfor +%}
+{% endif %}
 from secsgem.secs.functions.base import SecsStreamFunction
-{% for data_item in data.data_items %}
-from secsgem.secs.data_items import {{ data_item.name }}
-{% endfor %}
 
 
 class Secs{{ data.name }}(SecsStreamFunction):
-    """
-    {{ data.description }}.
+    """{{ data.description }}.
 
-{% if data.extra_help|length > 0 %}
-{{ data.extra_help | indent(4, True) }}
-
-{% endif %}
     {% if data.data_items|length > 0 %}
-    **Data Items**
-
-    {% for data_item in data.data_items %}
-    - :class:`{{ data_item.name }} <secsgem.secs.data_items.{{ data_item.name }}>`
-    {% endfor %}
+    Args:
+        value: parameters for this function (see example)
 
     {% endif %}
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.Secs{{ data.name }}
 {{ data.data_structure_text | indent(8, True) }}
-
-    **Example**::
 
         >>> import secsgem.secs
         {% for sample in data.samples %}
@@ -56,12 +45,16 @@ class Secs{{ data.name }}(SecsStreamFunction):
         {% endfor %}
 
     {% if data.data_items|length > 0 %}
-    :param value: parameters for this function (see example)
-    :type value: {{ data.preferred_type.__name__ }}
-    {% else %}
-    :param value: function has no parameters
-    :type value: None
+    Data Items:
+    {% for data_item in data.data_items %}
+        - :class:`{{ data_item.name }} <secsgem.secs.data_items.{{ data_item.name }}>`
+    {% endfor %}
+
     {% endif %}
+{% if data.extra_help|length > 0 %}
+{{ data.extra_help | indent(4, True) }}
+
+{% endif %}
     """
 
     _stream = {{ data.stream }}

@@ -30,8 +30,8 @@ class SampleHost(secsgem.gem.GemHostHandler):
 
 commLogFileHandler = CommunicationLogFileHandler("log", "h")
 commLogFileHandler.setFormatter(logging.Formatter("%(asctime)s: %(message)s"))
-logging.getLogger("hsms_communication").addHandler(commLogFileHandler)
-logging.getLogger("hsms_communication").propagate = False
+logging.getLogger("communication").addHandler(commLogFileHandler)
+logging.getLogger("communication").propagate = False
 
 logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
 

@@ -1,7 +1,7 @@
 #####################################################################
 # event.py
 #
-# (c) Copyright 2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2016-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,6 +14,8 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains helper functions."""
+from __future__ import annotations
+
 import typing
 
 
@@ -22,19 +24,53 @@ class Event:
 
     def __init__(self) -> None:
         """Initialize the event class."""
-        self._callbacks: typing.List[typing.Callable[[typing.Dict[str, typing.Any]], None]] = []
+        self._callbacks: list[typing.Callable[[dict[str, typing.Any]], None]] = []
 
-    def __iadd__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
-        """Add a new callback to event."""
-        self._callbacks.append(other)
+    def register(self, callback: typing.Callable[[dict[str, typing.Any]], None]) -> None:
+        """Add a new callback to event.
+
+        Args:
+            callback: function to register as callback
+
+        """
+        self._callbacks.append(callback)
+
+    def __iadd__(self, other: typing.Callable[[dict[str, typing.Any]], None]) -> Event:
+        """Add a new callback to event.
+
+        Args:
+            other: function to register as callback
+
+        Returns:
+            updated instance
+
+        """
+        self.register(other)
         return self
 
-    def __isub__(self, other: typing.Callable[[typing.Dict[str, typing.Any]], None]) -> "Event":
-        """Remove a callback from event."""
-        self._callbacks.remove(other)
+    def unregister(self, callback: typing.Callable[[dict[str, typing.Any]], None]) -> None:
+        """Remove a callback from the event.
+
+        Args:
+            callback: function to unregister
+
+        """
+        self._callbacks.remove(callback)
+
+    def __isub__(self, other: typing.Callable[[dict[str, typing.Any]], None]) -> Event:
+        """Remove a callback from event.
+
+        Args:
+            other: function to unregister
+
+        Returns:
+            updated instance
+
+        """
+        self.unregister(other)
         return self
 
-    def __call__(self, data: typing.Dict[str, typing.Any]):
+    def __call__(self, data: dict[str, typing.Any]):
         """Raise the event and call all callbacks."""
         for callback in self._callbacks:
             callback(data)
@@ -53,14 +89,14 @@ class Targets:
 
     def __init__(self) -> None:
         """Initialize the target class."""
-        self._targets: typing.List[object] = []
+        self._targets: list[object] = []
 
-    def __iadd__(self, other: object) -> "Targets":
+    def __iadd__(self, other: object) -> Targets:
         """Add a targets."""
         self._targets.append(other)
         return self
 
-    def __isub__(self, other: object) -> "Targets":
+    def __isub__(self, other: object) -> Targets:
         """Remove a target."""
         self._targets.remove(other)
         return self
@@ -70,7 +106,7 @@ class Targets:
             self._values = values
             self._counter = 0
 
-        def __iter__(self):  # pragma: no cover
+        def __iter__(self):
             """Return the iterator."""
             return self
 
@@ -81,7 +117,7 @@ class Targets:
                 self._counter += 1
                 return self._values[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __iter__(self) -> _TargetsIter:
         """Return the iterator."""
@@ -94,7 +130,7 @@ class EventProducer:
     def __init__(self) -> None:
         """Initialize the event producer class."""
         self._targets = Targets()
-        self._events: typing.Dict[str, Event] = {}
+        self._events: dict[str, Event] = {}
 
     def __getattr__(self, name: str) -> Event:
         """Get an event as member of the EventProducer object."""
@@ -103,29 +139,28 @@ class EventProducer:
 
         return self._events[name]
 
-    def __iadd__(self, other) -> "EventProducer":
+    def __iadd__(self, other) -> EventProducer:
         """Add a the callbacks and targets of another EventProducer to this one."""
-        for event_name in other._events:  # noqa
+        for event_name in other._events:
             if event_name not in self._events:
                 self._events[event_name] = Event()
 
-            for callback in other._events[event_name]._callbacks:  # noqa
+            for callback in other._events[event_name]._callbacks:
                 self._events[event_name] += callback
 
-        for target in other._targets:  # noqa
+        for target in other._targets:
             self._targets += target
         return self
 
-    def fire(self, event: str, data: typing.Dict[str, typing.Any]):
-        """
-        Fire a event.
+    def fire(self, event: str, data: dict[str, typing.Any]):
+        """Fire a event.
 
         calls all the available handlers for a specific event
 
-        :param event: name of the event
-        :type event: string
-        :param data: data connected to this event
-        :type data: dict
+        Args:
+            event: name of the event
+            data: data connected to this event
+
         """
         for target in self._targets:
             generic_handler = getattr(target, "_on_event", None)
@@ -148,7 +183,7 @@ class EventProducer:
             self._keys = list(keys)
             self._counter = 0
 
-        def __iter__(self):  # pragma: no cover
+        def __iter__(self):
             """Return the iterator."""
             return self
 
@@ -159,7 +194,7 @@ class EventProducer:
                 self._counter += 1
                 return self._keys[i]
 
-            raise StopIteration()
+            raise StopIteration
 
     def __iter__(self) -> _EventsIter:
         """Return the iterator."""

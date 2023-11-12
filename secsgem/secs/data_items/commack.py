@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class COMMACK(DataItemBase):
-    """
-    Establish communications acknowledge.
+    """Establish communications acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

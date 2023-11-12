@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class MLCL(DataItemBase):
-    """
-    Message length.
+    """Message length.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

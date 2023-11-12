@@ -16,10 +16,10 @@ When working with a inherited class, events can be implemented by creating membe
         def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
             secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
         
-        def _on_event_hsms_selected(self, connection):
+        def _on_event_communicating(self, connection):
             pass
 
-In this example when the hsms connection state changes to selected the :code:`_on_event_hsms_selected` method will be called.
+In this example when the hsms connection state changes to selected the :code:`_on_event_communicating` method will be called.
 
 A generic representation of the function would be::
     
@@ -43,7 +43,7 @@ Other objects can also be registered using the event member names of the handler
 The :code:`_on_event_<event_name>` and :code:`_on_event` methods are then searched in that object::
 
     class TestClass:
-        def _on_event_hsms_selected(self, connection):
+        def _on_event_communicating(self, connection):
             pass
     
     t = TestClass()
@@ -57,14 +57,14 @@ Registering events
 
 Events can also be registered from outside a class::
 
-    def f_hsms_selected(connection):
+    def f_communicating(connection):
         pass
 
-    handler.events.hsms_selected += f_hsms_selected
+    handler.events.communicating += f_communicating
 
 To unregister simply remove the member::
 
-    handler.events.hsms_selected -= f_hsms_selected
+    handler.events.communicating -= f_communicating
 
 Available events
 ++++++++++++++++

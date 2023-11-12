@@ -1653,6 +1653,7 @@ V:
     - String
     - Binary
   description: Variable data
+  linter_message: "  # pylint: disable=invalid-name"
 
 VID:
   type:

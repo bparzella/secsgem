@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class EXTYPE(DataItemBase):
-    """
-    Exception type.
+    """Exception type.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

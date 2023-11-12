@@ -29,8 +29,7 @@ class BaseText(Base):
     coding = ""
 
     def __init__(self, value="", count=-1):
-        """
-        Initialize a secs text variable.
+        """Initialize a secs text variable.
 
         :param value: initial value
         :type value: string
@@ -66,7 +65,7 @@ class BaseText(Base):
                 if last_char_printable:
                     data += '" ' + hex(ord(output))
                 else:
-                    data += ' ' + hex(ord(output))
+                    data += " " + hex(ord(output))
                 last_char_printable = False
 
         if last_char_printable:
@@ -104,8 +103,7 @@ class BaseText(Base):
         return False
 
     def supports_value(self, value) -> bool:
-        """
-        Check if the current instance supports the provided value.
+        """Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -128,11 +126,7 @@ class BaseText(Base):
         if self.count > 0 and len(value) > self.count:
             return False
 
-        for item in value:
-            if not self._check_single_item_support(item):
-                return False
-
-        return True
+        return all(self._check_single_item_support(item) for item in value)
 
     def _supports_value_bytes(self, value) -> bool:
         if 0 < self.count < len(value):
@@ -156,8 +150,7 @@ class BaseText(Base):
         return True
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: string/integer
@@ -184,8 +177,7 @@ class BaseText(Base):
         self.value = str(value)
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: string
@@ -193,8 +185,7 @@ class BaseText(Base):
         return self.value
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -206,8 +197,7 @@ class BaseText(Base):
         return result
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string

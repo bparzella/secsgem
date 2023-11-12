@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECMIN(DataItemBase):
-    """
-    Equipment constant minimum value.
+    """Equipment constant minimum value.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class PPID(DataItemBase):
-    """
-    Process program ID.
+    """Process program ID.
 
     :Types:
        - :class:`String <secsgem.secs.variables.String>`

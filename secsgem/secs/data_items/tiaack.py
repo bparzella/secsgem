@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TIAACK(DataItemBase):
-    """
-    Equipment acknowledgement code.
+    """Equipment acknowledgement code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

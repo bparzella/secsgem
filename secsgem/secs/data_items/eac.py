@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class EAC(DataItemBase):
-    """
-    Equipment acknowledge code.
+    """Equipment acknowledge code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

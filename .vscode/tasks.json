@@ -9,9 +9,21 @@
             "command": "poetry run pytest"
         },
         {
-            "label": "Run prospector",
+            "label": "Run pylint",
             "type": "shell",
-            "command": "poetry run prospector",
+            "command": "poetry run pylint --recursive=y .",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run mypy",
+            "type": "shell",
+            "command": "poetry run mypy ${workspaceFolder}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Run ruff",
+            "type": "shell",
+            "command": "poetry run ruff check ${workspaceFolder}",
             "problemMatcher": []
         },
         {

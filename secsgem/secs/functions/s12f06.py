@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 12 function 06."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import GRNT1
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F06(SecsStreamFunction):
-    """
-    map transmit - grant.
+    """map transmit - grant.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`GRNT1 <secsgem.secs.data_items.GRNT1>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F06
         GRNT1: B[1]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F06(secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN)
         S12F6
           <B 0x5> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`GRNT1 <secsgem.secs.data_items.GRNT1>`
+
     """
 
     _stream = 12

@@ -14,27 +14,26 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS variable base type."""
-import typing
+from __future__ import annotations
 
 
 class Base:
-    """
-    Base class for SECS variables.
+    """Base class for SECS variables.
 
     Due to the python types, wrapper classes for variables are required.
     If constructor is called with Base or subclass only the value is copied.
     """
 
     format_code = -1
-    preferred_types: typing.Optional[typing.List[typing.Type]]
+    preferred_types: list[type] | None
+
 
     def __init__(self, value=None):
         """Initialize a secs variable."""
         self.value = value
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: various
@@ -42,8 +41,7 @@ class Base:
         raise NotImplementedError("Function set not implemented on " + self.__class__.__name__)
 
     def encode_item_header(self, length):
-        """
-        Encode item header depending on the number of length bytes required.
+        """Encode item header depending on the number of length bytes required.
 
         :param length: number of bytes in data
         :type length: integer
@@ -70,8 +68,7 @@ class Base:
         return bytes(bytearray((format_byte, (length & 0x0000FF))))
 
     def decode_item_header(self, data, text_pos=0):
-        """
-        Encode item header depending on the number of length bytes required.
+        """Encode item header depending on the number of length bytes required.
 
         :param data: encoded data
         :type data: string

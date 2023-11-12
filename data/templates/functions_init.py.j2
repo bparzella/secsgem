@@ -15,24 +15,17 @@
 #####################################################################
 """Module init for SECS stream and functions."""
 from .base import SecsStreamFunction
+from .streams_functions import StreamsFunctions
+
+# isort: split
 
 {% for function in functions %}
 from .{{ function.module_name }} import Secs{{ function.name }}
 {% endfor %}
 
-secs_streams_functions = {
-{% for stream_id, stream in streams_functions.items() %}
-    {{stream_id}}: {
-{% for function_id, function in stream.items() %}
-        {{function_id}}: Secs{{ function.name }},
-{% endfor %}
-    },
-{% endfor %}
-}
-
 __all__ = [
-    "SecsStreamFunction", 
-    "secs_streams_functions",
+    "SecsStreamFunction",
+    "StreamsFunctions",
 {% for function in functions %}
     "Secs{{ function.name }}",
 {% endfor %}

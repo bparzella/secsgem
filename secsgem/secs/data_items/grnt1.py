@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class GRNT1(DataItemBase):
-    """
-    Grant code.
+    """Grant code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

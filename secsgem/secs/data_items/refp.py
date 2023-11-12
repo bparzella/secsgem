@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class REFP(DataItemBase):
-    """
-    Reference point.
+    """Reference point.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

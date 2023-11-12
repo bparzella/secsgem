@@ -31,6 +31,7 @@ class DataItem:
 
         data_item_template = env.get_template('data_items.py.j2')
         data_item_init_template = env.get_template('data_items_init.py.j2')
+        data_item_md_template = env.get_template('data_items.md.j2')
 
         for data_item in data_items:
             print(f"# generate data item {data_item.name}")
@@ -44,6 +45,13 @@ class DataItem:
 
         out_path = target_path / "__init__.py"
         out_path.write_text(init_code)
+
+        md_code = data_item_md_template.render(
+            data_items=data_items,
+        )
+
+        out_path = target_path.parent.parent.parent / "docs" / "reference" / "secs" / "data_items.md"
+        out_path.write_text(md_code)
 
         return last
 
@@ -70,6 +78,14 @@ class DataItem:
             return [self._data["type"]]
 
         return self._data["type"]
+
+    @property
+    def linter_message(self) -> str:
+        """Get the linter message of the data item."""
+        if "linter_message" not in self._data:
+            return ""
+
+        return self._data["linter_message"]
 
     @property
     def single_type(self) -> bool:

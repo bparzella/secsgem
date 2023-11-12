@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 02 function 49."""
 
+from secsgem.secs.data_items import CEPVAL, CPNAME, DATAID, OBJSPEC, RCMD
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import OBJSPEC
-from secsgem.secs.data_items import RCMD
-from secsgem.secs.data_items import CPNAME
-from secsgem.secs.data_items import CEPVAL
 
 
 class SecsS02F49(SecsStreamFunction):
-    """
-    Enhanced remote command.
+    """Enhanced remote command.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
-    - :class:`RCMD <secsgem.secs.data_items.RCMD>`
-    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
-    - :class:`CEPVAL <secsgem.secs.data_items.CEPVAL>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49
         {
@@ -52,13 +41,11 @@ class SecsS02F49(SecsStreamFunction):
             ]
         }
 
-    **Example**::
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F49({
-        ...     "DATAID": 1, 
+        ...     "DATAID": 1,
         ...     "OBJSPEC": 'test',
-        ...     "RCMD": "COMMAND1", 
+        ...     "RCMD": "COMMAND1",
         ...     "PARAMS": [{
         ...         "CPNAME": "CPARAM",
         ...         "CEPVAL": "VALUE"
@@ -76,8 +63,13 @@ class SecsS02F49(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`OBJSPEC <secsgem.secs.data_items.OBJSPEC>`
+        - :class:`RCMD <secsgem.secs.data_items.RCMD>`
+        - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+        - :class:`CEPVAL <secsgem.secs.data_items.CEPVAL>`
+
     """
 
     _stream = 2

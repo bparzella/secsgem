@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ATTRID(DataItemBase):
-    """
-    Object attribute identifier.
+    """Object attribute identifier.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

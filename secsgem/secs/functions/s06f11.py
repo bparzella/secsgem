@@ -15,26 +15,17 @@
 #####################################################################
 """Class for stream 06 function 11."""
 
+from secsgem.secs.data_items import CEID, DATAID, RPTID, V
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import CEID
-from secsgem.secs.data_items import RPTID
-from secsgem.secs.data_items import V
 
 
 class SecsS06F11(SecsStreamFunction):
-    """
-    event report.
+    """event report.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`RPTID <secsgem.secs.data_items.RPTID>`
-    - :class:`V <secsgem.secs.data_items.V>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F11
         {
@@ -51,8 +42,6 @@ class SecsS06F11(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F11({
@@ -76,8 +65,12 @@ class SecsS06F11(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`RPTID <secsgem.secs.data_items.RPTID>`
+        - :class:`V <secsgem.secs.data_items.V>`
+
     """
 
     _stream = 6

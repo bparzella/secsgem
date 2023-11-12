@@ -15,28 +15,23 @@
 #####################################################################
 """Class for stream 01 function 21."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import VID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F21(SecsStreamFunction):
-    """
-    Data variable namelist request.
+    """Data variable namelist request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`VID <secsgem.secs.data_items.VID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F21
         [
             VID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F21([1, "VARIABLEID"])
@@ -46,8 +41,9 @@ class SecsS01F21(SecsStreamFunction):
             <A "VARIABLEID">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`VID <secsgem.secs.data_items.VID>`
+
     """
 
     _stream = 1

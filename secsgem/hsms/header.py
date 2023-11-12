@@ -13,78 +13,110 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Header for the hsms packets."""
+"""Header for the hsms messages."""
+from __future__ import annotations
 
+import enum
 import struct
+import typing
 
 import secsgem.common
 
 
+class HsmsSType(enum.Enum):
+    """HSMS SType enum."""
+
+    DATA_MESSAGE = 0
+    SELECT_REQ = 1
+    SELECT_RSP = 2
+    DESELECT_REQ = 3
+    DESELECT_RSP = 4
+    LINKTEST_REQ = 5
+    LINKTEST_RSP = 6
+    REJECT_REQ = 7
+    SEPARATE_REQ = 9
+
+    @classmethod
+    def names(cls) -> dict[HsmsSType, str]:
+        """Get the names associated with the scode.
+
+        Returns:
+            dictionary of names associated with enum values
+
+        """
+        return {
+            cls.DATA_MESSAGE: "Data.msg",
+            cls.SELECT_REQ: "Select.req",
+            cls.SELECT_RSP: "Select.rsp",
+            cls.DESELECT_REQ: "Deselect.req",
+            cls.DESELECT_RSP: "Deselect.rsp",
+            cls.LINKTEST_REQ: "Linktest.req",
+            cls.LINKTEST_RSP: "Linktest.rsp",
+            cls.REJECT_REQ: "Reject.req",
+            cls.SEPARATE_REQ: "Separate.req",
+        }
+
+    @property
+    def text(self) -> str:
+        """Get the text for the item."""
+        return self.names()[self]
+
+
 class HsmsHeader(secsgem.common.Header):
-    """
-    Generic HSMS header.
+    """Generic HSMS header.
 
     Base for different specific headers
     """
 
-    def __init__(
-            self, 
-            system: int, 
-            session_id: int, 
-            stream: int = 0, 
+    length = 10
+
+    def __init__(  # pylint: disable=too-many-arguments
+            self,
+            system: int,
+            session_id: int,
+            stream: int = 0,
             function: int = 0,
             requires_response: bool = False,
             p_type: int = 0x00,
-            s_type: int = 0x01):
-        """
-        Initialize a hsms header.
+            s_type: HsmsSType = HsmsSType.SELECT_REQ):
+        """Initialize a hsms header.
 
-        :param system: message ID
-        :type system: integer
-        :param session_id: device / session ID
-        :type session_id: integer
-        :param stream: stream
-        :type stream: integer
-        :param function: function
-        :type function: integer
-        :param requires_response: is response required
-        :type requires_response: bool
-        :param p_type: P-Type
-        :type p_type: integer
-        :param s_type: S-Type
-        :type s_type: integer
+        Args:
+            system: message ID
+            session_id: device / session ID
+            stream: stream
+            function: function
+            requires_response: is response required
+            p_type: P-Type
+            s_type: S-Type
 
-        **Example**::
-
+        Example:
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsHeader(3, 100)
             HsmsHeader({session_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
 require_response:False})
+
         """
-        super().__init__(system, session_id, stream, function)
-        self._require_response = requires_response
+        super().__init__(system, session_id, stream, function, requires_response)
         self._p_type = p_type
         self._s_type = s_type
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Generate string representation for an object of this class."""
-        return f'{{session_id:0x{self.session_id:04x}, ' \
-               f'stream:{self.stream:02d}, ' \
-               f'function:{self.function:02d}, ' \
-               f'p_type:0x{self.p_type:02x}, ' \
-               f's_type:0x{self.s_type:02x}, ' \
-               f'system:0x{self.system:08x}, ' \
-               f'require_response:{self.require_response!r}}}'
+        return (
+            f"{{session_id:0x{self.session_id:04x}, "
+            f"stream:{self.stream:02d}, "
+            f"function:{self.function:02d}, "
+            f"p_type:0x{self.p_type:02x}, "
+            f"s_type:0x{self.s_type.value:02x}, "
+            f"system:0x{self.system:08x}, "
+            f"require_response:{self.require_response!r}}}"
+        )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__}({self.__str__()})"
-
-    @property
-    def require_response(self) -> bool:
-        """Get require response flag."""
-        return self._require_response
 
     @property
     def p_type(self) -> int:
@@ -92,19 +124,35 @@ require_response:False})
         return self._p_type
 
     @property
-    def s_type(self) -> int:
+    def s_type(self) -> HsmsSType:
         """Get S-type."""
         return self._s_type
 
-    def encode(self):
+    @property
+    def _as_dictionary(self) -> dict[str, typing.Any]:
+        """Get the data as dictionary.
+
+        Returns:
+            Header data as dictionary.
+
         """
-        Encode header to hsms packet.
+        return {
+            "system": self._system,
+            "session_id": self._session_id,
+            "stream": self._stream,
+            "function": self._function,
+            "requires_response": self._require_response,
+            "p_type": self._p_type,
+            "s_type": self._s_type,
+        }
 
-        :returns: encoded header
-        :rtype: string
+    def encode(self) -> bytes:
+        """Encode header to hsms message.
 
-        **Example**::
+        Returns:
+            encoded header
 
+        Example:
             >>> import secsgem.hsms
             >>> import secsgem.common
             >>>
@@ -123,6 +171,29 @@ require_response:False})
             header_stream,
             self.function,
             self.p_type,
-            self.s_type,
-            self.system
+            self.s_type.value,
+            self.system,
+        )
+
+    @classmethod
+    def decode(cls, data: bytes) -> HsmsHeader:
+        """Decode data to HsmsHeader object.
+
+        Args:
+            data: data to decode
+
+        Returns:
+            new header object
+
+        """
+        res = struct.unpack(">HBBBBL", data)
+
+        return HsmsHeader(
+            res[5],
+            res[0],
+            res[1] & 0b01111111,
+            res[2],
+            (((res[1] & 0b10000000) >> 7) == 1),
+            res[3],
+            HsmsSType(res[4]),
         )

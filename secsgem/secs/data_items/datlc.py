@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DATLC(DataItemBase):
-    """
-    Data location.
+    """Data location.
 
     :Type: :class:`U1 <secsgem.secs.variables.U1>`
 

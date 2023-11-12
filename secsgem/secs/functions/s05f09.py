@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 05 function 09."""
 
+from secsgem.secs.data_items import EXID, EXMESSAGE, EXRECVRA, EXTYPE, TIMESTAMP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TIMESTAMP
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import EXTYPE
-from secsgem.secs.data_items import EXMESSAGE
-from secsgem.secs.data_items import EXRECVRA
 
 
 class SecsS05F09(SecsStreamFunction):
-    """
-    exception post - notify.
+    """exception post - notify.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
-    - :class:`EXID <secsgem.secs.data_items.EXID>`
-    - :class:`EXTYPE <secsgem.secs.data_items.EXTYPE>`
-    - :class:`EXMESSAGE <secsgem.secs.data_items.EXMESSAGE>`
-    - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F09
         {
@@ -49,8 +38,6 @@ class SecsS05F09(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F09({
@@ -71,8 +58,13 @@ class SecsS05F09(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`TIMESTAMP <secsgem.secs.data_items.TIMESTAMP>`
+        - :class:`EXID <secsgem.secs.data_items.EXID>`
+        - :class:`EXTYPE <secsgem.secs.data_items.EXTYPE>`
+        - :class:`EXMESSAGE <secsgem.secs.data_items.EXMESSAGE>`
+        - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
+
     """
 
     _stream = 5

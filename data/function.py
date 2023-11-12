@@ -55,9 +55,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
     sf_regex = re.compile(r"[sS](\d+)[fF](\d+)")
 
     def __init__(
-        self, 
-        name: str, 
-        data: typing.Dict[str, typing.Any], 
+        self,
+        name: str,
+        data: typing.Dict[str, typing.Any],
         data_items: typing.Dict[str, typing.Any]
     ) -> None:
         """Initialize item config."""
@@ -99,6 +99,8 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         function_template = env.get_template('functions.py.j2')
         function_init_template = env.get_template('functions_init.py.j2')
+        function_all_template = env.get_template('functions_all.py.j2')
+        function_md_template = env.get_template("functions.md.j2")
 
         for function in functions:
             last = function.render(function_template, target_path)
@@ -110,6 +112,22 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         out_path = target_path / "__init__.py"
         out_path.write_text(init_code)
+
+        all_code = function_all_template.render(
+            functions=functions,
+            streams_functions=cls.stream_function_dict(functions)
+        )
+
+        out_path = target_path / "_all.py"
+        out_path.write_text(all_code)
+
+        md_code = function_md_template.render(
+            functions=functions,
+            streams_functions=cls.stream_function_dict(functions)
+        )
+
+        out_path = target_path.parent.parent.parent / "docs" / "reference" / "secs" / "functions.md"
+        out_path.write_text(md_code)
 
         return last
 
@@ -235,6 +253,11 @@ class Function:  # pylint: disable=too-many-instance-attributes
         items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
         return items
+
+    @property
+    def data_items_sorted(self) -> typing.List[DataItem]:
+        """Get the data items used sorted alphabetically."""
+        return sorted(self.data_items, key=lambda data_item: data_item.name)
 
     def _find_items(self, structure, items):
         if not isinstance(structure, list):

@@ -26,8 +26,7 @@ class Binary(Base):
     preferred_types = [bytes, bytearray]
 
     def __init__(self, value=None, count=-1):
-        """
-        Initialize a binary secs variable.
+        """Initialize a binary secs variable.
 
         :param value: initial value
         :type value: string/integer
@@ -101,8 +100,7 @@ class Binary(Base):
         return False
 
     def supports_value(self, value) -> bool:
-        """
-        Check if the current instance supports the provided value.
+        """Check if the current instance supports the provided value.
 
         :param value: value to test
         :type value: any
@@ -124,11 +122,7 @@ class Binary(Base):
     def _supports_value_list(self, value) -> bool:
         if self.count > 0 and len(value) > self.count:
             return False
-        for item in value:
-            if not self._check_single_item_support(item):
-                return False
-
-        return True
+        return all(self._check_single_item_support(item) for item in value)
 
     def _supports_value_bytearray(self, value) -> bool:
         if self.count > 0 and len(value) > self.count:
@@ -144,15 +138,14 @@ class Binary(Base):
         if self.count > 0 and len(value) > self.count:
             return False
         try:
-            value.encode('ascii')
+            value.encode("ascii")
         except UnicodeEncodeError:
             return False
 
         return True
 
     def set(self, value):
-        """
-        Set the internal value to the provided value.
+        """Set the internal value to the provided value.
 
         :param value: new value
         :type value: string/integer
@@ -163,7 +156,7 @@ class Binary(Base):
         if isinstance(value, bytes):
             value = bytearray(value)
         elif isinstance(value, str):
-            value = bytearray(value.encode('ascii'))
+            value = bytearray(value.encode("ascii"))
         elif isinstance(value, (list, tuple)):
             value = bytearray(value)
         elif isinstance(value, bytearray):
@@ -183,8 +176,7 @@ class Binary(Base):
         self.value = value
 
     def get(self):
-        """
-        Return the internal value.
+        """Return the internal value.
 
         :returns: internal value
         :rtype: list/integer
@@ -195,8 +187,7 @@ class Binary(Base):
         return bytes(self.value)
 
     def encode(self):
-        """
-        Encode the value to secs data.
+        """Encode the value to secs data.
 
         :returns: encoded data bytes
         :rtype: string
@@ -209,8 +200,7 @@ class Binary(Base):
         return result
 
     def decode(self, data, start=0):
-        """
-        Decode the secs byte data to the value.
+        """Decode the secs byte data to the value.
 
         :param data: encoded data bytes
         :type data: string

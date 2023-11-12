@@ -15,14 +15,15 @@ def py_indent(
     first: bool = False,
     blank: bool = False
 ) -> str:
-    """
-    Return a copy of the string with each line indented by 4 spaces.
+    """Return a copy of the string with each line indented by 4 spaces.
 
     The first line and blank lines are not indented by default.
 
-    :param width: Number of spaces, or a string, to indent by.
-    :param first: Don't skip indenting the first line.
-    :param blank: Don't skip indenting empty lines.
+    Args:
+        text: source text
+        width: Number of spaces, or a string, to indent by.
+        first: Don't skip indenting the first line.
+        blank: Don't skip indenting empty lines.
 
     .. versionchanged:: 3.0
         ``width`` can be a string.

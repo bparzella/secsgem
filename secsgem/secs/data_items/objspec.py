@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class OBJSPEC(DataItemBase):
-    """
-    Specific object instance.
+    """Specific object instance.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

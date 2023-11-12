@@ -15,26 +15,17 @@
 #####################################################################
 """Class for stream 02 function 44."""
 
+from secsgem.secs.data_items import FCNID, RSPACK, STRACK, STRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import RSPACK
-from secsgem.secs.data_items import STRID
-from secsgem.secs.data_items import STRACK
-from secsgem.secs.data_items import FCNID
 
 
 class SecsS02F44(SecsStreamFunction):
-    """
-    reset spooling - acknowledge.
+    """reset spooling - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`RSPACK <secsgem.secs.data_items.RSPACK>`
-    - :class:`STRID <secsgem.secs.data_items.STRID>`
-    - :class:`STRACK <secsgem.secs.data_items.STRACK>`
-    - :class:`FCNID <secsgem.secs.data_items.FCNID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F44
         {
@@ -51,8 +42,6 @@ class SecsS02F44(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F44({
@@ -81,8 +70,12 @@ class SecsS02F44(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`RSPACK <secsgem.secs.data_items.RSPACK>`
+        - :class:`STRID <secsgem.secs.data_items.STRID>`
+        - :class:`STRACK <secsgem.secs.data_items.STRACK>`
+        - :class:`FCNID <secsgem.secs.data_items.FCNID>`
+
     """
 
     _stream = 2

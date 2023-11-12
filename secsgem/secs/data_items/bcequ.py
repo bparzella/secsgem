@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class BCEQU(DataItemBase):
-    """
-    Bin code equivalents.
+    """Bin code equivalents.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

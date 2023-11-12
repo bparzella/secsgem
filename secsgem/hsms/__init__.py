@@ -15,20 +15,27 @@
 #####################################################################
 """module imports."""
 
-from .connectionmanager import HsmsConnectionManager
-from .protocol import HsmsProtocol
-from .packet import HsmsPacket
-from .stream_function_header import HsmsStreamFunctionHeader
-from .separate_req_header import HsmsSeparateReqHeader
-from .reject_req_header import HsmsRejectReqHeader
-from .linktest_rsp_header import HsmsLinktestRspHeader
-from .linktest_req_header import HsmsLinktestReqHeader
-from .deselect_rsp_header import HsmsDeselectRspHeader
-from .deselect_req_header import HsmsDeselectReqHeader
-from .select_rsp_header import HsmsSelectRspHeader
-from .select_req_header import HsmsSelectReqHeader
-from .header import HsmsHeader
+from secsgem.common.settings import DeviceType
 
-__all__ = ["HsmsConnectionManager", "HsmsProtocol", "HsmsPacket", "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader",
-           "HsmsRejectReqHeader", "HsmsLinktestRspHeader", "HsmsLinktestReqHeader", "HsmsDeselectRspHeader",
-           "HsmsDeselectReqHeader", "HsmsSelectRspHeader", "HsmsSelectReqHeader", "HsmsHeader"]
+from .deselect_req_header import HsmsDeselectReqHeader
+from .deselect_rsp_header import HsmsDeselectRspHeader
+from .header import HsmsHeader, HsmsSType
+from .linktest_req_header import HsmsLinktestReqHeader
+from .linktest_rsp_header import HsmsLinktestRspHeader
+from .message import HsmsBlock, HsmsMessage
+from .protocol import HsmsProtocol
+from .reject_req_header import HsmsRejectReqHeader
+from .select_req_header import HsmsSelectReqHeader
+from .select_rsp_header import HsmsSelectRspHeader
+from .separate_req_header import HsmsSeparateReqHeader
+from .settings import HsmsConnectMode, HsmsSettings
+from .stream_function_header import HsmsStreamFunctionHeader
+
+__all__ = [
+    "HsmsProtocol",
+    "HsmsMessage", "HsmsBlock",
+    "HsmsStreamFunctionHeader", "HsmsSeparateReqHeader", "HsmsRejectReqHeader", "HsmsLinktestRspHeader",
+    "HsmsLinktestReqHeader", "HsmsDeselectRspHeader", "HsmsDeselectReqHeader", "HsmsSelectRspHeader",
+    "HsmsSelectReqHeader", "HsmsHeader", "HsmsSType",
+    "HsmsSettings", "HsmsConnectMode", "DeviceType",
+]

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class PRDCT(DataItemBase):
-    """
-    Process die count.
+    """Process die count.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

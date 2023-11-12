@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 07 function 03."""
 
+from secsgem.secs.data_items import PPBODY, PPID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import PPID
-from secsgem.secs.data_items import PPBODY
 
 
 class SecsS07F03(SecsStreamFunction):
-    """
-    process program - send.
+    """process program - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-    - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F03
         {
             PPID: A/B[120]
             PPBODY: U1/U2/U4/U8/I1/I2/I4/I8/A/B
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F03({"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")})
@@ -48,8 +41,10 @@ class SecsS07F03(SecsStreamFunction):
             <B 0x64 0x61 0x74 0x61>
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+        - :class:`PPBODY <secsgem.secs.data_items.PPBODY>`
+
     """
 
     _stream = 7

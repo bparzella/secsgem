@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 01 function 18."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ONLACK
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F18(SecsStreamFunction):
-    """
-    online acknowledge.
+    """online acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ONLACK <secsgem.secs.data_items.ONLACK>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F18
         ONLACK: B[1]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F18(secsgem.secs.data_items.ONLACK.ALREADY_ON)
         S1F18
           <B 0x2> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`ONLACK <secsgem.secs.data_items.ONLACK>`
+
     """
 
     _stream = 1

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class HCACK(DataItemBase):
-    """
-    Host command parameter acknowledge code.
+    """Host command parameter acknowledge code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

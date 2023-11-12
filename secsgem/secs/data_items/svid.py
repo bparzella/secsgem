@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SVID(DataItemBase):
-    """
-    Status variable ID.
+    """Status variable ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

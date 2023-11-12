@@ -15,48 +15,33 @@
 #####################################################################
 """Class for stream 12 function 01."""
 
+from secsgem.secs.data_items import (
+    COLCT,
+    DUTMS,
+    FFROT,
+    FNLOC,
+    IDTYP,
+    MID,
+    NULBC,
+    ORLOC,
+    PRAXI,
+    PRDCT,
+    REFP,
+    ROWCT,
+    RPSEL,
+    XDIES,
+    YDIES,
+)
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import FNLOC
-from secsgem.secs.data_items import FFROT
-from secsgem.secs.data_items import ORLOC
-from secsgem.secs.data_items import RPSEL
-from secsgem.secs.data_items import REFP
-from secsgem.secs.data_items import DUTMS
-from secsgem.secs.data_items import XDIES
-from secsgem.secs.data_items import YDIES
-from secsgem.secs.data_items import ROWCT
-from secsgem.secs.data_items import COLCT
-from secsgem.secs.data_items import NULBC
-from secsgem.secs.data_items import PRDCT
-from secsgem.secs.data_items import PRAXI
 
 
 class SecsS12F01(SecsStreamFunction):
-    """
-    map setup data - send.
+    """map setup data - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
-    - :class:`FFROT <secsgem.secs.data_items.FFROT>`
-    - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
-    - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
-    - :class:`REFP <secsgem.secs.data_items.REFP>`
-    - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
-    - :class:`XDIES <secsgem.secs.data_items.XDIES>`
-    - :class:`YDIES <secsgem.secs.data_items.YDIES>`
-    - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
-    - :class:`COLCT <secsgem.secs.data_items.COLCT>`
-    - :class:`NULBC <secsgem.secs.data_items.NULBC>`
-    - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
-    - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F01
         {
@@ -79,8 +64,6 @@ class SecsS12F01(SecsStreamFunction):
             PRDCT: U1/U2/U4/U8
             PRAXI: B[1]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F01({
@@ -121,8 +104,23 @@ class SecsS12F01(SecsStreamFunction):
             <B 0x0>
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`FNLOC <secsgem.secs.data_items.FNLOC>`
+        - :class:`FFROT <secsgem.secs.data_items.FFROT>`
+        - :class:`ORLOC <secsgem.secs.data_items.ORLOC>`
+        - :class:`RPSEL <secsgem.secs.data_items.RPSEL>`
+        - :class:`REFP <secsgem.secs.data_items.REFP>`
+        - :class:`DUTMS <secsgem.secs.data_items.DUTMS>`
+        - :class:`XDIES <secsgem.secs.data_items.XDIES>`
+        - :class:`YDIES <secsgem.secs.data_items.YDIES>`
+        - :class:`ROWCT <secsgem.secs.data_items.ROWCT>`
+        - :class:`COLCT <secsgem.secs.data_items.COLCT>`
+        - :class:`NULBC <secsgem.secs.data_items.NULBC>`
+        - :class:`PRDCT <secsgem.secs.data_items.PRDCT>`
+        - :class:`PRAXI <secsgem.secs.data_items.PRAXI>`
+
     """
 
     _stream = 12

@@ -14,21 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs.variables
 
 
-class CollectionEvent:
+class CollectionEvent:  # pylint: disable=too-few-public-methods
     """Collection event definition."""
 
     def __init__(self,
-                 ceid: typing.Union[int, str],
+                 ceid: int | str,
                  name: str,
-                 data_values: typing.List[typing.Union[int, str]],
+                 data_values: list[int | str],
                  **kwargs):
-        """
-        Initialize a collection event.
+        """Initialize a collection event.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
@@ -38,18 +37,18 @@ class CollectionEvent:
 
         If use_callbacks is disabled, you can set the value with the value property.
 
-        :param ceid: ID of the collection event
-        :type ceid: various
-        :param name: long name of the collection event
-        :type name: string
-        :param data_values: data values available for this event
-        :type data_values: list of DVIDs
+        Args:
+            ceid: ID of the collection event
+            name: long name of the collection event
+            data_values: data values available for this event
+            **kwargs: additional attributes for object
+
         """
         self.ceid = ceid
         self.name = name
         self.data_values = data_values
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.ceid, int):
             self.id_type = secsgem.secs.variables.U4

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CMDA(DataItemBase):
-    """
-    Command acknowledged code.
+    """Command acknowledged code.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

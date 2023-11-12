@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CEID(DataItemBase):
-    """
-    Collection event ID.
+    """Collection event ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 06 function 23."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import RSDC
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F23(SecsStreamFunction):
-    """
-    Request spooled data.
+    """Request spooled data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`RSDC <secsgem.secs.data_items.RSDC>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F23
         RSDC: U1[1]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F23(secsgem.secs.data_items.RSDC.PURGE)
         S6F23 W
           <U1 1 > .
 
-    :param value: parameters for this function (see example)
-    :type value: int
+    Data Items:
+        - :class:`RSDC <secsgem.secs.data_items.RSDC>`
+
     """
 
     _stream = 6

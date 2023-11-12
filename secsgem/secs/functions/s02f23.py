@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 02 function 23."""
 
+from secsgem.secs.data_items import DSPER, REPGSZ, SVID, TOTSMP, TRID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import TRID
-from secsgem.secs.data_items import DSPER
-from secsgem.secs.data_items import TOTSMP
-from secsgem.secs.data_items import REPGSZ
-from secsgem.secs.data_items import SVID
 
 
 class SecsS02F23(SecsStreamFunction):
-    """
-    Trace initialize.
+    """Trace initialize.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`TRID <secsgem.secs.data_items.TRID>`
-    - :class:`DSPER <secsgem.secs.data_items.DSPER>`
-    - :class:`TOTSMP <secsgem.secs.data_items.TOTSMP>`
-    - :class:`REPGSZ <secsgem.secs.data_items.REPGSZ>`
-    - :class:`SVID <secsgem.secs.data_items.SVID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F23
         {
@@ -49,8 +38,6 @@ class SecsS02F23(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F23({
@@ -71,8 +58,13 @@ class SecsS02F23(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`TRID <secsgem.secs.data_items.TRID>`
+        - :class:`DSPER <secsgem.secs.data_items.DSPER>`
+        - :class:`TOTSMP <secsgem.secs.data_items.TOTSMP>`
+        - :class:`REPGSZ <secsgem.secs.data_items.REPGSZ>`
+        - :class:`SVID <secsgem.secs.data_items.SVID>`
+
     """
 
     _stream = 2

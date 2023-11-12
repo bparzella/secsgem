@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 02 function 29."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import ECID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F29(SecsStreamFunction):
-    """
-    equipment constant namelist - request.
+    """equipment constant namelist - request.
 
-    An empty list will return all available equipment constants.
+    Args:
+        value: parameters for this function (see example)
 
-    **Data Items**
-
-    - :class:`ECID <secsgem.secs.data_items.ECID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F29
         [
             ECID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F29([1, 1337])
@@ -48,8 +41,11 @@ class SecsS02F29(SecsStreamFunction):
             <U2 1337 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`ECID <secsgem.secs.data_items.ECID>`
+
+    An empty list will return all available equipment constants.
+
     """
 
     _stream = 2

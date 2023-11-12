@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ACKA(DataItemBase):
-    """
-    Request success.
+    """Request success.
 
     :Type: :class:`Boolean <secsgem.secs.variables.Boolean>`
     :Length: 1

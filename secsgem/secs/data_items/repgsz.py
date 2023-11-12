@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class REPGSZ(DataItemBase):
-    """
-    Report grouping size.
+    """Report grouping size.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

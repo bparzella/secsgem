@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 05 function 08."""
 
+from secsgem.secs.data_items import ALCD, ALID, ALTX
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import ALCD
-from secsgem.secs.data_items import ALID
-from secsgem.secs.data_items import ALTX
 
 
 class SecsS05F08(SecsStreamFunction):
-    """
-    list enabled alarms - data.
+    """list enabled alarms - data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`ALCD <secsgem.secs.data_items.ALCD>`
-    - :class:`ALID <secsgem.secs.data_items.ALID>`
-    - :class:`ALTX <secsgem.secs.data_items.ALTX>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F08
         [
@@ -43,8 +36,6 @@ class SecsS05F08(SecsStreamFunction):
             }
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F08([
@@ -61,8 +52,11 @@ class SecsS05F08(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`ALCD <secsgem.secs.data_items.ALCD>`
+        - :class:`ALID <secsgem.secs.data_items.ALID>`
+        - :class:`ALTX <secsgem.secs.data_items.ALTX>`
+
     """
 
     _stream = 5

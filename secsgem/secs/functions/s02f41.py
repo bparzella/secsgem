@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 02 function 41."""
 
+from secsgem.secs.data_items import CPNAME, CPVAL, RCMD
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import RCMD
-from secsgem.secs.data_items import CPNAME
-from secsgem.secs.data_items import CPVAL
 
 
 class SecsS02F41(SecsStreamFunction):
-    """
-    host command - send.
+    """host command - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`RCMD <secsgem.secs.data_items.RCMD>`
-    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
-    - :class:`CPVAL <secsgem.secs.data_items.CPVAL>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F41
         {
@@ -45,8 +38,6 @@ class SecsS02F41(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F41({"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"},
@@ -66,8 +57,11 @@ class SecsS02F41(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`RCMD <secsgem.secs.data_items.RCMD>`
+        - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+        - :class:`CPVAL <secsgem.secs.data_items.CPVAL>`
+
     """
 
     _stream = 2

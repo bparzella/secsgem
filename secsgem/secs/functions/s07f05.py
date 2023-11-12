@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 07 function 05."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F05(SecsStreamFunction):
-    """
-    process program - request.
+    """process program - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F05
         PPID: A/B[120]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F05("program")
         S7F5 W
           <A "program"> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+
     """
 
     _stream = 7

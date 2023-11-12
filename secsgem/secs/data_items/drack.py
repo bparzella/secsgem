@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class DRACK(DataItemBase):
-    """
-    Define report acknowledge code.
+    """Define report acknowledge code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

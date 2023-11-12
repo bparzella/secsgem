@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class FFROT(DataItemBase):
-    """
-    Film frame rotation.
+    """Film frame rotation.
 
     In degrees from the bottom CW. (Bottom equals zero degrees.) Zero length indicates not used.
 

@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 01 function 11."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import SVID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F11(SecsStreamFunction):
-    """
-    status variable namelist - request.
+    """status variable namelist - request.
 
-    An empty list will return all available status variables.
+    Args:
+        value: parameters for this function (see example)
 
-    **Data Items**
-
-    - :class:`SVID <secsgem.secs.data_items.SVID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F11
         [
             SVID: U1/U2/U4/U8/I1/I2/I4/I8/A
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F11([1, 1337])
@@ -48,8 +41,11 @@ class SecsS01F11(SecsStreamFunction):
             <U2 1337 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`SVID <secsgem.secs.data_items.SVID>`
+
+    An empty list will return all available status variables.
+
     """
 
     _stream = 1

@@ -15,28 +15,23 @@
 #####################################################################
 """Class for stream 07 function 17."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import PPID
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F17(SecsStreamFunction):
-    """
-    delete process program - send.
+    """delete process program - send.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F17
         [
             PPID: A/B[120]
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F17(["program1", "program2"])
@@ -46,8 +41,9 @@ class SecsS07F17(SecsStreamFunction):
             <A "program2">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+
     """
 
     _stream = 7

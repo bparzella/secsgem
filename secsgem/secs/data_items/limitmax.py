@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class LIMITMAX(DataItemBase):
-    """
-    Maximum allowed for limit.
+    """Maximum allowed for limit.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

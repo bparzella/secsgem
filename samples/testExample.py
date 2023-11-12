@@ -30,9 +30,9 @@ class TestExampleSecsGem(unittest.TestCase):
         self.handler.disable()
 
     def testLinktest(self):
-        result_packet = self.handler.send_linktest_req()
+        result_message = self.handler.send_linktest_req()
 
-        self.assertEqual(result_packet.header.s_type, 6)
-        self.assertEqual(result_packet.header.session_id, 65535)
+        self.assertEqual(result_message.header.s_type.value, 6)
+        self.assertEqual(result_message.header.session_id, 65535)
 
 

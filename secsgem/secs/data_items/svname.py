@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SVNAME(DataItemBase):
-    """
-    Status variable name.
+    """Status variable name.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

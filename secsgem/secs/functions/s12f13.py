@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 12 function 13."""
 
+from secsgem.secs.data_items import IDTYP, MID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
 
 
 class SecsS12F13(SecsStreamFunction):
-    """
-    map data type 1 - request.
+    """map data type 1 - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F13
         {
             MID: A/B[80]
             IDTYP: B[1]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F13({"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER})
@@ -48,8 +41,10 @@ class SecsS12F13(SecsStreamFunction):
             <B 0x0>
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+
     """
 
     _stream = 12

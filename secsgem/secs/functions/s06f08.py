@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 06 function 08."""
 
+from secsgem.secs.data_items import CEID, DATAID, DSID, DVNAME, DVVAL
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import CEID
-from secsgem.secs.data_items import DSID
-from secsgem.secs.data_items import DVNAME
-from secsgem.secs.data_items import DVVAL
 
 
 class SecsS06F08(SecsStreamFunction):
-    """
-    data transfer data.
+    """data transfer data.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`CEID <secsgem.secs.data_items.CEID>`
-    - :class:`DSID <secsgem.secs.data_items.DSID>`
-    - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
-    - :class:`DVVAL <secsgem.secs.data_items.DVVAL>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F08
         {
@@ -56,8 +45,6 @@ class SecsS06F08(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS06F08({
@@ -89,8 +76,13 @@ class SecsS06F08(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`CEID <secsgem.secs.data_items.CEID>`
+        - :class:`DSID <secsgem.secs.data_items.DSID>`
+        - :class:`DVNAME <secsgem.secs.data_items.DVNAME>`
+        - :class:`DVVAL <secsgem.secs.data_items.DVVAL>`
+
     """
 
     _stream = 6

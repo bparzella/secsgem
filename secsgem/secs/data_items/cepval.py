@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CEPVAL(DataItemBase):
-    """
-    Command enhanced parameter value.
+    """Command enhanced parameter value.
 
     :Types:
        - :class:`Array <secsgem.secs.variables.Array>`

@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class UNITS(DataItemBase):
-    """
-    Units identifier.
+    """Units identifier.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
 

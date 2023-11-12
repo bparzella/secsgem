@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ERRTEXT(DataItemBase):
-    """
-    Error description for error code.
+    """Error description for error code.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 120

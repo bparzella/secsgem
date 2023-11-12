@@ -13,23 +13,104 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""timout class."""
+"""Timeout class."""
+from __future__ import annotations
+
+
+class _Timeout:
+    def __init__(self, name: str, default: float, help_text: str) -> None:
+        self._name = name
+        self._default = default
+        self._help = help_text
+
+    @property
+    def name(self) -> str:
+        """Get the timeout name."""
+        return self._name
+
+    @property
+    def default(self) -> float:
+        """Get the default timeout value."""
+        return self._default
+
+    @property
+    def help(self) -> str:
+        """Get the help text for the timeout."""
+        return self._help
 
 
 class Timeouts:
-    """Timeouts."""
+    r"""Timeouts.
 
-    T3 = 45.0
-    T5 = 10.0
-    T6 = 5.0
+    Example:
+        >>> import secsgem.common
+        >>> timeouts = secsgem.common.Timeouts(t3=60.0)
+        >>> timeouts.t3
+        60.0
+        >>> timeouts.t4
+        10.0
 
-    def __init__(self) -> None:
-        """Timout initializer."""
-        # Reply Timeout
-        self.t3 = self.T3  # pylint: disable=invalid-name
+    .. exec::
+        import secsgem.common.timeouts
 
-        # Connect Separation Time
-        self.t5 = self.T5  # pylint: disable=invalid-name
+        for timeout in secsgem.common.timeouts.Timeouts._timeouts():
+            print(f".. attribute:: {timeout.name}\n\n"
+                    f"   :type: {timeout.default.__class__.__name__}\n"
+                    f"   :value: {timeout.default}\n"
+                    f"   {timeout.help}")
 
-        # Control Transaction Timeout
-        self.t6 = self.T6  # pylint: disable=invalid-name
+    """
+
+    @classmethod
+    def timeouts(cls) -> list[_Timeout]:
+        """Get a list of default timeouts."""
+        return [
+            _Timeout("t1", 5.0, "Inter-Character Timeout"),
+            _Timeout("t2", 100.0, "Protocol Timeout"),
+            _Timeout("t3", 45.0, "Reply Timeout"),
+            _Timeout("t4", 10.0, "Inter-Block Timeout"),
+            _Timeout("t5", 10.0, "Connect Separation Time"),
+            _Timeout("t6", 5.0, "Control Transaction Timeout"),
+            _Timeout("t7", 8.0, "Not Selected Timeout"),
+            _Timeout("t8", 5.0, "Network Intercharacter Timeout"),
+        ]
+
+    def __init__(self, **kwargs) -> None:
+        """Timout initializer.
+
+        All arguments are optional.
+        The default value will be used, when an argument is omitted.
+
+        Args:
+            **kwargs: keyword arguments, see below
+
+        Keyword Args:
+            t1: Inter-Character Timeout
+            t2: Protocol Timeout
+            t3: Reply Timeout
+            t4: Inter-Block Timeout
+            t5: Connect Separation Time
+            t6: Control Transaction Timeout
+            t7: Not Selected Timeout
+            t8: Network Intercharacter Timeout
+
+        """
+        self._data = {}
+
+        for timeout in self.timeouts():
+            self._data[timeout.name] = kwargs.get(timeout.name, timeout.default)
+
+    def __getattr__(self, name: str):
+        """Get an attribute.
+
+        Args:
+            name: attribute name
+
+        Returns:
+            attribute value
+
+        """
+        if name not in self._data:
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
+        return self._data[name]

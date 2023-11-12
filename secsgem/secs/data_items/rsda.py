@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class RSDA(DataItemBase):
-    """
-    Request spooled data acknowledge.
+    """Request spooled data acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

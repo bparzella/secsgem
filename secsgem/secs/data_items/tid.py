@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TID(DataItemBase):
-    """
-    Terminal ID.
+    """Terminal ID.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

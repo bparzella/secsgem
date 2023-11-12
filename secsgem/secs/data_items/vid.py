@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class VID(DataItemBase):
-    """
-    Variable ID.
+    """Variable ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

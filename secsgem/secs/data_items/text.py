@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TEXT(DataItemBase):
-    """
-    Line of characters.
+    """Line of characters.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

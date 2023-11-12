@@ -14,32 +14,32 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event report."""
-import typing
+from __future__ import annotations
 
 import secsgem.secs
 
 
-class CollectionEventReport:
+class CollectionEventReport:  # pylint: disable=too-few-public-methods
     """Report definition for registered collection events."""
 
     def __init__(self,
-                 rptid: typing.Union[int, str],
-                 variables: typing.List[typing.Union[int, str]], 
+                 rptid: int | str,
+                 variables: list[int | str],
                  **kwargs):
-        """
-        Initialize a collection event report.
+        """Initialize a collection event report.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.
 
-        :param rptid: ID of the report
-        :type rptid: various
-        :param vars: long name of the collection event
-        :type vars: string
+        Args:
+            rptid: ID of the report
+            variables: long name of the collection event
+            **kwargs: additional attributes for object
+
         """
         self.rptid = rptid
         self.vars = variables
 
-        self.id_type: typing.Type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.rptid, int):
             self.id_type = secsgem.secs.variables.U4

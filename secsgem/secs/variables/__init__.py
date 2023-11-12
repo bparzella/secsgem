@@ -15,23 +15,20 @@
 #####################################################################
 """SECS variable types."""
 
-from .base import Base
-from .dynamic import Dynamic
-
 from .array import Array
-from .list_type import List
+from .base import Base
 from .binary import Binary
 from .boolean import Boolean
-
-from .string import String
-from .jis8 import JIS8
-
+from .dynamic import Dynamic
 from .f4 import F4
 from .f8 import F8
 from .i1 import I1
 from .i2 import I2
 from .i4 import I4
 from .i8 import I8
+from .jis8 import JIS8
+from .list_type import List
+from .string import String
 from .u1 import U1
 from .u2 import U2
 from .u4 import U4
@@ -55,5 +52,5 @@ __all__ = [
     "U1",
     "U2",
     "U4",
-    "U8"
+    "U8",
 ]

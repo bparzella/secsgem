@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class TIMESTAMP(DataItemBase):
-    """
-    Timestamp.
+    """Timestamp.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
     :Length: 32

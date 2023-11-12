@@ -6,5 +6,4 @@ HSMS
    hsms/packets
    hsms/connections
    hsms/handler
-   hsms/connectionmanager
    hsms/settings

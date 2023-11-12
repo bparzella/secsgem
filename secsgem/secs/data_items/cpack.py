@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CPACK(DataItemBase):
-    """
-    Command parameter acknowledge code.
+    """Command parameter acknowledge code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 07 function 01."""
 
+from secsgem.secs.data_items import LENGTH, PPID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import PPID
-from secsgem.secs.data_items import LENGTH
 
 
 class SecsS07F01(SecsStreamFunction):
-    """
-    process program load - inquire.
+    """process program load - inquire.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`PPID <secsgem.secs.data_items.PPID>`
-    - :class:`LENGTH <secsgem.secs.data_items.LENGTH>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F01
         {
             PPID: A/B[120]
             LENGTH: U1/U2/U4/U8/I1/I2/I4/I8
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS07F01({"PPID": "program", "LENGTH": 4})
@@ -48,8 +41,10 @@ class SecsS07F01(SecsStreamFunction):
             <U1 4 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`PPID <secsgem.secs.data_items.PPID>`
+        - :class:`LENGTH <secsgem.secs.data_items.LENGTH>`
+
     """
 
     _stream = 7

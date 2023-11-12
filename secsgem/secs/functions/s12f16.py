@@ -15,26 +15,17 @@
 #####################################################################
 """Class for stream 12 function 16."""
 
+from secsgem.secs.data_items import BINLT, IDTYP, MID, STRP
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import MID
-from secsgem.secs.data_items import IDTYP
-from secsgem.secs.data_items import STRP
-from secsgem.secs.data_items import BINLT
 
 
 class SecsS12F16(SecsStreamFunction):
-    """
-    map data type 2.
+    """map data type 2.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MID <secsgem.secs.data_items.MID>`
-    - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
-    - :class:`STRP <secsgem.secs.data_items.STRP>`
-    - :class:`BINLT <secsgem.secs.data_items.BINLT>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F16
         {
@@ -43,8 +34,6 @@ class SecsS12F16(SecsStreamFunction):
             STRP: I1/I2/I4/I8[2]
             BINLT: U1/A
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS12F16({
@@ -60,8 +49,12 @@ class SecsS12F16(SecsStreamFunction):
             <U1 1 2 3 4 5 6 >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`MID <secsgem.secs.data_items.MID>`
+        - :class:`IDTYP <secsgem.secs.data_items.IDTYP>`
+        - :class:`STRP <secsgem.secs.data_items.STRP>`
+        - :class:`BINLT <secsgem.secs.data_items.BINLT>`
+
     """
 
     _stream = 12

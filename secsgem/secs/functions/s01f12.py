@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 01 function 12."""
 
+from secsgem.secs.data_items import SVID, SVNAME, UNITS
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import SVID
-from secsgem.secs.data_items import SVNAME
-from secsgem.secs.data_items import UNITS
 
 
 class SecsS01F12(SecsStreamFunction):
-    """
-    status variable namelist - reply.
+    """status variable namelist - reply.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`SVID <secsgem.secs.data_items.SVID>`
-    - :class:`SVNAME <secsgem.secs.data_items.SVNAME>`
-    - :class:`UNITS <secsgem.secs.data_items.UNITS>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F12
         [
@@ -43,8 +36,6 @@ class SecsS01F12(SecsStreamFunction):
             }
             ...
         ]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS01F12([{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"},
@@ -63,8 +54,11 @@ class SecsS01F12(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: list
+    Data Items:
+        - :class:`SVID <secsgem.secs.data_items.SVID>`
+        - :class:`SVNAME <secsgem.secs.data_items.SVNAME>`
+        - :class:`UNITS <secsgem.secs.data_items.UNITS>`
+
     """
 
     _stream = 1

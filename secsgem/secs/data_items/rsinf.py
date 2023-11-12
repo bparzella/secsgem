@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class RSINF(DataItemBase):
-    """
-    Starting location.
+    """Starting location.
 
     :Types:
        - :class:`I1 <secsgem.secs.variables.I1>`

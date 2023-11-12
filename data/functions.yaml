@@ -30,7 +30,7 @@ S01F02:
   reply_required: False
   multi_block: False
   structure: [MDLN]
-  sample_data: 
+  sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H
     - data: ''
@@ -101,7 +101,7 @@ S01F13:
   reply_required: True
   multi_block: False
   structure: [MDLN]
-  sample_data: 
+  sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H
     - data: ''
@@ -129,7 +129,7 @@ S01F14:
   reply_required: False
   multi_block: False
   structure: [COMMACK, [MDLN]]
-  sample_data: |- 
+  sample_data: |-
     {"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED,
     "MDLN": ["secsgem", "0.0.6"]}
   extra_help: |-
@@ -269,7 +269,7 @@ S02F15:
   reply_required: True
   multi_block: False
   structure: [[ECID, ECV]]
-  sample_data: |- 
+  sample_data: |-
     [
     {"ECID": 1, "ECV": secsgem.secs.variables.U4(10)},
     {"ECID": "1337", "ECV": "text"}]
@@ -387,7 +387,7 @@ S02F30:
   reply_required: False
   multi_block: True
   structure: [[ECID, ECNAME, ECMIN, ECMAX, ECDEF, UNITS]]
-  sample_data: |- 
+  sample_data: |-
     [
     {"ECID": 1,
       "ECNAME": "EC1",
@@ -410,7 +410,7 @@ S02F33:
   reply_required: True
   multi_block: True
   structure: [DATAID, [[RPTID, [VID]]]]
-  sample_data: |- 
+  sample_data: |-
     {"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]},
     {"RPTID": 1001, "VID": [1, 2355]}]}
 
@@ -526,7 +526,7 @@ S02F45:
   structure: [DATAID, [[VID, [[LIMITID, [UPPERDB, LOWERDB]]]]]]
   sample_data: |-
     {
-    "DATAID": 1, 
+    "DATAID": 1,
     "DATA": [{
         "VID": 2,
         "DATA": [{
@@ -545,7 +545,7 @@ S02F46:
   structure: [VLAACK, [[VID, LVACK, [LIMITID, LIMITACK]]]]
   sample_data: |-
     {
-    "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR, 
+    "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR,
     "DATA": [{
         "VID": 2,
         "LVACK": secsgem.secs.data_items.LVACK.VARIABLE_UNKNOWN,
@@ -575,7 +575,7 @@ S02F48:
   structure: [[VID, [UNITS, LIMITMIN, LIMITMAX, [[LIMITID, UPPERDB, LOWERDB ]]]]]
   sample_data: |-
     [{
-    "VID": 1, 
+    "VID": 1,
     "DATA": {
         "UNITS": "meters",
         "LIMITMIN": 10,
@@ -597,9 +597,9 @@ S02F49:
   structure: [DATAID, OBJSPEC, RCMD, [["PARAMS", CPNAME, CEPVAL]]]
   sample_data: |-
     {
-    "DATAID": 1, 
+    "DATAID": 1,
     "OBJSPEC": 'test',
-    "RCMD": "COMMAND1", 
+    "RCMD": "COMMAND1",
     "PARAMS": [{
         "CPNAME": "CPARAM",
         "CEPVAL": "VALUE"
@@ -1614,7 +1614,7 @@ S14F03:
       "OBJTYPE": 'StripMap',
       "OBJID": ['MAP001'],
       "ATTRIBS": [{
-          "ATTRID": "CellStatus", 
+          "ATTRID": "CellStatus",
           "ATTRDATA": "3"}]}
 
 S14F04:

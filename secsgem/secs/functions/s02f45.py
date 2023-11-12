@@ -15,28 +15,17 @@
 #####################################################################
 """Class for stream 02 function 45."""
 
+from secsgem.secs.data_items import DATAID, LIMITID, LOWERDB, UPPERDB, VID
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import DATAID
-from secsgem.secs.data_items import VID
-from secsgem.secs.data_items import LIMITID
-from secsgem.secs.data_items import UPPERDB
-from secsgem.secs.data_items import LOWERDB
 
 
 class SecsS02F45(SecsStreamFunction):
-    """
-    Define variable limit attributes.
+    """Define variable limit attributes.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`DATAID <secsgem.secs.data_items.DATAID>`
-    - :class:`VID <secsgem.secs.data_items.VID>`
-    - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
-    - :class:`UPPERDB <secsgem.secs.data_items.UPPERDB>`
-    - :class:`LOWERDB <secsgem.secs.data_items.LOWERDB>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F45
         {
@@ -59,11 +48,9 @@ class SecsS02F45(SecsStreamFunction):
             ]
         }
 
-    **Example**::
-
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F45({
-        ...     "DATAID": 1, 
+        ...     "DATAID": 1,
         ...     "DATA": [{
         ...         "VID": 2,
         ...         "DATA": [{
@@ -90,8 +77,13 @@ class SecsS02F45(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`DATAID <secsgem.secs.data_items.DATAID>`
+        - :class:`VID <secsgem.secs.data_items.VID>`
+        - :class:`LIMITID <secsgem.secs.data_items.LIMITID>`
+        - :class:`UPPERDB <secsgem.secs.data_items.UPPERDB>`
+        - :class:`LOWERDB <secsgem.secs.data_items.LOWERDB>`
+
     """
 
     _stream = 2

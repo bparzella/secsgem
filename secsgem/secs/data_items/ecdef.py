@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ECDEF(DataItemBase):
-    """
-    Equipment constant default value.
+    """Equipment constant default value.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

@@ -1,7 +1,7 @@
 #####################################################################
 # equipmenthandler.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,25 +15,31 @@
 #####################################################################
 # pylint: disable=too-many-lines
 """Handler for GEM equipment."""
-from datetime import datetime
+from __future__ import annotations
+
+import threading
 import typing
+from datetime import datetime
 
 from dateutil.tz import tzlocal
 
 import secsgem.common
-import secsgem.secs.variables
 import secsgem.secs.data_items
+import secsgem.secs.variables
 
-from .status_variable import StatusVariable
-from .alarm import Alarm
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
-from .data_value import DataValue
+from .communication_state_machine import CommunicationState
+from .control_state_machine import ControlState, ControlStateMachine
 from .equipment_constant import EquipmentConstant
-from .remote_command import RemoteCommand
 from .handler import GemHandler
+from .remote_command import RemoteCommand
+from .status_variable import StatusVariable
 
+if typing.TYPE_CHECKING:
+    from .alarm import Alarm
+    from .data_value import DataValue
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
 ECID_TIME_FORMAT = 2
@@ -55,38 +61,31 @@ RCMD_START = "START"
 RCMD_STOP = "STOP"
 
 
-class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes
+class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
-                 connection: secsgem.common.Protocol,
+                 settings: secsgem.common.Settings,
                  initial_control_state: str = "ATTEMPT_ONLINE",
                  initial_online_control_state: str = "REMOTE"):
-        """
-        Initialize a gem equipment handler.
+        """Initialize a gem equipment handler.
 
-        :param connection: Base connection
-        :type address: string
-        :param initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
-        "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-        :type initial_control_state: string
+        Args:
+            settings: communication layer settings
+            initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
+            "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
+            initial_online_control_state: initial state for online control state model
         """
-        super().__init__(connection)
+        super().__init__(settings)
 
         self._is_host = False
 
-        self._initial_control_states = ["EQUIPMENT_OFFLINE", "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
-        self._initial_control_state = initial_control_state
-
-        self._online_control_states = ["LOCAL", "REMOTE"]
-        self._online_control_state = initial_online_control_state
-
         self._time_format = 1
 
-        self._data_values: typing.Dict[typing.Union[int, str], DataValue] = {
+        self._data_values: dict[int | str, DataValue] = {
         }
 
-        self._status_variables: typing.Dict[typing.Union[int, str], StatusVariable] = {
+        self._status_variables: dict[int | str, StatusVariable] = {
             SVID_CLOCK: StatusVariable(SVID_CLOCK, "Clock", "", secsgem.secs.variables.String),
             SVID_CONTROL_STATE: StatusVariable(SVID_CONTROL_STATE, "ControlState", "", secsgem.secs.variables.Binary),
             SVID_EVENTS_ENABLED: StatusVariable(SVID_EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.variables.Array),
@@ -94,7 +93,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             SVID_ALARMS_SET: StatusVariable(SVID_ALARMS_SET, "AlarmsSet", "", secsgem.secs.variables.Array),
         }
 
-        self._collection_events: typing.Dict[typing.Union[int, str], CollectionEvent] = {
+        self._collection_events: dict[int | str, CollectionEvent] = {
             CEID_EQUIPMENT_OFFLINE: CollectionEvent(CEID_EQUIPMENT_OFFLINE, "EquipmentOffline", []),
             CEID_CONTROL_STATE_LOCAL: CollectionEvent(CEID_CONTROL_STATE_LOCAL, "ControlStateLocal", []),
             CEID_CONTROL_STATE_REMOTE: CollectionEvent(CEID_CONTROL_STATE_REMOTE, "ControlStateRemote", []),
@@ -102,90 +101,60 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             CEID_CMD_STOP_DONE: CollectionEvent(CEID_CMD_STOP_DONE, "CmdStopDone", []),
         }
 
-        self._equipment_constants: typing.Dict[typing.Union[int, str], EquipmentConstant] = {
+        self._equipment_constants: dict[int | str, EquipmentConstant] = {
             ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT: EquipmentConstant(ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
                                                                      "sec", secsgem.secs.variables.I2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4),
         }
 
-        self._alarms: typing.Dict[typing.Union[int, str], Alarm] = {
+        self._alarms: dict[int | str, Alarm] = {
         }
 
-        self._remote_commands: typing.Dict[typing.Union[int, str], RemoteCommand] = {
+        self._remote_commands: dict[int | str, RemoteCommand] = {
             RCMD_START: RemoteCommand(RCMD_START, "Start", [], CEID_CMD_START_DONE),
             RCMD_STOP: RemoteCommand(RCMD_STOP, "Stop", [], CEID_CMD_STOP_DONE),
         }
 
-        self._registered_reports: typing.Dict[typing.Union[int, str], CollectionEventReport] = {}
-        self._registered_collection_events: typing.Dict[typing.Union[int, str], CollectionEventLink] = {}
+        self._registered_reports: dict[int | str, CollectionEventReport] = {}
+        self._registered_collection_events: dict[int | str, CollectionEventLink] = {}
 
-        self._control_state = secsgem.common.Fysom({
-            'initial': "INIT",
-            'events': [
-                {'name': 'start', 'src': 'INIT', 'dst': 'CONTROL'},  # 1
-                {'name': 'initial_offline', 'src': 'CONTROL', 'dst': 'OFFLINE'},  # 1
-                {'name': 'initial_equipment_offline', 'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
-                {'name': 'initial_attempt_online', 'src': 'OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 2
-                {'name': 'initial_host_offline', 'src': 'OFFLINE', 'dst': 'HOST_OFFLINE'},  # 2
-                {'name': 'switch_online', 'src': 'EQUIPMENT_OFFLINE', 'dst': 'ATTEMPT_ONLINE'},  # 3
-                {'name': 'attempt_online_fail_equipment_offline', 'src': 'ATTEMPT_ONLINE',
-                 'dst': 'EQUIPMENT_OFFLINE'},  # 4
-                {'name': 'attempt_online_fail_host_offline', 'src': 'ATTEMPT_ONLINE', 'dst': 'HOST_OFFLINE'},  # 4
-                {'name': 'attempt_online_success', 'src': 'ATTEMPT_ONLINE', 'dst': 'ONLINE'},  # 5
-                {'name': 'switch_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 'dst': 'EQUIPMENT_OFFLINE'},  # 6, 12
-                {'name': 'initial_online', 'src': 'CONTROL', 'dst': 'ONLINE'},  # 1
-                {'name': 'initial_online_local', 'src': 'ONLINE', 'dst': 'ONLINE_LOCAL'},  # 7
-                {'name': 'initial_online_remote', 'src': 'ONLINE', 'dst': 'ONLINE_REMOTE'},  # 7
-                {'name': 'switch_online_local', 'src': 'ONLINE_REMOTE', 'dst': 'ONLINE_LOCAL'},  # 8
-                {'name': 'switch_online_remote', 'src': 'ONLINE_LOCAL', 'dst': 'ONLINE_REMOTE'},  # 9
-                {'name': 'remote_offline', 'src': ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"],
-                 'dst': 'HOST_OFFLINE'},  # 10
-                {'name': 'remote_online', 'src': 'HOST_OFFLINE', 'dst': 'ONLINE'},  # 11
-            ],
-            'callbacks': {
-                'onCONTROL': self._on_control_state_control,  # 1, forward online/offline depending on configuration
-                'onOFFLINE': self._on_control_state_offline,  # 2, forward to configured offline state
-                'onATTEMPT_ONLINE': self._on_control_state_attempt_online,  # 3, send S01E01
-                'onONLINE': self._on_control_state_online,  # 7, forward to configured online state
-                'oninitial_online_local': self._on_control_state_initial_online_local,  # 7, send collection event
-                'onswitch_online_local': self._on_control_state_initial_online_local,  # 8, send collection event
-                'oninitial_online_remote': self._on_control_state_initial_online_remote,  # 8, send collection event
-                'onswitch_online_remote': self._on_control_state_initial_online_remote,  # 9, send collection event
-            },
-            'autoforward': [
-                # {'src': 'OFFLINE', 'dst': 'EQUIPMENT_OFFLINE'},  # 2
-                # {'src': 'EQUIPMENT_INITIATED_CONNECT', 'dst': 'WAIT_CRA'},  # 5
-                # {'src': 'HOST_INITIATED_CONNECT', 'dst': 'WAIT_CR_FROM_HOST'},  # 10
-            ]
-        })
+        self._control_state = ControlStateMachine(initial_control_state, initial_online_control_state)
 
-        self._control_state.start()  # type: ignore
+        # 3, send S01E01
+        self._control_state.attempt_online.events.enter.register(self._on_control_state_attempt_online)
+
+        # 7, send collection event
+        self._control_state.transition("initial_online_local").events.called.register(
+            self._on_control_state_initial_online_local,
+        )
+
+        # 8, send collection event
+        self._control_state.transition("switch_online_local").events.called.register(
+            self._on_control_state_initial_online_local,
+        )
+
+        # 8, send collection event
+        self._control_state.transition("initial_online_remote").events.called.register(
+            self._on_control_state_initial_online_remote,
+        )
+
+        # 9, send collection event
+        self._control_state.transition("switch_online_remote").events.called.register(
+            self._on_control_state_initial_online_remote,
+        )
+
+        self._control_state.start()
 
     @property
-    def control_state(self) -> secsgem.common.Fysom:
+    def control_state(self) -> ControlStateMachine:
         """Get control state."""
         return self._control_state
 
     # control state model
 
-    def _on_control_state_control(self, _):
-        if self._initial_control_state == "ONLINE":
-            self._control_state.initial_online()
-        else:
-            self._control_state.initial_offline()
-
-    def _on_control_state_offline(self, _):
-        if self._initial_control_state == "EQUIPMENT_OFFLINE":
-            self._control_state.initial_equipment_offline()
-        elif self._initial_control_state == "ATTEMPT_ONLINE":
-            self._control_state.initial_attempt_online()
-        elif self._initial_control_state == "HOST_OFFLINE":
-            self._control_state.initial_host_offline()
-
     def _on_control_state_attempt_online(self, _):
-        if not self._communication_state.isstate("COMMUNICATING"):
+        if self._communication_state.current != CommunicationState.COMMUNICATING:
             self._control_state.attempt_online_fail_host_offline()
             return
 
@@ -200,12 +169,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return
 
         self._control_state.attempt_online_success()
-
-    def _on_control_state_online(self, _):
-        if self._online_control_state == "REMOTE":
-            self._control_state.initial_online_remote()
-        else:
-            self._control_state.initial_online_local()
 
     def _on_control_state_initial_online_local(self, _):
         self.trigger_collection_events([CEID_CONTROL_STATE_LOCAL])
@@ -225,53 +188,51 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     def control_switch_online_local(self):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_local()
-        self._online_control_state = "LOCAL"
 
     def control_switch_online_remote(self):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_remote()
-        self._online_control_state = "REMOTE"
 
-    def _on_s01f15(self, 
-                   handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 15, Request offline.
+    def _on_s01f15(self,
+                   handler: secsgem.secs.SecsHandler,
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 1, Function 15, Request offline.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         oflack = 0
 
-        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
-            self._control_state.remote_offline()  # type: ignore
+        if self._control_state.current in [ControlState.ONLINE, ControlState.ONLINE_LOCAL, ControlState.ONLINE_REMOTE]:
+            self._control_state.remote_offline()
             self.trigger_collection_events([CEID_EQUIPMENT_OFFLINE])
 
         return self.stream_function(1, 16)(oflack)
 
     def _on_s01f17(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 17, Request online.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 1, Function 17, Request online.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        del handler, packet  # unused parameters
+        del handler, message  # unused parameters
 
         onlack = 1
 
-        if self._control_state.isstate("HOST_OFFLINE"):
-            self._control_state.remote_online()  # type: ignore
+        if self._control_state.current == ControlState.HOST_OFFLINE:
+            self._control_state.remote_online()
             onlack = 0
-        elif self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+        elif self._control_state.current in [ControlState.ONLINE,
+                                             ControlState.ONLINE_LOCAL,
+                                             ControlState.ONLINE_REMOTE]:
             onlack = 2
 
         return self.stream_function(1, 18)(onlack)
@@ -279,42 +240,43 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # data values
 
     @property
-    def data_values(self) -> typing.Dict[typing.Union[int, str], DataValue]:
-        """
-        Get list of the data values.
+    def data_values(self) -> dict[int | str, DataValue]:
+        """Get list of the data values.
 
-        :returns: Data value list
-        :rtype: list of :class:`secsgem.gem.DataValue`
+        Returns:
+            Data value list
+
         """
         return self._data_values
 
-    def on_dv_value_request(self, 
-                            data_value_id: secsgem.secs.variables.Base, 
+    def on_dv_value_request(self,
+                            data_value_id: secsgem.secs.variables.Base,
                             data_value: DataValue) -> secsgem.secs.variables.Base:
-        """
-        Get the data value depending on its configuation.
+        """Get the data value depending on its configuation.
 
         Override in inherited class to provide custom data value request handling.
 
-        :param dvid: Id of the data value encoded in the corresponding type
-        :type dvid: :class:`secsgem.secs.variables.Base`
-        :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.DataValue`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            data_value_id: Id of the data value encoded in the corresponding type
+            data_value: The data value requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del data_value_id  # unused variable
 
         return data_value.value_type(data_value.value)
 
     def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:
-        """
-        Get the data value depending on its configuation.
+        """Get the data value depending on its configuation.
 
-        :param dv: The data value requested
-        :type dv: :class:`secsgem.gem.DataValue`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            data_value: The data value requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if data_value.use_callback:
             return self.on_dv_value_request(data_value.id_type(data_value.dvid), data_value)
@@ -324,42 +286,43 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # status variables
 
     @property
-    def status_variables(self) -> typing.Dict[typing.Union[int, str], StatusVariable]:
-        """
-        Get list of the status variables.
+    def status_variables(self) -> dict[int | str, StatusVariable]:
+        """Get list of the status variables.
 
-        :returns: Status variable list
-        :rtype: list of :class:`secsgem.gem.StatusVariables`
+        Returns:
+            Status variable list
+
         """
         return self._status_variables
 
     def on_sv_value_request(self,
                             svid: secsgem.secs.variables.Base,
                             status_variable: StatusVariable) -> secsgem.secs.variables.Base:
-        """
-        Get the status variable value depending on its configuation.
+        """Get the status variable value depending on its configuation.
 
         Override in inherited class to provide custom status variable request handling.
 
-        :param svid: Id of the status variable encoded in the corresponding type
-        :type svid: :class:`secsgem.secs.variables.Base`
-        :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.StatusVariable`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            svid: Id of the status variable encoded in the corresponding type
+            status_variable: The status variable requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del svid  # unused variable
 
         return status_variable.value_type(status_variable.value)
 
     def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
-        """
-        Get the status variable value depending on its configuation.
+        """Get the status variable value depending on its configuation.
 
-        :param sv: The status variable requested
-        :type sv: :class:`secsgem.gem.StatusVariable`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            status_variable: The status variable requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if status_variable.svid == SVID_CLOCK:
             result = status_variable.value_type(self._get_clock())
@@ -384,26 +347,24 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f03(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 3, Equipment status request.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 1, Function 3, Equipment status request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
-            for status_variable_id, status_variable in self._status_variables.items():
-                responses.append(self._get_sv_value(status_variable))
+        if len(function) == 0:
+            responses = [self._get_sv_value(status_variable) for status_variable in self._status_variables.values()]
         else:
-            for status_variable_id in message:
+            for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.SV, []))
                 else:
@@ -414,28 +375,28 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s01f11(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 1, Function 11, SV namelist request.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 1, Function 11, SV namelist request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
-            for status_variable_id, status_variable in self._status_variables.items():
-                responses.append({"SVID": status_variable.svid,
-                                  "SVNAME": status_variable.name,
-                                  "UNITS": status_variable.unit})
+        if len(function) == 0:
+            responses = [{
+                "SVID": status_variable.svid,
+                "SVNAME": status_variable.name,
+                "UNITS": status_variable.unit,
+            } for status_variable in self._status_variables.values()]
         else:
-            for status_variable_id in message:
+            for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
                     responses.append({"SVID": status_variable_id, "SVNAME": "", "UNITS": ""})
                 else:
@@ -449,85 +410,80 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # collection events
 
     @property
-    def collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEvent]:
-        """
-        Get list of the collection events.
+    def collection_events(self) -> dict[int | str, CollectionEvent]:
+        """Get list of the collection events.
 
-        :returns: Collection event list
-        :rtype: list of :class:`secsgem.gem.CollectionEvent`
+        Returns:
+            Collection event list
+
         """
         return self._collection_events
 
     @property
-    def registered_reports(self) -> typing.Dict[typing.Union[int, str], CollectionEventReport]:
-        """
-        Get list of the subscribed reports.
+    def registered_reports(self) -> dict[int | str, CollectionEventReport]:
+        """Get list of the subscribed reports.
 
-        :returns: Collection event report list
-        :rtype: dictionary of subscribed reports
+        Returns:
+            Collection event report list
+
         """
         return self._registered_reports
 
     @property
-    def registered_collection_events(self) -> typing.Dict[typing.Union[int, str], CollectionEventLink]:
-        """
-        Get list of the subscribed collection events.
+    def registered_collection_events(self) -> dict[int | str, CollectionEventLink]:
+        """Get list of the subscribed collection events.
 
-        :returns: Collection event list
-        :rtype: dictionary of :class:`secsgem.gem.CollectionEventLink`
+        Returns:
+            Collection event list
 
         """
         return self._registered_collection_events
 
-    def trigger_collection_events(self, ceids: typing.List[typing.Union[int, str]]):
-        """
-        Triggers the supplied collection events.
+    def trigger_collection_events(self, ceids: list[int | str]):
+        """Triggers the supplied collection events.
 
-        :param ceids: List of collection events
-        :type ceids: list of various
-        """
-        if not isinstance(ceids, list):
-            ceids = [ceids]
+        Args:
+            ceids: List of collection events
 
-        for ceid in ceids:
-            if ceid in self._registered_collection_events:
-                if self._registered_collection_events[ceid].enabled:
+        """
+        def _ce_sender():
+            nonlocal ceids
+            if not isinstance(ceids, list):
+                ceids = [ceids]
+
+            for ceid in ceids:
+                if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
                     reports = self._build_collection_event(ceid)
 
                     self.send_and_waitfor_response(self.stream_function(6, 11)(
                         {"DATAID": 1, "CEID": ceid, "RPT": reports}))
 
-    def _on_s02f33(self,  # noqa: MC0001
-                   handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 33, Define Report.
+        threading.Thread(target=_ce_sender, daemon=True).start()
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+    def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
+                   handler: secsgem.secs.SecsHandler,
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 33, Define Report.
+
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accept
-        # 1  = Denied. Insufficient space.
-        # 2  = Denied. Invalid format.
-        # 3  = Denied. At least one RPTID already defined.
-        # 4  = Denied. At least VID does not exist.
-        # >4 = Other errors
-        drack = 0
+        drack = secsgem.secs.data_items.DRACK.ACK
 
         # pre check message for errors
-        for report in message.DATA:
+        for report in function.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
-                drack = 3
+                drack = secsgem.secs.data_items.DRACK.RPTID_REDEFINED
             else:
                 for vid in report.VID:
                     if (vid not in self._data_values) and (vid not in self._status_variables):
-                        drack = 4
+                        drack = secsgem.secs.data_items.DRACK.VID_UNKNOWN
 
         result = self.stream_function(2, 34)(drack)
 
@@ -535,13 +491,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return result
 
         # no data -> remove all reports and links
-        if not message.DATA:
+        if not function.DATA:
             self._registered_collection_events.clear()
             self._registered_reports.clear()
 
             return result
 
-        for report in message.DATA:
+        for report in function.DATA:
             # no vids -> remove this reports and links
             if not report.VID:
                 # remove report from linked collection events
@@ -560,45 +516,37 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return result
 
-    def _on_s02f35(self,  # noqa: MC0001
+    def _on_s02f35(self,  # noqa: C901, pylint: disable=too-many-branches
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 35, Link event report.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 35, Link event report.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Denied. Insufficient space
-        # 2  = Denied. Invalid format
-        # 3  = Denied. At least one CEID link already defined
-        # 4  = Denied. At least one CEID does not exist
-        # 5  = Denied. At least one RPTID does not exist
-        # >5 = Other errors
-        lrack = 0
+        lrack = secsgem.secs.data_items.LRACK.ACK
 
         # pre check message for errors
-        for event in message.DATA:
+        for event in function.DATA:
             if event.CEID.get() not in self._collection_events:
-                lrack = 4
+                lrack = secsgem.secs.data_items.LRACK.CEID_UNKNOWN
             for rptid in event.RPTID:
                 if event.CEID.get() in self._registered_collection_events:
                     collection_event = self._registered_collection_events[event.CEID.get()]
                     if rptid.get() in collection_event.reports:
-                        lrack = 3
+                        lrack = secsgem.secs.data_items.LRACK.CEID_LINKED
                 if rptid.get() not in self._registered_reports:
-                    lrack = 5
+                    lrack = secsgem.secs.data_items.LRACK.RPTID_UNKNOWN
 
         # pre check okay
         if lrack == 0:
-            for event in message.DATA:
+            for event in function.DATA:
                 # no report ids, remove all links for collection event
                 if not event.RPTID:
                     if event.CEID.get() in self._registered_collection_events:
@@ -616,67 +564,62 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f37(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Callback handler for Stream 2, Function 37, En-/Disable Event Report.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Denied. At least one CEID does not exist
-        erack = 0
+        erack = secsgem.secs.data_items.ERACK.ACCEPTED
 
-        if not self._set_ce_state(message.CEED.get(), message.CEID.get()):
-            erack = 1
+        if not self._set_ce_state(function.CEED.get(), function.CEID.get()):
+            erack = secsgem.secs.data_items.ERACK.CEID_UNKNOWN
 
         return self.stream_function(2, 38)(erack)
 
     def _on_s06f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Callback handler for Stream 6, Function 15, event report request.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Callback handler for Stream 6, Function 15, event report request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        ceid = message.get()
+        ceid = function.get()
 
         reports = []
 
-        if ceid in self._registered_collection_events:
-            if self._registered_collection_events[ceid].enabled:
-                reports = self._build_collection_event(ceid)
+        if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
+            reports = self._build_collection_event(ceid)
 
         return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
 
-    def _set_ce_state(self, ceed: bool, ceids: typing.List[typing.Union[int, str]]) -> bool:
-        """
-        En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
+    def _set_ce_state(self, ceed: bool, ceids: list[int | str]) -> bool:
+        """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).
 
-        :param ceed: Enable (True) or disable (False) event reports
-        :type ceed: bool
-        :param ceids: List of collection events
-        :type ceids: list of integer
-        :returns: True if all ceids were ok, False if illegal ceid was supplied
-        :rtype: bool
+        Args:
+            ceed: Enable (True) or disable (False) event reports
+            ceids: List of collection events
+
+        Returns:
+            True if all ceids were ok, False if illegal ceid was supplied
+
         """
         result = True
         if not ceids:
-            for ceid, collection_event in self._registered_collection_events.items():
+            for collection_event in self._registered_collection_events.values():
                 collection_event.enabled = ceed
         else:
             for ceid in ceids:
@@ -687,14 +630,15 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return result
 
-    def _build_collection_event(self, ceid: typing.Union[int, str]):
-        """
-        Build reports for a collection event.
+    def _build_collection_event(self, ceid: int | str):
+        """Build reports for a collection event.
 
-        :param ceid: collection event to build
-        :type ceid: integer
-        :returns: collection event data
-        :rtype: array
+        Args:
+            ceid: collection event to build
+
+        Returns:
+            collection event data
+
         """
         reports = []
 
@@ -716,29 +660,29 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # equipment constants
 
     @property
-    def equipment_constants(self) -> typing.Dict[typing.Union[int, str], EquipmentConstant]:
-        """
-        The list of the equipments contstants.
+    def equipment_constants(self) -> dict[int | str, EquipmentConstant]:
+        """The list of the equipments contstants.
 
-        :returns: Equipment constant list
-        :rtype: list of :class:`secsgem.gem.EquipmentConstant`
+        Returns:
+            Equipment constant list
+
         """
         return self._equipment_constants
 
     def on_ec_value_request(self,
                             equipment_constant_id: secsgem.secs.variables.Base,
                             equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
-        """
-        Get the equipment constant value depending on its configuation.
+        """Get the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant request handling.
 
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.Base`
-        :param ec: The equipment constant requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            equipment_constant_id: Id of the equipment constant encoded in the corresponding type
+            equipment_constant: The equipment constant requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         del equipment_constant_id  # unused variable
 
@@ -746,35 +690,34 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def on_ec_value_update(self,
                            equipment_constant_id: secsgem.secs.variables.Base,
-                           equipment_constant: EquipmentConstant, 
-                           value: typing.Union[int, float]):
-        """
-        Set the equipment constant value depending on its configuation.
+                           equipment_constant: EquipmentConstant,
+                           value: int | float):
+        """Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
 
-        :param ecid: Id of the equipment constant encoded in the corresponding type
-        :type ecid: :class:`secsgem.secs.variables.Base`
-        :param ec: The equipment constant to be updated
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.Base`
+        Args:
+            equipment_constant_id: Id of the equipment constant encoded in the corresponding type
+            equipment_constant: The equipment constant to be updated
+            value: The value encoded in the corresponding type
+
         """
         del equipment_constant_id  # unused variable
 
         equipment_constant.value = value
 
     def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
-        """
-        Get the equipment constant value depending on its configuation.
+        """Get the equipment constant value depending on its configuation.
 
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :returns: The value encoded in the corresponding type
-        :rtype: :class:`secsgem.secs.variables.Base`
+        Args:
+            equipment_constant: The equipment requested
+
+        Returns:
+            The value encoded in the corresponding type
+
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            return equipment_constant.value_type(self._establish_communication_timeout)
+            return equipment_constant.value_type(self.settings.establish_communication_timeout)
         if equipment_constant.ecid == ECID_TIME_FORMAT:
             return equipment_constant.value_type(self._time_format)
 
@@ -782,17 +725,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             return self.on_ec_value_request(equipment_constant.id_type(equipment_constant.ecid), equipment_constant)
         return equipment_constant.value_type(equipment_constant.value)
 
-    def _set_ec_value(self, equipment_constant: EquipmentConstant, value: typing.Union[int, float]):
-        """
-        Get the equipment constant value depending on its configuation.
+    def _set_ec_value(self, equipment_constant: EquipmentConstant, value: int | float):
+        """Get the equipment constant value depending on its configuation.
 
-        :param ec: The equipment requested
-        :type ec: :class:`secsgem.gem.EquipmentConstant`
-        :param value: The value encoded in the corresponding type
-        :type value: :class:`secsgem.secs.variables.Base`
+        Args:
+            equipment_constant: The equipment requested
+            value: The value encoded in the corresponding type
+
         """
         if equipment_constant.ecid == ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT:
-            self._establish_communication_timeout = int(value)
+            self.settings.establish_communication_timeout = int(value)
         if equipment_constant.ecid == ECID_TIME_FORMAT:
             self._time_format = int(value)
 
@@ -803,26 +745,25 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f13(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 13, Equipment constant request.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 13, Equipment constant request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
-            for equipment_constant_id, equipment_constant in self._equipment_constants.items():
-                responses.append(self._get_ec_value(equipment_constant))
+        if len(function) == 0:
+            responses = [self._get_ec_value(equipment_constant)
+                         for equipment_constant in self._equipment_constants.values()]
         else:
-            for equipment_constant_id in message:
+            for equipment_constant_id in function:
                 if equipment_constant_id not in self._equipment_constants:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
                 else:
@@ -833,66 +774,65 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
     def _on_s02f15(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 15, Equipment constant send.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 15, Equipment constant send.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
         eac = 0
 
-        for equipment_constant in message:
+        for equipment_constant in function:
             if equipment_constant.ECID not in self._equipment_constants:
                 eac = 1
             else:
                 constant = self.equipment_constants[equipment_constant.ECID.get()]
 
-                if constant.min_value is not None:
-                    if equipment_constant.ECV.get() < constant.min_value:
-                        eac = 3
+                if constant.min_value is not None and equipment_constant.ECV.get() < constant.min_value:
+                    eac = 3
 
-                if constant.max_value is not None:
-                    if equipment_constant.ECV.get() > constant.max_value:
-                        eac = 3
+                if constant.max_value is not None and equipment_constant.ECV.get() > constant.max_value:
+                    eac = 3
 
         if eac == 0:
-            for equipment_constant in message:
+            for equipment_constant in function:
                 self._set_ec_value(self._equipment_constants[equipment_constant.ECID], equipment_constant.ECV.get())
 
         return self.stream_function(2, 16)(eac)
 
     def _on_s02f29(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 29, EC namelist request.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 29, EC namelist request.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
         responses = []
 
-        if len(message) == 0:
-            for ecid, eq_constant in self._equipment_constants.items():
-                responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
-                                  "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
-                                  "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
-                                  "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
+        if len(function) == 0:
+            responses = [{
+                "ECID": eq_constant.ecid,
+                "ECNAME": eq_constant.name,
+                "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                "ECDEF": eq_constant.default_value,
+                "UNITS": eq_constant.unit,
+            } for eq_constant in self._equipment_constants.values()]
         else:
-            for ecid in message:
+            for ecid in function:
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
@@ -907,21 +847,21 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
     # alarms
 
     @property
-    def alarms(self) -> typing.Dict[typing.Union[int, str], Alarm]:
-        """
-        Get the list of the alarms.
+    def alarms(self) -> dict[int | str, Alarm]:
+        """Get the list of the alarms.
 
-        :returns: Alarms list
-        :rtype: list of :class:`secsgem.gem.Alarm`
+        Returns:
+            Alarms list
+
         """
         return self._alarms
 
-    def set_alarm(self, alid: typing.Union[int, str]):
-        """
-        Set the list of the alarms.
+    def set_alarm(self, alid: int | str):
+        """Set the list of the alarms.
 
-        :param alid: Alarm id
-        :type alid: str/int
+        Args:
+            alid: Alarm id
+
         """
         if alid not in self.alarms:
             raise ValueError(f"Unknown alarm id {alid}")
@@ -934,19 +874,19 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                 {
                     "ALCD": self.alarms[alid].code | secsgem.secs.data_items.ALCD.ALARM_SET,
                     "ALID": alid,
-                    "ALTX": self.alarms[alid].text
+                    "ALTX": self.alarms[alid].text,
                 }))
 
         self.alarms[alid].set = True
 
         self.trigger_collection_events([self.alarms[alid].ce_on])
 
-    def clear_alarm(self, alid: typing.Union[int, str]):
-        """
-        Clear the list of the alarms.
+    def clear_alarm(self, alid: int | str):
+        """Clear the list of the alarms.
 
-        :param alid: Alarm id
-        :type alid: str/int
+        Args:
+            alid: Alarm id
+
         """
         if alid not in self.alarms:
             raise ValueError(f"Unknown alarm id {alid}")
@@ -963,117 +903,107 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
     def _on_s05f03(self,
-                   handler: secsgem.secs.SecsHandler, 
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 3, Alarm en-/disabled.
+                   handler: secsgem.secs.SecsHandler,
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 5, Function 3, Alarm en-/disabled.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        # 0  = Accepted
-        # 1  = Error
         result = secsgem.secs.data_items.ACKC5.ACCEPTED
 
-        alid = message.ALID.get()
+        alid = function.ALID.get()
         if alid not in self._alarms:
             result = secsgem.secs.data_items.ACKC5.ERROR
         else:
-            self.alarms[alid].enabled = message.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
+            self.alarms[alid].enabled = function.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
 
         return self.stream_function(5, 4)(result)
 
     def _on_s05f05(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 5, Function 5, Alarm list.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 5, Function 5, Alarm list.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        result = []
-
-        alids = message.get()
+        alids = function.get()
 
         if len(alids) == 0:
             alids = list(self.alarms.keys())
 
-        for alid in alids:
-            result.append({"ALCD": self.alarms[alid].code |
-                           (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-                           "ALID": alid,
-                           "ALTX": self.alarms[alid].text})
+        result = [{
+            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+            "ALID": alid,
+            "ALTX": self.alarms[alid].text,
+        } for alid in alids]
 
         return self.stream_function(5, 6)(result)
 
     def _on_s05f07(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 5, Function 7, Enabled alarm list.
+
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
-        Handle Stream 5, Function 7, Enabled alarm list.
+        del handler, message  # unused parameters
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
-        """
-        del handler, packet  # unused parameters
-
-        result = []
-
-        for alid in list(self.alarms.keys()):
-            if self.alarms[alid].enabled:
-                result.append({"ALCD": self.alarms[alid].code |
-                               (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-                               "ALID": alid, "ALTX": self.alarms[alid].text})
+        result = [{
+            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+            "ALID": alid,
+            "ALTX": self.alarms[alid].text,
+        } for alid in list(self.alarms.keys()) if self.alarms[alid].enabled]
 
         return self.stream_function(5, 8)(result)
 
     # remote commands
 
     @property
-    def remote_commands(self) -> typing.Dict[typing.Union[int, str], RemoteCommand]:
-        """
-        Get list of the remote commands.
+    def remote_commands(self) -> dict[int | str, RemoteCommand]:
+        """Get list of the remote commands.
 
-        :returns: Remote command list
-        :rtype: list of :class:`secsgem.gem.RemoteCommand`
+        Returns:
+            Remote command list
+
         """
         return self._remote_commands
 
     def _on_s02f41(self,
                    handler: secsgem.secs.SecsHandler,
-                   packet: secsgem.common.Packet) -> typing.Optional[secsgem.secs.SecsStreamFunction]:
-        """
-        Handle Stream 2, Function 41, host command send.
+                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+        """Handle Stream 2, Function 41, host command send.
 
         The remote command handing differs from usual stream function handling, because we send the ack with later
         completion first.
         Then we run the actual remote command callback and signal success with the matching collection event.
 
-        :param handler: handler the message was received on
-        :type handler: :class:`secsgem.secs.SecsHandler`
-        :param packet: complete message received
-        :type packet: :class:`secsgem.common.Packet`
+        Args:
+            handler: handler the message was received on
+            message: complete message received
+
         """
         del handler  # unused parameters
 
-        message = self.secs_decode(packet)
+        function = self.settings.streams_functions.decode(message)
 
-        rcmd_name = message.RCMD.get()
+        rcmd_name = function.RCMD.get()
         rcmd_callback_name = "rcmd_" + rcmd_name
 
         if rcmd_name not in self._remote_commands:
@@ -1084,7 +1014,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             self._logger.warning("callback for remote command %s not available", rcmd_name)
             return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": []})
 
-        for param in message.PARAMS:
+        for param in function.PARAMS:
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
                 self._logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.PARAMETER_INVALID,
@@ -1092,13 +1022,13 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         self.send_response(self.stream_function(2, 42)({"HCACK": secsgem.secs.data_items.HCACK.ACK_FINISH_LATER,
                                                         "PARAMS": []}),
-                           packet.header.system)
+                           message.header.system)
 
         callback = getattr(self._callback_handler, rcmd_callback_name)
 
         kwargs = {}
-        for param in message.PARAMS.get():
-            kwargs[param['CPNAME']] = param['CPVAL']
+        for param in function.PARAMS.get():
+            kwargs[param["CPNAME"]] = param["CPVAL"]
 
         callback(**kwargs)
 
@@ -1106,17 +1036,16 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return None
 
-    def _on_rcmd_START(self):  # noqa: N802
+    def _on_rcmd_START(self):  # noqa: N802 pylint: disable=invalid-name
         self._logger.warning("remote command START not implemented, this is required for GEM compliance")
 
-    def _on_rcmd_STOP(self):  # noqa: N802
+    def _on_rcmd_STOP(self):  # noqa: N802 pylint: disable=invalid-name
         self._logger.warning("remote command STOP not implemented, this is required for GEM compliance")
 
     # helpers
 
     def _get_clock(self) -> str:
-        """
-        Get the clock depending on configured time format.
+        """Get the clock depending on configured time format.
 
         :returns: time code
         :rtype: string
@@ -1131,28 +1060,26 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         return now.strftime("%Y%m%d%H%M%S") + now.strftime("%f")[0:2]
 
     def _get_control_state_id(self) -> int:
-        """
-        Get id of the control state for the current control state.
+        """Get id of the control state for the current control state.
 
         :returns: control state
         :rtype: integer
         """
-        if self._control_state.isstate("EQUIPMENT_OFFLINE"):
+        if self._control_state.current == ControlState.EQUIPMENT_OFFLINE:
             return 1
-        if self._control_state.isstate("ATTEMPT_ONLINE"):
+        if self._control_state.current == ControlState.ATTEMPT_ONLINE:
             return 2
-        if self._control_state.isstate("HOST_OFFLINE"):
+        if self._control_state.current == ControlState.HOST_OFFLINE:
             return 3
-        if self._control_state.isstate("ONLINE_LOCAL"):
+        if self._control_state.current == ControlState.ONLINE_LOCAL:
             return 4
-        if self._control_state.isstate("ONLINE_REMOTE"):
+        if self._control_state.current == ControlState.ONLINE_REMOTE:
             return 5
 
         return -1
 
-    def _get_events_enabled(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the enabled collection events.
+    def _get_events_enabled(self) -> list[int | str]:
+        """List of the enabled collection events.
 
         :returns: collection event
         :rtype: list of various
@@ -1165,9 +1092,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return enabled_ceid
 
-    def _get_alarms_enabled(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the enabled alarms.
+    def _get_alarms_enabled(self) -> list[int | str]:
+        """List of the enabled alarms.
 
         :returns: alarms
         :rtype: list of various
@@ -1180,9 +1106,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
 
         return enabled_alarms
 
-    def _get_alarms_set(self) -> typing.List[typing.Union[int, str]]:
-        """
-        List of the set alarms.
+    def _get_alarms_set(self) -> list[int | str]:
+        """List of the set alarms.
 
         :returns: alarms
         :rtype: list of various
@@ -1201,8 +1126,8 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
         super().on_connection_closed(connection)
 
         # update control state
-        if self._control_state.current in ["ONLINE", "ONLINE_LOCAL", "ONLINE_REMOTE"]:
+        if self._control_state.current in [ControlState.ONLINE, ControlState.ONLINE_LOCAL, ControlState.ONLINE_REMOTE]:
             self._control_state.switch_offline()
 
-        if self._control_state.current in ["EQUIPMENT_OFFLINE"]:
+        if self._control_state.current == ControlState.EQUIPMENT_OFFLINE:
             self._control_state.switch_online()

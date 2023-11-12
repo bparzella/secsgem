@@ -14,10 +14,13 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event link."""
+from __future__ import annotations
+
 import typing
 
-from .collection_event import CollectionEvent
-from .collection_event_report import CollectionEventReport
+if typing.TYPE_CHECKING:
+    from .collection_event import CollectionEvent
+    from .collection_event_report import CollectionEventReport
 
 
 class CollectionEventLink:
@@ -25,15 +28,15 @@ class CollectionEventLink:
 
     def __init__(self,
                  collection_event: CollectionEvent,
-                 reports: typing.List[CollectionEventReport],
+                 reports: list[CollectionEventReport],
                  **kwargs):
-        """
-        Initialize a collection event link.
+        """Initialize a collection event link.
 
-        :param ce: ID of the collection event
-        :type ce: :class:`gem.CollectionEvent`
-        :param reports: list of the linked reports
-        :type reports: list of :class:`gem.CollectionEventReport`
+        Args:
+            collection_event: collection event
+            reports: list of the linked reports
+            **kwargs: additional attributes for object
+
         """
         self._collection_event = collection_event
         self._reports = reports
@@ -49,10 +52,10 @@ class CollectionEventLink:
 
     @property
     def reports(self):
-        """
-        Get list of the data values.
+        """Get list of the data values.
 
-        :returns: List of linked reports
-        :rtype: list of :class:`gem.CollectionEventReport`
+        Returns:
+            List of linked reports
+
         """
         return self._reports

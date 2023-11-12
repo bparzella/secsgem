@@ -19,8 +19,7 @@ from .base_number import BaseNumber
 
 
 class I1(BaseNumber):
-    """
-    Secs type for 1 byte signed data.
+    """Secs type for 1 byte signed data.
 
     :param value: initial value
     :type value: list/integer

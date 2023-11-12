@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ALID(DataItemBase):
-    """
-    Alarm ID.
+    """Alarm ID.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

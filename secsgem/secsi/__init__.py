@@ -1,5 +1,5 @@
 #####################################################################
-# packet.py
+# __init__.py
 #
 # (c) Copyright 2023, Benjamin Parzella. All rights reserved.
 #
@@ -13,17 +13,14 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""packet base class."""
-import abc
+"""module imports."""
 
-from .header import Header
+from .header import SecsIHeader
+from .protocol import SecsIProtocol
+from .settings import SecsISettings
 
-
-class Packet(abc.ABC):
-    """Abstract base class for a packet."""
-
-    @property
-    @abc.abstractmethod
-    def header(self) -> Header:
-        """Get the header."""
-        raise NotImplementedError("Packet.header missing implementation")
+__all__ = [
+    "SecsIHeader",
+    "SecsIProtocol",
+    "SecsISettings",
+]

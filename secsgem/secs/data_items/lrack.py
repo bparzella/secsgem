@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class LRACK(DataItemBase):
-    """
-    Link report acknowledge code.
+    """Link report acknowledge code.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

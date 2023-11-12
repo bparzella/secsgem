@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class SHEAD(DataItemBase):
-    """
-    SECS message header.
+    """SECS message header.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 10

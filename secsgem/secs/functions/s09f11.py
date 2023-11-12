@@ -15,33 +15,29 @@
 #####################################################################
 """Class for stream 09 function 11."""
 
-from secsgem.secs.functions.base import SecsStreamFunction
 from secsgem.secs.data_items import MHEAD
+from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F11(SecsStreamFunction):
-    """
-    data too long.
+    """data too long.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F11
         MHEAD: B[10]
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS09F11("HEADERDATA")
         S9F11
           <B 0x48 0x45 0x41 0x44 0x45 0x52 0x44 0x41 0x54 0x41> .
 
-    :param value: parameters for this function (see example)
-    :type value: bytes
+    Data Items:
+        - :class:`MHEAD <secsgem.secs.data_items.MHEAD>`
+
     """
 
     _stream = 9

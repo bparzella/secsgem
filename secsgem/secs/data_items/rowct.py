@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class ROWCT(DataItemBase):
-    """
-    Row count in dies.
+    """Row count in dies.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`

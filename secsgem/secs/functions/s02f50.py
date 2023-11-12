@@ -15,24 +15,17 @@
 #####################################################################
 """Class for stream 02 function 50."""
 
+from secsgem.secs.data_items import CPACK, CPNAME, HCACK
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import HCACK
-from secsgem.secs.data_items import CPNAME
-from secsgem.secs.data_items import CPACK
 
 
 class SecsS02F50(SecsStreamFunction):
-    """
-    Enhanced remote command - acknowledge.
+    """Enhanced remote command - acknowledge.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`HCACK <secsgem.secs.data_items.HCACK>`
-    - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
-    - :class:`CPACK <secsgem.secs.data_items.CPACK>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F50
         {
@@ -45,8 +38,6 @@ class SecsS02F50(SecsStreamFunction):
                 ...
             ]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS02F50({
@@ -69,8 +60,11 @@ class SecsS02F50(SecsStreamFunction):
             >
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`HCACK <secsgem.secs.data_items.HCACK>`
+        - :class:`CPNAME <secsgem.secs.data_items.CPNAME>`
+        - :class:`CPACK <secsgem.secs.data_items.CPACK>`
+
     """
 
     _stream = 2

@@ -15,30 +15,23 @@
 #####################################################################
 """Class for stream 05 function 13."""
 
+from secsgem.secs.data_items import EXID, EXRECVRA
 from secsgem.secs.functions.base import SecsStreamFunction
-from secsgem.secs.data_items import EXID
-from secsgem.secs.data_items import EXRECVRA
 
 
 class SecsS05F13(SecsStreamFunction):
-    """
-    exception recover - request.
+    """exception recover - request.
 
-    **Data Items**
+    Args:
+        value: parameters for this function (see example)
 
-    - :class:`EXID <secsgem.secs.data_items.EXID>`
-    - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
-
-    **Structure**::
-
+    Examples:
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F13
         {
             EXID: A[20]
             EXRECVRA: A[40]
         }
-
-    **Example**::
 
         >>> import secsgem.secs
         >>> secsgem.secs.functions.SecsS05F13({"EXID": "EX123", "EXRECVRA": "EXRECVRA2"})
@@ -48,8 +41,10 @@ class SecsS05F13(SecsStreamFunction):
             <A "EXRECVRA2">
           > .
 
-    :param value: parameters for this function (see example)
-    :type value: dict
+    Data Items:
+        - :class:`EXID <secsgem.secs.data_items.EXID>`
+        - :class:`EXRECVRA <secsgem.secs.data_items.EXRECVRA>`
+
     """
 
     _stream = 5

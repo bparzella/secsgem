@@ -673,7 +673,7 @@ class TestSecsVarList(unittest.TestCase):
     def testSettingInvalidValue(self):
         secsvar = List([MDLN, SOFTREV])
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             secsvar.set("MDLN")
 
     def testGettingList(self):
@@ -787,7 +787,7 @@ class TestSecsVarArray(unittest.TestCase):
     def testSettingInvalidValue(self):
         secsvar = Array(MDLN, count=2)
 
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             secsvar.set("MDLN")
 
     def testGettingList(self):

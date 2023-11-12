@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class CPVAL(DataItemBase):
-    """
-    Command parameter value.
+    """Command parameter value.
 
     :Types:
        - :class:`Boolean <secsgem.secs.variables.Boolean>`

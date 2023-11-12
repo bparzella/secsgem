@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class RSPACK(DataItemBase):
-    """
-    Reset spooling acknowledge.
+    """Reset spooling acknowledge.
 
     :Type: :class:`Binary <secsgem.secs.variables.Binary>`
     :Length: 1

@@ -1,7 +1,7 @@
 #####################################################################
-# passive_connection.py
+# tcp_server_connection.py
 #
-# (c) Copyright 2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2021-2023, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -13,70 +13,62 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #####################################################################
-"""Hsms passive connection."""
+"""TCP server connection."""
+from __future__ import annotations
 
 import select
 import socket
 import threading
 import time
+import typing
 
-import secsgem.common
+from .helpers import is_windows
+from .tcp_connection import TcpConnection
 
-from .connection import HsmsConnection
+if typing.TYPE_CHECKING:
+    from .settings import Settings
 
 
-class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
-    """
-    Server class for single passive (incoming) connection.
+class TcpServerConnection(TcpConnection):
+    """Server class for TCP server connection.
 
     Creates a listening socket and waits for one incoming connection on this socket.
     After the connection is established the listening socket is closed.
     """
 
-    def __init__(self, address, port=5000, session_id=0, delegate=None, bind_ip=''):
-        """
-        Initialize a passive hsms connection.
+    def __init__(self, settings: Settings):
+        """Initialize a TCP server connection.
 
-        :param address: IP address of target host
-        :type address: string
-        :param port: TCP port of target host
-        :type port: integer
-        :param session_id: session / device ID to use for connection
-        :type session_id: integer
-        :param delegate: target for messages
-        :type delegate: object
-
-        **Example**::
-
-            # TODO: create example
+        Args:
+            settings: protocol and communication settings
 
         """
         # initialize super class
-        HsmsConnection.__init__(self, True, address, port, session_id, delegate)
-        self._bind_ip = bind_ip
+        TcpConnection.__init__(self, settings)
 
         # initially not enabled
         self._enabled = False
 
-        # reconnect thread required for passive connection
+        # reconnect thread required for server
         self._server_thread = None
         self._stop_server_thread = False
         self._server_sock = None
 
-    def _on_hsms_connection_close(self, data):
-        """
-        Signal from super that the connection was closed.
+        self.on_disconnected.register(self._disconnected)
+
+    def _disconnected(self, _: dict[str, typing.Any]):
+        """Called when the connection was disconnected.
 
         This is required to initiate the reconnect if the connection is still enabled
+
         """
         if self._enabled:
             self.__start_server_thread()
 
     def enable(self):
-        """
-        Enable the connection.
+        """Enable the connection.
 
-        Starts the connection process to the passive remote.
+        Starts the connection server process.
         """
         # only start if not already enabled
         if not self._enabled:
@@ -87,8 +79,7 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             self.__start_server_thread()
 
     def disable(self):
-        """
-        Disable the connection.
+        """Disable the connection.
 
         Stops all connection attempts, and closes the connection
         """
@@ -114,28 +105,27 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
     def __start_server_thread(self):
         self._server_thread = threading.Thread(
             target=self.__server_thread,
-            name=f"secsgem_HsmsPassiveConnection_serverThread_{self._remote_address}")
+            name=f"secsgem_tcpServerConnection_serverThread_{self._settings.address}")
         self._server_thread.start()
 
     def __server_thread(self):
-        """
-        Thread function to (re)connect active connection to remote host.
+        """Thread function to wait for incoming tcp connections.
 
         .. warning:: Do not call this directly, for internal use only.
         """
         self._server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not secsgem.common.is_windows():
+        if not is_windows():
             self._server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self._server_sock.bind((self._bind_ip, self._remote_port))
+        self._server_sock.bind((self._settings.address, self._settings.port))
         self._server_sock.listen(1)
 
         while not self._stop_server_thread:
             try:
                 select_result = select.select([self._server_sock], [], [], self.select_timeout)
-            except Exception:  # pylint: disable=broad-except
-                continue
+            except Exception as exc:  # pylint: disable=broad-except
+                self._logger.debug("select exception", exc_info=exc)
 
             if not select_result[0]:
                 # select timed out
@@ -148,13 +138,22 @@ class HsmsPassiveConnection(HsmsConnection):  # pragma: no cover
             (self._sock, (_, _)) = accept_result
 
             # setup socket
-            self._sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
             # make socket nonblocking
-            self._sock.setblocking(0)
+            self._socket.setblocking(0)
+
+            # mark connection as connected
+            self._connected = True
 
             # start the receiver thread
             self._start_receiver()
+
+            # send event
+            try:
+                self.on_connected({"source": self})
+            except Exception:  # pylint: disable=broad-except
+                self._logger.exception("ignoring exception for on_connection_established handler")
 
             self._server_sock.shutdown(socket.SHUT_RDWR)
             self._server_sock.close()

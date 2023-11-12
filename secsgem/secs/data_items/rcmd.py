@@ -19,8 +19,7 @@ from .base import DataItemBase
 
 
 class RCMD(DataItemBase):
-    """
-    Remote command.
+    """Remote command.
 
     :Types:
        - :class:`U1 <secsgem.secs.variables.U1>`
