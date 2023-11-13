@@ -23,7 +23,6 @@ import secsgem.common
 import secsgem.hsms
 
 if typing.TYPE_CHECKING:
-    from ..gem.alarm import Alarm
     from ..gem.collection_event import CollectionEvent
     from ..gem.data_value import DataValue
     from ..gem.remote_command import RemoteCommand
@@ -42,7 +41,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
             settings: settings defining protocol and connection
 
         """
-        self.settings = settings
+        self._settings = settings
 
         self._protocol = settings.create_protocol()
         self._protocol.events.message_received += self._on_message_received
@@ -51,11 +50,15 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         self._collection_events: dict[int | str, CollectionEvent] = {}
         self._data_values: dict[int | str, DataValue] = {}
-        self._alarms: dict[int | str, Alarm] = {}
         self._remote_commands: dict[int | str, RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
+
+    @property
+    def settings(self) -> secsgem.common.Settings:
+        """Get the setting object."""
+        return self._settings
 
     @staticmethod
     def _generate_sf_callback_name(stream: int, function: int) -> str:
@@ -173,33 +176,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         """
         return self._data_values
-
-    @property
-    def alarms(self):
-        """Get available alarms.
-
-        *Example*::
-
-            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
-            >>> handler = SecsHandler(settings)
-            >>> handler.alarms[137] = {'ceidon': 1371, 'ceidoff': 1372}
-
-        **Key**
-
-        Id of the alarm (integer)
-
-        **Data**
-
-        Dictionary with the following fields
-
-            ceidon
-                Collection event id for alarm on (integer)
-
-            ceidoff
-                Collection event id for alarm off (integer)
-
-        """
-        return self._alarms
 
     @property
     def remote_commands(self):
@@ -432,14 +408,20 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
-    def stream_function(self, stream, function):
+    def stream_function(self, stream: int, function: int) -> type[secsgem.secs.SecsStreamFunction]:
         """Get class for stream and function.
 
-        :param stream: stream to get function for
-        :type stream: int
-        :param function: function to get
-        :type function: int
-        :return: matching stream and function class
-        :rtype: secsSxFx class
+        Args:
+            stream: stream to get class for
+            function: function to get class for
+
+        Returns:
+            class for function
+
         """
-        return self.settings.streams_functions.function(stream, function)
+        klass = self.settings.streams_functions.function(stream, function)
+
+        if klass is None:
+            raise KeyError(f"Undefined function requested: S{stream:02d}F{function:02d}")
+
+        return klass

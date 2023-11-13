@@ -27,6 +27,7 @@ import secsgem.common
 import secsgem.secs.data_items
 import secsgem.secs.variables
 
+from .alarm import AlarmMixin
 from .collection_event import CollectionEvent
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
@@ -38,7 +39,6 @@ from .remote_command import RemoteCommand
 from .status_variable import StatusVariable
 
 if typing.TYPE_CHECKING:
-    from .alarm import Alarm
     from .data_value import DataValue
 
 ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
@@ -61,7 +61,7 @@ RCMD_START = "START"
 RCMD_STOP = "STOP"
 
 
-class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attributes,too-many-public-methods
+class GemEquipmentHandler(AlarmMixin, GemHandler):  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
     def __init__(self,
@@ -75,6 +75,7 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
             initial_control_state: initial state for the control state model, one of ["EQUIPMENT_OFFLINE",
             "ATTEMPT_ONLINE", "HOST_OFFLINE", "ONLINE"]
             initial_online_control_state: initial state for online control state model
+
         """
         super().__init__(settings)
 
@@ -106,9 +107,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                                                                      "EstablishCommunicationsTimeout", 10, 120, 10,
                                                                      "sec", secsgem.secs.variables.I2),
             ECID_TIME_FORMAT: EquipmentConstant(ECID_TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4),
-        }
-
-        self._alarms: dict[int | str, Alarm] = {
         }
 
         self._remote_commands: dict[int | str, RemoteCommand] = {
@@ -843,135 +841,6 @@ class GemEquipmentHandler(GemHandler):  # pylint: disable=too-many-instance-attr
                                       "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
 
         return self.stream_function(2, 30)(responses)
-
-    # alarms
-
-    @property
-    def alarms(self) -> dict[int | str, Alarm]:
-        """Get the list of the alarms.
-
-        Returns:
-            Alarms list
-
-        """
-        return self._alarms
-
-    def set_alarm(self, alid: int | str):
-        """Set the list of the alarms.
-
-        Args:
-            alid: Alarm id
-
-        """
-        if alid not in self.alarms:
-            raise ValueError(f"Unknown alarm id {alid}")
-
-        if self.alarms[alid].set:
-            return
-
-        if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)(
-                {
-                    "ALCD": self.alarms[alid].code | secsgem.secs.data_items.ALCD.ALARM_SET,
-                    "ALID": alid,
-                    "ALTX": self.alarms[alid].text,
-                }))
-
-        self.alarms[alid].set = True
-
-        self.trigger_collection_events([self.alarms[alid].ce_on])
-
-    def clear_alarm(self, alid: int | str):
-        """Clear the list of the alarms.
-
-        Args:
-            alid: Alarm id
-
-        """
-        if alid not in self.alarms:
-            raise ValueError(f"Unknown alarm id {alid}")
-
-        if not self.alarms[alid].set:
-            return
-
-        if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code,
-                                                                       "ALID": alid, "ALTX": self.alarms[alid].text}))
-
-        self.alarms[alid].set = False
-
-        self.trigger_collection_events([self.alarms[alid].ce_off])
-
-    def _on_s05f03(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
-        """Handle Stream 5, Function 3, Alarm en-/disabled.
-
-        Args:
-            handler: handler the message was received on
-            message: complete message received
-
-        """
-        del handler  # unused parameters
-
-        function = self.settings.streams_functions.decode(message)
-
-        result = secsgem.secs.data_items.ACKC5.ACCEPTED
-
-        alid = function.ALID.get()
-        if alid not in self._alarms:
-            result = secsgem.secs.data_items.ACKC5.ERROR
-        else:
-            self.alarms[alid].enabled = function.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
-
-        return self.stream_function(5, 4)(result)
-
-    def _on_s05f05(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
-        """Handle Stream 5, Function 5, Alarm list.
-
-        Args:
-            handler: handler the message was received on
-            message: complete message received
-
-        """
-        del handler  # unused parameters
-
-        function = self.settings.streams_functions.decode(message)
-
-        alids = function.get()
-
-        if len(alids) == 0:
-            alids = list(self.alarms.keys())
-
-        result = [{
-            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-            "ALID": alid,
-            "ALTX": self.alarms[alid].text,
-        } for alid in alids]
-
-        return self.stream_function(5, 6)(result)
-
-    def _on_s05f07(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
-        """Handle Stream 5, Function 7, Enabled alarm list.
-
-        Args:
-            handler: handler the message was received on
-            message: complete message received
-
-        """
-        del handler, message  # unused parameters
-
-        result = [{
-            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-            "ALID": alid,
-            "ALTX": self.alarms[alid].text,
-        } for alid in list(self.alarms.keys()) if self.alarms[alid].enabled]
-
-        return self.stream_function(5, 8)(result)
 
     # remote commands
 

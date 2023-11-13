@@ -17,6 +17,8 @@
 import threading
 import unittest.mock
 
+import pytest
+
 import secsgem.hsms
 import secsgem.secs
 
@@ -76,17 +78,19 @@ class TestSecsHandler(unittest.TestCase):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
-        function = client.stream_function(99, 1)
+        with pytest.raises(KeyError) as exc:
+            client.stream_function(99, 1)
 
-        self.assertIs(function, None)
+        assert str(exc.value) == "'Undefined function requested: S99F01'"
 
     def testStreamFunctionInvalidFunction(self):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
-        function = client.stream_function(1, 99)
+        with pytest.raises(KeyError) as exc:
+            client.stream_function(1, 99)
 
-        self.assertIs(function, None)
+        assert str(exc.value) == "'Undefined function requested: S01F99'"
 
 
 class TestSecsHandlerPassive(unittest.TestCase):
