@@ -1,6 +1,21 @@
 plugins:
+  bandit:
+    enabled: true
   duplication:
     enabled: true
     checks:
       Similar code:
         enabled: false
+  pep8:
+    enabled: true
+  pylint:
+    enabled: true
+  radon:
+    enabled: true
+    config: 
+      threshold: "C"
+  sonar-python:
+    enabled: true
+    config:
+      tests_patterns:
+        - secsgem/**
