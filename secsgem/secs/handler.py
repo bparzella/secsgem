@@ -22,11 +22,6 @@ import typing
 import secsgem.common
 import secsgem.hsms
 
-if typing.TYPE_CHECKING:
-    from ..gem.collection_event import CollectionEvent
-    from ..gem.data_value import DataValue
-    from ..gem.remote_command import RemoteCommand
-
 
 class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
@@ -47,10 +42,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         self._protocol.events.message_received += self._on_message_received
 
         self.logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
-
-        self._collection_events: dict[int | str, CollectionEvent] = {}
-        self._data_values: dict[int | str, DataValue] = {}
-        self._remote_commands: dict[int | str, RemoteCommand] = {}
 
         self._callback_handler = secsgem.common.CallbackHandler()
         self._callback_handler.target = self
@@ -122,98 +113,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         name = self._generate_sf_callback_name(stream, function)
         setattr(self._callback_handler, name, None)
-
-    @property
-    def collection_events(self):
-        """Get available collection events.
-
-        *Example*::
-
-            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
-            >>> handler = SecsHandler(settings)
-            >>> handler.collection_events[123] = {'name': 'collectionEventName', 'dvids': [1, 5] }
-
-        **Key**
-
-        Id of the collection event (integer)
-
-        **Data**
-
-        Dictionary with the following fields
-
-            name
-                Name of the collection event (string)
-
-            dvids
-                Data values for the collection event (list of integers)
-
-        """
-        return self._collection_events
-
-    @property
-    def data_values(self):
-        """Get available data values.
-
-        *Example*::
-
-            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
-            >>> handler = SecsHandler(settings)
-            >>> handler.data_values[5] = {'name': 'dataValueName', 'ceid': 123 }
-
-        **Key**
-
-        Id of the data value (integer)
-
-        **Data**
-
-        Dictionary with the following fields
-
-            name
-                Name of the data value (string)
-
-            ceid
-                Collection event the data value is used for (integer)
-
-        """
-        return self._data_values
-
-    @property
-    def remote_commands(self):
-        """Get available remote commands.
-
-        *Example*::
-
-            >>> settings = secsgem.hsms.HsmsSettings(address="127.0.0.1", port=5000, name="test")
-            >>> handler = SecsHandler(settings)
-            >>> handler.remote_commands["PP_SELECT"] = {'params': [{'name': 'PROGRAM', 'format': 'A'}], \
-'ceids': [200, 343]}
-
-        **Key**
-
-        Name of the remote command (string)
-
-        **Data**
-
-        Dictionary with the following fields
-
-            params
-                Parameters for the remote command (list of dictionaries)
-
-                *Parameters*
-
-                    The dictionaries have the following fields
-
-                    name
-                        name of the parameter (string)
-
-                    format
-                        format character of the parameter (string)
-
-            ceids
-                Collection events ids the remote command might return (list of integers)
-
-        """
-        return self._remote_commands
 
     def _handle_stream_function(self, message):
         sf_callback_index = self._generate_sf_callback_name(message.header.stream, message.header.function)
@@ -375,32 +274,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         self.logger.info("Send text to terminal %s", terminal_id)
 
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
-
-    def get_ceid_name(self, ceid):
-        """Get the name of a collection event.
-
-        :param ceid: ID of collection event
-        :type ceid: integer
-        :returns: Name of the event or empty string if not found
-        :rtype: string
-        """
-        if ceid in self._collection_events and "name" in self._collection_events[ceid]:
-            return self._collection_events[ceid]["name"]
-
-        return ""
-
-    def get_dvid_name(self, dvid):
-        """Get the name of a data value.
-
-        :param dvid: ID of data value
-        :type dvid: integer
-        :returns: Name of the event or empty string if not found
-        :rtype: string
-        """
-        if dvid in self._data_values and "name" in self._data_values[dvid]:
-            return self._data_values[dvid]["name"]
-
-        return ""
 
     def are_you_there(self):
         """Check if remote is still replying."""

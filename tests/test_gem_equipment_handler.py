@@ -599,9 +599,9 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         delta = datetime.timedelta(seconds=5)
 
         # timeformat 0
-        function = self.sendECUpdate([{"ECID": secsgem.gem.ECID_TIME_FORMAT, "ECV": secsgem.secs.variables.U4(0)}])
+        function = self.sendECUpdate([{"ECID": secsgem.gem.EquipmentConstantId.TIME_FORMAT.value, "ECV": secsgem.secs.variables.U4(0)}])
 
-        function = self.sendSVRequest([secsgem.gem.SVID_CLOCK])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.CLOCK.value])
 
         equ_time = function[0]
         now = datetime.datetime.now()
@@ -613,9 +613,9 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 1
-        function = self.sendECUpdate([{"ECID": secsgem.gem.ECID_TIME_FORMAT, "ECV": secsgem.secs.variables.U4(1)}])
+        function = self.sendECUpdate([{"ECID": secsgem.gem.EquipmentConstantId.TIME_FORMAT.value, "ECV": secsgem.secs.variables.U4(1)}])
 
-        function = self.sendSVRequest([secsgem.gem.SVID_CLOCK])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.CLOCK.value])
 
         equ_time = function[0]
         now = datetime.datetime.now()
@@ -627,9 +627,9 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertTrue(now - delta < equ_datetime < now + delta)
 
         # timeformat 2
-        function = self.sendECUpdate([{"ECID": secsgem.gem.ECID_TIME_FORMAT, "ECV": secsgem.secs.variables.U4(2)}])
+        function = self.sendECUpdate([{"ECID": secsgem.gem.EquipmentConstantId.TIME_FORMAT.value, "ECV": secsgem.secs.variables.U4(2)}])
 
-        function = self.sendSVRequest([secsgem.gem.SVID_CLOCK])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.CLOCK.value])
 
         equ_time = function[0]
         now = datetime.datetime.now(tzlocal())
@@ -649,7 +649,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.sendCELinkReport()
         function = self.sendCEEnableReport()
 
-        function = self.sendSVRequest([secsgem.gem.SVID_EVENTS_ENABLED])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.EVENTS_ENABLED.value])
 
         self.assertEqual(function[0].get(), [50])
 
@@ -657,19 +657,19 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendSVRequest([secsgem.gem.SVID_ALARMS_ENABLED])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.ALARMS_ENABLED.value])
         self.assertEqual(function[0].get(), [])
 
         function = self.sendAlarmEnable()
 
-        function = self.sendSVRequest([secsgem.gem.SVID_ALARMS_ENABLED])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.ALARMS_ENABLED.value])
         self.assertEqual(function[0].get(), [25])
 
     def testStatusVariablePredefinedAlarmsSet(self):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendSVRequest([secsgem.gem.SVID_ALARMS_SET])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.ALARMS_SET.value])
         self.assertEqual(function[0].get(), [])
 
         function = self.sendAlarmEnable()
@@ -685,7 +685,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        function = self.sendSVRequest([secsgem.gem.SVID_ALARMS_SET])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.ALARMS_SET.value])
         self.assertEqual(function[0].get(), [25])
 
         clientCommandThread = threading.Thread(target=self.client.clear_alarm, args=(25,), name="TestGemEquipmentHandlerPassiveControlState_testStatusVariablePredefinedAlarmsSet")
@@ -699,7 +699,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
 
-        function = self.sendSVRequest([secsgem.gem.SVID_ALARMS_SET])
+        function = self.sendSVRequest([secsgem.gem.StatusVariableId.ALARMS_SET.value])
         self.assertEqual(function[0].get(), [])
 
     def setupTestDataValues(self, use_callbacks=False):
@@ -1453,38 +1453,38 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.assertEqual(function.get(), 1)
 
     def testEquipmentConstantPredefinedEstablishCommunicationTimeout(self):
-        self.client.equipment_constants[secsgem.gem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT].value = 10
+        self.client.equipment_constants[secsgem.gem.EquipmentConstantId.ESTABLISH_COMMUNICATIONS_TIMEOUT.value].value = 10
 
         self.establishCommunication()
 
-        function = self.sendECRequest([secsgem.gem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT])
+        function = self.sendECRequest([secsgem.gem.EquipmentConstantId.ESTABLISH_COMMUNICATIONS_TIMEOUT.value])
 
         EC = function[0]
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 10)
 
-        function = self.sendECUpdate([{"ECID": secsgem.gem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT, "ECV": secsgem.secs.variables.I4(20)}])
+        function = self.sendECUpdate([{"ECID": secsgem.gem.EquipmentConstantId.ESTABLISH_COMMUNICATIONS_TIMEOUT.value, "ECV": secsgem.secs.variables.I4(20)}])
 
         self.assertEqual(function.get(), 0)
 
-        self.assertEqual(self.client.equipment_constants[secsgem.gem.ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT].value, 20)
+        self.assertEqual(self.client.equipment_constants[secsgem.gem.EquipmentConstantId.ESTABLISH_COMMUNICATIONS_TIMEOUT.value].value, 20)
 
     def testEquipmentConstantPredefinedTimeFormat(self):
-        self.client.equipment_constants[secsgem.gem.ECID_TIME_FORMAT].value = 1
+        self.client.equipment_constants[secsgem.gem.EquipmentConstantId.TIME_FORMAT.value].value = 1
 
         self.establishCommunication()
 
-        function = self.sendECRequest([secsgem.gem.ECID_TIME_FORMAT])
+        function = self.sendECRequest([secsgem.gem.EquipmentConstantId.TIME_FORMAT.value])
 
         EC = function[0]
         self.assertIsNotNone(EC)
         self.assertEqual(EC.get(), 1)
 
-        function = self.sendECUpdate([{"ECID": secsgem.gem.ECID_TIME_FORMAT, "ECV": secsgem.secs.variables.I4(0)}])
+        function = self.sendECUpdate([{"ECID": secsgem.gem.EquipmentConstantId.TIME_FORMAT.value, "ECV": secsgem.secs.variables.I4(0)}])
 
         self.assertEqual(function.get(), 0)
 
-        self.assertEqual(self.client.equipment_constants[secsgem.gem.ECID_TIME_FORMAT].value, 0)
+        self.assertEqual(self.client.equipment_constants[secsgem.gem.EquipmentConstantId.TIME_FORMAT.value].value, 0)
 
     def testAlarmEnable(self):
         self.setupTestAlarms()
@@ -1694,7 +1694,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=100025)
         self.assertEqual(function.get(), 0)
@@ -1726,7 +1726,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=100025)
         self.assertEqual(function.get(), 0)
@@ -1752,7 +1752,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=200025)
         self.assertEqual(function.get(), 0)
@@ -1797,7 +1797,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestAlarms()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=200025)
         self.assertEqual(function.get(), 0)
@@ -1849,7 +1849,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertTrue(self.client.alarms[25].set)
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=100025)
         self.assertEqual(function.get(), 0)
@@ -1873,7 +1873,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         self.assertFalse(self.client.alarms[25].set)
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=100025)
         self.assertEqual(function.get(), 0)
@@ -1993,7 +1993,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestRemoteCommands()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
         function = self.sendCELinkReport(ceid=5001)
         self.assertEqual(function.get(), 0)
@@ -2103,11 +2103,11 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         self.setupTestRemoteCommands()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
-        function = self.sendCELinkReport(ceid=secsgem.gem.CEID_CMD_START_DONE)
+        function = self.sendCELinkReport(ceid=secsgem.gem.CollectionEventId.CMD_START_DONE.value)
         self.assertEqual(function.get(), 0)
-        function = self.sendCEEnableReport(ceid=[secsgem.gem.CEID_CMD_START_DONE])
+        function = self.sendCEEnableReport(ceid=[secsgem.gem.CollectionEventId.CMD_START_DONE.value])
         self.assertEqual(function.get(), 0)
 
         system_id = self.settings.protocol.get_next_system_counter()
@@ -2137,17 +2137,17 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
-        self.assertEqual(function.CEID.get(), secsgem.gem.CEID_CMD_START_DONE)
+        self.assertEqual(function.CEID.get(), secsgem.gem.CollectionEventId.CMD_START_DONE.value)
 
     def testRemoteCommandSTOP(self):
         self.setupTestRemoteCommands()
         self.establishCommunication()
 
-        function = self.sendCEDefineReport(vid=[secsgem.gem.SVID_CLOCK])
+        function = self.sendCEDefineReport(vid=[secsgem.gem.StatusVariableId.CLOCK.value])
         self.assertEqual(function.get(), 0)
-        function = self.sendCELinkReport(ceid=secsgem.gem.CEID_CMD_STOP_DONE)
+        function = self.sendCELinkReport(ceid=secsgem.gem.CollectionEventId.CMD_STOP_DONE.value)
         self.assertEqual(function.get(), 0)
-        function = self.sendCEEnableReport(ceid=[secsgem.gem.CEID_CMD_STOP_DONE])
+        function = self.sendCEEnableReport(ceid=[secsgem.gem.CollectionEventId.CMD_STOP_DONE.value])
         self.assertEqual(function.get(), 0)
 
         system_id = self.settings.protocol.get_next_system_counter()
@@ -2177,4 +2177,4 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function.get())
-        self.assertEqual(function.CEID.get(), secsgem.gem.CEID_CMD_STOP_DONE)
+        self.assertEqual(function.CEID.get(), secsgem.gem.CollectionEventId.CMD_STOP_DONE.value)

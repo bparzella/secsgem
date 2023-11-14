@@ -16,14 +16,25 @@
 """Wrapper for GEM collection event."""
 from __future__ import annotations
 
+import enum
+
 import secsgem.secs.variables
+
+
+class CollectionEventId(enum.Enum):
+    """Default IDs for collection events."""
+    EQUIPMENT_OFFLINE = 1
+    CONTROL_STATE_LOCAL = 2
+    CONTROL_STATE_REMOTE = 3
+    CMD_START_DONE = 20
+    CMD_STOP_DONE = 21
 
 
 class CollectionEvent:  # pylint: disable=too-few-public-methods
     """Collection event definition."""
 
     def __init__(self,
-                 ceid: int | str,
+                 ceid: int | str | CollectionEventId,
                  name: str,
                  data_values: list[int | str],
                  **kwargs):
@@ -44,7 +55,7 @@ class CollectionEvent:  # pylint: disable=too-few-public-methods
             **kwargs: additional attributes for object
 
         """
-        self.ceid = ceid
+        self.ceid = ceid if not isinstance(ceid, CollectionEventId) else ceid.value
         self.name = name
         self.data_values = data_values
 

@@ -14,8 +14,20 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM status variable."""
+from __future__ import annotations
+
+import enum
 
 import secsgem.secs
+
+
+class StatusVariableId(enum.Enum):
+    """Default IDs for status variables."""
+    CLOCK = 1001
+    CONTROL_STATE = 1002
+    EVENTS_ENABLED = 1003
+    ALARMS_ENABLED = 1004
+    ALARMS_SET = 1005
 
 
 class StatusVariable:  # pylint: disable=too-few-public-methods
@@ -23,11 +35,11 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
-        svid,
-        name,
-        unit,
-        value_type,
-        use_callback=True,
+        svid: int | str | StatusVariableId,
+        name: str,
+        unit: str,
+        value_type: secsgem.secs.variables.Base,
+        use_callback: bool = True,
         **kwargs,
     ):
         """Initialize a status variable.
@@ -40,23 +52,23 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
 
         If use_callbacks is disabled, you can set the value with the value property.
 
-        :param svid: ID of the status variable
-        :type svid: various
-        :param name: long name of the status variable
-        :type name: string
-        :param unit: unit (see SEMI E5, Units of Measure)
-        :type unit: string
-        :param value_type: type of the status variable
-        :type value_type: type of class inherited from :class:`secsgem.secs.variables.Base`
-        :param use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
-        :type use_callback: boolean
+        Args:
+            svid: ID of the status variable
+            name: long name of the status variable
+            unit: unit (see SEMI E5, Units of Measure)
+            value_type: type of the status variable
+            use_callback: use the GemEquipmentHandler callbacks to get variable (True) or use internal value
+            kwargs: extra class attributes
+
         """
-        self.svid = svid
+        self.svid = svid if not isinstance(svid, StatusVariableId) else svid.value
         self.name = name
         self.unit = unit
         self.value_type = value_type
         self.use_callback = use_callback
         self.value = 0
+
+        self.id_type: type[secsgem.secs.variables.Base]
 
         if isinstance(self.svid, int):
             self.id_type = secsgem.secs.variables.U4

@@ -65,7 +65,7 @@ class TestSecsHandler(unittest.TestCase):
         function = client.settings.streams_functions.decode(packet)
 
         self.assertIsNone(function)
-    
+
     def testStreamFunction(self):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
@@ -115,7 +115,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         #send s01e01
         system_id = self.settings.protocol.get_next_system_counter()
         self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F01(), system_id))
-        
+
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
@@ -150,7 +150,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         #send s01e01
         system_id = self.settings.protocol.get_next_system_counter()
         self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F01(), system_id))
-        
+
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
@@ -168,7 +168,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         #send s01e01
         system_id = self.settings.protocol.get_next_system_counter()
         self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F01(), system_id))
-        
+
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
@@ -533,40 +533,6 @@ class TestSecsHandlerPassive(unittest.TestCase):
         system_id = self.settings.protocol.get_next_system_counter()
         packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F02([]), system_id)
         self.settings.protocol.simulate_message(packet)
-
-    def testGetCeidName(self):
-        self.client._collection_events = {
-            0: {"name": "CollectionEvent0", "description": "Collection event #0", "dvids": []},
-        }
-
-        self.assertEqual(self.client.get_ceid_name(0), "CollectionEvent0")
-
-    def testGetCeidNameMissingName(self):
-        self.client._collection_events = {
-            0: {"description": "Collection event #0", "dvids": []},
-        }
-
-        self.assertEqual(self.client.get_ceid_name(0), "")
-
-    def testGetCeidNameMissingCeid(self):
-        self.assertEqual(self.client.get_ceid_name(0), "")
-
-    def testGetDvidName(self):
-        self.client._data_values = {
-            0: {"name": "DataValue0", "description": "Data Value #0"},
-        }
-
-        self.assertEqual(self.client.get_dvid_name(0), "DataValue0")
-
-    def testGetDvidNameMissingName(self):
-        self.client._data_values = {
-            0: {"description": "Data Value #0"},
-        }
-
-        self.assertEqual(self.client.get_dvid_name(0), "")
-
-    def testGetDvidNameMissingDvid(self):
-        self.assertEqual(self.client.get_dvid_name(0), "")
 
     def testUnregisterStreamFunctionCallback(self):
         f = unittest.mock.Mock()

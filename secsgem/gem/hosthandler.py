@@ -240,11 +240,10 @@ class GemHostHandler(GemHandler):
 
             for index, data_value_id in enumerate(report_dvs):
                 values.append({"dvid": data_value_id,
-                               "value": report_values[index],
-                               "name": self.get_dvid_name(data_value_id)})
+                               "value": report_values[index]})
 
             data = {"ceid": function.CEID, "rptid": report.RPTID, "values": values,
-                    "name": self.get_ceid_name(function.CEID), "handler": self.protocol, "peer": self}
+                    "handler": self.protocol, "peer": self}
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)

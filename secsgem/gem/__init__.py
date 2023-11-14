@@ -16,40 +16,20 @@
 """module imports."""
 
 from .alarm import Alarm
-from .collection_event import CollectionEvent
+from .collection_event import CollectionEvent, CollectionEventId
 from .collection_event_link import CollectionEventLink
 from .collection_event_report import CollectionEventReport
 from .data_value import DataValue
-from .equipment_constant import EquipmentConstant
-from .equipmenthandler import (
-    CEID_CMD_START_DONE,
-    CEID_CMD_STOP_DONE,
-    CEID_CONTROL_STATE_LOCAL,
-    CEID_CONTROL_STATE_REMOTE,
-    CEID_EQUIPMENT_OFFLINE,
-    ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT,
-    ECID_TIME_FORMAT,
-    RCMD_START,
-    RCMD_STOP,
-    SVID_ALARMS_ENABLED,
-    SVID_ALARMS_SET,
-    SVID_CLOCK,
-    SVID_CONTROL_STATE,
-    SVID_EVENTS_ENABLED,
-    GemEquipmentHandler,
-)
+from .equipment_constant import EquipmentConstant, EquipmentConstantId
+from .equipmenthandler import GemEquipmentHandler
 from .handler import GemHandler
 from .hosthandler import GemHostHandler
-from .remote_command import RemoteCommand
-from .status_variable import StatusVariable
+from .remote_command import RemoteCommand, RemoteCommandId
+from .status_variable import StatusVariable, StatusVariableId
 
 __all__ = [
     "GemHandler", "GemEquipmentHandler", "GemHostHandler",
-    "ECID_ESTABLISH_COMMUNICATIONS_TIMEOUT", "ECID_TIME_FORMAT",
-    "SVID_CLOCK", "SVID_CONTROL_STATE", "SVID_EVENTS_ENABLED", "SVID_ALARMS_ENABLED", "SVID_ALARMS_SET",
-    "CEID_EQUIPMENT_OFFLINE", "CEID_CONTROL_STATE_LOCAL", "CEID_CONTROL_STATE_REMOTE", "CEID_CMD_START_DONE",
-    "CEID_CMD_STOP_DONE",
-    "RCMD_START", "RCMD_STOP",
-    "RemoteCommand", "Alarm", "EquipmentConstant", "CollectionEventReport", "CollectionEventLink",
-    "CollectionEvent", "StatusVariable", "DataValue",
+    "RemoteCommand", "RemoteCommandId", "Alarm", "EquipmentConstant", "EquipmentConstantId", "CollectionEventReport",
+    "CollectionEventLink",   "CollectionEvent", "CollectionEventId", "StatusVariable", "StatusVariableId",
+     "DataValue",
 ]

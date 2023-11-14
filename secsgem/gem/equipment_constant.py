@@ -16,7 +16,15 @@
 """Wrapper for GEM equipment constant."""
 from __future__ import annotations
 
+import enum
+
 import secsgem.secs
+
+
+class EquipmentConstantId(enum.Enum):
+    """Default IDs for equipment constants."""
+    ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
+    TIME_FORMAT = 2
 
 
 class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
@@ -24,7 +32,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
-        ecid: int | str,
+        ecid: int | str | EquipmentConstantId,
         name: str,
         min_value: int | float,
         max_value: int | float,
@@ -57,7 +65,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
             **kwargs: additional attributes for object
 
         """
-        self.ecid = ecid
+        self.ecid = ecid if not isinstance(ecid, EquipmentConstantId) else ecid.value
         self.name = name
         self.min_value = min_value
         self.max_value = max_value

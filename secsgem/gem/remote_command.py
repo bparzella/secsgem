@@ -16,17 +16,28 @@
 """Wrapper for GEM remote command."""
 from __future__ import annotations
 
+import enum
+import typing
+
 from secsgem.secs.variables import U4, Base, String
 
+if typing.TYPE_CHECKING:
+    from .collection_event import CollectionEventId
+
+
+class RemoteCommandId(enum.Enum):
+    """Default IDs for remote commands."""
+    START = "START"
+    STOP = "STOP"
 
 class RemoteCommand:  # pylint: disable=too-few-public-methods
     """Remote command definition."""
 
     def __init__(self,
-                 rcmd: int | str,
+                 rcmd: int | str | RemoteCommandId,
                  name: str,
                  params: list[str],
-                 ce_finished: int | str,
+                 ce_finished: int | str | CollectionEventId,
                  **kwargs):
         """Initialize a remote command.
 
