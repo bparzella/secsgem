@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secsgem"
-version = "0.2.0-alpha.5"
+version = "0.2.0-alpha.6"
 description = "Python SECS/GEM implementation"
 readme = "README.md"
 
