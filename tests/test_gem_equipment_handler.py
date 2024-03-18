@@ -1217,7 +1217,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.sendCELinkReport()
         function = self.sendCEEnableReport()
 
-        clientCommandThread = threading.Thread(target=self.client.trigger_collection_events, args=(50,), name="TestGemEquipmentHandlerPassiveControlState_testCollectionEventTrigger")
+        clientCommandThread = threading.Thread(target=self.client.trigger_collection_events, args=([50],), name="TestGemEquipmentHandlerPassiveControlState_testCollectionEventTrigger")
         clientCommandThread.daemon = True  # make thread killable on program termination
         clientCommandThread.start()
 
