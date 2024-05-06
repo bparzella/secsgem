@@ -26,7 +26,7 @@ from .message import Block, Message
 from .protocol import Protocol
 from .protocol_dispatcher import ProtocolDispatcher
 from .serial_connection import SerialConnection
-from .settings import DeviceType, Setting, Settings
+from .settings import DeviceType, Settings
 from .state_machine import State, StateMachine, Transition, UnknownTransitionError, WrongSourceStateError
 from .tcp_client_connection import TcpClientConnection
 from .tcp_server_connection import TcpServerConnection
@@ -44,7 +44,7 @@ __all__ = [
     "Protocol",
     "ProtocolDispatcher",
     "SerialConnection",
-    "Settings", "Setting", "DeviceType",
+    "Settings", "DeviceType",
     "State", "StateMachine", "Transition", "UnknownTransitionError", "WrongSourceStateError",
     "TcpClientConnection",
     "TcpServerConnection",

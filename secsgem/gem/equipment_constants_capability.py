@@ -153,7 +153,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             responses = [self._get_ec_value(equipment_constant)
                          for equipment_constant in self._equipment_constants.values()]
         else:
-            for equipment_constant_id in function:
+            for equipment_constant_id in function:  # type: ignore[attr-defined]
                 if equipment_constant_id not in self._equipment_constants:
                     responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
                 else:
@@ -178,7 +178,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
         eac = 0
 
-        for equipment_constant in function:
+        for equipment_constant in function:  # type: ignore[attr-defined]
             if equipment_constant.ECID not in self._equipment_constants:
                 eac = 1
             else:
@@ -191,7 +191,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
                     eac = 3
 
         if eac == 0:
-            for equipment_constant in function:
+            for equipment_constant in function:  # type: ignore[attr-defined]
                 self._set_ec_value(self._equipment_constants[equipment_constant.ECID], equipment_constant.ECV.get())
 
         return self.stream_function(2, 16)(eac)
@@ -222,7 +222,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
                 "UNITS": eq_constant.unit,
             } for eq_constant in self._equipment_constants.values()]
         else:
-            for ecid in function:
+            for ecid in function:  # type: ignore[attr-defined]
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:

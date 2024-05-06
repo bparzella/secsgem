@@ -31,24 +31,14 @@ class MockSettings(secsgem.common.Settings):
     ) -> None:
         super().__init__(**kwargs)
 
-        self._data.update(kwargs)
-
-        object.__setattr__(self, "protocol", protocol_class(self))
-        object.__setattr__(
-            self,
-            "connection", None if connection_class is None else connection_class(self)
-        )
-
-    @classmethod
-    def _attributes(cls) -> list[secsgem.common.Setting]:
-        """Get the available settings for the class."""
-        return super()._attributes()
+        self.protocol = protocol_class(self)
+        self.connection = None if connection_class is None else connection_class(self)
 
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
         return self.protocol
 
-    def create_connection(self) -> secsgem.common.Connection:
+    def create_connection(self) -> secsgem.common.Connection | None:  # type: ignore[override]
         """Connection class for this configuration."""
         return self.connection
 
@@ -73,15 +63,37 @@ class MockSettings(secsgem.common.Settings):
 class MockHsmsSettings(MockSettings):
     """Mock HSMS settings class."""
 
-    @classmethod
-    def _attributes(cls) -> list[secsgem.common.Setting]:
-        """Get the available settings for the class."""
-        return [
-            *super()._attributes(),
-            secsgem.common.Setting("connect_mode", secsgem.hsms.HsmsConnectMode.ACTIVE, "Hsms connect mode"),
-            secsgem.common.Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
-            secsgem.common.Setting("port", 5000, "TCP port of remote host"),
-        ]
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize settings."""
+        super().__init__(*args, **kwargs)
+
+        self._connect_mode = kwargs.get("connect_mode", secsgem.hsms.HsmsConnectMode.ACTIVE)
+        self._address = kwargs.get("address", "127.0.0.1")
+        self._port = kwargs.get("port", 5000)
+
+    @property
+    def connect_mode(self) -> secsgem.hsms.HsmsConnectMode:
+        """Hsms connect mode.
+
+        Default: HsmsConnectMode.ACTIVE
+        """
+        return self._connect_mode
+
+    @property
+    def address(self) -> str:
+        """Remote (active) or local (passive) IP address.
+
+        Default: "127.0.0.1"
+        """
+        return self._address
+
+    @property
+    def port(self) -> int:
+        """TCP port of remote host.
+
+        Default: 5000
+        """
+        return self._port
 
     @property
     def is_active(self) -> bool:

@@ -33,21 +33,30 @@ class SecsISettings(secsgem.common.Settings):
         >>> settings.speed
         9600
 
-    .. exec::
-        import secsgem.hsms.settings
-
-        secsgem.hsms.settings.HsmsSettings._attributes_help()
-
     """
 
-    @classmethod
-    def _attributes(cls) -> list[secsgem.common.Setting]:
-        """Get the available settings for the class."""
-        return [
-            *super()._attributes(),
-            secsgem.common.Setting("port", None, "Serial port"),
-            secsgem.common.Setting("speed", 9600, "Serial port baud rate"),
-        ]
+    def __init__(self, **kwargs) -> None:
+        """Initialize settings."""
+        super().__init__(**kwargs)
+
+        self._port = kwargs.get("port", "")
+        self._speed = kwargs.get("speed", 9600)
+
+    @property
+    def port(self) -> str:
+        """Serial port.
+
+        Default: ""
+        """
+        return self._port
+
+    @property
+    def speed(self) -> int:
+        """Serial port baud rate.
+
+        Default: 9600
+        """
+        return self._speed
 
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""

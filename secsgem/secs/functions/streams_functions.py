@@ -70,7 +70,7 @@ class StreamsFunctions:
 
         return functions[0]
 
-    def decode(self, message: secsgem.common.Message) -> SecsStreamFunction | None:
+    def decode(self, message: secsgem.common.Message) -> SecsStreamFunction:
         """Get object of decoded stream and function class, or None if no class is available.
 
         Args:
@@ -81,11 +81,11 @@ class StreamsFunctions:
 
         """
         if message is None:
-            return None
+            raise ValueError("Decoding failed, missing message")
 
         func = self.function(message.header.stream, message.header.function)
         if func is None:
-            return None
+            raise ValueError("Decoding failed, invalid message")
 
         if isinstance(message.data, SecsStreamFunction):
             return message.data

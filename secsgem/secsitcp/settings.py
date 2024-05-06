@@ -47,22 +47,39 @@ class SecsITcpSettings(secsgem.secsi.SecsISettings):
         >>> settings.address
         '127.0.0.1'
 
-    .. exec::
-        import secsgem.secsitcp.settings
-
-        secsgem.secsitcp.settings.SecsITcpSettings._attributes_help()
-
     """
 
-    @classmethod
-    def _attributes(cls) -> list[secsgem.common.Setting]:
-        """Get the available settings for the class."""
-        return [
-            *super()._attributes(),
-            secsgem.common.Setting("connect_mode", SecsITcpConnectMode.CLIENT, "Secs I over TCP connect mode"),
-            secsgem.common.Setting("address", "127.0.0.1", "Remote (client) or local (server) IP address"),
-            secsgem.common.Setting("port", 5000, "TCP port of remote host"),
-        ]
+    def __init__(self, **kwargs) -> None:
+        """Initialize settings."""
+        super().__init__(**kwargs)
+
+        self._connect_mode = kwargs.get("connect_mode", SecsITcpConnectMode.CLIENT)
+        self._address = kwargs.get("address", "127.0.0.1")
+        self._port = kwargs.get("port", 5000)
+
+    @property
+    def connect_mode(self) -> SecsITcpConnectMode:
+        """Secs I over TCP connect mode.
+
+        Default: SecsITcpConnectMode.CLIENT
+        """
+        return self._connect_mode
+
+    @property
+    def address(self) -> str:
+        """Remote (client) or local (server) IP address.
+
+        Default: "127.0.0.1"
+        """
+        return self._address
+
+    @property
+    def port(self) -> int:  # type: ignore[override]
+        """TCP port of remote host.
+
+        Default: 5000
+        """
+        return self._port
 
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""

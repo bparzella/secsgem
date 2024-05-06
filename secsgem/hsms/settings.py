@@ -46,22 +46,39 @@ class HsmsSettings(secsgem.common.Settings):
         >>> settings.address
         '127.0.0.1'
 
-    .. exec::
-        import secsgem.hsms.settings
-
-        secsgem.hsms.settings.HsmsSettings._attributes_help()
-
     """
 
-    @classmethod
-    def _attributes(cls) -> list[secsgem.common.Setting]:
-        """Get the available settings for the class."""
-        return [
-            *super()._attributes(),
-            secsgem.common.Setting("connect_mode", HsmsConnectMode.ACTIVE, "Hsms connect mode"),
-            secsgem.common.Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
-            secsgem.common.Setting("port", 5000, "TCP port of remote host"),
-        ]
+    def __init__(self, **kwargs) -> None:
+        """Initialize settings."""
+        super().__init__(**kwargs)
+
+        self._connect_mode = kwargs.get("connect_mode", HsmsConnectMode.ACTIVE)
+        self._address = kwargs.get("address", "127.0.0.1")
+        self._port = kwargs.get("port", 5000)
+
+    @property
+    def connect_mode(self) -> HsmsConnectMode:
+        """Hsms connect mode.
+
+        Default: HsmsConnectMode.ACTIVE
+        """
+        return self._connect_mode
+
+    @property
+    def address(self) -> str:
+        """Remote (active) or local (passive) IP address.
+
+        Default: "127.0.0.1"
+        """
+        return self._address
+
+    @property
+    def port(self) -> int:
+        """TCP port of remote host.
+
+        Default: 5000
+        """
+        return self._port
 
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
@@ -96,3 +113,41 @@ class HsmsSettings(secsgem.common.Settings):
 
         """
         return f"secsgem_HSMS_{functionality}_{self.connect_mode}_{self.address}:{self.port}"
+
+
+class ExistingProtocolSettings(HsmsSettings):
+    """Settings for existing HSMS connection.
+
+    These attributes can be initialized in the constructor and accessed as property.
+
+    Example:
+        >>> import secsgem.hsms
+        >>>
+        >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
+        >>> settings.device_type
+        <DeviceType.EQUIPMENT: 0>
+
+    """
+
+    def __init__(self, **kwargs) -> None:
+        """Initialize settings."""
+        super().__init__(**kwargs)
+
+        self._existing_protocol = kwargs.get("existing_protocol", None)
+
+    @property
+    def existing_protocol(self) -> secsgem.common.Protocol:
+        """Existing protocol.
+
+        Default: None
+        """
+        return self._existing_protocol
+
+    def create_protocol(self) -> secsgem.common.Protocol:
+        """Protocol class for this configuration."""
+        return self.existing_protocol
+
+    @property
+    def name(self) -> str:
+        """Name of this configuration."""
+        return f"HSMS-{self.connect_mode}_{self.address}:{self.port}"

@@ -82,6 +82,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
         """
         super().__init__(settings)
+        self._settings: HsmsSettings = settings
 
         self._connected = False
 

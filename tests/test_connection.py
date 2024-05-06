@@ -18,11 +18,11 @@ from __future__ import annotations
 
 import datetime
 import logging
-import typing
 
 import secsgem.common
 import secsgem.common.settings
 import secsgem.hsms
+import secsgem.hsms.settings
 from secsgem.hsms.protocol import HsmsProtocol
 
 
@@ -101,19 +101,8 @@ class HsmsTestConnection(secsgem.common.Connection):
         self._connected = False
 
 
-class HsmsTestServerSettings(secsgem.common.Settings):
+class HsmsTestServerSettings(secsgem.hsms.HsmsSettings):
     """Test class settings."""
-
-    @classmethod
-    def _attributes(cls) -> typing.List[secsgem.common.settings.Setting]:
-        """Get the available settings for the class."""
-        return super()._attributes() + [
-            secsgem.common.settings.Setting("server", None, "Server for connection"),
-            secsgem.common.settings.Setting("connect_mode", secsgem.hsms.HsmsConnectMode.ACTIVE, "Hsms connect mode"),
-            secsgem.common.settings.Setting("address", "127.0.0.1", "Remote (active) or local (passive) IP address"),
-            secsgem.common.settings.Setting("port", 5000, "TCP port of remote host"),
-            secsgem.common.settings.Setting("session_id", 0, "session / device ID to use for connection")
-        ]
 
     def create_protocol(self) -> HsmsProtocol:
         """Protocol class for this configuration."""

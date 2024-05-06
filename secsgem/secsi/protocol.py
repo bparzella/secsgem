@@ -67,6 +67,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
         """
         super().__init__(settings)
+        self._settings: SecsISettings = settings
 
     def _create_message_for_function(
             self,

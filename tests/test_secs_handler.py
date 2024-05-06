@@ -44,27 +44,26 @@ class TestSecsHandler(unittest.TestCase):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
-        function = client.settings.streams_functions.decode(None)
-
-        self.assertIsNone(function)
+        with pytest.raises(ValueError):
+            client.settings.streams_functions.decode(None)
 
     def testSecsDecodeInvalidStream(self):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
         packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99), b"")
-        function = client.settings.streams_functions.decode(packet)
 
-        self.assertIsNone(function)
+        with pytest.raises(ValueError):
+            client.settings.streams_functions.decode(packet)
 
     def testSecsDecodeInvalidFunction(self):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
         packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99), b"")
-        function = client.settings.streams_functions.decode(packet)
-
-        self.assertIsNone(function)
+    
+        with pytest.raises(ValueError):
+            client.settings.streams_functions.decode(packet)
 
     def testStreamFunction(self):
         settings = MockSettings(MockProtocol)
