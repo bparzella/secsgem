@@ -92,7 +92,7 @@ class GemHandlerPassiveGroup:
 
         self.settings.protocol.simulate_message(
             self.settings.protocol.create_message_for_function(
-                secsgem.secs.functions.SecsS01F14([0]),
+                self.settings.streams_functions(1, 14, [0, []]),
                 packet.header.system,
             )
         )
@@ -117,7 +117,7 @@ class GemHandlerPassiveGroup:
             secsgem.gem.communication_state_machine.CommunicationState.WAIT_CRA
         )
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F14([0]), message.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(1, 14, [0, []]), message.header.system))
 
         self.assertEqual(
             self.client.communication_state.current,
@@ -145,7 +145,7 @@ class GemHandlerPassiveGroup:
         )
 
         system_id = 1
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F13(), system_id))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(1, 13), system_id))
 
         self.assertEqual(
             self.client.communication_state.current,
@@ -164,7 +164,7 @@ class GemHandlerPassiveGroup:
             secsgem.gem.communication_state_machine.CommunicationState.COMMUNICATING
         )
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F14([0]), s01f13ReceivedPacket.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(1, 14, [0, []]), s01f13ReceivedPacket.header.system))
 
         self.assertEqual(
             self.client.communication_state.current,
@@ -175,7 +175,7 @@ class GemHandlerPassiveGroup:
         self.establishCommunication()
 
         system_id = 1
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F01(), system_id))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(1, 1), system_id))
 
         message = self.settings.protocol.expect_message(system_id=system_id)
 
@@ -188,7 +188,7 @@ class GemHandlerPassiveGroup:
         self.establishCommunication()
 
         system_id = 1
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F13(), system_id))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(1, 13), system_id))
 
         message = self.settings.protocol.expect_message(system_id=system_id)
 
@@ -224,7 +224,7 @@ class GemHandlerPassiveGroup:
 
         message = self.settings.protocol.expect_message(stream=7)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.ACCEPTED), message.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(7, 4, self.settings.data_items.ACKC7.ACCEPTED), message.header.system))
 
         clientCommandThread.join(10)
         self.assertFalse(clientCommandThread.is_alive())
@@ -234,10 +234,11 @@ class GemHandlerPassiveGroup:
         self.assertEqual(message.header.stream, 7)
         self.assertEqual(message.header.function, 3)
 
-        function = message.data
+        function = self.settings.streams_functions.from_message(message)
+        data = function.value
 
-        self.assertEqual(function.PPID.get(), ppid)
-        self.assertEqual(function.PPBODY.get(), ppbody)
+        self.assertEqual(data.PPID, ppid)
+        self.assertEqual(data.PPBODY, ppbody)
 
     def testRequestProcessProgram(self):
         self.establishCommunication()
@@ -251,7 +252,7 @@ class GemHandlerPassiveGroup:
 
         message = self.settings.protocol.expect_message(stream=7)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F06({"PPID": ppid, "PPBODY": ppbody}), message.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(self.settings.streams_functions(7, 6, {"PPID": ppid, "PPBODY": ppbody}), message.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -261,9 +262,10 @@ class GemHandlerPassiveGroup:
         self.assertEqual(message.header.stream, 7)
         self.assertEqual(message.header.function, 5)
 
-        function = message.data
+        function = self.settings.streams_functions.from_message(message)
+        data = function.value
 
-        self.assertEqual(function.get(), ppid)
+        self.assertEqual(data, ppid)
 
 class TestGemHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.gem.GemHandler

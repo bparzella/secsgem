@@ -33,7 +33,7 @@ class TestSecsHandler(unittest.TestCase):
 
         packet = settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F02(["MDLN", "SOFTREV"]), 0)
 
-        function = client.settings.streams_functions.decode(packet)
+        function = client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.stream, 1)
         self.assertEqual(function.function, 2)
@@ -45,7 +45,7 @@ class TestSecsHandler(unittest.TestCase):
         client = secsgem.secs.SecsHandler(settings)
 
         with pytest.raises(ValueError):
-            client.settings.streams_functions.decode(None)
+            client.settings.streams_functions.from_message(None)
 
     def testSecsDecodeInvalidStream(self):
         settings = MockSettings(MockProtocol)
@@ -54,16 +54,16 @@ class TestSecsHandler(unittest.TestCase):
         packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99), b"")
 
         with pytest.raises(ValueError):
-            client.settings.streams_functions.decode(packet)
+            client.settings.streams_functions.from_message(packet)
 
     def testSecsDecodeInvalidFunction(self):
         settings = MockSettings(MockProtocol)
         client = secsgem.secs.SecsHandler(settings)
 
         packet = secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsHeader(0, 0, 99), b"")
-    
+
         with pytest.raises(ValueError):
-            client.settings.streams_functions.decode(packet)
+            client.settings.streams_functions.from_message(packet)
 
     def testStreamFunction(self):
         settings = MockSettings(MockProtocol)
@@ -189,12 +189,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["CEED"], False)
         self.assertEqual(function["CEID"].get(), [])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(secsgem.secs.data_items.ERACK.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(self.data_items.ERACK.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -214,12 +214,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"].get(), [])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(self.data_items.DRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -239,7 +239,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [])
 
@@ -263,7 +263,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -287,7 +287,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -311,7 +311,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -335,12 +335,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [])
 
         packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.secs.variables.U1(0), "ECMAX": secsgem.secs.variables.U1(100), "ECDEF": secsgem.secs.variables.U1(50), "UNITS": "mm"}]), packet.header.system)
+            "ECMIN": secsgem.secs.ItemU1(0), "ECMAX": secsgem.secs.ItemU1(100), "ECDEF": secsgem.secs.ItemU1(50), "UNITS": "mm"}]), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -360,12 +360,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
         packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F30([{"ECID": 1, "ECNAME": "EC1", \
-            "ECMIN": secsgem.secs.variables.U1(0), "ECMAX": secsgem.secs.variables.U1(100), "ECDEF": secsgem.secs.variables.U1(50), "UNITS": "mm"}]), packet.header.system)
+            "ECMIN": secsgem.secs.ItemU1(0), "ECMAX": secsgem.secs.ItemU1(100), "ECDEF": secsgem.secs.ItemU1(50), "UNITS": "mm"}]), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -385,7 +385,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -409,7 +409,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [1])
 
@@ -433,11 +433,11 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [{'ECID': 1, 'ECV': u'1337'}])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F16(secsgem.secs.data_items.EAC.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F16(self.data_items.EAC.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -457,11 +457,11 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [{'ECV': 1337, 'ECID': 1}])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F16(secsgem.secs.data_items.EAC.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F16(self.data_items.EAC.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -482,12 +482,12 @@ class TestSecsHandlerPassive(unittest.TestCase):
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.TID.get(), 0)
         self.assertEqual(function.TEXT.get(), "Hello World")
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS10F04(secsgem.secs.data_items.ACKC10.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS10F04(self.data_items.ACKC10.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)

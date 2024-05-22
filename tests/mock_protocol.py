@@ -21,6 +21,7 @@ import typing
 
 import secsgem.common
 import secsgem.secs
+import secsgem.secs.data_item
 
 if typing.TYPE_CHECKING:
     from .mock_settings import MockSettings
@@ -74,7 +75,7 @@ class MockMessage(secsgem.common.Message[MockBlock]):
 
     block_type = MockBlock
 
-    def __init__(self, header: MockHeader, data: secsgem.secs.SecsStreamFunction):
+    def __init__(self, header: MockHeader, data: secsgem.secs.data_item.StreamFunction):
         """Initialize a Message object.
 
         Args:
@@ -92,7 +93,7 @@ class MockMessage(secsgem.common.Message[MockBlock]):
         return self._header
 
     @property
-    def data(self) -> secsgem.secs.SecsStreamFunction:
+    def data(self) -> secsgem.secs.data_item.StreamFunction:
         """Get the header."""
         return self._function
 
@@ -144,24 +145,38 @@ class MockProtocol(secsgem.common.Protocol[secsgem.common.Message, secsgem.commo
         """
         raise NotImplementedError("MockProtocol._on_connection_message_received missing implementation")
 
-    def _create_message_for_function(
+    def _create_message_for_protocol(
             self,
-            function: secsgem.secs.SecsStreamFunction,
-            system_id: int,
+            header: secsgem.common.HeaderData,
+            data: bytes,
     ) -> secsgem.common.Message:
+        """Create a protocol specific message for a header and data.
+
+        Args:
+            header: generic header to create message from
+            data: message data
+
+        Returns:
+            created message object
+
+        """
+        return MockMessage(MockHeader(**header.args), data)
+
+    def create_message_for_function(self, function: secsgem.secs.data_item.StreamFunction, system: int) -> secsgem.common.Message:
         """Create a protocol specific message for a function.
 
         Args:
-            function: function to create message for
-            system_id: system
+            function: stream function
+            system: header system
 
         Returns:
-            created message
+            created message object
 
         """
-        return MockMessage(MockHeader(system_id, 0, function.stream, function.function, function.is_reply_required), function)
-
-    create_message_for_function = _create_message_for_function
+        return self._create_message_for_protocol(
+            function.generate_header(system, self._settings.session_id),
+            function.data.encode()
+        )
 
     def _get_log_extra(self) -> dict[str, typing.Any]:
         """Get extra fields for logging."""
@@ -180,7 +195,7 @@ class MockProtocol(secsgem.common.Protocol[secsgem.common.Message, secsgem.commo
         self.events.fire("connected", {"connection": self})
         self.events.fire("communicating", {"connection": self})
 
-    def send_message(self, message: secsgem.common.Message) -> bool:
+    def _send_message(self, message: secsgem.common.Message) -> bool:
         """Send a message to the remote host.
 
         Args:

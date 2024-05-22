@@ -67,11 +67,11 @@ class Capability(abc.ABC):  # pylint: disable=too-few-public-methods
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
+    def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.Item:
         raise NotImplementedError
 
     @abc.abstractmethod
-    def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:
+    def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.Item:
         raise NotImplementedError
 
     @abc.abstractmethod

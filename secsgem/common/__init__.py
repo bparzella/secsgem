@@ -20,7 +20,7 @@ from .byte_queue import ByteQueue
 from .callbacks import CallbackHandler
 from .connection import Connection
 from .events import EventProducer
-from .header import Header
+from .header import Header, HeaderData
 from .helpers import format_hex, function_name, indent_block, is_errorcode_ewouldblock, is_windows
 from .message import Block, Message
 from .protocol import Protocol
@@ -38,7 +38,7 @@ __all__ = [
     "CallbackHandler",
     "Connection",
     "EventProducer",
-    "Header",
+    "Header", "HeaderData",
     "format_hex", "function_name", "indent_block", "is_windows", "is_errorcode_ewouldblock",
     "Message", "Block",
     "Protocol",

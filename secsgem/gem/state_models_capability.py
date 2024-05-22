@@ -19,6 +19,7 @@ from __future__ import annotations
 import typing
 
 import secsgem.common
+import secsgem.secs.data_item
 
 from .capability import Capability
 from .collection_event import CollectionEventId
@@ -109,9 +110,9 @@ class StateModelsCapability(GemHandler, Capability):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_remote()
 
-    def _on_s01f15(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f15(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 1, Function 15, Request offline.
 
         Args:
@@ -127,11 +128,11 @@ class StateModelsCapability(GemHandler, Capability):
             self._control_state.remote_offline()
             self.trigger_collection_events([CollectionEventId.EQUIPMENT_OFFLINE.value])
 
-        return self.stream_function(1, 16)(oflack)
+        return self.stream_function(1, 16, oflack)
 
-    def _on_s01f17(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f17(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 1, Function 17, Request online.
 
         Args:
@@ -146,12 +147,14 @@ class StateModelsCapability(GemHandler, Capability):
         if self._control_state.current == ControlState.HOST_OFFLINE:
             self._control_state.remote_online()
             onlack = 0
-        elif self._control_state.current in [ControlState.ONLINE,
-                                             ControlState.ONLINE_LOCAL,
-                                             ControlState.ONLINE_REMOTE]:
+        elif self._control_state.current in [
+            ControlState.ONLINE,
+            ControlState.ONLINE_LOCAL,
+            ControlState.ONLINE_REMOTE,
+        ]:
             onlack = 2
 
-        return self.stream_function(1, 18)(onlack)
+        return self.stream_function(1, 18, onlack)
 
     def _get_control_state_id(self) -> int:
         """Get id of the control state for the current control state.

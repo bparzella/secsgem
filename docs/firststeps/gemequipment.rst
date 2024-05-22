@@ -41,8 +41,8 @@ A status variable can be added by inserting an instance of the :class:`secsgem.g
             secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.status_variables.update({
-                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.variables.U4, False),
-                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.variables.String, False),
+                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.ItemU4, False),
+                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.ItemA, False),
             })
 
             self.status_variables[10].value = 123
@@ -59,8 +59,8 @@ Alternatively the values can be acquired using a callback by setting the use_cal
             self.sv2 = "sample sv"
 
             self.status_variables.update({
-                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.variables.U4, True),
-                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.variables.String, True),
+                10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.ItemU4, True),
+                "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, SecsVarString", "chars", secsgem.secs.ItemA, True),
             })
 
         def on_sv_value_request(self, svid, sv):
@@ -82,8 +82,8 @@ An equipment constant can be added by inserting an instance of the :class:`secsg
             secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
 
             self.equipment_constants.update({
-                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.variables.U4, False),
-                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.variables.String, False),
+                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.ItemU4, False),
+                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.ItemA, False),
             })
 
             self.status_variables[20].value = 321
@@ -100,8 +100,8 @@ Alternatively the values can be acquired and updated using callbacks by setting 
             self.ec2 = "sample ec"
 
             self.equipment_constants.update({
-                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.variables.U4, True),
-                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.variables.String, True),
+                20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.ItemU4, True),
+                "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, SecsVarString", "", "", "", "chars", secsgem.secs.ItemA, True),
             })
 
         def on_ec_value_request(self, ecid, ec):
@@ -132,7 +132,7 @@ The data values for a collection event can be passed while creating the :class:`
             self.dv1 = 31337
 
             self.data_values.update({
-                30: secsgem.gem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.secs.variables.U4, True),
+                30: secsgem.gem.DataValue(30, "sample1, numeric DV, SecsVarU4", secsgem.secs.ItemU4, True),
             })
 
             self.collection_events.update({

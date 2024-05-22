@@ -38,7 +38,7 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
         svid: int | str | StatusVariableId,
         name: str,
         unit: str,
-        value_type: secsgem.secs.variables.Base,
+        value_type: secsgem.secs.Item,
         use_callback: bool = True,
         **kwargs,
     ):
@@ -68,12 +68,12 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
         self.use_callback = use_callback
         self.value = 0
 
-        self.id_type: type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.svid, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

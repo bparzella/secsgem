@@ -27,7 +27,7 @@ from test_gem_handler import GemHandlerPassiveGroup
 
 class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.gem.GemHostHandler
-    
+
     def setUp(self):
         self.assertIsNotNone(self.__testClass)
 
@@ -39,7 +39,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
     def tearDown(self):
         self.client.disable()
-    
+
     def testClearCollectionEvents(self):
         self.establishCommunication()
 
@@ -54,12 +54,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["CEED"], False)
         self.assertEqual(function["CEID"].get(), [])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(secsgem.secs.data_items.ERACK.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(self.data_items.ERACK.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=33)
@@ -69,12 +69,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"].get(), [])
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(self.data_items.DRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -87,17 +87,17 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
         packet = self.settings.protocol.expect_message(function=33)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(self.data_items.DRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=35)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(self.data_items.LRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=37)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(secsgem.secs.data_items.ERACK.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F38(self.data_items.ERACK.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -117,13 +117,13 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"][0]["RPTID"], 30)
         self.assertEqual(function["DATA"][0]["VID"][0], 20)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(self.data_items.DRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=35)
@@ -133,13 +133,13 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 35)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"][0]["CEID"], 10)
         self.assertEqual(function["DATA"][0]["RPTID"][0], 30)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(self.data_items.LRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=37)
@@ -149,12 +149,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["CEED"], True)
         self.assertEqual(function["CEID"][0], 10)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(self.data_items.LRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -174,14 +174,14 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"][0]["VID"][0], 20)
 
         rptid = function["DATA"][0]["RPTID"]
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(secsgem.secs.data_items.DRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F34(self.data_items.DRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=35)
@@ -191,13 +191,13 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 35)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["DATAID"], 0)
         self.assertEqual(function["DATA"][0]["CEID"], 10)
         self.assertEqual(function["DATA"][0]["RPTID"][0], rptid)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(self.data_items.LRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         packet = self.settings.protocol.expect_message(function=37)
@@ -207,12 +207,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function["CEED"], True)
         self.assertEqual(function["CEID"][0], 10)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(secsgem.secs.data_items.LRACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F36(self.data_items.LRACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -232,7 +232,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 41)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.RCMD.get(), "RCMD")
         self.assertEqual(function.PARAMS[0].CPNAME.get(), "PARAM1")
@@ -240,7 +240,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(function.PARAMS[1].CPNAME.get(), "PARAM2")
         self.assertEqual(function.PARAMS[1].CPVAL.get(), 2)
 
-        packetdata = {"HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE}, {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
+        packetdata = {"HCACK": self.data_items.HCACK.INVALID_COMMAND, "PARAMS": [{"CPNAME": "PARAM1", "CPACK": self.data_items.CPACK.CPVAL_ILLEGAL_VALUE}, {"CPNAME": "PARAM2", "CPACK": self.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
         packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS02F42(packetdata), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
@@ -267,12 +267,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 7)
         self.assertEqual(packet.header.function, 17)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function[0].get(), "PP1")
         self.assertEqual(function[1].get(), "PP2")
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F18(secsgem.secs.data_items.ACKC7.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F18(self.data_items.ACKC7.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -314,7 +314,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.function, 17)
 
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F18(secsgem.secs.data_items.ONLACK.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F18(self.data_items.ONLACK.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -335,7 +335,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.function, 15)
 
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F16(secsgem.secs.data_items.OFLACK.ACK), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS01F16(self.data_items.OFLACK.ACK), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -355,12 +355,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
-        self.assertEqual(function.ALED.get(), secsgem.secs.data_items.ALED.ENABLE)
+        self.assertEqual(function.ALED.get(), self.data_items.ALED.ENABLE)
         self.assertEqual(function.ALID.get(), 25)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F04(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F04(self.data_items.ACKC5.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -380,12 +380,12 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 3)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
-        self.assertEqual(function.ALED.get(), secsgem.secs.data_items.ALED.DISABLE)
+        self.assertEqual(function.ALED.get(), self.data_items.ALED.DISABLE)
         self.assertEqual(function.ALID.get(), 25)
 
-        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F04(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system)
+        packet = self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F04(self.data_items.ACKC5.ACCEPTED), packet.header.system)
         self.settings.protocol.simulate_message(packet)
 
         clientCommandThread.join(1)
@@ -405,7 +405,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 5)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [])
 
@@ -429,7 +429,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 5)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), [25])
 
@@ -463,7 +463,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.establishCommunication()
 
         system_id = self.settings.protocol.get_next_system_counter()
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F01({"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}), system_id))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F01({"ALCD": self.data_items.ALCD.PERSONAL_SAFETY | self.data_items.ALCD.ALARM_SET, "ALID": 100, "ALTX": "text"}), system_id))
 
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
@@ -472,9 +472,9 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 5)
         self.assertEqual(packet.header.function, 2)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ACCEPTED)
+        self.assertEqual(function.get(), self.data_items.ACKC5.ACCEPTED)
 
     def testReceiveTerminal(self):
         self.establishCommunication()
@@ -489,7 +489,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 2)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), 0)
 
@@ -508,7 +508,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
         self.assertEqual(packet.header.stream, 6)
         self.assertEqual(packet.header.function, 12)
 
-        function = self.client.settings.streams_functions.decode(packet)
+        function = self.client.settings.streams_functions.from_message(packet)
 
         self.assertEqual(function.get(), 0)
 

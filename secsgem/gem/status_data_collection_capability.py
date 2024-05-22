@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import secsgem.secs
+import secsgem.secs.data_item
 
 from .capability import Capability
 from .handler import GemHandler
@@ -32,30 +33,20 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
         self.__status_variables: dict[int | str, StatusVariable] = {
             StatusVariableId.CLOCK.value: StatusVariable(
-                StatusVariableId.CLOCK,
-                "Clock",
-                "",
-                secsgem.secs.variables.String),
+                StatusVariableId.CLOCK, "Clock", "", secsgem.secs.ItemA
+            ),
             StatusVariableId.CONTROL_STATE.value: StatusVariable(
-                StatusVariableId.CONTROL_STATE,
-                "ControlState",
-                "",
-                secsgem.secs.variables.Binary),
+                StatusVariableId.CONTROL_STATE, "ControlState", "", secsgem.secs.ItemB
+            ),
             StatusVariableId.EVENTS_ENABLED.value: StatusVariable(
-                StatusVariableId.EVENTS_ENABLED,
-                "EventsEnabled",
-                "",
-                secsgem.secs.variables.Array),
+                StatusVariableId.EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.ItemL
+            ),
             StatusVariableId.ALARMS_ENABLED.value: StatusVariable(
-                StatusVariableId.ALARMS_ENABLED,
-                "AlarmsEnabled",
-                "",
-                secsgem.secs.variables.Array),
+                StatusVariableId.ALARMS_ENABLED, "AlarmsEnabled", "", secsgem.secs.ItemL
+            ),
             StatusVariableId.ALARMS_SET.value: StatusVariable(
-                StatusVariableId.ALARMS_SET,
-                "AlarmsSet",
-                "",
-                secsgem.secs.variables.Array),
+                StatusVariableId.ALARMS_SET, "AlarmsSet", "", secsgem.secs.ItemL
+            ),
         }
 
     @property
@@ -72,9 +63,9 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         """
         return self._status_variables
 
-    def on_sv_value_request(self,
-                            svid: secsgem.secs.variables.Base,
-                            status_variable: StatusVariable) -> secsgem.secs.variables.Base:
+    def on_sv_value_request(
+        self, svid: secsgem.secs.Item, status_variable: StatusVariable
+    ) -> secsgem.secs.Item:
         """Get the status variable value depending on its configuation.
 
         Override in inherited class to provide custom status variable request handling.
@@ -91,7 +82,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
         return status_variable.value_type(status_variable.value)
 
-    def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
+    def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.Item:
         """Get the status variable value depending on its configuation.
 
         Args:
@@ -107,13 +98,13 @@ class StatusDataCollectionCapability(GemHandler, Capability):
             result = status_variable.value_type(self._get_control_state_id())
         elif status_variable.svid == StatusVariableId.EVENTS_ENABLED.value:
             events = self._get_events_enabled()
-            result = status_variable.value_type(secsgem.secs.data_items.SV, events)
+            result = status_variable.value_type(self.settings.data_items.SV, events)
         elif status_variable.svid == StatusVariableId.ALARMS_ENABLED.value:
             alarms = self._get_alarms_enabled()
-            result = status_variable.value_type(secsgem.secs.data_items.SV, alarms)
+            result = status_variable.value_type(self.settings.data_items.SV, alarms)
         elif status_variable.svid == StatusVariableId.ALARMS_SET.value:
             alarms = self._get_alarms_set()
-            result = status_variable.value_type(secsgem.secs.data_items.SV, alarms)
+            result = status_variable.value_type(self.settings.data_items.SV, alarms)
         else:
             if status_variable.use_callback:
                 result = self.on_sv_value_request(status_variable.id_type(status_variable.svid), status_variable)
@@ -122,9 +113,9 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
         return result
 
-    def _on_s01f03(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f03(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 1, Function 3, Equipment status request.
 
         Args:
@@ -134,7 +125,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
         responses = []
 
@@ -143,16 +134,16 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         else:
             for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
-                    responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.SV, []))
+                    responses.append(secsgem.secs.ItemL(self.settings.data_items.SV, []))
                 else:
                     status_variable = self._status_variables[status_variable_id]
                     responses.append(self._get_sv_value(status_variable))
 
-        return self.stream_function(1, 4)(responses)
+        return self.stream_function(1, 4, responses)
 
-    def _on_s01f11(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f11(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 1, Function 11, SV namelist request.
 
         Args:
@@ -162,24 +153,27 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message).value
 
         responses = []
 
         if len(function) == 0:
-            responses = [{
-                "SVID": status_variable.svid,
-                "SVNAME": status_variable.name,
-                "UNITS": status_variable.unit,
-            } for status_variable in self._status_variables.values()]
+            responses = [
+                {
+                    "SVID": status_variable.svid,
+                    "SVNAME": status_variable.name,
+                    "UNITS": status_variable.unit,
+                }
+                for status_variable in self._status_variables.values()
+            ]
         else:
             for status_variable_id in function:
                 if status_variable_id not in self._status_variables:
                     responses.append({"SVID": status_variable_id, "SVNAME": "", "UNITS": ""})
                 else:
                     status_variable = self._status_variables[status_variable_id]
-                    responses.append({"SVID": status_variable.svid,
-                                      "SVNAME": status_variable.name,
-                                      "UNITS": status_variable.unit})
+                    responses.append(
+                        {"SVID": status_variable.svid, "SVNAME": status_variable.name, "UNITS": status_variable.unit}
+                    )
 
-        return self.stream_function(1, 12)(responses)
+        return self.stream_function(1, 12, responses)

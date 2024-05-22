@@ -28,7 +28,8 @@ from .events import EventProducer
 from .protocol_dispatcher import ProtocolDispatcher
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
+    import secsgem.common
+
     from .connection import Connection
     from .message import Block, Message
     from .settings import Settings
@@ -217,24 +218,24 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         return message
 
     @abc.abstractmethod
-    def _create_message_for_function(
+    def _create_message_for_protocol(
             self,
-            function: SecsStreamFunction,
-            system_id: int,
+            header: secsgem.common.HeaderData,
+            data: bytes,
     ) -> Message:
-        """Create a protocol specific message for a function.
+        """Create a protocol specific message for a header and data.
 
         Args:
-            function: function to create message for
-            system_id: system
+            header: generic header to create message from
+            data: message data
 
         Returns:
-            created message
+            created message object
 
         """
-        raise NotImplementedError("Protocol._create_message_for_function missing implementation")
+        raise NotImplementedError("Protocol._create_message_for_protocol missing implementation")
 
-    def send_message(self, message: Message) -> bool:
+    def _send_message(self, message: Message) -> bool:
         """Send a message to the remote host.
 
         Args:
@@ -254,27 +255,27 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         return True
 
-    def send_and_waitfor_response(self, function: SecsStreamFunction) -> Message | None:
+    def send_and_waitfor_response(self, header: secsgem.common.HeaderData, data: bytes) -> Message | None:
         """Send the message and wait for the response.
 
         Args:
-            function: message to be sent
+            header: message header
+            data: message data
 
         Returns:
             Message that was received
 
         """
-        system_id = self.get_next_system_counter()
+        response_queue = self._get_queue_for_system(header.system)
 
-        response_queue = self._get_queue_for_system(system_id)
+        out_message = self._create_message_for_protocol(header, data)
 
-        out_message = self._create_message_for_function(function, system_id)
+        # TODO(BP): move decoding/logging of function to secs layer
+        self._communication_logger.info("> %s\n%s", out_message, "no function decoding", extra=self._get_log_extra())
 
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
-
-        if not self.send_message(out_message):
+        if not self._send_message(out_message):
             self._logger.error("Sending message failed")
-            self._remove_queue(system_id)
+            self._remove_queue(header.system)
             return None
 
         try:
@@ -282,42 +283,45 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         except queue.Empty:
             response = None
 
-        self._remove_queue(system_id)
+        self._remove_queue(header.system)
 
         return response
 
-    def send_response(self, function: SecsStreamFunction, system: int) -> bool:
+    def send_response(self, header: secsgem.common.HeaderData, data: bytes) -> bool:
         """Send response function for system.
 
         Args:
-            function: function to be sent
-            system: system to reply to
+            header: message header
+            data: message data
 
         Returns:
             True if sending was successful
 
         """
-        out_message = self._create_message_for_function(function, system)
+        out_message = self._create_message_for_protocol(header, data)
 
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
+        # TODO(BP): move decoding/logging of function to secs layer
+        self._communication_logger.info("> %s\n%s", out_message, "no function decoding", extra=self._get_log_extra())
 
-        return self.send_message(out_message)
+        return self._send_message(out_message)
 
-    def send_stream_function(self, function: SecsStreamFunction) -> bool:
-        """Send the message and wait for the response.
+    def send_stream_function(self, header: secsgem.common.HeaderData, data: bytes) -> bool:
+        """Send the stream/function.
 
         Args:
-            function: message to be sent
+            header: message header
+            data: message data
 
         Returns:
             True if successful
 
         """
-        out_message = self._create_message_for_function(function, self.get_next_system_counter())
+        out_message = self._create_message_for_protocol(header, data)
 
-        self._communication_logger.info("> %s\n%s", out_message, function, extra=self._get_log_extra())
+        # TODO(BP): move decoding/logging of function to secs layer
+        self._communication_logger.info("> %s\n%s", out_message, "no function decoding", extra=self._get_log_extra())
 
-        return self.send_message(out_message)
+        return self._send_message(out_message)
 
     def __repr__(self):
         """Generate textual representation for an object of this class."""

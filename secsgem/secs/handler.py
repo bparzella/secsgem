@@ -22,6 +22,8 @@ import typing
 import secsgem.common
 import secsgem.hsms
 
+from . import data_item
+
 
 class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
     """Baseclass for creating Host/Equipment models. This layer contains the SECS functionality.
@@ -68,17 +70,26 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """Disable the connection."""
         self.protocol.disable()
 
-    def send_response(self, *args, **kwargs):
+    def send_response(self, function: data_item.StreamFunction, system: int) -> bool:
         """Wrapper for connections send_response function."""
-        return self.protocol.send_response(*args, **kwargs)
+        return self.protocol.send_stream_function(
+            function.generate_header(system, self.settings.session_id),
+            function.data.encode(),
+        )
 
-    def send_and_waitfor_response(self, *args, **kwargs):
+    def send_and_waitfor_response(self, function: data_item.StreamFunction):
         """Wrapper for connections send_and_waitfor_response function."""
-        return self.protocol.send_and_waitfor_response(*args, **kwargs)
+        return self.protocol.send_and_waitfor_response(
+            function.generate_header(self.protocol.get_next_system_counter(), self.settings.session_id),
+            function.data.encode(),
+        )
 
-    def send_stream_function(self, *args, **kwargs):
+    def send_stream_function(self, function: data_item.StreamFunction) -> bool:
         """Wrapper for connections send_stream_function function."""
-        return self.protocol.send_stream_function(*args, **kwargs)
+        return self.protocol.send_stream_function(
+            function.generate_header(self.protocol.get_next_system_counter(), self.settings.session_id),
+            function.data.encode(),
+        )
 
     @property
     def events(self):
@@ -121,7 +132,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         if sf_callback_index not in self._callback_handler:
             self.logger.warning("unexpected function received %s\n%s", sf_callback_index, message.header)
             if message.header.require_response:
-                self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
+                self.send_response(
+                    self.stream_function(9, 5, message.header.encode()),
+                    message.header.system,
+                )
 
             return
 
@@ -132,7 +146,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
                 self.send_response(result, message.header.system)
         except Exception:  # pylint: disable=broad-except
             self.logger.exception("Callback aborted because of exception, abort sent")
-            self.send_response(self.stream_function(message.header.stream, 0)(), message.header.system)
+            self.send_response(self.stream_function(message.header.stream, 0), message.header.system)
 
     def _on_message_received(self, data: dict[str, typing.Any]):
         """Message received from protocol layer.
@@ -150,13 +164,13 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """Disable all Collection Events."""
         self.logger.info("Disable all collection events")
 
-        return self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": False, "CEID": []}))
+        return self.send_and_waitfor_response(self.stream_function(2, 37, {"CEED": False, "CEID": []}))
 
     def disable_ceid_reports(self):
         """Disable all Collection Event Reports."""
         self.logger.info("Disable all collection event reports")
 
-        return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
+        return self.send_and_waitfor_response(self.stream_function(2, 33, {"DATAID": 0, "DATA": []}))
 
     def list_svs(self, svs=None):
         """Get list of available Service Variables.
@@ -169,9 +183,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         if svs is None:
             svs = []
 
-        message = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 11, svs))
 
-        return self.settings.streams_functions.decode(message)
+        return self.settings.streams_functions.from_message(message)
 
     def request_svs(self, svs):
         """Request contents of supplied Service Variables.
@@ -183,9 +197,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Get value of service variables %s", svs)
 
-        message = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
+        message = self.send_and_waitfor_response(self.stream_function(1, 3, svs))
 
-        return self.settings.streams_functions.decode(message)
+        return self.settings.streams_functions.from_message(message)
 
     def request_sv(self, sv_id):
         """Request contents of one Service Variable.
@@ -209,9 +223,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         if ecs is None:
             ecs = []
-        message = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 29, ecs))
 
-        return self.settings.streams_functions.decode(message)
+        return self.settings.streams_functions.from_message(message)
 
     def request_ecs(self, ecs):
         """Request contents of supplied Equipment Constants.
@@ -223,9 +237,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Get value of equipment constants %s", ecs)
 
-        message = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 13, ecs))
 
-        return self.settings.streams_functions.decode(message)
+        return self.settings.streams_functions.from_message(message)
 
     def request_ec(self, ec_id):
         """Request contents of one Equipment Constant.
@@ -247,9 +261,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
-        message = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
+        message = self.send_and_waitfor_response(self.stream_function(2, 15, ecs))
 
-        return self.settings.streams_functions.decode(message).get()
+        return self.settings.streams_functions.from_message(message).get()
 
     def set_ec(self, ec_id, value):
         """Set contents of one Equipment Constant.
@@ -273,28 +287,26 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Send text to terminal %s", terminal_id)
 
-        return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
+        return self.send_and_waitfor_response(self.stream_function(10, 3, {"TID": terminal_id, "TEXT": text}))
 
     def are_you_there(self):
         """Check if remote is still replying."""
         self.logger.info("Requesting 'are you there'")
 
-        return self.send_and_waitfor_response(self.stream_function(1, 1)())
+        return self.send_and_waitfor_response(self.stream_function(1, 1))
 
-    def stream_function(self, stream: int, function: int) -> type[secsgem.secs.SecsStreamFunction]:
+    def stream_function(
+        self, stream: int, function: int, value: typing.Any = data_item.StreamFunction.undefined_value
+    ) -> secsgem.secs.data_item.StreamFunction:
         """Get class for stream and function.
 
         Args:
             stream: stream to get class for
             function: function to get class for
+            value: initial value
 
         Returns:
             class for function
 
         """
-        klass = self.settings.streams_functions.function(stream, function)
-
-        if klass is None:
-            raise KeyError(f"Undefined function requested: S{stream:02d}F{function:02d}")
-
-        return klass
+        return self.settings.streams_functions.function(stream, function, value)

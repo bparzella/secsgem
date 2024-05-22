@@ -1,0 +1,2495 @@
+S00F00:
+  description: Hsms communication
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S01F00:
+  description: abort transaction stream 1
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S01F01:
+  description: are you online - request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S01F02:
+  description: on line data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L?
+        < MDLN >
+        < SOFTREV >
+      >
+    description: Equipment -> Host
+    sample_data:
+      - ["secsgem", "0.0.6"]
+      - {"MDLN": "secsgem", "SOFTREV": "0.0.6"}
+      -
+      - []
+  extra_help: |-
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        If it is sent from the eqipment side it has the structure below, if it
+        is sent from the host it is an empty list.
+        Be sure to fill the array accordingly.
+S01F03:
+  description: Selected equipment status - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < SVID >
+      >
+    sample_data:
+    - - 1
+      - '1337'
+      - 12
+S01F04:
+  description: selected equipment status - data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < SV >
+      >
+    sample_data:
+    - - 1
+      - text
+      - 1337
+S01F11:
+  description: status variable namelist - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  extra_help: An empty list will return all available status variables.
+  definitions:
+  - structure: |
+      < L+
+        < SVID >
+      >
+    sample_data:
+    - - 1
+      - 1337
+S01F12:
+  description: status variable namelist - reply
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < SVID >
+          < SVNAME >
+          < UNITS >
+        >
+      >
+    sample_data:
+    - - SVID: 1
+        SVNAME: SV1
+        UNITS: mm
+      - SVID: 1337
+        SVNAME: SV2
+        UNITS: ''
+S01F13:
+  description: establish communication - request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L?
+        < MDLN >
+        < SOFTREV >
+      >
+    description: Equipment -> Host
+    sample_data:
+      - ["secsgem", "0.0.6"]
+      - {"MDLN": "secsgem", "SOFTREV": "0.0.6"}
+      -
+      - []
+  extra_help: |-
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        See structure definition below for details.
+        Be sure to fill the array accordingly.
+S01F14:
+  description: establish communication - acknowledge
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < COMMACK >
+        < L? DATA
+          < MDLN >
+          < SOFTREV >
+        >
+      >
+    sample_data:
+      - [0, ["secsgem", "0.0.6"]]
+      - {COMMACK: 0, DATA: ["secsgem", "0.0.6"]}
+      - {COMMACK: 0, DATA: {MDLN: "secsgem", SOFTREV: "0.0.6"}}
+      - [0, []]
+  extra_help: |-
+    .. caution::
+
+        This Stream/function has different structures depending on the source.
+        See structure definition below for details.
+        Be sure to fill the array accordingly.
+S01F15:
+  description: request offline
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S01F16:
+  description: offline acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < OFLACK >
+    sample_data:
+    - 0
+S01F17:
+  description: request online
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S01F18:
+  description: online acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ONLACK >
+    sample_data:
+    - 2
+S01F21:
+  description: Data variable namelist request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < VID >
+      >
+    sample_data:
+    - - 1
+      - VARIABLEID
+S01F22:
+  description: Data variable namelist
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < VID >
+          < DVVALNAME >
+          < UNITS >
+        >
+      >
+    sample_data:
+    - - VID: 1
+        DVVALNAME: EC1
+        UNITS: mm
+S01F23:
+  description: Collection event namelist request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < CEID >
+      >
+    sample_data:
+    - - 1
+      - COLLEVTID
+S01F24:
+  description: Collection event namelist
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < CEID >
+          < CENAME >
+          < L+ VID
+            < VID >
+          >
+        >
+      >
+    sample_data:
+    - - CEID: 1
+        CENAME: CE1
+        VID:
+        - 1
+        - VARIABLEID
+S02F00:
+  description: abort transaction stream 2
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S02F13:
+  description: equipment constant - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  extra_help: An empty list will return all available equipment constants.
+  definitions:
+  - structure: |
+      < L+
+        < ECID >
+      >
+    sample_data:
+    - - 1
+      - 1337
+S02F14:
+  description: equipment constant - data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < ECV >
+      >
+    sample_data:
+    - - 1
+      - text
+S02F15:
+  description: new equipment constant - send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < ECID >
+          < ECV >
+        >
+      >
+    sample_data:
+    - - ECID: 1
+        ECV: 10
+      - ECID: '1337'
+        ECV: text
+S02F16:
+  description: new equipment constant - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < EAC > 
+    sample_data:
+    - 2
+S02F17:
+  description: date and time - request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S02F18:
+  description: date and time - data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < TIME >
+    sample_data:
+    - '160816205942'
+S02F21:
+  description: Remote command send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < RCMD >
+    sample_data:
+    - COMMMAND1
+S02F22:
+  description: Remote command - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < CMDA >
+    sample_data:
+    - 0
+S02F23:
+  description: Trace initialize
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < TRID >
+        < DSPER >
+        < TOTSMP >
+        < REPGSZ >
+        < L+ SVID
+          < SVID >
+        >
+      >
+    sample_data:
+    - TRID: 1
+      DSPER: '000010'
+      TOTSMP: 10
+      REPGSZ: 1
+      SVID:
+      - 1002004
+      - 400210
+S02F24:
+  description: Trace initialize - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < TIAACK >
+    sample_data:
+    - 1
+S02F25:
+  description: Loopback diagnostic request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < ABS >
+    sample_data:
+    - !!binary |
+      VGV4dA==
+S02F26:
+  description: Loopback diagnostic data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ABS >
+    sample_data:
+    - !!binary |
+      VGV4dA==
+S02F29:
+  description: equipment constant namelist - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  extra_help: An empty list will return all available equipment constants.
+  definitions:
+  - structure: |
+      < L+
+        < ECID >
+      >
+    sample_data:
+    - - 1
+      - 1337
+S02F30:
+  description: equipment constant namelist
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < ECID >
+          < ECNAME >
+          < ECMIN >
+          < ECMAX >
+          < ECDEF >
+          < UNITS >
+        >
+      >
+    sample_data:
+    - - ECID: 1
+        ECNAME: EC1
+        ECMIN: 0
+        ECMAX: 100
+        ECDEF: 50
+        UNITS: mm
+      - ECID: 1337
+        ECNAME: EC2
+        ECMIN: ''
+        ECMAX: ''
+        ECDEF: ''
+        UNITS: ''
+S02F33:
+  description: define report
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < L+ DATA
+          < L
+            < RPTID >
+            < L+ VID
+              < VID >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      DATA:
+      - RPTID: 1000
+        VID:
+        - 12
+        - 1337
+      - RPTID: 1001
+        VID:
+        - 1
+        - 2355
+S02F34:
+  description: define report - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < DRACK >
+    sample_data:
+    - 2
+S02F35:
+  description: link event report
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < L+ DATA
+          < L
+            < CEID >
+            < L+ RPTID
+              < RPTID >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      DATA:
+      - CEID: 1337
+        RPTID:
+        - 1000
+        - 1001
+S02F36:
+  description: link event report - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < LRACK >
+    sample_data:
+    - 4
+S02F37:
+  description: en-/disable event report
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < CEED >
+        < L+ CEID
+          < CEID >
+        >
+      >
+    sample_data:
+    - CEED: true
+      CEID:
+      - 1337
+S02F38:
+  description: en-/disable event report - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ERACK >
+    sample_data:
+    - 1
+S02F41:
+  description: host command - send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < RCMD >
+        < L+ PARAMS
+          < L
+            < CPNAME >
+            < CPVAL >
+          >
+        >
+      >
+    sample_data:
+    - RCMD: COMMAND
+      PARAMS:
+      - CPNAME: PARAM1
+        CPVAL: VAL1
+      - CPNAME: PARAM2
+        CPVAL: VAL2
+S02F42:
+  description: host command - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < HCACK >
+        < L+ PARAMS
+          < L
+            < CPNAME >
+            < CPACK >
+          >
+        >
+      >
+    sample_data:
+    - HCACK: 1
+      PARAMS:
+      - CPNAME: PARAM1
+        CPACK: 2
+      - CPNAME: PARAM2
+        CPACK: 3
+S02F43:
+  description: reset spooling streams and functions - send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < STRID >
+          < L+ FCNID
+            < FCNID >
+          >
+        >
+      >
+    sample_data:
+    - - STRID: 1
+        FCNID:
+        - 10
+        - 20
+      - STRID: 2
+        FCNID:
+        - 30
+        - 40
+S02F44:
+  description: reset spooling - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < RSPACK >
+        < L+ DATA
+          < L
+            < STRID >
+            < STRACK >
+            < L+ FCNID
+              < FCNID >
+            >
+          >
+        >
+      >
+    sample_data:
+    - RSPACK: 1
+      DATA:
+      - STRID: 1
+        STRACK: 1
+        FCNID:
+        - 10
+      - STRID: 2
+        STRACK: 3
+        FCNID:
+        - 20
+S02F45:
+  description: Define variable limit attributes
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < L+ DATA
+          < L
+            < VID >
+            < L+ DATA
+              < L
+                < LIMITID >
+                < L? DATA
+                  < UPPERDB >
+                  < LOWERDB >
+                >
+              >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      DATA:
+      - VID: 2
+        DATA:
+        - LIMITID: 3
+          DATA:
+          - 30
+          - 20
+    - DATAID: 1
+      DATA:
+      - VID: 2
+        DATA:
+        - LIMITID: 3
+          DATA:
+          - 
+S02F46:
+  description: Define variable limit attributes - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < VLAACK >
+        < L+ DATA
+          < L
+            < VID >
+            < LVACK >
+            < L? DATA
+              < LIMITID >
+              < LIMITACK >
+            >
+          >
+        >
+      >
+    sample_data:
+    - VLAACK: 1
+      DATA:
+      - VID: 2
+        LVACK: 1
+        DATA:
+          LIMITID: 3
+          LIMITACK: 6
+    - VLAACK: 1
+      DATA:
+      - VID: 2
+        LVACK: 1
+        DATA:
+S02F47:
+  description: Variable limit attribute request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < VID >
+      >
+    sample_data:
+    - - 1
+      - VARIABLEID
+S02F48:
+  description: Define variable limit attributes - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < VID >
+          < L? DATA
+            < UNITS >
+            < LIMITMIN >
+            < LIMITMAX >
+            < L+ DATA
+              < L
+                < LIMITID >
+                < UPPERDB >
+                < LOWERDB >
+              >
+            >
+          >
+        >
+      >
+    sample_data:
+    - - VID: 1
+        DATA:
+          UNITS: meters
+          LIMITMIN: 10
+          LIMITMAX: 20
+          DATA:
+          - LIMITID: 3
+            UPPERDB: 50
+            LOWERDB: 5
+    - - VID: 1
+        DATA:
+S02F49:
+  description: Enhanced remote command
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < OBJSPEC >
+        < RCMD >
+        < L+ PARAMS
+          < L
+            < CPNAME >
+            < CEPVAL >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      OBJSPEC: test
+      RCMD: COMMAND1
+      PARAMS:
+      - CPNAME: CPARAM
+        CEPVAL: VALUE
+S02F50:
+  description: Enhanced remote command - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < HCACK >
+        < L+ PARAMS
+          < L
+            < CPNAME >
+            < CPACK >
+          >
+        >
+      >
+    sample_data:
+    - HCACK: 1
+      PARAMS:
+      - CPNAME: PARAM1
+        CPACK: 2
+      - CPNAME: PARAM2
+        CPACK: 3
+S05F00:
+  description: abort transaction stream 5
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S05F01:
+  description: alarm report - send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < ALCD >
+        < ALID >
+        < ALTX >
+      >
+    sample_data:
+    - ALCD: 129
+      ALID: 100
+      ALTX: text
+S05F02:
+  description: alarm report - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC5 >
+    sample_data:
+    - 0
+S05F03:
+  description: en-/disable alarm - send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < ALED >
+        < ALID >
+      >
+    sample_data:
+    - ALED: 128
+      ALID: 100
+S05F04:
+  description: en-/disable alarm - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC5 >
+    sample_data:
+    - 0
+S05F05:
+  description: list alarms - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < ALID >
+    sample_data:
+    - - 100
+      - 200
+S05F06:
+  description: list alarms - data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < ALCD >
+          < ALID >
+          < ALTX >
+        >
+      >
+    sample_data:
+    - - ALCD: 129
+        ALID: 100
+        ALTX: text
+S05F07:
+  description: list enabled alarms - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S05F08:
+  description: list enabled alarms - data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < ALCD >
+          < ALID >
+          < ALTX >
+        >
+      >
+    sample_data:
+    - - ALCD: 129
+        ALID: 100
+        ALTX: text
+S05F09:
+  description: exception post - notify
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < TIMESTAMP >
+        < EXID >
+        < EXTYPE >
+        < EXMESSAGE >
+        < L+ EXRECVRA
+          < EXRECVRA >
+        >
+      >
+    sample_data:
+    - TIMESTAMP: '161006221500'
+      EXID: EX123
+      EXTYPE: ALARM
+      EXMESSAGE: Exception
+      EXRECVRA:
+      - EXRECVRA1
+      - EXRECVRA2
+S05F10:
+  description: exception post - confirm
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S05F11:
+  description: exception clear - notify
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < TIMESTAMP >
+        < EXID >
+        < EXTYPE >
+        < EXMESSAGE >
+      >
+    sample_data:
+    - TIMESTAMP: '161006221500'
+      EXID: EX123
+      EXTYPE: ALARM
+      EXMESSAGE: Exception
+S05F12:
+  description: exception clear - confirm
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S05F13:
+  description: exception recover - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < EXID >
+        < EXRECVRA >
+      >
+    sample_data:
+    - EXID: EX123
+      EXRECVRA: EXRECVRA2
+S05F14:
+  description: exception recover - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < EXID >
+        < L DATA
+          < ACKA >
+          < L? DATA
+            < ERRCODE >
+            < ERRTEXT >
+          >
+        >
+      >
+    sample_data:
+    - EXID: EX123
+      DATA:
+        ACKA: false
+        DATA:
+          ERRCODE: 10
+          ERRTEXT: Error
+    - EXID: EX123
+      DATA:
+        ACKA: false
+        DATA:
+S05F15:
+  description: exception recover complete - notify
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < TIMESTAMP >
+        < EXID >
+        < L DATA
+          < ACKA >
+          < L? DATA
+            < ERRCODE >
+            < ERRTEXT >
+          >
+        >
+      >
+    sample_data:
+    - TIMESTAMP: '161006221500'
+      EXID: EX123
+      DATA:
+        ACKA: false
+        DATA:
+          ERRCODE: 10
+          ERRTEXT: Error
+S05F16:
+  description: exception recover complete - confirm
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S05F17:
+  description: exception recover abort - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < EXID >
+    sample_data:
+    - EX123
+S05F18:
+  description: exception recover abort - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < EXID >
+        < L DATA
+          < ACKA >
+          < L? DATA
+            < ERRCODE >
+            < ERRTEXT >
+          >
+        >
+      >
+    sample_data:
+    - EXID: EX123
+      DATA:
+        ACKA: false
+        DATA:
+          ERRCODE: 10
+          ERRTEXT: Error
+    - EXID: EX123
+      DATA:
+        ACKA: false
+        DATA:
+S06F00:
+  description: abort transaction stream 6
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S06F01:
+  description: Trace data send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < TRID >
+        < SMPLN >
+        < STIME >
+        < L+ SV
+          < SV >
+        >
+      >
+    sample_data:
+    - TRID: 1
+      SMPLN: 3
+      STIME: TIME
+      SV:
+      - 1
+      - 4
+S06F02:
+  description: Trace data - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC6 >
+    sample_data:
+    - 0
+S06F03:
+  description: Discrete variable data send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < CEID >
+        < L+ DS
+          < L
+            < DSID >
+            < L+ DV
+              < L
+                < DVNAME >
+                < DVVAL >
+              >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      CEID: 1337
+      DS:
+      - DSID: 1000
+        DV:
+        - DVNAME: VAR1
+          DVVAL: VAR
+        - DVNAME: VAR2
+          DVVAL: 100
+      - DSID: 1001
+        DV:
+        - DVNAME: VAR3
+          DVVAL: VAR_XTRA
+        - DVNAME: VAR4
+          DVVAL: 101
+S06F04:
+  description: Discrete variable data - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC6 >
+    sample_data:
+    - 0
+S06F05:
+  description: multi block data inquiry
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < DATALENGTH >
+      >
+    sample_data:
+    - DATAID: 1
+      DATALENGTH: 1337
+S06F06:
+  description: multi block data grant
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < GRANT6 >
+    sample_data:
+    - 1
+S06F07:
+  description: data transfer request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < DATAID >
+    sample_data:
+    - 1
+S06F08:
+  description: data transfer data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < CEID >
+        < L+ DS
+          < L
+            < DSID >
+            < L+ DV
+              < L
+                < DVNAME >
+                < DVVAL >
+              >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATAID: 1
+      CEID: 1337
+      DS:
+      - DSID: 1000
+        DV:
+        - DVNAME: VAR1
+          DVVAL: VAR
+        - DVNAME: VAR2
+          DVVAL: 100
+      - DSID: 1001
+        DV:
+        - DVNAME: VAR3
+          DVVAL: VAR_XTRA
+        - DVNAME: VAR4
+          DVVAL: 101
+S06F11:
+  description: event report
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < CEID >
+        < L+ RPT
+          < L
+            < RPTID >
+            < L+ V
+              < V >
+            >
+          >
+        >
+      > 
+    sample_data:
+    - DATAID: 1
+      CEID: 1337
+      RPT:
+      - RPTID: 1000
+        V:
+        - VAR
+        - 100
+S06F12:
+  description: event report - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC6 >
+    sample_data:
+    - 0
+S06F15:
+  description: event report request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < CEID >
+    sample_data:
+    - 1337
+S06F16:
+  description: event report data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < DATAID >
+        < CEID >
+        < L+ RPT
+          < L
+            < RPTID >
+            < L+ V
+              < V >
+            >
+          >
+        >
+      > 
+    sample_data:
+    - DATAID: 1
+      CEID: 1337
+      RPT:
+      - RPTID: 1000
+        V:
+        - VAR
+        - 100
+S06F19:
+  description: individual report request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < RPTID >
+    sample_data:
+    - 1337
+S06F20:
+  description: individual report data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < V >
+      >
+    sample_data:
+    - - ASD
+      - 1337
+S06F21:
+  description: annotated individual report request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < RPTID >
+    sample_data:
+    - 1337
+S06F22:
+  description: annotated individual report data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < L
+          < VID >
+          < V >
+        >
+      >
+    sample_data:
+    - - VID: VID1
+        V: ASD
+      - VID: 2
+        V: 1337
+S06F23:
+  description: Request spooled data
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < RSDC >
+    sample_data:
+    - 1
+S06F24:
+  description: Request spooled data acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < RSDA >
+    sample_data:
+    - 0
+S07F00:
+  description: abort transaction stream 7
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S07F01:
+  description: process program load - inquire
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < PPID >
+        < LENGTH >
+      >
+    sample_data:
+    - PPID: program
+      LENGTH: 4
+S07F02:
+  description: process program load - grant
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < PPGNT >
+    sample_data:
+    - 0
+S07F03:
+  description: process program - send
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < PPID >
+        < PPBODY >
+      >
+    sample_data:
+    - PPID: program
+      PPBODY: !!binary |
+        ZGF0YQ==
+S07F04:
+  description: process program - acknowledge
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC7 >
+    sample_data:
+    - 3
+S07F05:
+  description: process program - request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: < PPID >
+    sample_data:
+    - program
+S07F06:
+  description: process program - data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < PPID >
+        < PPBODY >
+      >
+    sample_data:
+    - PPID: program
+      PPBODY: !!binary |
+        ZGF0YQ==
+S07F17:
+  description: delete process program - send
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L+
+        < PPID >
+      >
+    sample_data:
+    - - program1
+      - program2
+S07F18:
+  description: delete process program - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC7 >
+    sample_data:
+    - 5
+S07F19:
+  description: current equipment process program - request
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+S07F20:
+  description: current equipment process program - data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L+
+        < PPID >
+      >
+    sample_data:
+    - - program1
+      - program2
+S09F00:
+  description: abort transaction stream 9
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S09F01:
+  description: unrecognized device id
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F03:
+  description: unrecognized stream type
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F05:
+  description: unrecognized function type
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F07:
+  description: illegal data
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F09:
+  description: transaction timer timeout
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < SHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F11:
+  description: data too long
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MHEAD >
+    sample_data:
+    - !!binary |
+      SEVBREVSREFUQQ==
+S09F13:
+  description: conversation timeout
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MEXP >
+        < EDID >
+      >
+    sample_data:
+    - MEXP: S01E01
+      EDID: data
+S10F00:
+  description: abort transaction stream 10
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S10F01:
+  description: terminal - request
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < TID >
+        < TEXT >
+      >
+    sample_data:
+    - TID: 0
+      TEXT: hello?
+S10F02:
+  description: terminal - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC10 >
+    sample_data:
+    - 0
+S10F03:
+  description: terminal single - display
+  to_host: false
+  to_equipment: true
+  reply: true
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < TID >
+        < TEXT >
+      >
+    sample_data:
+    - TID: 0
+      TEXT: hello!
+S10F04:
+  description: terminal single - acknowledge
+  to_host: true
+  to_equipment: false
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < ACKC10 >
+    sample_data:
+    - 2
+S12F00:
+  description: abort transaction stream 12
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S12F01:
+  description: map setup data - send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < FNLOC >
+        < FFROT >
+        < ORLOC >
+        < RPSEL >
+        < L+ REFP
+          < REFP >
+        >
+        < DUTMS >
+        < XDIES >
+        < YDIES >
+        < ROWCT >
+        < COLCT >
+        < NULBC >
+        < PRDCT >
+        < PRAXI >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      FNLOC: 0
+      FFROT: 0
+      ORLOC: 2
+      RPSEL: 0
+      REFP:
+      - - 1
+        - 2
+      - - 2
+        - 3
+      DUTMS: unit
+      XDIES: 100
+      YDIES: 100
+      ROWCT: 10
+      COLCT: 10
+      NULBC: '{x}'
+      PRDCT: 100
+      PRAXI: 0
+S12F02:
+  description: map setup data - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < SDACK >
+    sample_data:
+    - 0
+S12F03:
+  description: map setup data - request
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < MAPFT >
+        < FNLOC >
+        < FFROT >
+        < ORLOC >
+        < PRAXI >
+        < BCEQU >
+        < NULBC >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 1
+      MAPFT: 0
+      FNLOC: 0
+      FFROT: 0
+      ORLOC: 3
+      PRAXI: 4
+      BCEQU:
+      - 1
+      - 3
+      - 5
+      - 7
+      NULBC: '{x}'
+S12F04:
+  description: map setup data
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < FNLOC >
+        < ORLOC >
+        < RPSEL >
+        < L+ REFP
+          < REFP >
+        >
+        < DUTMS >
+        < XDIES >
+        < YDIES >
+        < ROWCT >
+        < COLCT >
+        < PRDCT >
+        < BCEQU >
+        < NULBC >
+        < MLCL >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 2
+      FNLOC: 0
+      ORLOC: 0
+      RPSEL: 0
+      REFP:
+      - - 1
+        - 2
+      - - 2
+        - 3
+      DUTMS: unit
+      XDIES: 100
+      YDIES: 100
+      ROWCT: 10
+      COLCT: 10
+      PRDCT: 100
+      BCEQU:
+      - 1
+      - 3
+      - 5
+      - 7
+      NULBC: '{x}'
+      MLCL: 0
+S12F05:
+  description: map transmit inquire
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < MAPFT >
+        < MLCL >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      MAPFT: 2
+      MLCL: 0
+S12F06:
+  description: map transmit - grant
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < GRNT1 >
+    sample_data:
+    - 5
+S12F07:
+  description: map data type 1 - send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < L+ DATA
+          < L
+            < RSINF >
+            < BINLT >
+          >
+        >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      DATA:
+      - RSINF:
+        - 1
+        - 2
+        - 3
+        BINLT:
+        - 1
+        - 2
+        - 3
+        - 4
+      - RSINF:
+        - 4
+        - 5
+        - 6
+        BINLT:
+        - 5
+        - 6
+        - 7
+        - 8
+S12F08:
+  description: map data type 1 - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MDACK >
+    sample_data:
+    - 3
+S12F09:
+  description: map data type 2 - send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < STRP >
+        < BINLT >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      STRP:
+      - 0
+      - 1
+      BINLT:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+S12F10:
+  description: map data type 2 - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MDACK >
+    sample_data:
+    - 0
+S12F11:
+  description: map data type 3 - send
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < L+ DATA
+          < L
+            < XYPOS >
+            < BINLT >
+          >
+        >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      DATA:
+      - XYPOS:
+        - 1
+        - 2
+        BINLT:
+        - 1
+        - 2
+        - 3
+        - 4
+      - XYPOS:
+        - 3
+        - 4
+        BINLT:
+        - 5
+        - 6
+        - 7
+        - 8
+S12F12:
+  description: map data type 3 - acknowledge
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: < MDACK >
+    sample_data:
+    - 1
+S12F13:
+  description: map data type 1 - request
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+S12F14:
+  description: map data type 1
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < L+ DATA
+          <L
+            < RSINF >
+            < BINLT >
+          >
+        >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      DATA:
+      - RSINF:
+        - 1
+        - 2
+        - 3
+        BINLT:
+        - 1
+        - 2
+        - 3
+        - 4
+      - RSINF:
+        - 4
+        - 5
+        - 6
+        BINLT:
+        - 5
+        - 6
+        - 7
+        - 8
+S12F15:
+  description: map data type 2 - request
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 1
+S12F16:
+  description: map data type 2
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < STRP >
+        < BINLT >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      STRP:
+      - 0
+      - 1
+      BINLT:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+S12F17:
+  description: map data type 3 - request
+  to_host: true
+  to_equipment: false
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < SDBIN >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      SDBIN: 1
+S12F18:
+  description: map data type 3
+  to_host: false
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < MID >
+        < IDTYP >
+        < L+ DATA
+          < L
+            < XYPOS >
+            < BINLT >
+          >
+        >
+      >
+    sample_data:
+    - MID: materialID
+      IDTYP: 0
+      DATA:
+      - XYPOS:
+        - 1
+        - 2
+        BINLT:
+        - 1
+        - 2
+        - 3
+        - 4
+      - XYPOS:
+        - 3
+        - 4
+        BINLT:
+        - 5
+        - 6
+        - 7
+        - 8
+S12F19:
+  description: map error report - send
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < MAPER >
+        < DATLC >
+      >
+    sample_data:
+    - MAPER: 1
+      DATLC: 0
+S14F00:
+  description: abort transaction stream 14
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: false
+S14F01:
+  description: GetAttr request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < OBJSPEC >
+        < OBJTYPE >
+        < L+ OBJID
+          < OBJID >
+        >
+        < L+ FILTER
+          < L
+            < ATTRID >
+            < ATTRDATA >
+            < ATTRRELN >
+          >
+        >
+        < L+ ATTRID
+          < ATTRID >
+        >
+      >
+    sample_data:
+    - OBJSPEC: ''
+      OBJTYPE: StripMap
+      OBJID:
+      - MAP001
+      FILTER: []
+      ATTRID:
+      - OriginLocation
+      - Rows
+      - Columns
+      - CellStatus
+      - LotID
+S14F02:
+  description: GetAttr data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < L+ DATA
+          < L
+            < OBJID >
+            < L+ ATTRIBS
+              < L
+                < ATTRID >
+                < ATTRDATA >
+              >
+            >
+          >
+        >
+        < L ERRORS
+          < OBJACK >
+          < L+ ERROR
+            < L
+              < ERRCODE >
+              < ERRTEXT >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATA:
+      - OBJID: MAP001
+        ATTRIBS:
+        - ATTRID: OriginLocation
+          ATTRDATA: '0'
+        - ATTRID: Rows
+          ATTRDATA: 4
+        - ATTRID: Columns
+          ATTRDATA: 4
+        - ATTRID: CellStatus
+          ATTRDATA: 6
+        - ATTRID: LotID
+          ATTRDATA: LOT001
+      ERRORS:
+        OBJACK: 0
+        ERROR: []
+S14F03:
+  description: SetAttr request
+  to_host: true
+  to_equipment: true
+  reply: true
+  reply_required: true
+  multi_block: false
+  definitions:
+  - structure: |
+      < L
+        < OBJSPEC >
+        < OBJTYPE >
+        < L+ OBJID
+          < OBJID >
+        >
+        < L+ ATTRIBS
+          < L
+            < ATTRID >
+            < ATTRDATA >
+          >
+        >
+      >
+    sample_data:
+    - OBJSPEC: ''
+      OBJTYPE: StripMap
+      OBJID:
+      - MAP001
+      ATTRIBS:
+      - ATTRID: CellStatus
+        ATTRDATA: '3'
+S14F04:
+  description: SetAttr data
+  to_host: true
+  to_equipment: true
+  reply: false
+  reply_required: false
+  multi_block: true
+  definitions:
+  - structure: |
+      < L
+        < L+ DATA
+          < L
+            < OBJID >
+            < L+ ATTRIBS
+              < L
+                < ATTRID >
+                < ATTRDATA >
+              >
+            >
+          >
+        >
+        < L ERRORS
+          < OBJACK >
+          < L+ ERROR
+            < L
+              < ERRCODE >
+              < ERRTEXT >
+            >
+          >
+        >
+      >
+    sample_data:
+    - DATA:
+      - OBJID: MAP001
+        ATTRIBS:
+        - ATTRID: OriginLocation
+          ATTRDATA: '0'
+        - ATTRID: Rows
+          ATTRDATA: 4
+        - ATTRID: Columns
+          ATTRDATA: 4
+        - ATTRID: CellStatus
+          ATTRDATA: 6
+        - ATTRID: LotID
+          ATTRDATA: LOT001
+      ERRORS:
+        OBJACK: 0
+        ERROR: []

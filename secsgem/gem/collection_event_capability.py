@@ -20,6 +20,7 @@ import threading
 
 import secsgem.common
 import secsgem.secs
+import secsgem.secs.data_item
 
 from .capability import Capability
 from .collection_event import CollectionEvent, CollectionEventId
@@ -37,25 +38,18 @@ class CollectionEventCapability(GemHandler, Capability):
 
         self._collection_events: dict[int | str | CollectionEventId, CollectionEvent] = {
             CollectionEventId.EQUIPMENT_OFFLINE.value: CollectionEvent(
-                CollectionEventId.EQUIPMENT_OFFLINE,
-                "EquipmentOffline",
-                []),
+                CollectionEventId.EQUIPMENT_OFFLINE, "EquipmentOffline", []
+            ),
             CollectionEventId.CONTROL_STATE_LOCAL.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_LOCAL,
-                "ControlStateLocal",
-                []),
+                CollectionEventId.CONTROL_STATE_LOCAL, "ControlStateLocal", []
+            ),
             CollectionEventId.CONTROL_STATE_REMOTE.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_REMOTE,
-                "ControlStateRemote",
-                []),
+                CollectionEventId.CONTROL_STATE_REMOTE, "ControlStateRemote", []
+            ),
             CollectionEventId.CMD_START_DONE.value: CollectionEvent(
-                CollectionEventId.CMD_START_DONE,
-                "CmdStartDone",
-                []),
-            CollectionEventId.CMD_STOP_DONE.value: CollectionEvent(
-                CollectionEventId.CMD_STOP_DONE,
-                "CmdStopDone",
-                []),
+                CollectionEventId.CMD_START_DONE, "CmdStartDone", []
+            ),
+            CollectionEventId.CMD_STOP_DONE.value: CollectionEvent(CollectionEventId.CMD_STOP_DONE, "CmdStopDone", []),
         }
 
         self._registered_reports: dict[int | str, CollectionEventReport] = {}
@@ -112,6 +106,7 @@ class CollectionEventCapability(GemHandler, Capability):
             ceids: List of collection events
 
         """
+
         def _ce_sender():
             nonlocal ceids
             if not isinstance(ceids, list):
@@ -124,14 +119,17 @@ class CollectionEventCapability(GemHandler, Capability):
                 if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
                     reports = self._build_collection_event(ceid)
 
-                    self.send_and_waitfor_response(self.stream_function(6, 11)(
-                        {"DATAID": 1, "CEID": ceid, "RPT": reports}))
+                    self.send_and_waitfor_response(
+                        self.stream_function(6, 11, {"DATAID": 1, "CEID": ceid, "RPT": reports})
+                    )
 
         threading.Thread(target=_ce_sender, daemon=True).start()
 
-    def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f33(
+        self,  # noqa: C901, pylint: disable=too-many-branches
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 2, Function 33, Define Report.
 
         Args:
@@ -141,32 +139,33 @@ class CollectionEventCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
+        function_data = function.value
 
-        drack = secsgem.secs.data_items.DRACK.ACK
+        drack = self.settings.data_items.DRACK.ACK
 
         # pre check message for errors
-        for report in function.DATA:
+        for report in function_data.DATA:
             if report.RPTID in self._registered_reports and len(report.VID) > 0:
-                drack = secsgem.secs.data_items.DRACK.RPTID_REDEFINED
+                drack = self.settings.data_items.DRACK.RPTID_REDEFINED
             else:
                 for vid in report.VID:
                     if (vid not in self._data_values) and (vid not in self._status_variables):
-                        drack = secsgem.secs.data_items.DRACK.VID_UNKNOWN
+                        drack = self.settings.data_items.DRACK.VID_UNKNOWN
 
-        result = self.stream_function(2, 34)(drack)
+        result = self.stream_function(2, 34, drack)
 
         if drack != 0:
             return result
 
         # no data -> remove all reports and links
-        if not function.DATA:
+        if not function_data.DATA:
             self._registered_collection_events.clear()
             self._registered_reports.clear()
 
             return result
 
-        for report in function.DATA:
+        for report in function_data.DATA:
             # no vids -> remove this reports and links
             if not report.VID:
                 # remove report from linked collection events
@@ -185,9 +184,11 @@ class CollectionEventCapability(GemHandler, Capability):
 
         return result
 
-    def _on_s02f35(self,  # noqa: C901, pylint: disable=too-many-branches
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f35(
+        self,  # noqa: C901, pylint: disable=too-many-branches
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 2, Function 35, Link event report.
 
         Args:
@@ -197,21 +198,21 @@ class CollectionEventCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        lrack = secsgem.secs.data_items.LRACK.ACK
+        lrack = self.settings.data_items.LRACK.ACK
 
         # pre check message for errors
         for event in function.DATA:
             if event.CEID.get() not in self._collection_events:
-                lrack = secsgem.secs.data_items.LRACK.CEID_UNKNOWN
+                lrack = self.settings.data_items.LRACK.CEID_UNKNOWN
             for rptid in event.RPTID:
                 if event.CEID.get() in self._registered_collection_events:
                     collection_event = self._registered_collection_events[event.CEID.get()]
                     if rptid.get() in collection_event.reports:
-                        lrack = secsgem.secs.data_items.LRACK.CEID_LINKED
+                        lrack = self.settings.data_items.LRACK.CEID_LINKED
                 if rptid.get() not in self._registered_reports:
-                    lrack = secsgem.secs.data_items.LRACK.RPTID_UNKNOWN
+                    lrack = self.settings.data_items.LRACK.RPTID_UNKNOWN
 
         # pre check okay
         if lrack == 0:
@@ -226,14 +227,15 @@ class CollectionEventCapability(GemHandler, Capability):
                         for rptid in event.RPTID.get():
                             collection_event.reports.append(rptid)
                     else:
-                        self._registered_collection_events[event.CEID.get()] = \
-                            CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
+                        self._registered_collection_events[event.CEID.get()] = CollectionEventLink(
+                            self._collection_events[event.CEID.get()], event.RPTID.get()
+                        )
 
-        return self.stream_function(2, 36)(lrack)
+        return self.stream_function(2, 36, lrack)
 
-    def _on_s02f37(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f37(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         Args:
@@ -243,18 +245,18 @@ class CollectionEventCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        erack = secsgem.secs.data_items.ERACK.ACCEPTED
+        erack = self.settings.data_items.ERACK.ACCEPTED
 
         if not self._set_ce_state(function.CEED.get(), function.CEID.get()):
-            erack = secsgem.secs.data_items.ERACK.CEID_UNKNOWN
+            erack = self.settings.data_items.ERACK.CEID_UNKNOWN
 
-        return self.stream_function(2, 38)(erack)
+        return self.stream_function(2, 38, erack)
 
-    def _on_s06f15(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s06f15(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Callback handler for Stream 6, Function 15, event report request.
 
         Args:
@@ -264,16 +266,16 @@ class CollectionEventCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        ceid = function.get()
+        ceid = function.value
 
         reports = []
 
         if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
             reports = self._build_collection_event(ceid)
 
-        return self.stream_function(6, 16)({"DATAID": 1, "CEID": ceid, "RPT": reports})
+        return self.stream_function(6, 16, {"DATAID": 1, "CEID": ceid, "RPT": reports})
 
     def _set_ce_state(self, ceed: bool, ceids: list[int | str]) -> bool:
         """En-/Disable event reports for the supplied ceids (or all, if ceid is an empty list).

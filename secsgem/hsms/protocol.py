@@ -37,7 +37,6 @@ from .separate_req_header import HsmsSeparateReqHeader
 from .stream_function_header import HsmsStreamFunctionHeader
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
     from .settings import HsmsSettings
 
 
@@ -271,7 +270,8 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         if message.header.s_type.value > 0:
             self.__handle_hsms_requests(message)
         else:
-            decoded_message = self._settings.streams_functions.decode(message)
+            #decoded_message = self._settings.streams_functions.from_message(message)
+            decoded_message = "no function decoding"  # TODO(BP): move decoding/logging of function to secs layer
             self._communication_logger.info("< %s\n%s", message, decoded_message, extra=self._get_log_extra())
 
             if self._connection_state.current != ConnectionState.CONNECTED_SELECTED:
@@ -281,7 +281,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
                 self._communication_logger.info(
                     "> %s\n  %s", out_message, out_message.header.s_type.text,
                     extra=self._get_log_extra())
-                self.send_message(out_message)
+                self._send_message(out_message)
 
                 return
 
@@ -327,30 +327,26 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
             block_info.resolve(True)
 
-    def _create_message_for_function(
+    def _create_message_for_protocol(
             self,
-            function: SecsStreamFunction,
-            system_id: int,
+            header: secsgem.common.HeaderData,
+            data: bytes,
     ) -> secsgem.common.Message:
-        """Create a protocol specific message for a function.
+        """Create a protocol specific message for a header and data.
 
         Args:
-            function: function to create message for
-            system_id: system
+            header: generic header to create message from
+            data: message data
 
         Returns:
-            created message
+            created message object
 
         """
         return HsmsMessage(
             HsmsStreamFunctionHeader(
-                system_id,
-                function.stream,
-                function.function,
-                function.is_reply_required,
-                self._settings.session_id,
+                **header.args
             ),
-            function.encode())
+            data)
 
     def send_select_req(self):
         """Send a Select Request to the remote host.
@@ -367,7 +363,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
 
-        if not self.send_message(message):
+        if not self._send_message(message):
             self._remove_queue(system_id)
             return None
 
@@ -390,7 +386,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
-        return self.send_message(message)
+        return self._send_message(message)
 
     def send_linktest_req(self):
         """Send a Linktest Request to the remote host.
@@ -407,7 +403,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
 
-        if not self.send_message(message):
+        if not self._send_message(message):
             self._remove_queue(system_id)
             return None
 
@@ -430,7 +426,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
-        return self.send_message(message)
+        return self._send_message(message)
 
     def send_deselect_req(self):
         """Send a Deselect Request to the remote host.
@@ -446,7 +442,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text,
                                         extra=self._get_log_extra())
 
-        if not self.send_message(message):
+        if not self._send_message(message):
             self._remove_queue(system_id)
             return None
 
@@ -469,7 +465,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
-        return self.send_message(message)
+        return self._send_message(message)
 
     def send_reject_rsp(self, system_id: int, s_type: HsmsSType, reason: int):
         """Send a Reject Response to the remote host.
@@ -485,7 +481,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._communication_logger.info(
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
-        return self.send_message(message)
+        return self._send_message(message)
 
     def send_separate_req(self):
         """Send a Separate Request to the remote host."""
@@ -496,7 +492,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             "> %s\n  %s", message, message.header.s_type.text,
             extra=self._get_log_extra())
 
-        if not self.send_message(message):
+        if not self._send_message(message):
             return None
 
         return system_id

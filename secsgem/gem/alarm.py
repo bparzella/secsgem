@@ -55,12 +55,12 @@ class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-meth
         self.enabled = False
         self.set = False
 
-        self.id_type: type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.alid, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

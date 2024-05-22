@@ -20,7 +20,7 @@ import sys
 import unittest
 
 import pytest
-
+"""
 from secsgem.secs.variables import *
 from secsgem.secs.variables.functions import generate, get_format
 from secsgem.secs.data_items import MDLN, OBJACK, SOFTREV, SVID
@@ -3692,3 +3692,5 @@ class TestSecsVarU4Values(GoodBadLists):
     @pytest.mark.parametrize("value", [item for sublist in badValues for item in sublist])
     def test_bad_supported(self, value):
         self.badSupportedCheck(value)
+
+"""

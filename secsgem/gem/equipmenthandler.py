@@ -18,9 +18,6 @@ from __future__ import annotations
 
 import typing
 
-import secsgem.common
-import secsgem.secs.data_items
-
 from .alarm_capability import AlarmCapability
 from .clock_capability import ClockCapability
 from .collection_event_capability import CollectionEventCapability
@@ -33,7 +30,7 @@ from .state_models_capability import StateModelsCapability
 from .status_data_collection_capability import StatusDataCollectionCapability
 
 if typing.TYPE_CHECKING:
-    import secsgem.secs.variables
+    import secsgem.common
 
 
 class GemEquipmentHandler(  # pylint: disable=too-many-ancestors

@@ -19,6 +19,8 @@ from __future__ import annotations
 import typing
 
 import secsgem.secs
+import secsgem.secs.data
+import secsgem.secs.data_item
 
 from .capability import Capability
 from .handler import GemHandler
@@ -34,8 +36,7 @@ class AlarmCapability(GemHandler, Capability):
         """Initialize capability."""
         super().__init__(*args, **kwargs)
 
-        self.__alarms: dict[int | str, Alarm] = {
-        }
+        self.__alarms: dict[int | str, Alarm] = {}
 
     @property
     def _alarms(self) -> dict[int | str, Alarm]:
@@ -65,12 +66,17 @@ class AlarmCapability(GemHandler, Capability):
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)(
-                {
-                    "ALCD": self.alarms[alid].code | secsgem.secs.data_items.ALCD.ALARM_SET,
-                    "ALID": alid,
-                    "ALTX": self.alarms[alid].text,
-                }))
+            self.send_and_waitfor_response(
+                self.stream_function(
+                    5,
+                    1,
+                    {
+                        "ALCD": self.alarms[alid].code | self.settings.data_items.ALCD.ALARM_SET,
+                        "ALID": alid,
+                        "ALTX": self.alarms[alid].text,
+                    },
+                )
+            )
 
         self.alarms[alid].set = True
 
@@ -90,16 +96,19 @@ class AlarmCapability(GemHandler, Capability):
             return
 
         if self.alarms[alid].enabled:
-            self.send_and_waitfor_response(self.stream_function(5, 1)({"ALCD": self.alarms[alid].code,
-                                                                       "ALID": alid, "ALTX": self.alarms[alid].text}))
+            self.send_and_waitfor_response(
+                self.stream_function(
+                    5, 1, {"ALCD": self.alarms[alid].code, "ALID": alid, "ALTX": self.alarms[alid].text}
+                )
+            )
 
         self.alarms[alid].set = False
 
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
-    def _on_s05f03(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s05f03(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 5, Function 3, Alarm en-/disabled.
 
         Args:
@@ -109,21 +118,21 @@ class AlarmCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        result = secsgem.secs.data_items.ACKC5.ACCEPTED
+        result = self.settings.data_items.ACKC5.ACCEPTED
 
         alid = function.ALID.get()
         if alid not in self._alarms:
-            result = secsgem.secs.data_items.ACKC5.ERROR
+            result = self.settings.data_items.ACKC5.ERROR
         else:
-            self.alarms[alid].enabled = function.ALED.get() == secsgem.secs.data_items.ALED.ENABLE
+            self.alarms[alid].enabled = function.ALED.get() == self.settings.data_items.ALED.ENABLE
 
-        return self.stream_function(5, 4)(result)
+        return self.stream_function(5, 4, result)
 
-    def _on_s05f05(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s05f05(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 5, Function 5, Alarm list.
 
         Args:
@@ -133,24 +142,28 @@ class AlarmCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        alids = function.get()
+        alids = function.to_list
 
         if len(alids) == 0:
             alids = list(self.alarms.keys())
 
-        result = [{
-            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-            "ALID": alid,
-            "ALTX": self.alarms[alid].text,
-        } for alid in alids]
+        result = [
+            {
+                "ALCD": self.alarms[alid].code
+                | (self.settings.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                "ALID": alid,
+                "ALTX": self.alarms[alid].text,
+            }
+            for alid in alids
+        ]
 
-        return self.stream_function(5, 6)(result)
+        return self.stream_function(5, 6, result)
 
-    def _on_s05f07(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s05f07(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 5, Function 7, Enabled alarm list.
 
         Args:
@@ -160,13 +173,18 @@ class AlarmCapability(GemHandler, Capability):
         """
         del handler, message  # unused parameters
 
-        result = [{
-            "ALCD": self.alarms[alid].code | (secsgem.secs.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
-            "ALID": alid,
-            "ALTX": self.alarms[alid].text,
-        } for alid in list(self.alarms.keys()) if self.alarms[alid].enabled]
+        result = [
+            {
+                "ALCD": self.alarms[alid].code
+                | (self.settings.data_items.ALCD.ALARM_SET if self.alarms[alid].set else 0),
+                "ALID": alid,
+                "ALTX": self.alarms[alid].text,
+            }
+            for alid in list(self.alarms.keys())
+            if self.alarms[alid].enabled
+        ]
 
-        return self.stream_function(5, 8)(result)
+        return self.stream_function(5, 8, result)
 
     def _get_alarms_enabled(self) -> list[int | str]:
         """List of the enabled alarms.

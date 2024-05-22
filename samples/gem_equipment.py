@@ -34,16 +34,16 @@ class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         self.sv2 = "sample sv"
 
         self.status_variables.update({
-            10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, U4", "meters", secsgem.secs.variables.U4),
-            "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, String", "chars", secsgem.secs.variables.String),
+            10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, U4", "meters", secsgem.secs.ItemU4),
+            "SV2": secsgem.gem.StatusVariable("SV2", "sample2, text SVID, String", "chars", secsgem.secs.ItemA),
         })
 
         self.ec1 = 321
         self.ec2 = "sample ec"
 
         self.equipment_constants.update({
-            20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, U4", 0, 500, 50, "degrees", secsgem.secs.variables.U4),
-            "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, String", "", "", "", "chars", secsgem.secs.variables.String),
+            20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, U4", 0, 500, 50, "degrees", secsgem.secs.ItemU4),
+            "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, String", "", "", "", "chars", secsgem.secs.ItemA),
         })
 
     def on_sv_value_request(self, svid, sv):

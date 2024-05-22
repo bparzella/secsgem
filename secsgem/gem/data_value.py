@@ -25,7 +25,7 @@ class DataValue:
     def __init__(self,
                  dvid: int | str,
                  name: str,
-                 value_type: type[secsgem.secs.variables.Base],
+                 value_type: type[secsgem.secs.Item],
                  use_callback: bool = True,
                  **kwargs):
         """Initialize a data value.
@@ -52,12 +52,12 @@ class DataValue:
         self._use_callback = use_callback
         self.value = 0
 
-        self._id_type: type[secsgem.secs.variables.Base]
+        self._id_type: type[secsgem.secs.Item]
 
         if isinstance(self._dvid, int):
-            self._id_type = secsgem.secs.variables.U4
+            self._id_type = secsgem.secs.ItemU4
         else:
-            self._id_type = secsgem.secs.variables.String
+            self._id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -73,7 +73,7 @@ class DataValue:
         return self._name
 
     @property
-    def value_type(self) -> type[secsgem.secs.variables.Base]:
+    def value_type(self) -> type[secsgem.secs.Item]:
         """Get the data value type."""
         return self._value_type
 
@@ -83,6 +83,6 @@ class DataValue:
         return self._use_callback
 
     @property
-    def id_type(self) -> type[secsgem.secs.variables.Base]:
+    def id_type(self) -> type[secsgem.secs.Item]:
         """Get the data value id type."""
         return self._id_type

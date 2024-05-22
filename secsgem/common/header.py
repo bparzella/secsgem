@@ -22,8 +22,9 @@ import typing
 HeaderT = typing.TypeVar("HeaderT", bound="Header")
 
 
-class Header(abc.ABC):
-    """Abstract base class for a message header."""
+# TODO(BP): python data structure?
+class HeaderData(abc.ABC):
+    """Abstract base class for the data part of a message header."""
 
     length = -1
 
@@ -51,7 +52,6 @@ class Header(abc.ABC):
         self._system = system
         self._require_response = require_response
 
-
     @property
     def session_id(self) -> int:
         """Get session id."""
@@ -76,6 +76,23 @@ class Header(abc.ABC):
     def require_response(self) -> bool:
         """Get require response flag."""
         return self._require_response
+
+    @property
+    def args(self) -> dict[str, int | bool]:
+        """Get all properties as dictionary."""
+        return {
+            "system": self.system,
+            "session_id": self.session_id,
+            "stream": self.stream,
+            "function": self.function,
+            "require_response": self.require_response,
+        }
+
+
+class Header(HeaderData, abc.ABC):
+    """Abstract base class for a message header."""
+
+    length = -1
 
     @abc.abstractmethod
     def encode(self) -> bytes:

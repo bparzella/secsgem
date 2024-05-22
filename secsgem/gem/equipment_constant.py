@@ -38,7 +38,7 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
         max_value: int | float,
         default_value: int | float,
         unit: str,
-        value_type: type[secsgem.secs.variables.Base],
+        value_type: type[secsgem.secs.Item],
         use_callback: bool = True,
         **kwargs,
     ):
@@ -75,12 +75,12 @@ class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few
         self.use_callback = use_callback
         self.value = default_value
 
-        self.id_type: type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.ecid, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

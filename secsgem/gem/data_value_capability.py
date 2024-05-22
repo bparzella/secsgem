@@ -58,8 +58,8 @@ class DataValueCapability(GemHandler, Capability):
         return self._data_values
 
     def on_dv_value_request(self,
-                            data_value_id: secsgem.secs.variables.Base,
-                            data_value: DataValue) -> secsgem.secs.variables.Base:
+                            data_value_id: secsgem.secs.Item,
+                            data_value: DataValue) -> secsgem.secs.Item:
         """Get the data value depending on its configuation.
 
         Override in inherited class to provide custom data value request handling.
@@ -76,7 +76,7 @@ class DataValueCapability(GemHandler, Capability):
 
         return data_value.value_type(data_value.value)
 
-    def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:
+    def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.Item:
         """Get the data value depending on its configuation.
 
         Args:

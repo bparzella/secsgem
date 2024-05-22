@@ -19,7 +19,7 @@ from __future__ import annotations
 import enum
 import typing
 
-from secsgem.secs.variables import U4, Base, String
+import secsgem.secs
 
 if typing.TYPE_CHECKING:
     from .collection_event import CollectionEventId
@@ -61,12 +61,12 @@ class RemoteCommand:  # pylint: disable=too-few-public-methods
         self.params = params
         self.ce_finished = ce_finished
 
-        self.id_type: type[Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.rcmd, int):
-            self.id_type = U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

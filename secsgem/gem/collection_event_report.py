@@ -39,12 +39,12 @@ class CollectionEventReport:  # pylint: disable=too-few-public-methods
         self.rptid = rptid
         self.vars = variables
 
-        self.id_type: type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.rptid, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

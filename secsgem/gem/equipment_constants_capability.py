@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import secsgem.secs
+import secsgem.secs.data_item
 
 from .capability import Capability
 from .equipment_constant import EquipmentConstant, EquipmentConstantId
@@ -38,15 +39,11 @@ class EquipmentConstantsCapability(GemHandler, Capability):
                 120,
                 10,
                 "sec",
-                secsgem.secs.variables.I2),
+                secsgem.secs.ItemI2,
+            ),
             EquipmentConstantId.TIME_FORMAT.value: EquipmentConstant(
-                EquipmentConstantId.TIME_FORMAT,
-                "TimeFormat",
-                0,
-                2,
-                1,
-                "",
-                secsgem.secs.variables.I4),
+                EquipmentConstantId.TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.ItemI4
+            ),
         }
 
     @property
@@ -59,9 +56,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         """
         return self._equipment_constants
 
-    def on_ec_value_request(self,
-                            equipment_constant_id: secsgem.secs.variables.Base,
-                            equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
+    def on_ec_value_request(
+        self, equipment_constant_id: secsgem.secs.Item, equipment_constant: EquipmentConstant
+    ) -> secsgem.secs.Item:
         """Get the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant request handling.
@@ -78,10 +75,12 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
         return equipment_constant.value_type(equipment_constant.value)
 
-    def on_ec_value_update(self,
-                           equipment_constant_id: secsgem.secs.variables.Base,
-                           equipment_constant: EquipmentConstant,
-                           value: int | float):
+    def on_ec_value_update(
+        self,
+        equipment_constant_id: secsgem.secs.Item,
+        equipment_constant: EquipmentConstant,
+        value: int | float,
+    ):
         """Set the equipment constant value depending on its configuation.
 
         Override in inherited class to provide custom equipment constant update handling.
@@ -96,7 +95,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
         equipment_constant.value = value
 
-    def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
+    def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.Item:
         """Get the equipment constant value depending on its configuation.
 
         Args:
@@ -133,9 +132,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         else:
             equipment_constant.value = value
 
-    def _on_s02f13(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f13(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 2, Function 13, Equipment constant request.
 
         Args:
@@ -145,26 +144,27 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
-        responses = []
+        responses: list[secsgem.secs.Item | list] = []
 
         if len(function) == 0:
-            responses = [self._get_ec_value(equipment_constant)
-                         for equipment_constant in self._equipment_constants.values()]
+            responses = [
+                self._get_ec_value(equipment_constant) for equipment_constant in self._equipment_constants.values()
+            ]
         else:
             for equipment_constant_id in function:  # type: ignore[attr-defined]
                 if equipment_constant_id not in self._equipment_constants:
-                    responses.append(secsgem.secs.variables.Array(secsgem.secs.data_items.ECV, []))
+                    responses.append([])
                 else:
                     equipment_constant = self._equipment_constants[equipment_constant_id]
                     responses.append(self._get_ec_value(equipment_constant))
 
-        return self.stream_function(2, 14)(responses)
+        return self.stream_function(2, 14, responses)
 
-    def _on_s02f15(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f15(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 2, Function 15, Equipment constant send.
 
         Args:
@@ -174,7 +174,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
         eac = 0
 
@@ -194,11 +194,11 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             for equipment_constant in function:  # type: ignore[attr-defined]
                 self._set_ec_value(self._equipment_constants[equipment_constant.ECID], equipment_constant.ECV.get())
 
-        return self.stream_function(2, 16)(eac)
+        return self.stream_function(2, 16, eac)
 
-    def _on_s02f29(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f29(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.data_item.StreamFunction | None:
         """Handle Stream 2, Function 29, EC namelist request.
 
         Args:
@@ -208,28 +208,37 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         """
         del handler  # unused parameters
 
-        function = self.settings.streams_functions.decode(message)
+        function = self.settings.streams_functions.from_message(message)
 
         responses = []
 
         if len(function) == 0:
-            responses = [{
-                "ECID": eq_constant.ecid,
-                "ECNAME": eq_constant.name,
-                "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
-                "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
-                "ECDEF": eq_constant.default_value,
-                "UNITS": eq_constant.unit,
-            } for eq_constant in self._equipment_constants.values()]
+            responses = [
+                {
+                    "ECID": eq_constant.ecid,
+                    "ECNAME": eq_constant.name,
+                    "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                    "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                    "ECDEF": eq_constant.default_value,
+                    "UNITS": eq_constant.unit,
+                }
+                for eq_constant in self._equipment_constants.values()
+            ]
         else:
             for ecid in function:  # type: ignore[attr-defined]
                 if ecid not in self._equipment_constants:
                     responses.append({"ECID": ecid, "ECNAME": "", "ECMIN": "", "ECMAX": "", "ECDEF": "", "UNITS": ""})
                 else:
                     eq_constant = self._equipment_constants[ecid]
-                    responses.append({"ECID": eq_constant.ecid, "ECNAME": eq_constant.name,
-                                      "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
-                                      "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
-                                      "ECDEF": eq_constant.default_value, "UNITS": eq_constant.unit})
+                    responses.append(
+                        {
+                            "ECID": eq_constant.ecid,
+                            "ECNAME": eq_constant.name,
+                            "ECMIN": eq_constant.min_value if eq_constant.min_value is not None else "",
+                            "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
+                            "ECDEF": eq_constant.default_value,
+                            "UNITS": eq_constant.unit,
+                        }
+                    )
 
-        return self.stream_function(2, 30)(responses)
+        return self.stream_function(2, 30, responses)

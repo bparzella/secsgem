@@ -23,7 +23,7 @@ import typing
 from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
-    from secsgem.secs.functions import StreamsFunctions
+    from secsgem.secs.data_item import DataItems, StreamsFunctions
 
     from .connection import Connection
     from .protocol import Protocol
@@ -48,7 +48,7 @@ class Settings(abc.ABC):
 
     def __init__(self, **kwargs) -> None:
         """Initialize settings."""
-        from secsgem.secs.functions import StreamsFunctions  # pylint: disable=import-outside-toplevel
+        from secsgem.secs.data_item import StreamsFunctions  # pylint: disable=import-outside-toplevel
 
         self._timeouts = Timeouts(**kwargs)
         self._device_type = kwargs.get("device_type", DeviceType.HOST)
@@ -71,11 +71,13 @@ class Settings(abc.ABC):
 
     @property
     def streams_functions(self) -> StreamsFunctions:
-        """Container with streams/functions.
-
-        Default: DeviceType.HOST
-        """
+        """Container with streams/functions."""
         return self._streams_functions
+
+    @property
+    def data_items(self) -> DataItems:
+        """Container with data items."""
+        return self.streams_functions.data_items
 
     @property
     def session_id(self) -> int:

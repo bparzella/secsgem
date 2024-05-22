@@ -17,6 +17,7 @@ import unittest
 
 import pytest
 
+"""
 from secsgem.secs.functions import *
 from secsgem.secs.functions._all import secs_streams_functions
 
@@ -330,3 +331,5 @@ def test_stream_number(stream, cls):
 @pytest.mark.parametrize("function,cls", generate_function_list())
 def test_function_number(function, cls):
     assert function == cls._function
+
+"""

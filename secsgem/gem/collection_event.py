@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import enum
 
-import secsgem.secs.variables
+import secsgem.secs
 
 
 class CollectionEventId(enum.Enum):
@@ -59,12 +59,12 @@ class CollectionEvent:  # pylint: disable=too-few-public-methods
         self.name = name
         self.data_values = data_values
 
-        self.id_type: type[secsgem.secs.variables.Base]
+        self.id_type: type[secsgem.secs.Item]
 
         if isinstance(self.ceid, int):
-            self.id_type = secsgem.secs.variables.U4
+            self.id_type = secsgem.secs.ItemU4
         else:
-            self.id_type = secsgem.secs.variables.String
+            self.id_type = secsgem.secs.ItemA
 
         for key, value in kwargs.items():
             setattr(self, key, value)

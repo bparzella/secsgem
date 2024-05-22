@@ -24,7 +24,6 @@ from .header import SecsIHeader
 from .message import SecsIBlock, SecsIMessage
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
     from .settings import SecsISettings
 
 
@@ -69,31 +68,27 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         super().__init__(settings)
         self._settings: SecsISettings = settings
 
-    def _create_message_for_function(
+    def _create_message_for_protocol(
             self,
-            function: SecsStreamFunction,
-            system_id: int,
+            header: secsgem.common.HeaderData,
+            data: bytes,
     ) -> secsgem.common.Message:
-        """Create a protocol specific message for a function.
+        """Create a protocol specific message for a header and data.
 
         Args:
-            function: function to create message for
-            system_id: system
+            header: generic header to create message from
+            data: message data
 
         Returns:
-            created message
+            created message object
 
         """
         return SecsIMessage(
             SecsIHeader(
-                system_id,
-                self._settings.session_id,
-                function.stream,
-                function.function,
-                require_response=function.is_reply_required,
+                **header.args,
                 from_equipment=(self._settings.device_type == secsgem.common.DeviceType.EQUIPMENT),
             ),
-            function.encode(),
+            data,
         )
 
     def serialize_data(self) -> dict[str, typing.Any]:
@@ -180,7 +175,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
             message: received data message
 
         """
-        decoded_message = self._settings.streams_functions.decode(message)
+        decoded_message = self._settings.streams_functions.from_message(message)
         self._communication_logger.info("< %s\n%s", message, decoded_message, extra=self._get_log_extra())
 
         # someone is waiting for this message
