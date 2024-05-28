@@ -52,3 +52,34 @@ class SecsIMessage(secsgem.common.Message[SecsIBlock]):
     def complete(self) -> bool:
         """Check if the message is complete."""
         return self.blocks[-1].header.last_block
+
+    @classmethod
+    def from_block(cls: type[MessageT], block: Block):
+        setattr(block.header, "_from_block", True)
+        return super().from_block(block)
+
+    @classmethod
+    def _split_blocks(cls, data: bytes, header: BlockHeaderT):
+        from_block = getattr(header, "_from_block", False)
+
+        if cls.block_size == -1:
+            return [cls.block_type(header, data)]
+
+        if len(data) < cls.block_size:
+            data_blocks = [data, ]
+        else:
+            data_blocks = [data[i: i + cls.block_size] for i in range(0, len(data), cls.block_size)]
+
+        blocks = []
+        for index, block_data in enumerate(data_blocks):
+            block_header = header.updated_with()
+            if not from_block:
+                header_data = {
+                    "block": index + 1,
+                    "last_block": (index + 1) == len(data_blocks),
+                }
+                block_header = header.updated_with(**header_data)
+
+            blocks.append(cls.block_type(block_header, block_data))
+
+        return blocks
