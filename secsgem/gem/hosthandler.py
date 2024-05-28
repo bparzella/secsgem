@@ -221,7 +221,7 @@ class GemHostHandler(GemHandler):
     def _on_s06f11(self,
                    handler: secsgem.secs.SecsHandler,
                    message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
-        """Handle Stream 6, Function 11, Establish Communication Request.
+        """Handle Stream 6, Function 11, Event Report Send.
 
         Args:
             handler: handler the message was received on
