@@ -1,30 +1,30 @@
 EquipmentHandler
 ================
 
-.. autoclass:: secsgem.gem.equipmenthandler.GemEquipmentHandler
+.. autoclass:: secsgem.gem.GemEquipmentHandler
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.DataValue
+.. autoclass:: secsgem.gem.DataValue
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.StatusVariable
+.. autoclass:: secsgem.gem.StatusVariable
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.CollectionEvent
+.. autoclass:: secsgem.gem.CollectionEvent
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.CollectionEventLink
+.. autoclass:: secsgem.gem.CollectionEventLink
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.CollectionEventReport
+.. autoclass:: secsgem.gem.CollectionEventReport
     :members:
     :inherited-members:
 
-.. autoclass:: secsgem.gem.equipmenthandler.EquipmentConstant
+.. autoclass:: secsgem.gem.EquipmentConstant
     :members:
     :inherited-members:

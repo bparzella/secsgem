@@ -15,6 +15,7 @@
 import sys
 import os
 import os.path
+import pathlib
 
 # on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
@@ -33,6 +34,8 @@ sys.path.insert(0, os.path.abspath('..'))
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "extensions")))
 
+config_path = pathlib.Path(__file__).parent.resolve()
+
 # -- General configuration ------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -46,6 +49,7 @@ extensions = [
     'myst_parser',
     'py_exec',
     'sphinx_autodoc_typehints',
+    'sphinxcontrib.plantuml'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -63,7 +67,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'secsgem'
-copyright = u'2015-2023, Benjamin Parzella'
+copyright = u'2015-2024, Benjamin Parzella'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -84,6 +88,10 @@ pygments_style = 'sphinx'
 autodoc_default_flags = ["members", "undoc-members", "show-inheritance", "inherited-members"]
 autodoc_member_order = "bysource"
 
+plantuml_path = config_path / "bin" / "plantuml.jar"
+plantuml = f"java -jar {plantuml_path}"
+
+myst_heading_anchors = 3
 # -- Options for HTML output ----------------------------------------------
 
 # Add any paths that contain custom static files (such as style sheets) here,
