@@ -37,9 +37,9 @@ pyserial = "^3.5"
 pyyaml = "^6.0.1"
 
 [tool.poetry.dev-dependencies]
-pytest = "^7.4.2"
+pytest = "^8.3.2"
 coverage = "^7.3.2"
-ruff = "^0.1.3"
+ruff = "^0.5.7"
 pylint = "^3.0.2"
 mypy = "^1.6.1"
 Jinja2 = "^3.1.2"
@@ -48,6 +48,7 @@ sphinx-rtd-theme = "^1.3.0"
 myst-parser = "^2.0.0"
 sphinx-autodoc-typehints = "^1.24.0"
 sphinx-autobuild = "^2021.3.14"
+sphinxcontrib-plantuml = "^0.30"
 types-PyYAML = "^6.0.12.12"
 types-python-dateutil = "^2.8.19.14"
 types-pyserial = "^3.5.0.10"
@@ -129,7 +130,7 @@ ignore = [
   "RUF012",  # TODO: remove
 ]
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 suppress-none-returning = true
 mypy-init-return = true
 allow-star-arg-any = true
