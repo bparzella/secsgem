@@ -66,11 +66,11 @@ jobs:
           python -m pip install --upgrade poetry
           python -m poetry config virtualenvs.in-project "true"
           python -m poetry install --no-interaction
-  
+
       - name: Run linters
         run: |
           python -m poetry run pylint --recursive=y .
-          python -m poetry run ruff .
+          python -m poetry run ruff check .
           python -m poetry run mypy .
 
   release:
