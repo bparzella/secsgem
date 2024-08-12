@@ -127,28 +127,37 @@ class Message(abc.ABC, typing.Generic[BlockT]):
     block_size = -1
     block_type: type[BlockT]
 
-    def __init__(self, header: BlockHeaderT, data: bytes):
+    def __init__(self, header: BlockHeaderT, data: bytes, complete: bool = True):
         """Initialize a Message object.
 
         Args:
             header: header used for this message
             data: data part used for streams and functions (SType 0)
+            complete: data contains all blocks, False if more blocks coming
 
         """
-        self._blocks: list[BlockT] = self._split_blocks(data, header)
+        self._blocks: list[BlockT] = self._split_blocks(data, header, complete)
 
     @classmethod
-    def _split_blocks(cls, data: bytes, header: BlockHeaderT) -> list[BlockT]:
+    def _split_blocks(cls, data: bytes, header: BlockHeaderT, complete: bool = True) -> list[BlockT]:
         if cls.block_size == -1:
             return [cls.block_type(header, data)]
 
-        data_blocks = [data[i: i + cls.block_size] for i in range(0, len(data), cls.block_size)]
+        if len(data) == 0:
+            data_blocks = [data]
+        else:
+            data_blocks = [data[i: i + cls.block_size] for i in range(0, len(data), cls.block_size)]
 
         blocks = []
         for index, block_data in enumerate(data_blocks):
+            last_block = (index + 1) == len(data_blocks)
+
+            if not complete and hasattr(header, "last_block"):
+                last_block = header.last_block
+
             header_data = {
                 "block": index + 1,
-                "last_block": (index + 1) == len(data_blocks),
+                "last_block": last_block,
             }
             block_header = header.updated_with(**header_data)
             blocks.append(cls.block_type(block_header, block_data))
@@ -166,7 +175,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
             Message object
 
         """
-        return cls(block.header, block.data)
+        return cls(block.header, block.data, complete=False)
 
     @property
     @abc.abstractmethod
