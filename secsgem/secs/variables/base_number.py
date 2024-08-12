@@ -90,9 +90,7 @@ class BaseNumber(Base):
             return True
 
         if isinstance(value, (int, float)):
-            if value < self._min or value > self._max:
-                return False
-            return True
+            return not (value < self._min or value > self._max)
 
         if isinstance(value, (bytes, str)):
             return self._check_single_item_support_str(value)
@@ -104,9 +102,7 @@ class BaseNumber(Base):
             val = self._base_type(value)
         except ValueError:
             return False
-        if val < self._min or val > self._max:
-            return False
-        return True
+        return not (val < self._min or val > self._max)
 
     def supports_value(self, value) -> bool:
         """Check if the current instance supports the provided value.

@@ -116,10 +116,7 @@ class CallbackHandler:
             return True
 
         delegate_handler = getattr(self.target, "_on_" + callback, None)
-        if callable(delegate_handler):
-            return True
-
-        return False
+        return bool(callable(delegate_handler))
 
     def _call(self, callback: str, *args, **kwargs) -> typing.Any:
         if callback in self._callbacks:

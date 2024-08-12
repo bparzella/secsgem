@@ -85,15 +85,10 @@ class Boolean(Base):
             return True
 
         if isinstance(value, int):
-            if 0 <= value <= 1:
-                return True
-            return False
+            return 0 <= value <= 1
 
         if isinstance(value, str):
-            if value.upper() in self._true_strings or value.upper() in self._false_strings:
-                return True
-
-            return False
+            return bool(value.upper() in self._true_strings or value.upper() in self._false_strings)
 
         return False
 

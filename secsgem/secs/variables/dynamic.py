@@ -93,10 +93,7 @@ class Dynamic(Base):
         if not self.types:
             return True
 
-        if typ in self.types:
-            return True
-
-        return False
+        return typ in self.types
 
     @property
     def preferred_type(self):

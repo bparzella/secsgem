@@ -212,10 +212,8 @@ class List(Base):
             if len(value) > len(self.data):
                 raise ValueError(f"Value has invalid field count (expected: {len(self.data)}, actual: {len(value)})")
 
-            counter = 0
-            for itemvalue in value:
+            for counter, itemvalue in enumerate(value):
                 self.data[list(self.data.keys())[counter]].set(itemvalue)
-                counter += 1
         else:
             raise TypeError(f"Invalid value type {type(value).__name__} for {self.__class__.__name__}")
 

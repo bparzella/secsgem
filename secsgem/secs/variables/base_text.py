@@ -96,9 +96,7 @@ class BaseText(Base):
             return True
 
         if isinstance(value, int):
-            if 0 <= value <= 255:
-                return True
-            return False
+            return 0 <= value <= 255
 
         return False
 
@@ -129,15 +127,10 @@ class BaseText(Base):
         return all(self._check_single_item_support(item) for item in value)
 
     def _supports_value_bytes(self, value) -> bool:
-        if 0 < self.count < len(value):
-            return False
-
-        return True
+        return not 0 < self.count < len(value)
 
     def _supports_value_number(self, value) -> bool:
-        if 0 < self.count < len(str(value)):
-            return False
-        return True
+        return not 0 < self.count < len(str(value))
 
     def _supports_value_str(self, value) -> bool:
         if 0 < self.count < len(value):

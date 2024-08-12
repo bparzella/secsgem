@@ -106,7 +106,4 @@ def is_errorcode_ewouldblock(errorcode: int) -> bool:
         True if blocking error code
 
     """
-    if errorcode in (errno.EAGAIN, errno.EWOULDBLOCK):
-        return True
-
-    return False
+    return errorcode in (errno.EAGAIN, errno.EWOULDBLOCK)
