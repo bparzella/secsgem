@@ -36,7 +36,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
     ACK = 0b00000110
     NAK = 0b00010101
 
-    block_size = 244
+    block_size = SecsIMessage.block_size
 
     message_type = SecsIMessage
 
