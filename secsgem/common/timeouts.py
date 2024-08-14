@@ -53,7 +53,7 @@ class Timeouts:
     .. exec::
         import secsgem.common.timeouts
 
-        for timeout in secsgem.common.timeouts.Timeouts._timeouts():
+        for timeout in secsgem.common.timeouts.Timeouts.timeouts():
             print(f".. attribute:: {timeout.name}\n\n"
                     f"   :type: {timeout.default.__class__.__name__}\n"
                     f"   :value: {timeout.default}\n"
