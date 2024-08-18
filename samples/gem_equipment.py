@@ -17,15 +17,17 @@
 import logging
 import code
 
-import secsgem.secs
+import secsgem.common
 import secsgem.gem
+import secsgem.hsms
+import secsgem.secs
 
 from communication_log_file_handler import CommunicationLogFileHandler
 
 
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.MDLN = "gemequp"
         self.SOFTREV = "1.0.0"
@@ -43,7 +45,7 @@ class SampleEquipment(secsgem.gem.GemEquipmentHandler):
 
         self.equipment_constants.update({
             20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, U4", 0, 500, 50, "degrees", secsgem.secs.variables.U4),
-            "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, String", "", "", "", "chars", secsgem.secs.variables.String),
+            "EC2": secsgem.gem.EquipmentConstant("EC2", "sample2, text ECID, String", 0, 0, 0, "chars", secsgem.secs.variables.String),
         })
 
     def on_sv_value_request(self, svid, sv):
@@ -76,7 +78,14 @@ logging.getLogger("communication").propagate = False
 
 logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s: %(message)s', level=logging.DEBUG)
 
-h = SampleEquipment("127.0.0.1", 5000, False, 0, "sampleequipment")
+settings = secsgem.hsms.HsmsSettings(
+    address="127.0.0.1",
+    port=5000,
+    connect_mode=secsgem.hsms.HsmsConnectMode.ACTIVE,
+    device_type=secsgem.common.DeviceType.EQUIPMENT
+)
+
+h = SampleEquipment(settings)
 h.enable()
 
 code.interact("equipment object is available as variable 'h'", local=locals())
