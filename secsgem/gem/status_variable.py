@@ -38,7 +38,7 @@ class StatusVariable:  # pylint: disable=too-few-public-methods
         svid: int | str | StatusVariableId,
         name: str,
         unit: str,
-        value_type: secsgem.secs.variables.Base,
+        value_type: type[secsgem.secs.variables.Base],
         use_callback: bool = True,
         **kwargs,
     ):
