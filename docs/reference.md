@@ -1,8 +1,10 @@
 # Class reference
 
 ```{toctree}
-reference/hsms
-reference/secs
 reference/gem
+reference/secs
+reference/hsms
+reference/secsi
+reference/secsitcp
 reference/common
 ```

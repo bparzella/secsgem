@@ -2,8 +2,8 @@
 
 ```{toctree}
 secs/variables
-secs/data_items.md
+secs/data_items
 secs/functionbase
-secs/functions.md
+secs/functions
 secs/handler
 ```

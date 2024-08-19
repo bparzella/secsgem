@@ -20,7 +20,7 @@ from .protocol import SecsIProtocol
 from .settings import SecsISettings
 
 __all__ = [
-    "SecsIHeader",
-    "SecsIProtocol",
     "SecsISettings",
+    "SecsIProtocol",
+    "SecsIHeader",
 ]
