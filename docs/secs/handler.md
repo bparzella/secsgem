@@ -9,7 +9,8 @@ The SecsHandler has functionality to add callbacks for specific streams and func
 >>> def on_connect(event, data):
 ...     print "Connected"
 ...
->>> client = secsgem.secs.SecsHandler.hsms("10.211.55.33", 5000, False, 0, "test")
+>>> settings = secsgem.hsms.Settings(address="127.0.0.1", port=5000, connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE, device_type=secsgem.common.DeviceType.HOST)
+>>> client = secsgem.secs.SecsHandler(settings)
 >>> client.events.connected += on_connect
 >>> client.register_stream_function(1, 13, s01f13_handler)
 >>>

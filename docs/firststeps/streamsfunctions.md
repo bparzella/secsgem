@@ -46,8 +46,8 @@ You create a new class inherited from it and update the function list of that cl
 
 ```python
 class NewHandler(secsgem.GemHostHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemHostHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.secs_streams_functions[1].update({
             12: SecsS01F12_New,

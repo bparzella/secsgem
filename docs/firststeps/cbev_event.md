@@ -10,9 +10,9 @@ There are three ways to define events, by creating them in the [inherited handle
 When working with a inherited class, events can be implemented by creating members with a specific name:
 
 ```python
-class SampleEquipment(secsgem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+class SampleEquipment(secsgem.gem.GemEquipmentHandler):
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
     def _on_event_communicating(self, connection):
         pass
@@ -30,9 +30,9 @@ def _on_event_<event_name>(self, <parameters>):
 To catch all events, the `_on_event` method can be overridden:
 
 ```python
-class SampleEquipment(secsgem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+class SampleEquipment(secsgem.gem.GemEquipmentHandler):
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
     def _on_event(self, *args):
         pass

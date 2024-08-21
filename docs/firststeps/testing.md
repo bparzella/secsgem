@@ -6,11 +6,20 @@ secsgem can be used to make unit tests on your implementation of the SEMI standa
 ```{code} python
 import unittest
 
+import secsgem.common
 import secsgem.gem
+import secsgem.hsms
 
 class TestExampleSecsGem(unittest.TestCase):
     def setUp(self):
-        self.handler = secsgem.gem.GemHostHandler.hsms("10.211.55.33", 5000, False, 0, "test")
+        settings = secsgem.hsms.Settings(
+            address="127.0.0.1",
+            port=5000,
+            connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE,
+            device_type=secsgem.common.DeviceType.HOST
+        )
+
+        self.handler = secsgem.gem.GemHostHandler.hsms(settings)
 
         self.handler.enable()
         self.handler.waitfor_communicating()

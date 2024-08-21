@@ -8,8 +8,8 @@ import secsgem.gem
 import code
 
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
 h = SampleEquipment("127.0.0.1", 5000, False, 0, "sampleequipment")
 h.enable()
@@ -25,8 +25,8 @@ To use your own modelname and version for S1F14 reply you can override the {py:a
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.MDLN = "gemequp"
         self.SOFTREV = "1.0.0"
@@ -38,8 +38,8 @@ A status variable can be added by inserting an instance of the {py:class}`secsge
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.status_variables.update({
             10: secsgem.gem.StatusVariable(10, "sample1, numeric SVID, SecsVarU4", "meters", secsgem.secs.variables.U4, False),
@@ -54,8 +54,8 @@ Alternatively the values can be acquired using a callback by setting the use_cal
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.sv1 = 123
         self.sv2 = "sample sv"
@@ -80,8 +80,8 @@ An equipment constant can be added by inserting an instance of the {py:class}`se
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.equipment_constants.update({
             20: secsgem.gem.EquipmentConstant(20, "sample1, numeric ECID, SecsVarU4", 0, 500, 50, "degrees", secsgem.secs.variables.U4, False),
@@ -96,8 +96,8 @@ Alternatively the values can be acquired and updated using callbacks by setting 
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.ec1 = 321
         self.ec2 = "sample ec"
@@ -130,8 +130,8 @@ The data values for a collection event can be passed while creating the {py:clas
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.dv1 = 31337
 
@@ -161,8 +161,8 @@ For an example see the section above:
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.collection_events.update({
             100025: secsgem.gem.CollectionEvent(100025, "test collection event alarm set", []),
@@ -188,8 +188,8 @@ For an example see the section above:
 
 ```python
 class SampleEquipment(secsgem.gem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.gem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
         self.collection_events.update({
             5001: secsgem.gem.CollectionEvent(5001, "TEST_RCMD complete", []),

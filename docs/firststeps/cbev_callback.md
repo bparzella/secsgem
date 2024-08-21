@@ -15,9 +15,9 @@ Registered callbacks superseed target and overridden functions.
 When working with a inherited class, callbacks can be implemented by creating callback members with a specific name:
 
 ```python
-class SampleEquipment(secsgem.GemEquipmentHandler):
-    def __init__(self, address, port, active, session_id, name, custom_connection_handler=None):
-        secsgem.GemEquipmentHandler.__init__(self, address, port, active, session_id, name, custom_connection_handler)
+class SampleEquipment(secsgem.gem.GemEquipmentHandler):
+    def __init__(self, settings: secsgem.common.Settings):
+        super().__init__(settings)
 
     def _on_alarm_received(self, handler, ALID, ALCD, ALTX):
         return ACKC5.ACCEPTED
@@ -36,7 +36,7 @@ def _on_<callback_name>(self, handler, <parameters>):
 Callbacks for streams/functions can also be overriden this way by following a specific naming:
 
 ```python
-def _on_s05f01(self, handler, packet):
+def _on_s05f01(self, handler, message):
     return self.stream_function(5, 2)(ACKC5.ACCEPTED)
 ```
 
