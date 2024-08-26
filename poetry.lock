@@ -1136,13 +1136,13 @@ files = [
 
 [[package]]
 name = "types-pyserial"
-version = "3.5.0.20240527"
+version = "3.5.0.20240826"
 description = "Typing stubs for pyserial"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "types-pyserial-3.5.0.20240527.tar.gz", hash = "sha256:55fdbb9849cddba1bf8dcc2617ce21d46d31a9d82974ef40b34946567ae2b89c"},
-    {file = "types_pyserial-3.5.0.20240527-py3-none-any.whl", hash = "sha256:9b4757dfcbcc3642a60b391f02f75b139f65e06ff6803839db7b0c5766bfecd7"},
+    {file = "types-pyserial-3.5.0.20240826.tar.gz", hash = "sha256:c88c603734410ad714fba85eb10f145dc592ccf1542bb958f12a8481722f37db"},
+    {file = "types_pyserial-3.5.0.20240826-py3-none-any.whl", hash = "sha256:f3fddafe593060afeec489ed6f6a18dcf05ae5eae1c8e9026b50c7960f00b076"},
 ]
 
 [[package]]
@@ -1213,4 +1213,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "d1bb671d443034255b7637b62c2747e505ae5bd1239d945156ced038f0d7e4de"
+content-hash = "aeb86c83bbe96b9236ed5f7712a395bcbffdecae0b5afd15685c7bc713b8e2da"
