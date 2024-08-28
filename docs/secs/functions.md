@@ -87,5 +87,5 @@ S2F33 W
 '01:02:a5:01:0a:01:02:01:02:a5:01:05:01:02:41:05:48:65:6c:6c:6f:41:05:48:61:6c:6c:6f:01:02:a5:01:06:01:02:41:07:47:6f:6f:64:62:79:65:41:0f:41:75:66:20:57:69:65:64:65:72:73:65:68:65:6e'
 ```
 
-The encoded data can be used as data string in a {py:class}`secsgem.hsms.HsmsPacket` together with a {py:class}`secsgem.hsms.HsmsStreamFunctionHeader`.
-See {doc}`/hsms/packets`.
+The encoded data can be used as data string in a {py:class}`secsgem.hsms.HsmsMessage` together with a {py:class}`secsgem.hsms.HsmsStreamFunctionHeader`.
+See {doc}`/hsms/messages`.

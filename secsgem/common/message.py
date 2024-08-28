@@ -95,7 +95,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
 
     @classmethod
     def decode(cls: type[BlockT], data: bytes) -> BlockT | None:
-        """Decode byte array hsms packet to HsmsPacket object.
+        """Decode a byte array to Block object.
 
         Args:
             data: byte-encode packet data

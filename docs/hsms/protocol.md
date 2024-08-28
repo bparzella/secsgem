@@ -1,4 +1,4 @@
-# Handler
+# Protocol
 
 {py:class}`secsgem.hsms.protocol.HsmsProtocol` has the basic HSMS connection handling build in.
 It automatically selects and deselects the link and performs a periodic linktest.
@@ -12,8 +12,8 @@ It also replies to incoming HSMS requests like linktest automatically.
 >>> client.events.connected += on_connect
 >>> client.enable()
 Connected
->>> client.send_linktest_req()
-secsgem.hsms.HsmsPacket({'header': secsgem.hsms.HsmsHeader({'function': 0, 'stream': 0, 'p_type': 0, 'system': 7, 'session_id': 65535, 'require_response': False, 's_type': 6}), 'data': ''})
+>>> client.protocol.send_linktest_req()
+HsmsMessage({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, system:0x75b78c48, require_response:False}), 'data': ''})
 >>> client.disable()
 ```
 
