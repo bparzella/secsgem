@@ -10,7 +10,7 @@ This module is still work in progress. I'd love to get your input, your use case
 
 
 ## Installation
-To install the latest official release (0.1.0, 2020-05-27, https://pypi.python.org/pypi/secsgem):
+To install the latest official release (0.2.0, 2024-08-29, https://pypi.python.org/pypi/secsgem):
 
 ```bash
 $ pip install secsgem

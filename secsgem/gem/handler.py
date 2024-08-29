@@ -42,7 +42,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         self._protocol.events.communicating += self._on_communicating
 
         self._mdln = "secsgem"  #: model number returned by S01E13/14
-        self._softrev = "0.1.0"  #: software version returned by S01E13/14
+        self._softrev = "0.2.0"  #: software version returned by S01E13/14
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
 
