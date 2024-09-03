@@ -145,8 +145,49 @@ Due to the new communication layer (serial) and protocol (SECS-I) some events ar
 Each message callback was called from a new thread to allow the receiver thread to be responsive for new packets.
 This could lead to messages not arriving in an expected order.
 
+```{uml}
+:caption: Old callback handling
+:align: center
+
+Receiver --> Handler : message received
+activate Handler
+Handler --> Thread : start thread
+activate Thread
+Handler -> Receiver : continue
+deactivate Handler
+Thread --> Callback : start callback
+activate Callback
+Callback -> Thread : callback finished
+deactivate Callback
+deactivate Thread
+```
+
 Now incoming packets are added to a queue, which is processed by a single, separate thread.
 This allows the receiver thread to be responsive and the callbacks to be called in the order the packets are received.
+
+```{uml}
+:caption: New callback handling
+:align: center
+
+participant Receiver
+participant Handler
+database Queue
+participant Processor
+participant Callback
+
+activate Processor
+Receiver --> Handler : message received
+activate Handler
+Handler --> Queue : queue message
+Handler -> Receiver : continue
+deactivate Handler
+Queue --> Processor : read queue
+Processor --> Callback : start callback
+activate Callback
+Callback -> Processor : callback finished
+deactivate Callback
+
+```
 
 ### Split big secsgem namespace and rename classes
 
