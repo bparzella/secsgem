@@ -80,6 +80,7 @@ autodoc_member_order = "bysource"
 
 plantuml_path = config_path / "bin" / "plantuml.jar"
 plantuml = f"java -jar {plantuml_path}"
+plantuml_output_format = "svg"
 
 myst_heading_anchors = 3
 # -- Options for HTML output ----------------------------------------------
