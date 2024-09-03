@@ -222,3 +222,6 @@ Also the class API documentation file is generated using the yaml files.
 
 All generator data is located in the `data` directory in the project root, including the generator script (`data/generate_data.py`) and the template files (`data/*.j2`)
 
+## v0.2.1
+
+* Update documentation
