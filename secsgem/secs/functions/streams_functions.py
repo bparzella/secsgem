@@ -1,7 +1,7 @@
 #####################################################################
 # streams_functions.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Container class for streams and functions."""
+
 from __future__ import annotations
 
 import typing
@@ -94,3 +95,15 @@ class StreamsFunctions:
         function.decode(message.data)
 
         return function
+
+    def update(self, function: type[SecsStreamFunction]):
+        """Add or update a function descriptor."""
+        functions = [
+            func for func in self._functions if func.stream == function.stream and func.function == function.function
+        ]
+
+        if functions:
+            for func in functions:
+                self._functions.remove(func)
+
+        self._functions.append(function)

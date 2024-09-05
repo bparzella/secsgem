@@ -229,6 +229,7 @@ All generator data is located in the `data` directory in the project root, inclu
 ## v0.3.0 [planned]
 
 * [Fail when initializing settings with invalid arguments](#fail-when-initializing-settings-with-invalid-arguments)
+* [Add simple customization of equipment specific functions](#add-simple-customization-of-equipment-specific-functions)
 
 ### Fail when initializing settings with invalid arguments
 
@@ -238,3 +239,47 @@ A ValueError is now raised if an unknown parameter is passed to the settings con
 This is implemented for HsmsSettings, SecsISettings and SecsITcpSettings.
 
 Also tests for the settings were added.
+
+### Add simple customization of equipment specific functions
+
+The old, documented way for replacing / adding a customized function to a handler doesn't work with 0.2.0 any more.
+So a new way to simply modify the function list for an equipment was added.
+
+To allow equipment specific modifications of the function list, it was moved to the settings in 0.2.0.
+With this move a container for the function list was added, to allow simple lookups.
+
+Now a function was added to this container, to update its function list.
+This will either add or update the function in the list.
+The container is accessible from the settings.
+
+```python
+class UNITS_New(DataItemBase):
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
+        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+
+class SecsS01F12_New(secsgem.secs.SecsStreamFunction):
+    _stream = 1
+    _function = 12
+
+    _data_format = [
+        [
+            SVID,
+            SVNAME,
+            UNITS_New
+        ]
+    ]
+
+    _to_host = True
+    _to_equipment = False
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = True
+
+settings = secsgem.hsms.HsmsSettings()
+settings.streams_functions.update(SecsS01F12_New)
+
+handler = secsgem.gem.GemHostHandler(settings)
+```
