@@ -73,7 +73,7 @@ class Settings(abc.ABC):
     def streams_functions(self) -> StreamsFunctions:
         """Container with streams/functions.
 
-        Default: DeviceType.HOST
+        Default: Global predefined stream function list
         """
         return self._streams_functions
 
