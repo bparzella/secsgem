@@ -19,7 +19,6 @@ from __future__ import annotations
 import enum
 
 import secsgem.common
-import secsgem.secsi
 
 
 class SecsITcpConnectMode(enum.Enum):
@@ -102,7 +101,7 @@ class SecsITcpSettings(secsgem.common.Settings):
     @property
     def name(self) -> str:
         """Name of this configuration."""
-        return f"HSMS-{self.connect_mode}_{self.address}:{self.port}"
+        return f"SECSITCP-{self.connect_mode}_{self.address}:{self.port}"
 
     def generate_thread_name(self, functionality: str) -> str:
         """Generate a unique thread name for this configuration and a provided functionality.

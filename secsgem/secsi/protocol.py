@@ -22,11 +22,11 @@ import secsgem.common
 
 from .header import SecsIHeader
 from .message import SecsIBlock, SecsIMessage
-from .settings import SecsISettings
 
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
     from ..secsitcp.settings import SecsITcpSettings
+    from .settings import SecsISettings
 
 
 class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
@@ -103,6 +103,8 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         :returns: data to serialize for this object
         :rtype: dict
         """
+        from .settings import SecsISettings  # pylint: disable=import-outside-toplevel
+
         if not isinstance(self._settings, SecsISettings):
             return {
                 "address": self._settings.address,
@@ -206,6 +208,8 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
     def _get_log_extra(self) -> dict[str, typing.Any]:
         """Get extra fields for logging."""
+        from .settings import SecsISettings  # pylint: disable=import-outside-toplevel
+
         if not isinstance(self._settings, SecsISettings):
             return {
                 "address": self._settings.address,
