@@ -1,7 +1,7 @@
 #####################################################################
 # settings.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,26 @@ class Settings(abc.ABC):
         self._streams_functions = kwargs.get("streams_functions", StreamsFunctions())
         self._session_id = kwargs.get("session_id", 0)
         self._establish_communication_timeout = kwargs.get("establish_communication_timeout", 10)
+
+    @classmethod
+    @abc.abstractmethod
+    def _args(cls) -> list[str]:
+        """Get a list of available arguments."""
+        return [
+            *Timeouts.args(),
+            "device_type",
+            "streams_functions",
+            "session_id",
+            "establish_communication_timeout",
+        ]
+
+    def _validate_args(self, kwargs: dict[str, typing.Any]):
+        """Validate passed kwargs against list of allowed args."""
+        invalid_args = [kwarg for kwarg in kwargs if kwarg not in self._args()]
+
+        if invalid_args:
+            raise ValueError(f"{self.__class__.__name__} initialized with unknown arguments: {', '.join(invalid_args)}")
+
 
     @property
     def timeouts(self) -> Timeouts:

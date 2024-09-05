@@ -222,6 +222,19 @@ Also the class API documentation file is generated using the yaml files.
 
 All generator data is located in the `data` directory in the project root, including the generator script (`data/generate_data.py`) and the template files (`data/*.j2`)
 
-## v0.2.1
+## v0.2.1 [planned]
 
 * Update documentation
+
+## v0.3.0 [planned]
+
+* [Fail when initializing settings with invalid arguments](#fail-when-initializing-settings-with-invalid-arguments)
+
+### Fail when initializing settings with invalid arguments
+
+Due to the multi-layered settings structure the keyword arguments of the 'Settings' initializers were not checked for invalid arguments.
+A ValueError is now raised if an unknown parameter is passed to the settings constructor.
+
+This is implemented for HsmsSettings, SecsISettings and SecsITcpSettings.
+
+Also tests for the settings were added.

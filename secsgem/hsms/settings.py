@@ -1,7 +1,7 @@
 #####################################################################
 # settings.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -55,6 +55,12 @@ class HsmsSettings(secsgem.common.Settings):
         self._connect_mode = kwargs.get("connect_mode", HsmsConnectMode.ACTIVE)
         self._address = kwargs.get("address", "127.0.0.1")
         self._port = kwargs.get("port", 5000)
+
+        self._validate_args(kwargs)
+
+    @classmethod
+    def _args(cls) -> list[str]:
+        return [*super()._args(), "connect_mode", "address", "port"]
 
     @property
     def connect_mode(self) -> HsmsConnectMode:

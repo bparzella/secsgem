@@ -1,7 +1,7 @@
 #####################################################################
 # settings.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -41,6 +41,12 @@ class SecsISettings(secsgem.common.Settings):
 
         self._port = kwargs.get("port", "")
         self._speed = kwargs.get("speed", 9600)
+
+        self._validate_args(kwargs)
+
+    @classmethod
+    def _args(cls) -> list[str]:
+        return [*super()._args(), "port", "speed"]
 
     @property
     def port(self) -> str:

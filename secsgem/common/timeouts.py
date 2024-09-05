@@ -1,7 +1,7 @@
 #####################################################################
 # timeouts.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -74,6 +74,11 @@ class Timeouts:
             _Timeout("t7", 8.0, "Not Selected Timeout"),
             _Timeout("t8", 5.0, "Network Intercharacter Timeout"),
         ]
+
+    @classmethod
+    def args(cls) -> list[str]:
+        """Get a list of available arguments."""
+        return [timeout.name for timeout in cls.timeouts()]
 
     def __init__(self, **kwargs) -> None:
         """Timout initializer.

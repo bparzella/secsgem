@@ -33,7 +33,7 @@ class SecsITcpConnectMode(enum.Enum):
         return "Client" if self == self.CLIENT else "Server"
 
 
-class SecsITcpSettings(secsgem.secsi.SecsISettings):
+class SecsITcpSettings(secsgem.common.Settings):
     """Settings for Secs I over TCP connection.
 
     These attributes can be initialized in the constructor and accessed as property.
@@ -56,6 +56,12 @@ class SecsITcpSettings(secsgem.secsi.SecsISettings):
         self._connect_mode = kwargs.get("connect_mode", SecsITcpConnectMode.CLIENT)
         self._address = kwargs.get("address", "127.0.0.1")
         self._port = kwargs.get("port", 5000)
+
+        self._validate_args(kwargs)
+
+    @classmethod
+    def _args(cls) -> list[str]:
+        return [*super()._args(), "connect_mode", "address", "port"]
 
     @property
     def connect_mode(self) -> SecsITcpConnectMode:

@@ -1,7 +1,7 @@
 #####################################################################
 # protocol.py
 #
-# (c) Copyright 2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2023-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -22,10 +22,11 @@ import secsgem.common
 
 from .header import SecsIHeader
 from .message import SecsIBlock, SecsIMessage
+from .settings import SecsISettings
 
 if typing.TYPE_CHECKING:
     from ..secs.functions.base import SecsStreamFunction
-    from .settings import SecsISettings
+    from ..secsitcp.settings import SecsITcpSettings
 
 
 class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
@@ -40,7 +41,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
     message_type = SecsIMessage
 
-    def __init__(self, settings: SecsISettings):
+    def __init__(self, settings: SecsISettings|SecsITcpSettings):
         """Instantiate SECS I protocol class.
 
         Args:
@@ -67,7 +68,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
         """
         super().__init__(settings)
-        self._settings: SecsISettings = settings
+        self._settings: SecsISettings|SecsITcpSettings = settings
 
     def _create_message_for_function(
             self,
@@ -102,7 +103,21 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         :returns: data to serialize for this object
         :rtype: dict
         """
-        return {"port": self._settings.port, "baud_rate": self._settings.speed}
+        if not isinstance(self._settings, SecsISettings):
+            return {
+                "address": self._settings.address,
+                "port": self._settings.port,
+                "connect_mode": self._settings.connect_mode,
+                "session_id": self._settings.session_id,
+                "name": self._settings.name,
+            }
+
+        return {
+            "port": self._settings.port,
+            "baud_rate": self._settings.speed,
+            "session_id": self._settings.session_id,
+            "name": self._settings.name,
+        }
 
     def _on_connected(self, _: dict[str, typing.Any]):
         """Handle connection was established event."""
@@ -191,7 +206,18 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
     def _get_log_extra(self) -> dict[str, typing.Any]:
         """Get extra fields for logging."""
-        return {"port": self._settings.port,
-                "speed": self._settings.speed,
+        if not isinstance(self._settings, SecsISettings):
+            return {
+                "address": self._settings.address,
+                "port": self._settings.port,
+                "connect_mode": self._settings.connect_mode,
                 "session_id": self._settings.session_id,
-                "remoteName": self._settings.name}
+                "remoteName": self._settings.name
+            }
+
+        return {
+            "port": self._settings.port,
+            "speed": self._settings.speed,
+            "session_id": self._settings.session_id,
+            "remoteName": self._settings.name
+        }
