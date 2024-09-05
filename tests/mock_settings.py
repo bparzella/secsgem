@@ -34,6 +34,10 @@ class MockSettings(secsgem.common.Settings):
         self.protocol = protocol_class(self)
         self.connection = None if connection_class is None else connection_class(self)
 
+    @classmethod
+    def _args(cls) -> list[str]:
+        return super()._args()
+
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
         return self.protocol
