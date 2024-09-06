@@ -39,11 +39,11 @@ if typing.TYPE_CHECKING:
 class GemEquipmentHandler(  # pylint: disable=too-many-ancestors
     AlarmCapability,
     ClockCapability,
-    CollectionEventCapability,
     DataValueCapability,
     EquipmentConstantsCapability,
     RemoteControlCapability,
     StateModelsCapability,
+    CollectionEventCapability,
     StatusDataCollectionCapability,
     GemHandler):
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
