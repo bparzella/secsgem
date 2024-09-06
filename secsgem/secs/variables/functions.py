@@ -15,9 +15,68 @@
 #####################################################################
 """SECS variable helper functions."""
 
-import inspect
+from __future__ import annotations
 
+import inspect
+import typing
+
+from .. import data_items
+from ..functions.sfdl_tokenizer import SFDLTokenizer
 from .base import Base
+
+if typing.TYPE_CHECKING:
+    from ..functions.sfdl_tokenizer import SFDLToken
+
+
+def _generate_item_from_sfdl(tokenizer: SFDLTokenizer, item_token: SFDLToken, item_name: str):
+    item = getattr(data_items, item_name, None)
+
+    if item is None:
+        raise item_token.exception(f"Unknown data type {item_name}")
+
+    if not tokenizer.token_available:
+        raise item_token.exception("Closing tag '>' expected", end=True)
+
+    closing_token = tokenizer.get_token()
+
+    if closing_token.value != ">":
+        raise closing_token.exception("Closing tag '>' expected")
+
+    return item
+
+
+def _generate_from_sfdl(tokenizer: SFDLTokenizer, token_name: str | None = None):
+    opening_token = tokenizer.get_token()
+
+    if opening_token.value != "<":
+        raise opening_token.exception("Opening tag '<' expected")
+
+    item_token = tokenizer.get_token()
+    item_name = item_token.value.upper()
+
+    if item_name != "L":
+        return _generate_item_from_sfdl(tokenizer, item_token, item_name)
+
+    item_key_token = None
+    if tokenizer.peek_token().value not in "<>":
+        item_key_token = tokenizer.get_token()
+
+    sub_items: list = []
+
+    if tokenizer.peek_token(ahead=2).value != "L" and token_name:
+        sub_items.append(token_name)
+        token_name = None
+
+    while True:
+        if not tokenizer.token_available or tokenizer.peek_token().value not in "<>":
+            last_token = item_key_token if item_key_token else item_token
+            raise last_token.exception("Expected opening '<' or closing '>' tag", end=True)
+
+        if tokenizer.peek_token().value == ">":
+            tokenizer.get_token()
+            return list(sub_items)
+
+        sub_items.append(_generate_from_sfdl(tokenizer, item_key_token.value if item_key_token else None))
 
 
 def generate(data_format):
@@ -33,6 +92,11 @@ def generate(data_format):
 
     if data_format is None:
         return None
+
+    if isinstance(data_format, str):
+        tokenizer = SFDLTokenizer(data_format)
+
+        data_format = _generate_from_sfdl(tokenizer)
 
     if isinstance(data_format, list):
         if len(data_format) == 1:
@@ -58,6 +122,11 @@ def get_format(data_format, showname=False):
 
     if data_format is None:
         return None
+
+    if isinstance(data_format, str):
+        tokenizer = SFDLTokenizer(data_format)
+
+        data_format = _generate_from_sfdl(tokenizer)
 
     if isinstance(data_format, list):
         if len(data_format) == 1:

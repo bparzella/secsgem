@@ -10,5 +10,6 @@ python unit tests.
 firststeps/cbev
 firststeps/gemequipment
 firststeps/streamsfunctions
+firststeps/sfdl
 firststeps/testing
 ```
