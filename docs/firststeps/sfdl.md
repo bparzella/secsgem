@@ -119,14 +119,14 @@ This will make the list of SVIDs available with the key/attribute SVIDS.
 
 Structure definition for standard S6F8:
 ```
-< L [3]
+< L
     < DATAID >
     < CEID >
     < L DS
-        < L [2]
+        < L
             < DSID >
             < L DV
-                < L [2]
+                < L
                     < DVNAME >
                     < DVVAL >
                 >

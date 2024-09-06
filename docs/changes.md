@@ -230,6 +230,7 @@ All generator data is located in the `data` directory in the project root, inclu
 
 * [Fail when initializing settings with invalid arguments](#fail-when-initializing-settings-with-invalid-arguments)
 * [Add simple customization of equipment specific functions](#add-simple-customization-of-equipment-specific-functions)
+* [Add function definition language](#add-function-definition-language)
 
 ### Fail when initializing settings with invalid arguments
 
@@ -282,4 +283,77 @@ settings = secsgem.hsms.HsmsSettings()
 settings.streams_functions.update(SecsS01F12_New)
 
 handler = secsgem.gem.GemHostHandler(settings)
+```
+
+### Add function definition language
+Defining the data item for a function is a quite complex and confusing task.
+Wrapping the function definition in python data types is not very intuitive.
+
+So a new description language was added, based on SML, which is known in combination with secs.
+For more information check the documentation ([Secs Function Definition Language](firststeps/sfdl.md)).
+
+Old:
+```python
+class SecsS06F08(SecsStreamFunction):
+    _stream = 6
+    _function = 8
+
+    _data_format = [
+        DATAID,
+        CEID,
+        [
+            [
+                "DS",
+                DSID,
+                [
+                    [
+                        "DV",
+                        DVNAME,
+                        DVVAL
+                    ]
+                ]
+            ]
+        ]
+    ]
+
+    _to_host = True
+    _to_equipment = False
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = True
+```
+
+New:
+```python
+class SecsS06F08(SecsStreamFunction):
+    _stream = 6
+    _function = 8
+
+    _data_format = """
+        < L
+            < DATAID >
+            < CEID >
+            < L DS
+                < L
+                    < DSID >
+                    < L DV
+                        < L
+                            < DVNAME >
+                            < DVVAL >
+                        >
+                    >
+                >
+            >
+        >
+    """
+
+    _to_host = True
+    _to_equipment = False
+
+    _has_reply = False
+    _is_reply_required = False
+
+    _is_multi_block = True
 ```
