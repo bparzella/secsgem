@@ -89,9 +89,9 @@ extend-select = [
   "S",  # flake8 - bandit
 #  "FBT",  # flake8 - boolean trap
   "B",  # flake8 - bugbear
-#  "A",  # flake8 - builtins
+  "A",  # flake8 - builtins
 #  "COM",  # flake8 - commas
-#  "CPY",  # flake8 - copyright
+  "CPY",  # flake8 - copyright
   "C4",  # flake8 - comprehensions
   "DTZ",  # flake8 - datetimez
 #  "EM",  # flake8 - errmsg
@@ -120,14 +120,15 @@ extend-select = [
 #  "TRY",  # tryceratorps
   "FLY",  # flynt
   "PERF",  # perflint
-#  "FURB",  # refurb
-#  "LOG",  # flake8 - logging
+  "FURB",  # refurb
+  "LOG",  # flake8 - logging
   "RUF",  # ruff
 ]
 ignore = [
   "ANN101",
   "ANN102",
   "RUF012",  # TODO: remove
+  "ISC001"
 ]
 
 [tool.ruff.lint.flake8-annotations]
