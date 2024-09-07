@@ -21,7 +21,7 @@ from secsgem.secs.functions.sfdl_tokenizer import SFDLTokenizer, SFDLParseError
 
 class TestSFDLTokenizer:
     def test_compact_source(self):
-        source = """< L SAMPLE_NAME <L <DATAITEM1> <DATAITEM2> >>"""
+        source = """< L SAMPLE_NAME <L <DVNAME> <DVVAL> >>"""
 
         tokenizer = SFDLTokenizer(source)
         print(tokenizer)
@@ -33,27 +33,27 @@ class TestSFDLTokenizer:
             {"value": "<", "line": 1, "col": 17},
             {"value": "L", "line": 1, "col": 18},
             {"value": "<", "line": 1, "col": 20},
-            {"value": "DATAITEM1", "line": 1, "col": 21},
-            {"value": ">", "line": 1, "col": 30},
-            {"value": "<", "line": 1, "col": 32},
-            {"value": "DATAITEM2", "line": 1, "col": 33},
-            {"value": ">", "line": 1, "col": 42},
-            {"value": ">", "line": 1, "col": 44},
-            {"value": ">", "line": 1, "col": 45},
+            {"value": "DVNAME", "line": 1, "col": 21},
+            {"value": ">", "line": 1, "col": 27},
+            {"value": "<", "line": 1, "col": 29},
+            {"value": "DVVAL", "line": 1, "col": 30},
+            {"value": ">", "line": 1, "col": 35},
+            {"value": ">", "line": 1, "col": 37},
+            {"value": ">", "line": 1, "col": 38},
         ]
 
         for expected_token in expected_tokens:
             token = tokenizer.get_token()
             assert token.value == expected_token["value"]
-            assert token.line == expected_token["line"]
-            assert token.col == expected_token["col"]
+            assert token.location.line == expected_token["line"]
+            assert token.location.column == expected_token["col"]
 
 
     def test_multiline_source(self):
         source = """< L SAMPLE_NAME
     <L
-        <DATAITEM1>
-        < DATAITEM2 >
+        <DVNAME>
+        < DVVAL >
     >
 >"""
 
@@ -67,11 +67,11 @@ class TestSFDLTokenizer:
             {"value": "<", "line": 2, "col": 4},
             {"value": "L", "line": 2, "col": 5},
             {"value": "<", "line": 3, "col": 8},
-            {"value": "DATAITEM1", "line": 3, "col": 9},
-            {"value": ">", "line": 3, "col": 18},
+            {"value": "DVNAME", "line": 3, "col": 9},
+            {"value": ">", "line": 3, "col": 15},
             {"value": "<", "line": 4, "col": 8},
-            {"value": "DATAITEM2", "line": 4, "col": 10},
-            {"value": ">", "line": 4, "col": 20},
+            {"value": "DVVAL", "line": 4, "col": 10},
+            {"value": ">", "line": 4, "col": 16},
             {"value": ">", "line": 5, "col": 4},
             {"value": ">", "line": 6, "col": 1},
         ]
@@ -79,8 +79,17 @@ class TestSFDLTokenizer:
         for expected_token in expected_tokens:
             token = tokenizer.get_token()
             assert token.value == expected_token["value"]
-            assert token.line == expected_token["line"]
-            assert token.col == expected_token["col"]
+            assert token.location.line == expected_token["line"]
+            assert token.location.column == expected_token["col"]
+
+    def test_empty_source(self):
+        source = """"""
+
+        with pytest.raises(SFDLParseError) as exc:
+            SFDLTokenizer(source)
+        
+        assert str(exc.value) == "\n\n^-- Opening tag '<' expected"
+
 
 class TestSFDLFunction:
     def test_sfdl_function(self):
@@ -307,4 +316,4 @@ class TestSFDLFunction:
                 "DSID": "TESTDSID",
             })
 
-        assert str(exc.value) == "\n< L < DSID >< DVVAL >\n   ^-- Expected opening '<' or closing '>' tag"
+        assert str(exc.value) == "\n< L < DSID >< DVVAL >\n                     ^-- Expected opening '<' or closing '>' tag"
