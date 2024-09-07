@@ -1,17 +1,17 @@
-"""Generate DataItems from yaml config."""
+"""Generate DataItems from yaml config."""  # noqa: INP001
+from __future__ import annotations
+
 import pathlib
-import typing
 
 import jinja2
 import markupsafe
-
 from data_item import DataItem
 from function import Function
 
 
 def py_indent(
     text: str,
-    width: typing.Union[int, str] = 4,
+    width: int | str = 4,
     first: bool = False,
     blank: bool = False
 ) -> str:
@@ -33,10 +33,7 @@ def py_indent(
 
         Rename the ``indentfirst`` argument to ``first``.
     """
-    if isinstance(width, str):
-        indention = width
-    else:
-        indention = " " * width
+    indention = width if isinstance(width, str) else " " * width
 
     newline = "\n"
 
@@ -68,12 +65,13 @@ def run():
     root = pathlib.Path(__file__).parent.resolve()
 
     env = jinja2.Environment(
-        loader=jinja2.FileSystemLoader(root / 'templates'),
+        loader=jinja2.FileSystemLoader(root / "templates"),
         trim_blocks=True,
         lstrip_blocks=True,
+        autoescape=False,  # noqa: S701
     )
 
-    env.filters['py_indent'] = py_indent
+    env.filters["py_indent"] = py_indent
 
     data_items = DataItem.load_all(root)
     functions = Function.load_all(root, {item.name: item for item in data_items})
@@ -84,20 +82,10 @@ def run():
         functions,
         root / ".." / "secsgem" / "secs" / "data_items")
 
-    # subprocess.Popen(["ksdiff", 
-    #                   str((root / ".." / "secsgem" / "secs" / "data_items" / last).absolute()),
-    #                   str((root / "out" / last).absolute()), 
-    #                  ])
-
     Function.render_list(
         functions,
         env,
         root / ".." / "secsgem" / "secs" / "functions")
-
-    # subprocess.Popen(["ksdiff", 
-    #                   str((root / ".." / "secsgem" / "secs" / "functions" / last).absolute()),
-    #                   str((root / "out_func" / last).absolute()), 
-    #                  ])
 
 
 if __name__ == "__main__":

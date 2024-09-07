@@ -70,7 +70,6 @@ build-backend = "poetry.core.masonry.api"
 line-length = 120
 extend-exclude = [
     "tests",
-    "data",
     "docs",
     "samples",
     ".venv",

@@ -1,4 +1,4 @@
-"""Function class definition."""
+"""Function class definition."""  # noqa: INP001
 from __future__ import annotations
 
 import collections
@@ -10,8 +10,8 @@ import yaml
 
 import secsgem.secs.functions.sfdl_tokenizer
 
-from data_item import DataItem
-
+if typing.TYPE_CHECKING:
+    from data_item import DataItem
 
 STRUCTURE_CODE = """
 import secsgem.secs
@@ -57,9 +57,6 @@ else:
 function_schema = {
     "description": "Root array of functions definition",
     "type": "object",
-    "properties": {
-        "/": {}
-    },
     "patternProperties": {
         "^S\\d+F\\d+$": {
             "description": "Function definition",
@@ -109,8 +106,8 @@ class Function:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         name: str,
-        data: typing.Dict[str, typing.Any],
-        data_items: typing.Dict[str, typing.Any]
+        data: dict[str, typing.Any],
+        data_items: dict[str, typing.Any]
     ) -> None:
         """Initialize item config."""
         self._name = name
@@ -120,13 +117,6 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         self._rendered = None
 
-        assert "description" in data
-        assert "to_host" in data
-        assert "to_equipment" in data
-        assert "reply" in data
-        assert "reply_required" in data
-        assert "multi_block" in data
-
         match = self.sf_regex.match(self._name)
         if not match:
             raise ValueError(f"Function name not valid {name}")
@@ -134,11 +124,11 @@ class Function:  # pylint: disable=too-many-instance-attributes
         self._stream = int(match.group(1))
         self._function = int(match.group(2))
 
-        self._samples: typing.Optional[typing.List[typing.Dict[str, typing.Any]]] = None
-        self._preferred_type: typing.Optional[typing.Type] = None
+        self._samples: list[dict[str, typing.Any]] | None = None
+        self._preferred_type: type | None = None
 
     @classmethod
-    def load_all(cls, root, data_items: typing.Dict[str, DataItem]) -> typing.List["Function"]:
+    def load_all(cls, root, data_items: dict[str, DataItem]) -> list[Function]:
         """Load all function objects."""
         data = (root / "functions.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
@@ -146,13 +136,13 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
     @classmethod
-    def render_list(cls, functions: typing.List["Function"], env, target_path):
+    def render_list(cls, functions: list[Function], env, target_path):
         """Render all functions to file."""
         last = None
 
-        function_template = env.get_template('functions.py.j2')
-        function_init_template = env.get_template('functions_init.py.j2')
-        function_all_template = env.get_template('functions_all.py.j2')
+        function_template = env.get_template("functions.py.j2")
+        function_init_template = env.get_template("functions_init.py.j2")
+        function_all_template = env.get_template("functions_all.py.j2")
         function_md_template = env.get_template("functions.md.j2")
 
         for function in functions:
@@ -185,10 +175,10 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return last
 
     @staticmethod
-    def stream_function_dict(functions: typing.List["Function"]) -> typing.Dict:
+    def stream_function_dict(functions: list[Function]) -> dict:
         """Get streams functions in a dict."""
         # build the old style streams functions dictionary
-        secs_streams_functions: typing.Dict[int, typing.Dict[int, "Function"]] = collections.OrderedDict()
+        secs_streams_functions: dict[int, dict[int, Function]] = collections.OrderedDict()
 
         for function in functions:
             if function.stream not in secs_streams_functions:
@@ -200,7 +190,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
     def render(self, function_template, target_path):
         """Render a function to file."""
-        print(f"# generate function {self.name}")
+        print(f"# generate function {self.name}")  # noqa: T201
 
         self._rendered = function_template.render(
             data=self
@@ -297,7 +287,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
             items = [self._format_struct_as_string(item, indent_level + indent_width, indent_width)
                      for item in structure]
-            items_text = ',\n'.join(items)
+            items_text = ",\n".join(items)
             return f"{indent_text}[\n{items_text}\n{indent_text}]"
 
         if structure not in self._data_items:
@@ -315,12 +305,12 @@ class Function:  # pylint: disable=too-many-instance-attributes
             tokenizer = secsgem.secs.functions.sfdl_tokenizer.SFDLTokenizer(self.raw_structure)
             return list(dict.fromkeys([self._data_items[data_item] for data_item in tokenizer.tokens.data_items]))
 
-        items: typing.List[DataItem] = []
+        items: list[DataItem] = []
         self._find_items(self.raw_structure, items)
         return items
 
     @property
-    def data_items_sorted(self) -> typing.List[DataItem]:
+    def data_items_sorted(self) -> list[DataItem]:
         """Get the data items used sorted alphabetically."""
         return sorted(self.data_items, key=lambda data_item: data_item.name)
 
@@ -344,15 +334,15 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         code = STRUCTURE_CODE.format(imports=imports, data_item=self.structure)
 
-        glob: typing.Dict[str, typing.Any] = {}
-        loc: typing.Dict[str, typing.Any] = {}
+        glob: dict[str, typing.Any] = {}
+        loc: dict[str, typing.Any] = {}
 
-        exec(code, glob, loc)  # pylint: disable=exec-used
+        exec(code, glob, loc)  # pylint: disable=exec-used  # noqa: S102
 
         return loc["var"]
 
     @property
-    def samples(self) -> typing.List[typing.Dict[str, typing.Any]]:
+    def samples(self) -> list[dict[str, typing.Any]]:
         """Get samples and result data."""
         if self._samples is None:
             self._samples, self._preferred_type = self._load_samples()
@@ -360,14 +350,14 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return self._samples
 
     @property
-    def preferred_type(self) -> typing.Optional[typing.Type]:
+    def preferred_type(self) -> type | None:
         """Get preferred type."""
         if self._samples is None:
             self._samples, self._preferred_type = self._load_samples()
 
         return self._preferred_type
 
-    def _load_samples(self) -> typing.Tuple[typing.List[typing.Dict[str, typing.Any]], typing.Optional[typing.Type]]:
+    def _load_samples(self) -> tuple[list[dict[str, typing.Any]], type | None]:
         if "sample_data" not in self._data:
             sample_data = [{"data": ""}]
         else:
@@ -392,10 +382,10 @@ class Function:  # pylint: disable=too-many-instance-attributes
                     data_item=self.structure,
                     sample_value=sample["data"])
 
-            glob: typing.Dict[str, typing.Any] = {}
-            loc: typing.Dict[str, typing.Any] = {}
+            glob: dict[str, typing.Any] = {}
+            loc: dict[str, typing.Any] = {}
 
-            exec(code, glob, loc)  # pylint: disable=exec-used
+            exec(code, glob, loc)  # pylint: disable=exec-used  # noqa: S102
 
             samples.append({
                 "data": sample["data"],

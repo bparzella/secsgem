@@ -1,7 +1,6 @@
-"""Data item class definition."""
-from __future__ import annotations
+"""Data item class definition."""  # noqa: INP001
 
-import typing
+from __future__ import annotations
 
 import jsonschema
 import yaml
@@ -9,9 +8,6 @@ import yaml
 data_item_schema = {
     "description": "Root array of data items definition",
     "type": "object",
-    "properties": {
-        "/": {}
-    },
     "patternProperties": {
         "^[A-Z0-9]+$": {
             "description": "Data item definition",
@@ -24,16 +20,47 @@ data_item_schema = {
                     "oneOf": [
                         {
                             "type": ["array", "string"],
-                            "enum": ["A", "Array", "Binary", "Boolean", "F4", "F8", "I1", "I2", "I4", "I8", "String", "U1", "U2", "U4", "U8"],
+                            "enum": [
+                                "A",
+                                "Array",
+                                "Binary",
+                                "Boolean",
+                                "F4",
+                                "F8",
+                                "I1",
+                                "I2",
+                                "I4",
+                                "I8",
+                                "String",
+                                "U1",
+                                "U2",
+                                "U4",
+                                "U8",
+                            ],
                         },
                         {
                             "type": "array",
                             "items": {
                                 "type": "string",
-                                "enum": ["A", "Array", "Binary", "Boolean", "F4", "F8", "I1", "I2", "I4", "I8", "String", "U1", "U2", "U4", "U8"],
-                            }
-                        }
-
+                                "enum": [
+                                    "A",
+                                    "Array",
+                                    "Binary",
+                                    "Boolean",
+                                    "F4",
+                                    "F8",
+                                    "I1",
+                                    "I2",
+                                    "I4",
+                                    "I8",
+                                    "String",
+                                    "U1",
+                                    "U2",
+                                    "U4",
+                                    "U8",
+                                ],
+                            },
+                        },
                     ],
                 },
                 "length": {
@@ -82,11 +109,8 @@ class DataItem:
 
         self._rendered = None
 
-        assert "type" in data
-        assert "description" in data
-
     @classmethod
-    def load_all(cls, root) -> typing.List["DataItem"]:
+    def load_all(cls, root) -> list[DataItem]:
         """Load all data item objects."""
         data = (root / "data_items.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
@@ -98,12 +122,12 @@ class DataItem:
         """Render a list of data items."""
         last = None
 
-        data_item_template = env.get_template('data_items.py.j2')
-        data_item_init_template = env.get_template('data_items_init.py.j2')
-        data_item_md_template = env.get_template('data_items.md.j2')
+        data_item_template = env.get_template("data_items.py.j2")
+        data_item_init_template = env.get_template("data_items_init.py.j2")
+        data_item_md_template = env.get_template("data_items.md.j2")
 
         for data_item in data_items:
-            print(f"# generate data item {data_item.name}")
+            print(f"# generate data item {data_item.name}")  # noqa: T201
 
             used_by = [function for function in functions if data_item in function.data_items]
             last = data_item.render(data_item_template, target_path, used_by)
@@ -126,10 +150,7 @@ class DataItem:
 
     def render(self, data_item_template, target_path, used_by):
         """Render the data item file."""
-        self._rendered = data_item_template.render(
-            data=self,
-            used_by=used_by
-        )
+        self._rendered = data_item_template.render(data=self, used_by=used_by)
 
         out_path = target_path / self.file_name
         out_path.write_text(self._rendered)
@@ -141,7 +162,7 @@ class DataItem:
         return self._name
 
     @property
-    def type(self) -> typing.List[str]:
+    def type(self) -> list[str]:
         """Get the type of the data item."""
         if not isinstance(self._data["type"], list):
             return [self._data["type"]]
@@ -162,10 +183,7 @@ class DataItem:
         if not isinstance(self._data["type"], list):
             return True
 
-        if len(self._data["type"]) == 1:
-            return True
-
-        return False
+        return len(self._data["type"]) == 1
 
     @property
     def description(self) -> str:
@@ -182,24 +200,23 @@ class DataItem:
 
     @property
     def length(self) -> int:
-        """Get the length of the data item."""        
-        return self._data["length"] if "length" in self._data else -1
+        """Get the length of the data item."""
+        return self._data.get("length", -1)
 
     @property
     def values(self) -> str:
         """Get the values of the data item."""
-        if len(self.type) == 1:
-            if self.type[0] == "Boolean":
-                return self._values_boolean
+        if len(self.type) == 1 and self.type[0] == "Boolean":
+            return self._values_boolean
 
         return self._values_binary
 
     @property
     def extra_variables(self) -> str:
         """Get the extra variables of the data item."""
-        if len(self.type) == 1:
-            if self.type[0] in ("Boolean"):
-                return ""
+        if len(self.type) == 1 and self.type[0] in ("Boolean"):
+            return ""
+
         return self._extra_variables_binary
 
     @property
@@ -215,8 +232,7 @@ class DataItem:
 
         table = self._markdown_table(table_data, 8)
 
-        text = f"    **Values**\n{table}\n"
-        return text
+        return f"    **Values**\n{table}\n"
 
     @property
     def _values_binary(self) -> str:
@@ -227,14 +243,14 @@ class DataItem:
             ["Value", "Description", "Constant"],
         ]
         for value_name, value in self._data["values"].items():
-            constant = f":const:`secsgem.secs.data_items.{self.name}.{value['constant']}`" \
-                if "constant" in value else ""
+            constant = (
+                f":const:`secsgem.secs.data_items.{self.name}.{value['constant']}`" if "constant" in value else ""
+            )
             table_data.append([str(value_name), value["description"], constant])
 
         table = self._markdown_table(table_data, 8)
 
-        text = f"    **Values**\n{table}\n"
-        return text
+        return f"    **Values**\n{table}\n"
 
     @property
     def _extra_variables_binary(self) -> str:
@@ -255,9 +271,9 @@ class DataItem:
         if len(variables) < 1:
             return ""
 
-        join_text = '\n    '
-        text = f"\n    {join_text.join(variables)}\n"
-        return text
+        join_text = "\n    "
+
+        return f"\n    {join_text.join(variables)}\n"
 
     @property
     def file_name(self) -> str:
@@ -288,7 +304,7 @@ class DataItem:
 
     def _markdown_table(self, data, indent=4):
         lengths = [0] * len(data[0])
-        for line, line_value in enumerate(data):
+        for line, _line_value in enumerate(data):
             for col, _ in enumerate(lengths):
                 length = len(data[line][col])
                 lengths[col] = max(lengths[col], length)
