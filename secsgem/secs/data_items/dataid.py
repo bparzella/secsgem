@@ -14,7 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """DATAID data item."""
-from .. import variables
+
+from secsgem.secs import variables
+
 from .base import DataItemBase
 
 

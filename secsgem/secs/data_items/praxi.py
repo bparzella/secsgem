@@ -14,7 +14,9 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """PRAXI data item."""
-from .. import variables
+
+from secsgem.secs import variables
+
 from .base import DataItemBase
 
 
