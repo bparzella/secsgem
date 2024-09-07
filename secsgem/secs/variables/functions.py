@@ -20,12 +20,13 @@ from __future__ import annotations
 import inspect
 import typing
 
-from .. import data_items
-from ..functions.sfdl_tokenizer import SFDLTokenizer
+from secsgem.secs import data_items
+from secsgem.secs.functions.sfdl_tokenizer import SFDLTokenizer
+
 from .base import Base
 
 if typing.TYPE_CHECKING:
-    from ..functions.sfdl_tokenizer import SFDLToken
+    from secsgem.secs.functions.sfdl_tokenizer import SFDLToken
 
 
 def _generate_item_from_sfdl(tokenizer: SFDLTokenizer, item_token: SFDLToken, item_name: str):

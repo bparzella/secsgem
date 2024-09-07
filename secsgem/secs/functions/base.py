@@ -19,9 +19,8 @@ from __future__ import annotations
 import typing
 
 import secsgem.common
-
-from ..data_items import DataItemBase
-from ..variables import functions
+from secsgem.secs.data_items import DataItemBase
+from secsgem.secs.variables import functions
 
 DataItemRecursive = typing.Union[typing.Type[DataItemBase], typing.Iterable["DataItemRecursive"]]
 

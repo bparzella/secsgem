@@ -88,7 +88,7 @@ class SecsITcpSettings(secsgem.common.Settings):
 
     def create_protocol(self) -> secsgem.common.Protocol:
         """Protocol class for this configuration."""
-        from ..secsi.protocol import SecsIProtocol  # pylint: disable=import-outside-toplevel
+        from secsgem.secsi.protocol import SecsIProtocol  # pylint: disable=import-outside-toplevel
 
         return SecsIProtocol(self)
 

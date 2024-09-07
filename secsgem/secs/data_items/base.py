@@ -17,7 +17,7 @@
 """Data item base class."""
 from __future__ import annotations
 
-from .. import variables
+from secsgem.secs import variables
 
 
 class DataItemMeta(type):

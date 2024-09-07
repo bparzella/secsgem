@@ -28,7 +28,8 @@ from .events import EventProducer
 from .protocol_dispatcher import ProtocolDispatcher
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
+    from secsgem.secs.functions.base import SecsStreamFunction
+
     from .connection import Connection
     from .message import Block, Message
     from .settings import Settings

@@ -20,7 +20,7 @@ from __future__ import annotations
 import enum
 import io
 
-from .. import data_items
+from secsgem.secs import data_items
 
 
 class SFDLParseError(Exception):

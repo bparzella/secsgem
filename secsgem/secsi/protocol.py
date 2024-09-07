@@ -25,8 +25,9 @@ from .header import SecsIHeader
 from .message import SecsIBlock, SecsIMessage
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
-    from ..secsitcp.settings import SecsITcpSettings
+    from secsgem.secs.functions.base import SecsStreamFunction
+    from secsgem.secsitcp.settings import SecsITcpSettings
+
     from .settings import SecsISettings
 
 

@@ -37,7 +37,8 @@ from .separate_req_header import HsmsSeparateReqHeader
 from .stream_function_header import HsmsStreamFunctionHeader
 
 if typing.TYPE_CHECKING:
-    from ..secs.functions.base import SecsStreamFunction
+    from secsgem.secs.functions.base import SecsStreamFunction
+
     from .settings import HsmsSettings
 
 
