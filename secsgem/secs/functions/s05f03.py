@@ -52,7 +52,7 @@ class SecsS05F03(SecsStreamFunction):
 
     _data_format = [
         ALED,
-        ALID
+        ALID,
     ]
 
     _to_host = False

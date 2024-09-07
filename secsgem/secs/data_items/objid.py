@@ -44,5 +44,5 @@ class OBJID(DataItemBase):
         variables.U2,
         variables.U4,
         variables.U8,
-        variables.String
+        variables.String,
     ]

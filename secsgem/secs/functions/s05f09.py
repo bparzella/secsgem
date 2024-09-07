@@ -75,7 +75,7 @@ class SecsS05F09(SecsStreamFunction):
         EXID,
         EXTYPE,
         EXMESSAGE,
-        [EXRECVRA]
+        [EXRECVRA],
     ]
 
     _to_host = True

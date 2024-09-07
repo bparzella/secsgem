@@ -76,9 +76,9 @@ class SecsS02F42(SecsStreamFunction):
             [
                 "PARAMS",
                 CPNAME,
-                CPACK
-            ]
-        ]
+                CPACK,
+            ],
+        ],
     ]
 
     _to_host = True

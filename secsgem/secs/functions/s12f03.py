@@ -89,7 +89,7 @@ class SecsS12F03(SecsStreamFunction):
         ORLOC,
         PRAXI,
         BCEQU,
-        NULBC
+        NULBC,
     ]
 
     _to_host = True

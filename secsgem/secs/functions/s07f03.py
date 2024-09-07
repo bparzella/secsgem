@@ -52,7 +52,7 @@ class SecsS07F03(SecsStreamFunction):
 
     _data_format = [
         PPID,
-        PPBODY
+        PPBODY,
     ]
 
     _to_host = True

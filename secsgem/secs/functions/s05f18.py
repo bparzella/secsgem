@@ -76,9 +76,9 @@ class SecsS05F18(SecsStreamFunction):
             ACKA,
             [
                 ERRCODE,
-                ERRTEXT
-            ]
-        ]
+                ERRTEXT,
+            ],
+        ],
     ]
 
     _to_host = True

@@ -53,7 +53,7 @@ class {{ data.name }}(DataItemBase):{{ data.linter_message }}
     __type__ = variables.Dynamic
     __allowedtypes__ = [
       {% for type in data.type %}
-        variables.{{ type }}{{ "," if not loop.last else "" }}
+        variables.{{ type }},
       {% endfor %}
     ]
   {% endif %}

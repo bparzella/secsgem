@@ -87,9 +87,9 @@ class SecsS02F44(SecsStreamFunction):
             [
                 STRID,
                 STRACK,
-                [FCNID]
-            ]
-        ]
+                [FCNID],
+            ],
+        ],
     ]
 
     _to_host = True

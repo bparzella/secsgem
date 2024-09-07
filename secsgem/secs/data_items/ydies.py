@@ -44,5 +44,5 @@ class YDIES(DataItemBase):
         variables.U4,
         variables.U8,
         variables.F4,
-        variables.F8
+        variables.F8,
     ]

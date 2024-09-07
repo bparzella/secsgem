@@ -59,7 +59,7 @@ class SecsS12F17(SecsStreamFunction):
     _data_format = [
         MID,
         IDTYP,
-        SDBIN
+        SDBIN,
     ]
 
     _to_host = True

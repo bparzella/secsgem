@@ -62,5 +62,5 @@ class V(DataItemBase):  # pylint: disable=invalid-name
         variables.F4,
         variables.F8,
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]

@@ -82,7 +82,7 @@ class SecsS01F14(SecsStreamFunction):
 
     _data_format = [
         COMMACK,
-        [MDLN]
+        [MDLN],
     ]
 
     _to_host = True

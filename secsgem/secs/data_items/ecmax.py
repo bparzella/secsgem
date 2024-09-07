@@ -57,5 +57,5 @@ class ECMAX(DataItemBase):
         variables.U2,
         variables.U4,
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]

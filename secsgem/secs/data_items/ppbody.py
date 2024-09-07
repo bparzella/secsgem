@@ -52,5 +52,5 @@ class PPBODY(DataItemBase):
         variables.I4,
         variables.I8,
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]

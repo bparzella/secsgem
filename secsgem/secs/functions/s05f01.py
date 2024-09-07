@@ -60,7 +60,7 @@ class SecsS05F01(SecsStreamFunction):
     _data_format = [
         ALCD,
         ALID,
-        ALTX
+        ALTX,
     ]
 
     _to_host = True

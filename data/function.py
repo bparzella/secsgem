@@ -290,7 +290,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
                 self._format_struct_as_string(item, indent_level + indent_width, indent_width) for item in structure
             ]
             items_text = ",\n".join(items)
-            return f"{indent_text}[\n{items_text}\n{indent_text}]"
+            return f"{indent_text}[\n{items_text},\n{indent_text}]"
 
         if structure not in self._data_items:
             return f'{indent_text}"{structure}"'
@@ -375,7 +375,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
             if not sample["data"]:
                 code = SAMPLE_DATA_CODE_EMPTY.format(
-                    imports=imports, data_item=self.structure, sample_value=sample["data"]
+                    imports=imports, data_item=self.structure, sample_value=sample["data"],
                 )
             else:
                 code = SAMPLE_DATA_CODE.format(imports=imports, data_item=self.structure, sample_value=sample["data"])
@@ -390,7 +390,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
                     "data": sample["data"],
                     "comment": f" # {sample['info']}" if "info" in sample else "",
                     "text": loc["var"],
-                }
+                },
             )
             preferred_type = loc["preferred_type"]
 

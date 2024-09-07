@@ -39,5 +39,5 @@ class RCMD(DataItemBase):
     __allowedtypes__ = [
         variables.U1,
         variables.I1,
-        variables.String
+        variables.String,
     ]

@@ -52,7 +52,7 @@ class SecsS10F01(SecsStreamFunction):
 
     _data_format = [
         TID,
-        TEXT
+        TEXT,
     ]
 
     _to_host = True

@@ -56,5 +56,5 @@ class CEID(DataItemBase):
         variables.I2,
         variables.I4,
         variables.I8,
-        variables.String
+        variables.String,
     ]

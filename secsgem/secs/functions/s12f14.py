@@ -80,9 +80,9 @@ class SecsS12F14(SecsStreamFunction):
         [
             [
                 RSINF,
-                BINLT
-            ]
-        ]
+                BINLT,
+            ],
+        ],
     ]
 
     _to_host = False

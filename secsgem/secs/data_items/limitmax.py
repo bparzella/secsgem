@@ -56,6 +56,6 @@ class LIMITMAX(DataItemBase):
         variables.I8,
         variables.F4,
         variables.F8,
-        variables.String
+        variables.String,
     ]
     __count__ = 1

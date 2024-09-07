@@ -80,9 +80,9 @@ class SecsS12F11(SecsStreamFunction):
         [
             [
                 XYPOS,
-                BINLT
-            ]
-        ]
+                BINLT,
+            ],
+        ],
     ]
 
     _to_host = True

@@ -64,8 +64,8 @@ class SecsS02F15(SecsStreamFunction):
     _data_format = [
         [
             ECID,
-            ECV
-        ]
+            ECV,
+        ],
     ]
 
     _to_host = False

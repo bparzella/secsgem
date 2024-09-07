@@ -36,5 +36,5 @@ class BCEQU(DataItemBase):
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,
-        variables.String
+        variables.String,
     ]

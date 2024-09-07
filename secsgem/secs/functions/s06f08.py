@@ -99,11 +99,11 @@ class SecsS06F08(SecsStreamFunction):
                     [
                         "DV",
                         DVNAME,
-                        DVVAL
-                    ]
-                ]
-            ]
-        ]
+                        DVVAL,
+                    ],
+                ],
+            ],
+        ],
     ]
 
     _to_host = True

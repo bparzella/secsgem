@@ -192,5 +192,5 @@ class ERRCODE(DataItemBase):
         variables.I1,
         variables.I2,
         variables.I4,
-        variables.I8
+        variables.I8,
     ]

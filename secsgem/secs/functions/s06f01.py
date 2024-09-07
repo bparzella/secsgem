@@ -70,7 +70,7 @@ class SecsS06F01(SecsStreamFunction):
         TRID,
         SMPLN,
         STIME,
-        [SV]
+        [SV],
     ]
 
     _to_host = True

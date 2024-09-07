@@ -62,8 +62,8 @@ class SecsS01F22(SecsStreamFunction):
         [
             VID,
             DVVALNAME,
-            UNITS
-        ]
+            UNITS,
+        ],
     ]
 
     _to_host = True

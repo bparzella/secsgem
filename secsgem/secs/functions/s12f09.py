@@ -64,7 +64,7 @@ class SecsS12F09(SecsStreamFunction):
         MID,
         IDTYP,
         STRP,
-        BINLT
+        BINLT,
     ]
 
     _to_host = True

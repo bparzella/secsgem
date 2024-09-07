@@ -94,8 +94,8 @@ class SecsS02F30(SecsStreamFunction):
             ECMIN,
             ECMAX,
             ECDEF,
-            UNITS
-        ]
+            UNITS,
+        ],
     ]
 
     _to_host = True

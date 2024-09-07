@@ -121,10 +121,10 @@ class SecsS14F02(SecsStreamFunction):
                     [
                         "ATTRIBS",
                         ATTRID,
-                        ATTRDATA
-                    ]
-                ]
-            ]
+                        ATTRDATA,
+                    ],
+                ],
+            ],
         ],
         [
             "ERRORS",
@@ -133,10 +133,10 @@ class SecsS14F02(SecsStreamFunction):
                 [
                     "ERROR",
                     ERRCODE,
-                    ERRTEXT
-                ]
-            ]
-        ]
+                    ERRTEXT,
+                ],
+            ],
+        ],
     ]
 
     _to_host = True

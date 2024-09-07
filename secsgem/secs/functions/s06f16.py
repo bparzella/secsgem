@@ -83,9 +83,9 @@ class SecsS06F16(SecsStreamFunction):
             [
                 "RPT",
                 RPTID,
-                [V]
-            ]
-        ]
+                [V],
+            ],
+        ],
     ]
 
     _to_host = True

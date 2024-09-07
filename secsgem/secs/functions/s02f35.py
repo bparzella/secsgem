@@ -73,9 +73,9 @@ class SecsS02F35(SecsStreamFunction):
         [
             [
                 CEID,
-                [RPTID]
-            ]
-        ]
+                [RPTID],
+            ],
+        ],
     ]
 
     _to_host = False

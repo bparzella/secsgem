@@ -81,9 +81,9 @@ class SecsS02F33(SecsStreamFunction):
         [
             [
                 RPTID,
-                [VID]
-            ]
-        ]
+                [VID],
+            ],
+        ],
     ]
 
     _to_host = False

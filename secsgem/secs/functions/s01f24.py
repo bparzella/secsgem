@@ -68,8 +68,8 @@ class SecsS01F24(SecsStreamFunction):
         [
             CEID,
             CENAME,
-            [VID]
-        ]
+            [VID],
+        ],
     ]
 
     _to_host = True

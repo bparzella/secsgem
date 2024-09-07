@@ -64,7 +64,7 @@ class SecsS05F11(SecsStreamFunction):
         TIMESTAMP,
         EXID,
         EXTYPE,
-        EXMESSAGE
+        EXMESSAGE,
     ]
 
     _to_host = True

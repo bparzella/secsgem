@@ -87,9 +87,9 @@ class SecsS14F03(SecsStreamFunction):
             [
                 "ATTRIBS",
                 ATTRID,
-                ATTRDATA
-            ]
-        ]
+                ATTRDATA,
+            ],
+        ],
     ]
 
     _to_host = True

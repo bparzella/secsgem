@@ -52,7 +52,7 @@ class SecsS12F19(SecsStreamFunction):
 
     _data_format = [
         MAPER,
-        DATLC
+        DATLC,
     ]
 
     _to_host = True

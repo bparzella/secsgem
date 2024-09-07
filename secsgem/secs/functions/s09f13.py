@@ -52,7 +52,7 @@ class SecsS09F13(SecsStreamFunction):
 
     _data_format = [
         MEXP,
-        EDID
+        EDID,
     ]
 
     _to_host = True

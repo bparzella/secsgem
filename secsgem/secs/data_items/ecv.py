@@ -60,5 +60,5 @@ class ECV(DataItemBase):
         variables.U2,
         variables.U4,
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]

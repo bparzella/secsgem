@@ -52,7 +52,7 @@ class SecsS06F05(SecsStreamFunction):
 
     _data_format = [
         DATAID,
-        DATALENGTH
+        DATALENGTH,
     ]
 
     _to_host = True

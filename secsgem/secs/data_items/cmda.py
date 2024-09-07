@@ -48,7 +48,7 @@ class CMDA(DataItemBase):
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,
-        variables.I1
+        variables.I1,
     ]
 
     DONE = 0

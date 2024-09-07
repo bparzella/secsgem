@@ -60,5 +60,5 @@ class SV(DataItemBase):
         variables.F4,
         variables.F8,
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]

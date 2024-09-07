@@ -52,7 +52,7 @@ class SecsS05F13(SecsStreamFunction):
 
     _data_format = [
         EXID,
-        EXRECVRA
+        EXRECVRA,
     ]
 
     _to_host = False

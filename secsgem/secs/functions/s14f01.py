@@ -95,10 +95,10 @@ class SecsS14F01(SecsStreamFunction):
                 "FILTER",
                 ATTRID,
                 ATTRDATA,
-                ATTRRELN
-            ]
+                ATTRRELN,
+            ],
         ],
-        [ATTRID]
+        [ATTRID],
     ]
 
     _to_host = True

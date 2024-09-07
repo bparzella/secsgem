@@ -89,10 +89,10 @@ class SecsS02F46(SecsStreamFunction):
                 LVACK,
                 [
                     LIMITID,
-                    LIMITACK
-                ]
-            ]
-        ]
+                    LIMITACK,
+                ],
+            ],
+        ],
     ]
 
     _to_host = True

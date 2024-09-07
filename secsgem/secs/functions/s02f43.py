@@ -71,8 +71,8 @@ class SecsS02F43(SecsStreamFunction):
     _data_format = [
         [
             STRID,
-            [FCNID]
-        ]
+            [FCNID],
+        ],
     ]
 
     _to_host = False

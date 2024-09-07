@@ -105,11 +105,11 @@ class SecsS02F48(SecsStreamFunction):
                     [
                         LIMITID,
                         UPPERDB,
-                        LOWERDB
-                    ]
-                ]
-            ]
-        ]
+                        LOWERDB,
+                    ],
+                ],
+            ],
+        ],
     ]
 
     _to_host = True

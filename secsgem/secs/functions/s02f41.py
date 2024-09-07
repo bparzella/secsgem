@@ -73,9 +73,9 @@ class SecsS02F41(SecsStreamFunction):
             [
                 "PARAMS",
                 CPNAME,
-                CPVAL
-            ]
-        ]
+                CPVAL,
+            ],
+        ],
     ]
 
     _to_host = False

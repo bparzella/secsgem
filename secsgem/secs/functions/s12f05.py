@@ -64,7 +64,7 @@ class SecsS12F05(SecsStreamFunction):
         MID,
         IDTYP,
         MAPFT,
-        MLCL
+        MLCL,
     ]
 
     _to_host = True

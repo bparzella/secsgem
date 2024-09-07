@@ -75,7 +75,7 @@ class SecsS02F23(SecsStreamFunction):
         DSPER,
         TOTSMP,
         REPGSZ,
-        [SVID]
+        [SVID],
     ]
 
     _to_host = False

@@ -52,7 +52,7 @@ class SecsS12F15(SecsStreamFunction):
 
     _data_format = [
         MID,
-        IDTYP
+        IDTYP,
     ]
 
     _to_host = True

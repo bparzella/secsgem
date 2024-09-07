@@ -41,6 +41,6 @@ class PPID(DataItemBase):
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.String,
-        variables.Binary
+        variables.Binary,
     ]
     __count__ = 120

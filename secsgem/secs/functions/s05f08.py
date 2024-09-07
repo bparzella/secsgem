@@ -66,8 +66,8 @@ class SecsS05F08(SecsStreamFunction):
         [
             ALCD,
             ALID,
-            ALTX
-        ]
+            ALTX,
+        ],
     ]
 
     _to_host = True
