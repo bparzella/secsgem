@@ -1021,7 +1021,13 @@ S06F22:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[VID, V]]
+  structure: |
+    < L
+      < L
+        < VID >
+        < V >
+      >
+    >
   sample_data: '[{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}]'
 
 S06F23:
@@ -1291,7 +1297,26 @@ S12F01:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP, FNLOC, FFROT, ORLOC, RPSEL, [REFP], DUTMS, XDIES, YDIES, ROWCT, COLCT, NULBC, PRDCT, PRAXI]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < FNLOC >
+      < FFROT >
+      < ORLOC >
+      < RPSEL >
+      < L REFP
+        < REFP >
+      >
+      < DUTMS >
+      < XDIES >
+      < YDIES >
+      < ROWCT >
+      < COLCT >
+      < NULBC >
+      < PRDCT >
+      < PRAXI >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1347,7 +1372,26 @@ S12F04:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [MID, IDTYP, FNLOC, ORLOC, RPSEL, [REFP], DUTMS, XDIES, YDIES, ROWCT, COLCT, PRDCT, BCEQU, NULBC, MLCL]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < FNLOC >
+      < ORLOC >
+      < RPSEL >
+      < L REFP
+        < REFP >
+      >
+      < DUTMS >
+      < XDIES >
+      < YDIES >
+      < ROWCT >
+      < COLCT >
+      < PRDCT >
+      < BCEQU >
+      < NULBC >
+      < MLCL >
+    >
   sample_data: |-
     {
     "MID": "materialID",

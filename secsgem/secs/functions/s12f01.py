@@ -15,23 +15,6 @@
 #####################################################################
 """Class for stream 12 function 01."""
 
-from secsgem.secs.data_items import (
-    COLCT,
-    DUTMS,
-    FFROT,
-    FNLOC,
-    IDTYP,
-    MID,
-    NULBC,
-    ORLOC,
-    PRAXI,
-    PRDCT,
-    REFP,
-    ROWCT,
-    RPSEL,
-    XDIES,
-    YDIES,
-)
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -126,23 +109,27 @@ class SecsS12F01(SecsStreamFunction):
     _stream = 12
     _function = 1
 
-    _data_format = [
-        MID,
-        IDTYP,
-        FNLOC,
-        FFROT,
-        ORLOC,
-        RPSEL,
-        [REFP],
-        DUTMS,
-        XDIES,
-        YDIES,
-        ROWCT,
-        COLCT,
-        NULBC,
-        PRDCT,
-        PRAXI
-    ]
+    _data_format = """
+    < L
+      < MID >
+      < IDTYP >
+      < FNLOC >
+      < FFROT >
+      < ORLOC >
+      < RPSEL >
+      < L REFP
+        < REFP >
+      >
+      < DUTMS >
+      < XDIES >
+      < YDIES >
+      < ROWCT >
+      < COLCT >
+      < NULBC >
+      < PRDCT >
+      < PRAXI >
+    >
+    """
 
     _to_host = True
     _to_equipment = False
