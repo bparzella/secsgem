@@ -1,4 +1,5 @@
 """Generate DataItems from yaml config."""  # noqa: INP001
+
 from __future__ import annotations
 
 import pathlib
@@ -13,7 +14,7 @@ def py_indent(
     text: str,
     width: int | str = 4,
     first: bool = False,
-    blank: bool = False
+    blank: bool = False,
 ) -> str:
     """Return a copy of the string with each line indented by 4 spaces.
 
@@ -50,9 +51,7 @@ def py_indent(
         result = lines.pop(0)
 
         if lines:
-            result += newline + newline.join(
-                indention + "...     " + line if line else line for line in lines
-            )
+            result += newline + newline.join(indention + "...     " + line if line else line for line in lines)
 
     if first:
         result = indention + result
@@ -76,16 +75,9 @@ def run():
     data_items = DataItem.load_all(root)
     functions = Function.load_all(root, {item.name: item for item in data_items})
 
-    DataItem.render_list(
-        data_items,
-        env,
-        functions,
-        root / ".." / "secsgem" / "secs" / "data_items")
+    DataItem.render_list(data_items, env, functions, root / ".." / "secsgem" / "secs" / "data_items")
 
-    Function.render_list(
-        functions,
-        env,
-        root / ".." / "secsgem" / "secs" / "functions")
+    Function.render_list(functions, env, root / ".." / "secsgem" / "secs" / "functions")
 
 
 if __name__ == "__main__":

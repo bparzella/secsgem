@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM alarm."""
+
 from __future__ import annotations
 
 import secsgem.secs
@@ -30,7 +31,7 @@ class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-meth
         code: int,
         ce_on: str | int,
         ce_off: str | int,
-        **kwargs
+        **kwargs,
     ):
         """Initialize an alarm.
 

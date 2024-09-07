@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """State machine for connection state."""
+
 from __future__ import annotations
 
 import logging
@@ -141,7 +142,7 @@ class Transition:
         self,
         name: str,
         sources: State | list[State],
-        destination: State
+        destination: State,
     ) -> None:
         """Initialize transition object.
 
@@ -215,7 +216,6 @@ class StateMachine:
 
         return value
 
-
     def _perform_transition(self, name: str) -> None:
         """Perform a transition.
 
@@ -229,7 +229,7 @@ class StateMachine:
             raise WrongSourceStateError(
                 name,
                 "/".join([state.name for state in transition.sources]),
-                self._current_state.name
+                self._current_state.name,
             )
 
         self._logger.debug("State change: %s >> %s", self._current_state.name, transition.destination.name)

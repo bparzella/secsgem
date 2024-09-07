@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS-I protocol implementation."""
+
 from __future__ import annotations
 
 import typing
@@ -41,7 +42,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
     message_type = SecsIMessage
 
-    def __init__(self, settings: SecsISettings|SecsITcpSettings):
+    def __init__(self, settings: SecsISettings | SecsITcpSettings):
         """Instantiate SECS I protocol class.
 
         Args:
@@ -68,12 +69,12 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
         """
         super().__init__(settings)
-        self._settings: SecsISettings|SecsITcpSettings = settings
+        self._settings: SecsISettings | SecsITcpSettings = settings
 
     def _create_message_for_function(
-            self,
-            function: SecsStreamFunction,
-            system_id: int,
+        self,
+        function: SecsStreamFunction,
+        system_id: int,
     ) -> secsgem.common.Message:
         """Create a protocol specific message for a function.
 
@@ -216,12 +217,12 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
                 "port": self._settings.port,
                 "connect_mode": self._settings.connect_mode,
                 "session_id": self._settings.session_id,
-                "remoteName": self._settings.name
+                "remoteName": self._settings.name,
             }
 
         return {
             "port": self._settings.port,
             "speed": self._settings.speed,
             "session_id": self._settings.session_id,
-            "remoteName": self._settings.name
+            "remoteName": self._settings.name,
         }

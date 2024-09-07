@@ -381,7 +381,11 @@ class SFDLTokenizer:
         return char
 
     def _process_operator(
-        self, elements: _SFDLElementList, char: str, current_token: str, location: _SFDLSourceLocation
+        self,
+        elements: _SFDLElementList,
+        char: str,
+        current_token: str,
+        location: _SFDLSourceLocation,
     ) -> str:
         line = location.line
         column = location.column

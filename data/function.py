@@ -1,4 +1,5 @@
 """Function class definition."""  # noqa: INP001
+
 from __future__ import annotations
 
 import collections
@@ -81,10 +82,10 @@ function_schema = {
                     "type": "boolean",
                 },
                 "structure": {
-                     "type": ["array", "string"]
+                    "type": ["array", "string"],
                 },
                 "sample_data": {
-                     "type": ["array", "string"]
+                    "type": ["array", "string"],
                 },
                 "extra_help": {
                     "type": "string",
@@ -92,7 +93,7 @@ function_schema = {
             },
             "required": ["description", "to_host", "to_equipment", "reply", "reply_required", "multi_block"],
             "additionalProperties": False,
-        }
+        },
     },
     "additionalProperties": False,
 }
@@ -107,7 +108,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
         self,
         name: str,
         data: dict[str, typing.Any],
-        data_items: dict[str, typing.Any]
+        data_items: dict[str, typing.Any],
     ) -> None:
         """Initialize item config."""
         self._name = name
@@ -150,7 +151,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         init_code = function_init_template.render(
             functions=functions,
-            streams_functions=cls.stream_function_dict(functions)
+            streams_functions=cls.stream_function_dict(functions),
         )
 
         out_path = target_path / "__init__.py"
@@ -158,7 +159,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         all_code = function_all_template.render(
             functions=functions,
-            streams_functions=cls.stream_function_dict(functions)
+            streams_functions=cls.stream_function_dict(functions),
         )
 
         out_path = target_path / "_all.py"
@@ -166,7 +167,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         md_code = function_md_template.render(
             functions=functions,
-            streams_functions=cls.stream_function_dict(functions)
+            streams_functions=cls.stream_function_dict(functions),
         )
 
         out_path = target_path.parent.parent.parent / "docs" / "reference" / "secs" / "functions.md"
@@ -193,7 +194,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
         print(f"# generate function {self.name}")  # noqa: T201
 
         self._rendered = function_template.render(
-            data=self
+            data=self,
         )
 
         out_path = target_path / self.file_name
@@ -285,8 +286,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
             if len(structure) == 1 and not isinstance(structure[0], list):
                 return f"{indent_text}[{structure[0]}]"
 
-            items = [self._format_struct_as_string(item, indent_level + indent_width, indent_width)
-                     for item in structure]
+            items = [
+                self._format_struct_as_string(item, indent_level + indent_width, indent_width) for item in structure
+            ]
             items_text = ",\n".join(items)
             return f"{indent_text}[\n{items_text}\n{indent_text}]"
 
@@ -373,25 +375,23 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
             if not sample["data"]:
                 code = SAMPLE_DATA_CODE_EMPTY.format(
-                    imports=imports,
-                    data_item=self.structure,
-                    sample_value=sample["data"])
+                    imports=imports, data_item=self.structure, sample_value=sample["data"]
+                )
             else:
-                code = SAMPLE_DATA_CODE.format(
-                    imports=imports,
-                    data_item=self.structure,
-                    sample_value=sample["data"])
+                code = SAMPLE_DATA_CODE.format(imports=imports, data_item=self.structure, sample_value=sample["data"])
 
             glob: dict[str, typing.Any] = {}
             loc: dict[str, typing.Any] = {}
 
             exec(code, glob, loc)  # pylint: disable=exec-used  # noqa: S102
 
-            samples.append({
-                "data": sample["data"],
-                "comment": f" # {sample['info']}" if "info" in sample else "",
-                "text": loc["var"]
-            })
+            samples.append(
+                {
+                    "data": sample["data"],
+                    "comment": f" # {sample['info']}" if "info" in sample else "",
+                    "text": loc["var"],
+                }
+            )
             preferred_type = loc["preferred_type"]
 
         return samples, preferred_type

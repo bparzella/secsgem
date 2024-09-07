@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """header base class."""
+
 from __future__ import annotations
 
 import abc
@@ -33,7 +34,7 @@ class Header(abc.ABC):
         session_id: int,
         stream: int,
         function: int,
-        require_response: bool
+        require_response: bool,
     ):
         """Initialize a hsms header.
 
@@ -50,7 +51,6 @@ class Header(abc.ABC):
         self._function = function
         self._system = system
         self._require_response = require_response
-
 
     @property
     def session_id(self) -> int:

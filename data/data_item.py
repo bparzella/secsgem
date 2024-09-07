@@ -93,7 +93,7 @@ data_item_schema = {
             },
             "required": ["description", "type"],
             "additionalProperties": False,
-        }
+        },
     },
     "additionalProperties": False,
 }
