@@ -22,6 +22,7 @@ class STIME(DataItemBase):
     """Sample time.
 
     :Type: :class:`String <secsgem.secs.variables.String>`
+    :Length: 32
 
     **Used In Function**
         - :class:`SecsS06F01 <secsgem.secs.functions.SecsS06F01>`
@@ -29,3 +30,4 @@ class STIME(DataItemBase):
     """
 
     __type__ = variables.String
+    __count__ = 32

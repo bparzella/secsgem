@@ -1465,7 +1465,7 @@ SOFTREV:
 STIME:
   type: String
   description: Sample time
-  lenght: 32
+  length: 32
 
 STRACK:
   type: Binary
