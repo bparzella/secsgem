@@ -188,6 +188,44 @@ class _SFDLElementList:
         return len(self._items) > 0
 
 
+class SFDLTokens:
+    """Container for SFDL tokens."""
+
+    def __init__(self, tokens: list[SFDLToken]) -> None:
+        """Initialize SFDL token list."""
+        self._tokens: list[SFDLToken] = tokens
+        self._token_pointer = -1
+
+    def next(self) -> SFDLToken:
+        """Get the next available token.
+
+        Returns:
+              next token
+
+        """
+        self._token_pointer += 1
+        return self._tokens[self._token_pointer]
+
+    @property
+    def available(self) -> bool:
+        """Check if a token is available."""
+        return len(self._tokens) > self._token_pointer + 1
+
+    def peek(self, ahead: int = 1) -> SFDLToken:
+        """Get an available token without incrementing the current position.
+
+        Returns:
+              token
+
+        """
+        return self._tokens[self._token_pointer + ahead]
+
+    @property
+    def data_items(self) -> list[str]:
+        """Get a list of data item names used in the tokens."""
+        return [token.value for token in self._tokens if token.type == SFDLTokenType.DATA_ITEM]
+
+
 class SFDLTokenizer:
     """Tokenizer for secs function definition."""
 
@@ -203,10 +241,14 @@ class SFDLTokenizer:
 
         self._source_lines = [""]
 
-        self._tokens: list[SFDLToken] = []
-        self._token_counter = -1
+        self._tokens = SFDLTokens([])
 
         self.parse_all()
+
+    @property
+    def tokens(self) -> SFDLTokens:
+        """Get the token container."""
+        return self._tokens
 
     def source_line(self, line: int) -> str:
         """Get line of the source code.
@@ -309,7 +351,7 @@ class SFDLTokenizer:
                 if current_token:
                     elements.append(current_token, location.clone())
 
-                self._tokens = self._process_tokens(elements)
+                self._tokens = SFDLTokens(self._process_tokens(elements))
                 return
 
             if char in self.whitespaces:
@@ -364,30 +406,6 @@ class SFDLTokenizer:
         location.reset()
 
         return current_token
-
-    def get_token(self) -> SFDLToken:
-        """Get the next available token.
-
-        Returns:
-              next token
-
-        """
-        self._token_counter += 1
-        return self._tokens[self._token_counter]
-
-    @property
-    def token_available(self) -> bool:
-        """Check if a token is available."""
-        return len(self._tokens) > self._token_counter + 1
-
-    def peek_token(self, ahead: int = 1) -> SFDLToken:
-        """Get an available token without incrementing the current position.
-
-        Returns:
-              token
-
-        """
-        return self._tokens[self._token_counter + ahead]
 
 
 class _SFDLSourceLocation:

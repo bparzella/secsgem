@@ -43,7 +43,7 @@ class TestSFDLTokenizer:
         ]
 
         for expected_token in expected_tokens:
-            token = tokenizer.get_token()
+            token = tokenizer.tokens.next()
             assert token.value == expected_token["value"]
             assert token.location.line == expected_token["line"]
             assert token.location.column == expected_token["col"]
@@ -77,7 +77,7 @@ class TestSFDLTokenizer:
         ]
 
         for expected_token in expected_tokens:
-            token = tokenizer.get_token()
+            token = tokenizer.tokens.next()
             assert token.value == expected_token["value"]
             assert token.location.line == expected_token["line"]
             assert token.location.column == expected_token["col"]

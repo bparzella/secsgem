@@ -34,10 +34,10 @@ def _generate_item_from_sfdl(tokenizer: SFDLTokenizer, item_token: SFDLToken, it
     if item is None:
         raise item_token.exception(f"Unknown data type {item_name}")
 
-    if not tokenizer.token_available:
+    if not tokenizer.tokens.available:
         raise item_token.exception("Closing tag '>' expected", end=True)
 
-    closing_token = tokenizer.get_token()
+    closing_token = tokenizer.tokens.next()
 
     if closing_token.value != ">":
         raise closing_token.exception("Closing tag '>' expected")
@@ -46,34 +46,34 @@ def _generate_item_from_sfdl(tokenizer: SFDLTokenizer, item_token: SFDLToken, it
 
 
 def _generate_from_sfdl(tokenizer: SFDLTokenizer, token_name: str | None = None):
-    opening_token = tokenizer.get_token()
+    opening_token = tokenizer.tokens.next()
 
     if opening_token.value != "<":
         raise opening_token.exception("Opening tag '<' expected")
 
-    item_token = tokenizer.get_token()
+    item_token = tokenizer.tokens.next()
     item_name = item_token.value.upper()
 
     if item_name != "L":
         return _generate_item_from_sfdl(tokenizer, item_token, item_name)
 
     item_key_token = None
-    if tokenizer.peek_token().value not in "<>":
-        item_key_token = tokenizer.get_token()
+    if tokenizer.tokens.peek().value not in "<>":
+        item_key_token = tokenizer.tokens.next()
 
     sub_items: list = []
 
-    if tokenizer.peek_token(ahead=2).value != "L" and token_name:
+    if tokenizer.tokens.peek(ahead=2).value != "L" and token_name:
         sub_items.append(token_name)
         token_name = None
 
     while True:
-        if not tokenizer.token_available or tokenizer.peek_token().value not in "<>":
+        if not tokenizer.tokens.available or tokenizer.tokens.peek().value not in "<>":
             last_token = item_key_token if item_key_token else item_token
             raise last_token.exception("Expected opening '<' or closing '>' tag", end=True)
 
-        if tokenizer.peek_token().value == ">":
-            tokenizer.get_token()
+        if tokenizer.tokens.peek().value == ">":
+            tokenizer.tokens.next()
             return list(sub_items)
 
         sub_items.append(_generate_from_sfdl(tokenizer, item_key_token.value if item_key_token else None))
