@@ -6,16 +6,13 @@ ACKA:
   type: Boolean
   description: Request success
   length: 1
-  values:
-    true: Success
-    false: Failed
 
 ACKC5:
   type: Binary
   description: Acknowledge code for stream 5
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
     1-63:
@@ -27,7 +24,7 @@ ACKC6:
   description: Acknowledge code for stream 6
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
     1-63:
@@ -39,25 +36,25 @@ ACKC7:
   description: Acknowledge code for stream 7
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
-    1:
+    "1":
       description: Permission not granted
       constant: NO_PERMISSION
-    2:
+    "2":
       description: Length error
       constant: LENGTH_ERROR
-    3:
+    "3":
       description: Matrix overflow
       constant: MATRIX_OVERFLOW
-    4:
+    "4":
       description: PPID not found
       constant: PPID_NOT_FOUND
-    5:
+    "5":
       description: Mode unsupported
       constant: MODE_UNSUPPORTED
-    6:
+    "6":
       description: Performed later
       constant: PERFORMED_LATER
     7-63:
@@ -68,13 +65,13 @@ ACKC10:
   description: Acknowledge code for stream 10
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
-    1:
+    "1":
       description: Will not be displayed
       constant: NOT_DISPLAYED
-    2:
+    "2":
       description: Terminal not available
       constant: TERMINAL_NOT_AVAILABLE
     3-63:
@@ -85,35 +82,35 @@ ALCD:
   description: Alarm code byte
   length: 1
   values:
-    0:
+    "0":
       description: Not used
-    1:
+    "1":
       description: Personal safety
       constant: PERSONAL_SAFETY
-    2:
+    "2":
       description: Equipment safety
       constant: EQUIPMENT_SAFETY
-    3:
+    "3":
       description: Parameter control warning
       constant: PARAMETER_CONTROL_WARNING
-    4:
+    "4":
       description: Parameter control error
       constant: PARAMETER_CONTROL_ERROR
-    5:
+    "5":
       description: Irrecoverable error
       constant: IRRECOVERABLE_ERROR
-    6:
+    "6":
       description: Equipment status warning
       constant: EQUIPMENT_STATUS_WARNING
-    7:
+    "7":
       description: Attention flags
       constant: ATTENTION_FLAGS
-    8:
+    "8":
       description: Data integrity
       constant: DATA_INTEGRITY
     9-63:
       description: Other catogeries
-    128:
+    "128":
       description: Alarm set flag
       constant: ALARM_SET
 
@@ -122,12 +119,12 @@ ALED:
   description: Alarm en-/disable code byte
   length: 1
   values:
-    0:
+    "0":
       description: Disable
       constant: DISABLE
     1-127:
       description: Not used
-    128:
+    "128":
       description: Enable
       constant: ENABLE
     129-255:
@@ -181,28 +178,28 @@ ATTRRELN:
   type: U1
   description: Attribute relation to attribute of object
   values:
-    0:
+    "0":
       description: Equal to
       constant: EQUAL
-    1:
+    "1":
       description: Not equal to
       constant: NOT_EQUAL
-    2:
+    "2":
       description: Less than
       constant: LESS
-    3:
+    "3":
       description: Less than or equal to
       constant: LESS_EQUAL
-    4:
+    "4":
       description: More than
       constant: MORE
-    5:
+    "5":
       description: More than or equal to
       constant: MORE_EQUAL
-    6:
+    "6":
       description: Value present
       constant: PRESENT
-    7:
+    "7":
       description: Value absent
       constant: ABSENT
     8-63:
@@ -224,9 +221,6 @@ CEED:
   type: Boolean
   description: Collection event or trace enable/disable code
   length: 1
-  values:
-    true: Enable
-    false: Disable
 
 CEID:
   type:
@@ -249,19 +243,19 @@ CEPACK:
   type: Binary
   description: Command enhanced parameter acknowledge
   values:
-    0:
+    "0":
       description: No error
       constant: NO_ERROR
-    1:
+    "1":
       description: CPNAME name does not exist
       constant: CPNAME_UNKNOWN
-    2:
+    "2":
       description: Illegal value for CEPVAL
       constant: CEPVAL_ILLEGAL_VALUE
-    3:
+    "3":
       description: Illegal format for CEPVAL
       constant: CEPVAL_ILLEGAL_FORMAT
-    4:
+    "4":
       description: CPNAME not valid as used
       constant: CPNAME_INVALID
     5-63:
@@ -291,13 +285,13 @@ CMDA:
     - I1
   description: Command acknowledged code
   values:
-    0:
+    "0":
       description: Completed or done
       constant: DONE
-    1:
+    "1":
       description: Command does not exist
       constant: COMMAND_UNKNOWN
-    2:
+    "2":
       description: Cannot perform now
       constant: NOT_NOW
     3-63:
@@ -316,10 +310,10 @@ COMMACK:
   description: Establish communications acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
-    1:
+    "1":
       description: Denied, Try Again
       constant: DENIED
     2-63:
@@ -330,13 +324,13 @@ CPACK:
   description: Command parameter acknowledge code
   length: 1
   values:
-    1:
+    "1":
       description: Parameter name unknown
       constant: PARAMETER_UNKNOWN
-    2:
+    "2":
       description: CPVAL value illegal
       constant: CPVAL_ILLEGAL_VALUE
-    3:
+    "3":
       description: CPVAL format illegal
       constant: CPVAL_ILLEGAL_FORMAT
     4-63:
@@ -404,19 +398,19 @@ DRACK:
   description: Define report acknowledge code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge
       constant: ACK
-    1:
+    "1":
       description: Denied, insufficient space
       constant: INSUFFICIENT_SPACE
-    2:
+    "2":
       description: Denied, invalid format
       constant: INVALID_FORMAT
-    3:
+    "3":
       description: Denied, RPTID already defined
       constant: RPTID_REDEFINED
-    4:
+    "4":
       description: Denied, VID doesn't exist
       constant: VID_UNKNOWN
     5-63:
@@ -483,16 +477,16 @@ EAC:
   description: Equipment acknowledge code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge
       constant: ACK
-    1:
+    "1":
       description: Denied, not all constants exist
       constant: INVALID_CONSTANT
-    2:
+    "2":
       description: Denied, busy
       constant: BUSY
-    3:
+    "3":
       description: Denied, constant out of range
       constant: OUT_OF_RANGE
     4-63:
@@ -603,10 +597,10 @@ ERACK:
   description: Enable/disable event report acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: Accepted
       constant: ACCEPTED
-    1:
+    "1":
       description: Denied, CEID doesn't exist
       constant: CEID_UNKNOWN
     2-63:
@@ -620,145 +614,145 @@ ERRCODE:
     - I8
   description: Code identifying an error
   values:
-    0:
+    "0":
       description: No error
-    1:
+    "1":
       description: Unknown object in Object Specifier
-    2:
+    "2":
       description: Unknown target object type
-    3:
+    "3":
       description: Unknown object instance
-    4:
+    "4":
       description: Unknown attribute name
-    5:
+    "5":
       description: Read-only attribute - access denied
-    6:
+    "6":
       description: Unknown object type
-    7:
+    "7":
       description: Invalid attribute value
-    8:
+    "8":
       description: Syntax error
-    9:
+    "9":
       description: Verification error
-    10:
+    "10":
       description: Validation error
-    11:
+    "11":
       description: Object identifier in use
-    12:
+    "12":
       description: Parameters improperly specified
-    13:
+    "13":
       description: Insufficient parameters specified
-    14:
+    "14":
       description: Unsupported option requested
-    15:
+    "15":
       description: Busy
-    16:
+    "16":
       description: Not available for processing
-    17:
+    "17":
       description: Command not valid for current state
-    18:
+    "18":
       description: No material altered
-    19:
+    "19":
       description: Material partially processed
-    20:
+    "20":
       description: All material processed
-    21:
+    "21":
       description: Recipe specification related error
-    22:
+    "22":
       description: Failed during processing
-    23:
+    "23":
       description: Failed while not processing
-    24:
+    "24":
       description: Failed due to lack of material
-    25:
+    "25":
       description: Job aborted
-    26:
+    "26":
       description: Job stopped
-    27:
+    "27":
       description: Job cancelled
-    28:
+    "28":
       description: Cannot change selected recipe
-    29:
+    "29":
       description: Unknown event
-    30:
+    "30":
       description: Duplicate report ID
-    31:
+    "31":
       description: Unknown data report
-    32:
+    "32":
       description: Data report not linked
-    33:
+    "33":
       description: Unknown trace report
-    34:
+    "34":
       description: Duplicate trace ID
-    35:
+    "35":
       description: Too many data reports
-    36:
+    "36":
       description: Sample period out of range
-    37:
+    "37":
       description: Group size too large
-    38:
+    "38":
       description: Recovery action currently invalid
-    39:
+    "39":
       description: Busy with another recovery currently unable to perform the recovery
-    40:
+    "40":
       description: No active recovery action
-    41:
+    "41":
       description: Exception recovery failed
-    42:
+    "42":
       description: Exception recovery aborted
-    43:
+    "43":
       description: Invalid table element
-    44:
+    "44":
       description: Unknown table element
-    45:
+    "45":
       description: Cannot delete predefined
-    46:
+    "46":
       description: Invalid token
-    47:
+    "47":
       description: Invalid parameter
-    48:
+    "48":
       description: Load port does not exist
-    49:
+    "49":
       description: Load port already in use
-    50:
+    "50":
       description: Missing Carrier
     51-63:
       description: Reserved
     64-32767:
       description: User defined
-    32768:
+    "32768":
       description: Action will be performed at earliest opportunity
-    32769:
+    "32769":
       description: Action can not be performed now
-    32770:
+    "32770":
       description: Action failed due to errors
-    32771:
+    "32771":
       description: Invalid command
-    32772:
+    "32772":
       description: Client Already Connected
-    32773:
+    "32773":
       description: Duplicate ClientID
-    32774:
+    "32774":
       description: Invalid ClientType
-    32775:
+    "32775":
       description: IncompatibleVersions
-    32776:
+    "32776":
       description: Unrecognized ClientID (Client not currently connected)
-    32777:
+    "32777":
       description: Failed (Completed Unsuccessfully)
-    32778:
+    "32778":
       description: Failed (Unsafe) — External intervention required
-    32779:
+    "32779":
       description: Sensor-Detected Obstacle
-    32780:
+    "32780":
       description: Material Not Sent
-    32781:
+    "32781":
       description: Material Not Received
-    32782:
+    "32782":
       description: Material Lost
-    32783:
+    "32783":
       description: Hardware Failure
-    32784:
+    "32784":
       description: Transfer Cancelled
     32785-32792:
       description: reserved for future use
@@ -808,13 +802,13 @@ GRANT6:
   description: Permission to send
   length: 1
   values:
-    0:
+    "0":
       description: Granted
       constant: GRANTED
-    1:
+    "1":
       description: Busy
       constant: BUSY
-    2:
+    "2":
       description: Not interested
       constant: NOT_INTERESTED
     3-63:
@@ -825,25 +819,25 @@ GRNT1:
   description: Grant code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge
       constant: ACK
-    1:
+    "1":
       description: Busy, try again
       constant: BUSY
-    2:
+    "2":
       description: No space
       constant: NO_SPACE
-    3:
+    "3":
       description: Map too large
       constant: MAP_TOO_LARGE
-    4:
+    "4":
       description: Duplicate ID
       constant: DUPLICATE_ID
-    5:
+    "5":
       description: Material ID not found
       constant: MATERIALID_UNKNOWN
-    6:
+    "6":
       description: Unknown map format
       constant: UNKNOWN_MAP_FORMAT
     7-63:
@@ -854,25 +848,25 @@ HCACK:
   description: Host command parameter acknowledge code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge
       constant: ACK
-    1:
+    "1":
       description: Denied, invalid command
       constant: INVALID_COMMAND
-    2:
+    "2":
       description: Denied, cannot perform now
       constant: CANT_PERFORM_NOW
-    3:
+    "3":
       description: Denied, parameter invalid
       constant: PARAMETER_INVALID
-    4:
+    "4":
       description: Acknowledge, will finish later
       constant: ACK_FINISH_LATER
-    5:
+    "5":
       description: Rejected, already in condition
       constant: ALREADY_IN_CONDITION
-    6:
+    "6":
       description: No such object
       constant: NO_OBJECT
     7-63:
@@ -883,13 +877,13 @@ IDTYP:
   description: ID type
   length: 1
   values:
-    0:
+    "0":
       description: Wafer ID
       constant: WAFER
-    1:
+    "1":
       description: Wafer cassette ID
       constant: WAFER_CASSETTE
-    2:
+    "2":
       description: Film frame ID
       constant: FILM_FRAME
     3-63:
@@ -912,28 +906,28 @@ LIMITACK:
   description: Acknowledgement code for variable limit
   length: 1
   values:
-    0:
+    "0":
       description: OK
       constant: OK
-    1:
+    "1":
       description: LIMITID does not exist
       constant: LIMITID_UNKNOWN
-    2:
+    "2":
       description: UPPERDB > LIMITMAX
       constant: UPPERDB_MORE_LIMITMAX
-    3:
+    "3":
       description: LOWERDB < LIMITMIN
       constant: LOWERDB_LESS_LIMITMIN
-    4:
+    "4":
       description: UPPERDB < LOWERDB
       constant: UPPERDB_LESS_LOWERDB
-    5:
+    "5":
       description: Illegal format UPPER-/LOWERDB
       constant: ILLEGAL_FORMAT
-    6:
+    "6":
       description: Illegal ASCII value
       constant: ASCII_ILLEGAL
-    7:
+    "7":
       description: Duplicate limit definition
       constant: DUPLICATE
     8-63:
@@ -1000,22 +994,22 @@ LRACK:
   description: Link report acknowledge code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge
       constant: ACK
-    1:
+    "1":
       description: Denied, insufficient space
       constant: INSUFFICIENT_SPACE
-    2:
+    "2":
       description: Denied, invalid format
       constant: INVALID_FORMAT
-    3:
+    "3":
       description: Denied, CEID already linked
       constant: CEID_LINKED
-    4:
+    "4":
       description: Denied, CEID doesn't exist
       constant: CEID_UNKNOWN
-    5:
+    "5":
       description: Denied, RPTID doesn't exist
       constant: RPTID_UNKNOWN
     6-63:
@@ -1026,19 +1020,19 @@ LVACK:
   description: Acknowledgement code for variable limit
   length: 1
   values:
-    0:
+    "0":
       description: OK
       constant: OK
-    1:
+    "1":
       description: Variable does not exist
       constant: VARIABLE_UNKNOWN
-    2:
+    "2":
       description: Variable has no limits
       constant: NO_LIMITS
-    3:
+    "3":
       description: Variable repeated
       constant: DUPLICATE_VARIABLE
-    4:
+    "4":
       description: Limit value error
       constant: LIMIT_ERROR
     5-63:
@@ -1049,13 +1043,13 @@ MAPER:
   description: Map error
   length: 1
   values:
-    0:
+    "0":
       description: ID not found
       constant: ID_UNKNOWN
-    1:
+    "1":
       description: Invalid data
       constant: INVALID_DATA
-    2:
+    "2":
       description: Format error
       constant: FORMAT_ERROR
     3-63:
@@ -1066,13 +1060,13 @@ MAPFT:
   description: Map data format
   length: 1
   values:
-    0:
+    "0":
       description: Row format
       constant: ROW
-    1:
+    "1":
       description: Array format
       constant: ARRAY
-    2:
+    "2":
       description: Coordinate format
       constant: COORDINATE
     3-63:
@@ -1083,16 +1077,16 @@ MDACK:
   description: Map data acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: Map received
       constant: ACK
-    1:
+    "1":
       description: Format error
       constant: FORMAT_ERROR
-    2:
+    "2":
       description: No ID match
       constant: UNKNOWN_ID
-    3:
+    "3":
       description: Abort/discard map
       constant: ABORT_MAP
     4-63:
@@ -1139,10 +1133,10 @@ OBJACK:
   description: Object acknowledgement code
   length: 1
   values:
-    0:
+    "0":
       description: Successful
       constant: SUCCESSFUL
-    1:
+    "1":
       description: Error
       constant: ERROR
     2-63:
@@ -1175,7 +1169,7 @@ OFLACK:
   description: Acknowledge code for OFFLINE request
   length: 1
   values:
-    0:
+    "0":
       description: OFFLINE Acknowledge
       constant: ACK
     1-63:
@@ -1186,13 +1180,13 @@ ONLACK:
   description: Acknowledge code for ONLINE request
   length: 1
   values:
-    0:
+    "0":
       description: ONLINE Accepted
       constant: ACCEPTED
-    1:
+    "1":
       description: ONLINE Not allowed
       constant: NOT_ALLOWED
-    2:
+    "2":
       description: Already ONLINE
       constant: ALREADY_ON
     3-63:
@@ -1203,19 +1197,19 @@ ORLOC:
   description: Origin location
   length: 1
   values:
-    0:
+    "0":
       description: Center die of wafer
       constant: CENTER_DIE
-    1:
+    "1":
       description: Upper right
       constant: UPPER_RIGHT
-    2:
+    "2":
       description: Upper left
       constant: UPPER_LEFT
-    3:
+    "3":
       description: Lower left
       constant: LOWER_LEFT
-    4:
+    "4":
       description: Lower right
       constant: LOWER_RIGHT
     5-63:
@@ -1240,22 +1234,22 @@ PPGNT:
   description: Process program grant status
   length: 1
   values:
-    0:
+    "0":
       description: OK
       constant: OK
-    1:
+    "1":
       description: Already have
       constant: ALREADY_HAVE
-    2:
+    "2":
       description: No space
       constant: NO_SPACE
-    3:
+    "3":
       description: Invalid PPID
       constant: INVALID_PPID
-    4:
+    "4":
       description: Busy, try later
       constant: BUSY
-    5:
+    "5":
       description: Will not accept
       constant: WILL_NOT_ACCEPT
     6-63:
@@ -1273,28 +1267,28 @@ PRAXI:
   description: Process axis
   length: 1
   values:
-    0:
+    "0":
       description: Rows, top, increasing
       constant: ROWS_TOP_INCR
-    1:
+    "1":
       description: Rows, top, decreasing
       constant: ROWS_TOP_DECR
-    2:
+    "2":
       description: Rows, bottom, increasing
       constant: ROWS_BOT_INCR
-    3:
+    "3":
       description: Rows, bottom, decreasing
       constant: ROWS_BOT_DECR
-    4:
+    "4":
       description: Columns, left, increasing
       constant: COLS_LEFT_INCR
-    5:
+    "5":
       description: Columns, left, decreasing
       constant: COLS_LEFT_DECR
-    6:
+    "6":
       description: Columns, right, increasing
       constant: COLS_RIGHT_INCR
-    7:
+    "7":
       description: Columns, right, decreasing
       constant: COLS_RIGHT_DECR
     8-63:
@@ -1366,13 +1360,13 @@ RSDA:
   description: Request spooled data acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: OK
       constant: ACK
-    1:
+    "1":
       description: Denied, busy try later
       constant: DENIED_BUSY
-    2:
+    "2":
       description: Denied, spooled data does not exist
       constant: DENIED_NO_DATA
     3-63:
@@ -1383,10 +1377,10 @@ RSDC:
   description: Request spooled data command
   length: 1
   values:
-    0:
+    "0":
       description: Transmit spooled messages
       constant: TRANSMIT
-    1:
+    "1":
       description: Purge spooled messages
       constant: PURGE
     2-63:
@@ -1406,10 +1400,10 @@ RSPACK:
   description: Reset spooling acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledge, spooling setup accepted
       constant: ACK
-    1:
+    "1":
       description: Spooling setup rejected
       constant: REJECTED
     2-63:
@@ -1420,7 +1414,7 @@ SDACK:
   description: Map setup acknowledge
   length: 1
   values:
-    0:
+    "0":
       description: Received Data
       constant: ACK
     1-63:
@@ -1431,10 +1425,10 @@ SDBIN:
   description: Send bin information
   length: 1
   values:
-    0:
+    "0":
       description: Send bin information
       constant: SEND
-    1:
+    "1":
       description: Don't send bin infomation
       constant: DONT_SEND
     2-63:
@@ -1472,16 +1466,16 @@ STRACK:
   description: Spool stream acknowledge
   length: 1
   values:
-    1:
+    "1":
       description: Spooling not allowed for stream
       constant: NOT_ALLOWED
-    2:
+    "2":
       description: Stream unknown
       constant: STREAM_UNKNOWN
-    3:
+    "3":
       description: Unknown function for stream
       constant: FUNCTION_UNKNOWN
-    4:
+    "4":
       description: Secondary function for this stream
       constant: SECONDARY
 
@@ -1553,22 +1547,22 @@ TIAACK:
   description: Equipment acknowledgement code
   length: 1
   values:
-    0:
+    "0":
       description: Everything correct
       constant: OK
-    1:
+    "1":
       description: Too many SVIDs
       constant: SVID_EXCEEDED
-    2:
+    "2":
       description: No more traces allowed
       constant: TRACES_DENIED
-    3:
+    "3":
       description: Invalid period
       constant: INVALID_PERIOD
-    4:
+    "4":
       description: Unknown SVID
       constant: SVID_UNKNOWN
-    5:
+    "5":
       description: Invalid REPGSZ
       constant: REPGSZ_INVALID
     6-63:
@@ -1673,13 +1667,13 @@ VLAACK:
   description: Variable limit attribute acknowledgement code
   length: 1
   values:
-    0:
+    "0":
       description: Acknowledgement, command will be performed
       constant: ACK
-    1:
+    "1":
       description: Limit attribute definition error
       constant: LIMIT_DEF_ERROR
-    2:
+    "2":
       description: Cannot perform now
       constant: NOT_NOW
     3-63:

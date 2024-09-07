@@ -31,7 +31,7 @@ class SecsS06F01(SecsStreamFunction):
         {
             TRID: I1/I2/I4/I8/U1/U2/U4/U8/A
             SMPLN: I1/I2/I4/I8/U1/U2/U4/U8
-            STIME: A
+            STIME: A[32]
             SV: [
                 DATA: L/BOOLEAN/U1/U2/U4/U8/I1/I2/I4/I8/F4/F8/A/B
                 ...

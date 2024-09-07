@@ -24,15 +24,6 @@ class CEED(DataItemBase):
     :Type: :class:`Boolean <secsgem.secs.variables.Boolean>`
     :Length: 1
 
-    **Values**
-        +-------+---------+
-        | Value |         |
-        +=======+=========+
-        | True  | Enable  |
-        +-------+---------+
-        | False | Disable |
-        +-------+---------+
-
     **Used In Function**
         - :class:`SecsS02F37 <secsgem.secs.functions.SecsS02F37>`
 

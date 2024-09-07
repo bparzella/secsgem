@@ -24,15 +24,6 @@ class ACKA(DataItemBase):
     :Type: :class:`Boolean <secsgem.secs.variables.Boolean>`
     :Length: 1
 
-    **Values**
-        +-------+---------+
-        | Value |         |
-        +=======+=========+
-        | True  | Success |
-        +-------+---------+
-        | False | Failed  |
-        +-------+---------+
-
     **Used In Function**
         - :class:`SecsS05F14 <secsgem.secs.functions.SecsS05F14>`
         - :class:`SecsS05F15 <secsgem.secs.functions.SecsS05F15>`
