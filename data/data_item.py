@@ -1,7 +1,75 @@
 """Data item class definition."""
+from __future__ import annotations
+
 import typing
 
+import jsonschema
 import yaml
+
+data_item_schema = {
+    "description": "Root array of data items definition",
+    "type": "object",
+    "properties": {
+        "/": {}
+    },
+    "patternProperties": {
+        "^[A-Z0-9]+$": {
+            "description": "Data item definition",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                },
+                "type": {
+                    "oneOf": [
+                        {
+                            "type": ["array", "string"],
+                            "enum": ["A", "Array", "Binary", "Boolean", "F4", "F8", "I1", "I2", "I4", "I8", "String", "U1", "U2", "U4", "U8"],
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": ["A", "Array", "Binary", "Boolean", "F4", "F8", "I1", "I2", "I4", "I8", "String", "U1", "U2", "U4", "U8"],
+                            }
+                        }
+
+                    ],
+                },
+                "length": {
+                    "type": "integer",
+                },
+                "values": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^[0-9-]+$": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                },
+                                "constant": {
+                                    "type": "string",
+                                },
+                            },
+                            "additionalProperties": False,
+                        },
+                    },
+                    "additionalProperties": False,
+                },
+                "linter_message": {
+                    "type": "string",
+                },
+                "help": {
+                    "type": "string",
+                },
+            },
+            "required": ["description", "type"],
+            "additionalProperties": False,
+        }
+    },
+    "additionalProperties": False,
+}
 
 
 class DataItem:
@@ -22,6 +90,7 @@ class DataItem:
         """Load all data item objects."""
         data = (root / "data_items.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
+        jsonschema.validate(instance=yaml_data, schema=data_item_schema)
         return [cls(data_item, data_item_data) for data_item, data_item_data in yaml_data.items()]
 
     @staticmethod

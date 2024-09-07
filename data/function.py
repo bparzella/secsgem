@@ -5,6 +5,7 @@ import collections
 import re
 import typing
 
+import jsonschema
 import yaml
 
 import secsgem.secs.functions.sfdl_tokenizer
@@ -53,6 +54,53 @@ else:
 """
 
 
+function_schema = {
+    "description": "Root array of functions definition",
+    "type": "object",
+    "properties": {
+        "/": {}
+    },
+    "patternProperties": {
+        "^S\\d+F\\d+$": {
+            "description": "Function definition",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                },
+                "to_host": {
+                    "type": "boolean",
+                },
+                "to_equipment": {
+                    "type": "boolean",
+                },
+                "reply": {
+                    "type": "boolean",
+                },
+                "reply_required": {
+                    "type": "boolean",
+                },
+                "multi_block": {
+                    "type": "boolean",
+                },
+                "structure": {
+                     "type": ["array", "string"]
+                },
+                "sample_data": {
+                     "type": ["array", "string"]
+                },
+                "extra_help": {
+                    "type": "string",
+                },
+            },
+            "required": ["description", "to_host", "to_equipment", "reply", "reply_required", "multi_block"],
+            "additionalProperties": False,
+        }
+    },
+    "additionalProperties": False,
+}
+
+
 class Function:  # pylint: disable=too-many-instance-attributes
     """Function configuration from yaml."""
 
@@ -94,6 +142,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
         """Load all function objects."""
         data = (root / "functions.yaml").read_text(encoding="utf8")
         yaml_data = yaml.safe_load(data)
+        jsonschema.validate(instance=yaml_data, schema=function_schema)
         return [cls(function, function_data, data_items) for function, function_data in yaml_data.items()]
 
     @classmethod
