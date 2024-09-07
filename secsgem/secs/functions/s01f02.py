@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 02."""
 
-from secsgem.secs.data_items import MDLN
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -66,7 +65,11 @@ class SecsS01F02(SecsStreamFunction):
     _stream = 1
     _function = 2
 
-    _data_format = [MDLN]
+    _data_format = """
+    < L
+      < MDLN >
+    >
+    """
 
     _to_host = True
     _to_equipment = True

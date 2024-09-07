@@ -29,7 +29,10 @@ S01F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [MDLN]
+  structure: |
+    < L
+      < MDLN >
+    >
   sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H

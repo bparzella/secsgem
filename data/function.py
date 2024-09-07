@@ -1,9 +1,13 @@
 """Function class definition."""
+from __future__ import annotations
+
 import collections
 import re
 import typing
 
 import yaml
+
+import secsgem.secs.functions.sfdl_tokenizer
 
 from data_item import DataItem
 
@@ -213,7 +217,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return self._data["multi_block"]
 
     @property
-    def raw_structure(self) -> typing.Optional[typing.Union[str, typing.List]]:
+    def raw_structure(self) -> str | list | None:
         """Get the raw, textual structure."""
         if "structure" not in self._data:
             return None
@@ -221,10 +225,18 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return self._data["structure"]
 
     @property
+    def is_sfdl(self) -> bool:
+        """Get if the function is defined in sfdl."""
+        return isinstance(self.raw_structure, str) and self.raw_structure.strip().startswith("<")
+
+    @property
     def structure(self) -> str:
         """Get the python structure."""
         if self.raw_structure is None:
             return "None"
+
+        if self.is_sfdl:
+            return f'"""\n{self.raw_structure}"""'
 
         return self._format_struct_as_string(self.raw_structure)
 
@@ -245,10 +257,14 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return f"{indent_text}{structure}"
 
     @property
-    def data_items(self) -> typing.List[DataItem]:
+    def data_items(self) -> list[DataItem]:
         """Get the data items used."""
         if self.raw_structure is None:
             return []
+
+        if self.is_sfdl and isinstance(self.raw_structure, str):
+            tokenizer = secsgem.secs.functions.sfdl_tokenizer.SFDLTokenizer(self.raw_structure)
+            return list(set([self._data_items[data_item] for data_item in tokenizer.tokens.data_items]))
 
         items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
