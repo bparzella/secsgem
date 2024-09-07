@@ -264,7 +264,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
         if self.is_sfdl and isinstance(self.raw_structure, str):
             tokenizer = secsgem.secs.functions.sfdl_tokenizer.SFDLTokenizer(self.raw_structure)
-            return list(set([self._data_items[data_item] for data_item in tokenizer.tokens.data_items]))
+            return list(dict.fromkeys([self._data_items[data_item] for data_item in tokenizer.tokens.data_items]))
 
         items: typing.List[DataItem] = []
         self._find_items(self.raw_structure, items)
