@@ -47,7 +47,7 @@ class SFDLParseError(Exception):
 
     @classmethod
     def from_token(cls, message: str, token: SFDLToken, end: bool = False) -> SFDLParseError:
-        """Initialize parse error exception from SDFLToken.
+        """Initialize parse error exception from SFDLToken.
 
         Args:
             message: error message
