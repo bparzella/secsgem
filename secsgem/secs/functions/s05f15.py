@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 05 function 15."""
 
-from secsgem.secs.data_items import ACKA, ERRCODE, ERRTEXT, EXID, TIMESTAMP
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -75,17 +74,19 @@ class SecsS05F15(SecsStreamFunction):
     _stream = 5
     _function = 15
 
-    _data_format = [
-        TIMESTAMP,
-        EXID,
-        [
-            ACKA,
-            [
-                ERRCODE,
-                ERRTEXT,
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < TIMESTAMP >
+      < EXID >
+      < L
+        < ACKA >
+        < L
+          < ERRCODE >
+          < ERRTEXT >
+        >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

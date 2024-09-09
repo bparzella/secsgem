@@ -116,7 +116,7 @@ class SecsS12F04(SecsStreamFunction):
       < FNLOC >
       < ORLOC >
       < RPSEL >
-      < L REFP
+      < L
         < REFP >
       >
       < DUTMS >

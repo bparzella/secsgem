@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 09 function 05."""
 
-from secsgem.secs.data_items import MHEAD
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS09F05(SecsStreamFunction):
     _stream = 9
     _function = 5
 
-    _data_format = MHEAD
+    _data_format = """
+    < MHEAD >
+    """
 
     _to_host = True
     _to_equipment = False

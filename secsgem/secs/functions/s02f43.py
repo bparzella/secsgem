@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 43."""
 
-from secsgem.secs.data_items import FCNID, STRID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -68,12 +67,16 @@ class SecsS02F43(SecsStreamFunction):
     _stream = 2
     _function = 43
 
-    _data_format = [
-        [
-            STRID,
-            [FCNID],
-        ],
-    ]
+    _data_format = """
+    < L
+      < L
+        < STRID >
+        < L
+          < FCNID >
+        >
+      >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

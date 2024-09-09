@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 14."""
 
-from secsgem.secs.data_items import COMMACK, MDLN
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -80,10 +79,14 @@ class SecsS01F14(SecsStreamFunction):
     _stream = 1
     _function = 14
 
-    _data_format = [
-        COMMACK,
-        [MDLN],
-    ]
+    _data_format = """
+    < L
+      < COMMACK >
+      < L
+        < MDLN >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = True

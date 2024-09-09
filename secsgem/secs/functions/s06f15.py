@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 15."""
 
-from secsgem.secs.data_items import CEID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS06F15(SecsStreamFunction):
     _stream = 6
     _function = 15
 
-    _data_format = CEID
+    _data_format = """
+    < CEID >
+    """
 
     _to_host = False
     _to_equipment = True

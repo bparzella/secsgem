@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 12 function 02."""
 
-from secsgem.secs.data_items import SDACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS12F02(SecsStreamFunction):
     _stream = 12
     _function = 2
 
-    _data_format = SDACK
+    _data_format = """
+    < SDACK >
+    """
 
     _to_host = False
     _to_equipment = True

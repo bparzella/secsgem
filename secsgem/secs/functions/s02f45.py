@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 45."""
 
-from secsgem.secs.data_items import DATAID, LIMITID, LOWERDB, UPPERDB, VID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -89,23 +88,25 @@ class SecsS02F45(SecsStreamFunction):
     _stream = 2
     _function = 45
 
-    _data_format = [
-        DATAID,
-        [
-            [
-                VID,
-                [
-                    [
-                        LIMITID,
-                        [
-                            UPPERDB,
-                            LOWERDB,
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < DATAID >
+      < L
+        < L
+          < VID >
+          < L
+            < L
+              < LIMITID >
+              < L
+                < UPPERDB >
+                < LOWERDB >
+              >
+            >
+          >
+        >
+      >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

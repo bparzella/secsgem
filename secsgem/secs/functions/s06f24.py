@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 24."""
 
-from secsgem.secs.data_items import RSDA
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS06F24(SecsStreamFunction):
     _stream = 6
     _function = 24
 
-    _data_format = RSDA
+    _data_format = """
+    < RSDA >
+    """
 
     _to_host = True
     _to_equipment = False

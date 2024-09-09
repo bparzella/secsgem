@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 20."""
 
-from secsgem.secs.data_items import V
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -49,7 +48,11 @@ class SecsS06F20(SecsStreamFunction):
     _stream = 6
     _function = 20
 
-    _data_format = [V]
+    _data_format = """
+    < L
+      < V >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

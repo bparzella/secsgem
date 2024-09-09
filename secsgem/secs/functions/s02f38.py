@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 38."""
 
-from secsgem.secs.data_items import ERACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F38(SecsStreamFunction):
     _stream = 2
     _function = 38
 
-    _data_format = ERACK
+    _data_format = """
+    < ERACK >
+    """
 
     _to_host = True
     _to_equipment = False

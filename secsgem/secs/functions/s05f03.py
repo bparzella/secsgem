@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 05 function 03."""
 
-from secsgem.secs.data_items import ALED, ALID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -50,10 +49,12 @@ class SecsS05F03(SecsStreamFunction):
     _stream = 5
     _function = 3
 
-    _data_format = [
-        ALED,
-        ALID,
-    ]
+    _data_format = """
+    < L
+      < ALED >
+      < ALID >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

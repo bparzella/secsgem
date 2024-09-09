@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 23."""
 
-from secsgem.secs.data_items import DSPER, REPGSZ, SVID, TOTSMP, TRID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -70,13 +69,17 @@ class SecsS02F23(SecsStreamFunction):
     _stream = 2
     _function = 23
 
-    _data_format = [
-        TRID,
-        DSPER,
-        TOTSMP,
-        REPGSZ,
-        [SVID],
-    ]
+    _data_format = """
+    < L
+      < TRID >
+      < DSPER >
+      < TOTSMP >
+      < REPGSZ >
+      < L
+        < SVID >
+      >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

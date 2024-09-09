@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 15."""
 
-from secsgem.secs.data_items import ECID, ECV
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -61,12 +60,14 @@ class SecsS02F15(SecsStreamFunction):
     _stream = 2
     _function = 15
 
-    _data_format = [
-        [
-            ECID,
-            ECV,
-        ],
-    ]
+    _data_format = """
+    < L
+      < L
+        < ECID >
+        < ECV >
+      >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

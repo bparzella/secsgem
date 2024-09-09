@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 07 function 18."""
 
-from secsgem.secs.data_items import ACKC7
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS07F18(SecsStreamFunction):
     _stream = 7
     _function = 18
 
-    _data_format = ACKC7
+    _data_format = """
+    < ACKC7 >
+    """
 
     _to_host = True
     _to_equipment = False

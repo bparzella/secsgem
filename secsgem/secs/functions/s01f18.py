@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 18."""
 
-from secsgem.secs.data_items import ONLACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS01F18(SecsStreamFunction):
     _stream = 1
     _function = 18
 
-    _data_format = ONLACK
+    _data_format = """
+    < ONLACK >
+    """
 
     _to_host = True
     _to_equipment = False

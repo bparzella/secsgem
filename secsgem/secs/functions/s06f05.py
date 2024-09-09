@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 05."""
 
-from secsgem.secs.data_items import DATAID, DATALENGTH
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -50,10 +49,12 @@ class SecsS06F05(SecsStreamFunction):
     _stream = 6
     _function = 5
 
-    _data_format = [
-        DATAID,
-        DATALENGTH,
-    ]
+    _data_format = """
+    < L
+      < DATAID >
+      < DATALENGTH >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

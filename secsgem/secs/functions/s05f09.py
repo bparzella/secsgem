@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 05 function 09."""
 
-from secsgem.secs.data_items import EXID, EXMESSAGE, EXRECVRA, EXTYPE, TIMESTAMP
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -70,13 +69,17 @@ class SecsS05F09(SecsStreamFunction):
     _stream = 5
     _function = 9
 
-    _data_format = [
-        TIMESTAMP,
-        EXID,
-        EXTYPE,
-        EXMESSAGE,
-        [EXRECVRA],
-    ]
+    _data_format = """
+    < L
+      < TIMESTAMP >
+      < EXID >
+      < EXTYPE >
+      < EXMESSAGE >
+      < L
+        < EXRECVRA >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

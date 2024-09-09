@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 14 function 01."""
 
-from secsgem.secs.data_items import ATTRDATA, ATTRID, ATTRRELN, OBJID, OBJSPEC, OBJTYPE
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -86,20 +85,25 @@ class SecsS14F01(SecsStreamFunction):
     _stream = 14
     _function = 1
 
-    _data_format = [
-        OBJSPEC,
-        OBJTYPE,
-        [OBJID],
-        [
-            [
-                "FILTER",
-                ATTRID,
-                ATTRDATA,
-                ATTRRELN,
-            ],
-        ],
-        [ATTRID],
-    ]
+    _data_format = """
+    < L
+      < OBJSPEC >
+      < OBJTYPE >
+      < L
+        < OBJID >
+      >
+      < L FILTER
+        < L
+          < ATTRID >
+          < ATTRDATA >
+          < ATTRRELN >
+        >
+      >
+      < L
+        < ATTRID >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = True

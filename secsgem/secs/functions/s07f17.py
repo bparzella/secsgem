@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 07 function 17."""
 
-from secsgem.secs.data_items import PPID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -49,7 +48,11 @@ class SecsS07F17(SecsStreamFunction):
     _stream = 7
     _function = 17
 
-    _data_format = [PPID]
+    _data_format = """
+    < L
+      < PPID >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

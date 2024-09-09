@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 10 function 03."""
 
-from secsgem.secs.data_items import TEXT, TID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -50,10 +49,12 @@ class SecsS10F03(SecsStreamFunction):
     _stream = 10
     _function = 3
 
-    _data_format = [
-        TID,
-        TEXT,
-    ]
+    _data_format = """
+    < L
+      < TID >
+      < TEXT >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

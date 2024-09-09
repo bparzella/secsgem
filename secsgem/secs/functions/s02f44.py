@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 44."""
 
-from secsgem.secs.data_items import FCNID, RSPACK, STRACK, STRID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -81,16 +80,20 @@ class SecsS02F44(SecsStreamFunction):
     _stream = 2
     _function = 44
 
-    _data_format = [
-        RSPACK,
-        [
-            [
-                STRID,
-                STRACK,
-                [FCNID],
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < RSPACK >
+      < L
+        < L
+          < STRID >
+          < STRACK >
+          < L
+            < FCNID >
+          >
+        >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

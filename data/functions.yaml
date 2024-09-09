@@ -60,7 +60,10 @@ S01F03:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [SVID]
+  structure: |
+    < L
+      < SVID >
+    >
   sample_data: '[1, "1337", 12]'
 
 S01F04:
@@ -70,7 +73,10 @@ S01F04:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [SV]
+  structure: |
+    < L
+      < SV >
+    >
   sample_data: '[secsgem.secs.variables.U1(1), "text", secsgem.secs.variables.U4(1337)]'
 
 S01F11:
@@ -80,7 +86,10 @@ S01F11:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [SVID]
+  structure:  |
+    < L
+      < SVID >
+    >
   sample_data: '[1, 1337]'
   extra_help: An empty list will return all available status variables.
 
@@ -91,7 +100,14 @@ S01F12:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[SVID, SVNAME, UNITS]]
+  structure: |
+    < L
+      < L
+        < SVID >
+        < SVNAME >
+        < UNITS >
+      >
+    >
   sample_data: |-
     [{"SVID": 1, "SVNAME": "SV1", "UNITS": "mm"},
     {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}]
@@ -103,7 +119,10 @@ S01F13:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MDLN]
+  structure:  |
+    < L
+      < MDLN >
+    >
   sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H
@@ -131,7 +150,13 @@ S01F14:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [COMMACK, [MDLN]]
+  structure: |
+    < L
+      < COMMACK >
+      < L
+        < MDLN >
+      >
+    >
   sample_data: |-
     {"COMMACK": secsgem.secs.data_items.COMMACK.ACCEPTED,
     "MDLN": ["secsgem", "0.0.6"]}
@@ -174,7 +199,8 @@ S01F16:
   reply: False
   reply_required: False
   multi_block: False
-  structure: OFLACK
+  structure: |
+    < OFLACK >
   sample_data: 'secsgem.secs.data_items.OFLACK.ACK'
 
 S01F17:
@@ -192,7 +218,8 @@ S01F18:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ONLACK
+  structure: |
+    < ONLACK >
   sample_data: 'secsgem.secs.data_items.ONLACK.ALREADY_ON'
 
 S01F21:
@@ -202,7 +229,10 @@ S01F21:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [VID]
+  structure: |
+    < L
+      < VID >
+    >
   sample_data: '[1, "VARIABLEID"]'
 
 S01F22:
@@ -212,7 +242,14 @@ S01F22:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [[VID, DVVALNAME, UNITS]]
+  structure: |
+    < L
+      < L
+        < VID >
+        < DVVALNAME >
+        < UNITS >
+      >
+    >
   sample_data: '[{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}]'
 
 S01F23:
@@ -222,7 +259,10 @@ S01F23:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [CEID]
+  structure: |
+    < L
+      < CEID >
+    >
   sample_data: '[1, "COLLEVTID"]'
 
 S01F24:
@@ -232,7 +272,16 @@ S01F24:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [[CEID, CENAME, [VID]]]
+  structure: |
+    < L
+      < L
+        < CEID >
+        < CENAME >
+        < L
+          < VID >
+        >
+      >
+    >
   sample_data: '[{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}]'
 
 S02F00:
@@ -250,7 +299,10 @@ S02F13:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [ECID]
+  structure: |
+    < L
+      < ECID >
+    >
   sample_data: '[1, 1337]'
   extra_help: An empty list will return all available equipment constants.
 
@@ -261,7 +313,10 @@ S02F14:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [ECV]
+  structure:  |
+    < L
+      < ECV >
+    >
   sample_data: '[secsgem.secs.variables.U1(1), "text"]'
 
 S02F15:
@@ -271,7 +326,13 @@ S02F15:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [[ECID, ECV]]
+  structure: |
+    < L
+      < L
+        < ECID >
+        < ECV >
+      >
+    >
   sample_data: |-
     [
     {"ECID": 1, "ECV": secsgem.secs.variables.U4(10)},
@@ -284,7 +345,8 @@ S02F16:
   reply: False
   reply_required: False
   multi_block: False
-  structure: EAC
+  structure: |
+    < EAC >
   sample_data: 'secsgem.secs.data_items.EAC.BUSY'
 
 S02F17:
@@ -302,7 +364,8 @@ S02F18:
   reply: False
   reply_required: False
   multi_block: False
-  structure: TIME
+  structure: |
+    < TIME >
   sample_data: '"160816205942"'
 
 S02F21:
@@ -312,7 +375,8 @@ S02F21:
   reply: True
   reply_required: False
   multi_block: False
-  structure: RCMD
+  structure: |
+    < RCMD >
   sample_data: '"COMMMAND1"'
 
 S02F22:
@@ -322,7 +386,8 @@ S02F22:
   reply: False
   reply_required: False
   multi_block: False
-  structure: CMDA
+  structure: |
+    < CMDA >
   sample_data: 'secsgem.secs.data_items.CMDA.DONE'
 
 S02F23:
@@ -332,7 +397,16 @@ S02F23:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [TRID, DSPER, TOTSMP, REPGSZ, [SVID]]
+  structure: |
+    < L
+      < TRID >
+      < DSPER >
+      < TOTSMP >
+      < REPGSZ >
+      < L
+        < SVID >
+      >
+    >
   sample_data: |-
     {
     "TRID":1,
@@ -348,7 +422,8 @@ S02F24:
   reply: False
   reply_required: False
   multi_block: False
-  structure: TIAACK
+  structure: |
+    < TIAACK >
   sample_data: 'secsgem.secs.data_items.TIAACK.SVID_EXCEEDED'
 
 S02F25:
@@ -358,7 +433,8 @@ S02F25:
   reply: True
   reply_required: True
   multi_block: False
-  structure: ABS
+  structure: |
+    < ABS >
   sample_data: '"Text"'
 
 S02F26:
@@ -368,7 +444,8 @@ S02F26:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ABS
+  structure: |
+    < ABS >
   sample_data: '"Text"'
 
 S02F29:
@@ -378,7 +455,10 @@ S02F29:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [ECID]
+  structure: |
+    < L
+      < ECID >
+    >
   sample_data: '[1, 1337]'
   extra_help: An empty list will return all available equipment constants.
 
@@ -389,7 +469,17 @@ S02F30:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[ECID, ECNAME, ECMIN, ECMAX, ECDEF, UNITS]]
+  structure: |
+    < L
+      < L
+        < ECID >
+        < ECNAME >
+        < ECMIN >
+        < ECMAX >
+        < ECDEF >
+        < UNITS >
+      >
+    >
   sample_data: |-
     [
     {"ECID": 1,
@@ -412,7 +502,18 @@ S02F33:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [DATAID, [[RPTID, [VID]]]]
+  structure: |
+    < L
+      < DATAID >
+      < L
+        < L
+          < RPTID >
+          < L
+            < VID >
+          >
+        >
+      >
+    >
   sample_data: |-
     {"DATAID": 1, "DATA": [{"RPTID": 1000, "VID": [12, 1337]},
     {"RPTID": 1001, "VID": [1, 2355]}]}
@@ -424,7 +525,8 @@ S02F34:
   reply: False
   reply_required: False
   multi_block: False
-  structure: DRACK
+  structure: |
+    < DRACK >
   sample_data: 'secsgem.secs.data_items.DRACK.INVALID_FORMAT'
 
 S02F35:
@@ -434,7 +536,18 @@ S02F35:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [DATAID, [[CEID, [RPTID]]]]
+  structure: |
+    < L
+      < DATAID >
+      < L
+        < L
+          < CEID >
+          <L
+            < RPTID >
+          >
+        >
+      >
+    >
   sample_data: '{"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]}'
 
 S02F36:
@@ -444,7 +557,8 @@ S02F36:
   reply: False
   reply_required: False
   multi_block: False
-  structure: LRACK
+  structure: |
+    < LRACK >
   sample_data: 'secsgem.secs.data_items.LRACK.CEID_UNKNOWN'
 
 S02F37:
@@ -454,7 +568,13 @@ S02F37:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [CEED, [CEID]]
+  structure: |
+    < L
+      < CEED >
+      < L
+        < CEID >
+      >
+    >
   sample_data: '{"CEED": True, "CEID": [1337]}'
 
 S02F38:
@@ -464,7 +584,8 @@ S02F38:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ERACK
+  structure: |
+   < ERACK >
   sample_data: 'secsgem.secs.data_items.ERACK.CEID_UNKNOWN'
 
 S02F41:
@@ -474,7 +595,16 @@ S02F41:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [RCMD, [["PARAMS", CPNAME, CPVAL]]]
+  structure: |
+    < L
+      < RCMD >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CPVAL >
+        >
+      >
+    >
   sample_data: |-
     {"RCMD": "COMMAND", "PARAMS": [{"CPNAME": "PARAM1", "CPVAL": "VAL1"},
     {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]}
@@ -486,7 +616,16 @@ S02F42:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [HCACK, [["PARAMS", CPNAME, CPACK]]]
+  structure: |
+    < L
+      < HCACK >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CPACK >
+        >
+      >
+    >
   sample_data: |-
     {
     "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND,
@@ -501,7 +640,15 @@ S02F43:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [[STRID, [FCNID]]]
+  structure: |
+    < L
+      < L
+        < STRID >
+        < L
+          < FCNID >
+        >
+      >
+    >
   sample_data: '[{"STRID": 1, "FCNID": [10, 20]}, {"STRID": 2, "FCNID": [30, 40]}]'
 
 S02F44:
@@ -511,7 +658,19 @@ S02F44:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [RSPACK, [[STRID, STRACK, [FCNID]]]]
+  structure: |
+    < L
+      < RSPACK >
+      < L
+        < L
+          < STRID >
+          < STRACK >
+          < L
+            < FCNID >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "RSPACK": secsgem.secs.data_items.RSPACK.REJECTED,
@@ -526,7 +685,24 @@ S02F45:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [DATAID, [[VID, [[LIMITID, [UPPERDB, LOWERDB]]]]]]
+  structure: |
+    < L
+      < DATAID >
+      < L
+        < L
+          < VID >
+          < L
+            < L
+              < LIMITID >
+              < L
+                < UPPERDB >
+                < LOWERDB >
+              >
+            >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATAID": 1,
@@ -545,7 +721,20 @@ S02F46:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [VLAACK, [[VID, LVACK, [LIMITID, LIMITACK]]]]
+  structure: |
+    < L
+      < VLAACK >
+      < L
+        < L
+          < VID >
+          < LVACK >
+          < L
+            < LIMITID >
+            < LIMITACK >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "VLAACK": secsgem.secs.data_items.VLAACK.LIMIT_DEF_ERROR,
@@ -565,7 +754,10 @@ S02F47:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [VID]
+  structure: |
+    < L
+      < VID >
+    >
   sample_data: '[1, "VARIABLEID"]'
 
 S02F48:
@@ -575,7 +767,24 @@ S02F48:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [[VID, [UNITS, LIMITMIN, LIMITMAX, [[LIMITID, UPPERDB, LOWERDB ]]]]]
+  structure: |
+    < L
+      < L
+        < VID >
+        < L
+          < UNITS >
+          < LIMITMIN >
+          < LIMITMAX >
+          < L
+            < L
+              < LIMITID >
+              < UPPERDB >
+              < LOWERDB >
+            >
+          >
+        >
+      >
+    >
   sample_data: |-
     [{
     "VID": 1,
@@ -597,7 +806,18 @@ S02F49:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [DATAID, OBJSPEC, RCMD, [["PARAMS", CPNAME, CEPVAL]]]
+  structure: |
+    < L
+      < DATAID >
+      < OBJSPEC >
+      < RCMD >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CEPVAL >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATAID": 1,
@@ -615,7 +835,16 @@ S02F50:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [HCACK, [["PARAMS", CPNAME, CPACK]]]
+  structure: |
+    < L
+      < HCACK >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CPACK >
+        >
+      >
+    >
   sample_data: |-
     {
     "HCACK": secsgem.secs.data_items.HCACK.INVALID_COMMAND,
@@ -639,7 +868,12 @@ S05F01:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [ALCD, ALID, ALTX]
+  structure: |
+    < L
+      < ALCD >
+      < ALID >
+      < ALTX >
+    >
   sample_data: |-
     {
     "ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
@@ -654,7 +888,8 @@ S05F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC5
+  structure: |
+   < ACKC5 >
   sample_data: 'secsgem.secs.data_items.ACKC5.ACCEPTED'
 
 S05F03:
@@ -664,7 +899,11 @@ S05F03:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [ALED, ALID]
+  structure: |
+    < L
+      < ALED >
+      < ALID >
+    >
   sample_data: '{"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100}'
 
 S05F04:
@@ -674,7 +913,8 @@ S05F04:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC5
+  structure: |
+   < ACKC5 >
   sample_data: 'secsgem.secs.data_items.ACKC5.ACCEPTED'
 
 S05F05:
@@ -684,7 +924,10 @@ S05F05:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [ALID]
+  structure: |
+    < L
+      < ALID >
+    >
   sample_data: '[100, 200]'
 
 S05F06:
@@ -694,7 +937,14 @@ S05F06:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[ALCD, ALID, ALTX]]
+  structure: |
+    < L
+      < L
+        < ALCD >
+        < ALID >
+        < ALTX >
+      >
+    >
   sample_data: |-
     [
     {"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
@@ -717,7 +967,14 @@ S05F08:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[ALCD, ALID, ALTX]]
+  structure: |
+    < L
+      < L
+        < ALCD >
+        < ALID >
+        < ALTX >
+      >
+    >
   sample_data: |-
     [
     {"ALCD": secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
@@ -732,7 +989,16 @@ S05F09:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [TIMESTAMP, EXID, EXTYPE, EXMESSAGE, [EXRECVRA]]
+  structure: |
+    < L
+      < TIMESTAMP >
+      < EXID >
+      < EXTYPE >
+      < EXMESSAGE >
+      < L
+        < EXRECVRA >
+      >
+    >
   sample_data: |-
     {
     "TIMESTAMP": "161006221500",
@@ -756,7 +1022,13 @@ S05F11:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [TIMESTAMP, EXID, EXTYPE, EXMESSAGE]
+  structure: |
+    < L
+      < TIMESTAMP >
+      < EXID >
+      < EXTYPE >
+      < EXMESSAGE >
+    >
   sample_data: |-
     {
     "TIMESTAMP": "161006221500",
@@ -779,7 +1051,11 @@ S05F13:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [EXID, EXRECVRA]
+  structure: |
+    < L
+      < EXID >
+      < EXRECVRA >
+    >
   sample_data: '{"EXID": "EX123", "EXRECVRA": "EXRECVRA2"}'
 
 S05F14:
@@ -789,7 +1065,17 @@ S05F14:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [EXID, [ACKA, [ERRCODE, ERRTEXT]]]
+  structure: |
+    < L
+      < EXID >
+      < L
+        < ACKA >
+        < L
+          < ERRCODE>
+          < ERRTEXT >
+        >
+      >
+    >
   sample_data: |-
     {
     "EXID": "EX123",
@@ -804,7 +1090,18 @@ S05F15:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [TIMESTAMP, EXID, [ACKA, [ERRCODE, ERRTEXT]]]
+  structure: |
+    < L
+      < TIMESTAMP >
+      < EXID >
+      < L
+        < ACKA >
+        < L
+          < ERRCODE >
+          < ERRTEXT >
+        >
+      >
+    >
   sample_data: |-
     {
     "TIMESTAMP": "161006221500",
@@ -831,7 +1128,8 @@ S05F17:
   reply: True
   reply_required: True
   multi_block: False
-  structure: EXID
+  structure: |
+   < EXID >
   sample_data: '"EX123"'
 
 S05F18:
@@ -841,7 +1139,17 @@ S05F18:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [EXID, [ACKA, [ERRCODE, ERRTEXT]]]
+  structure: |
+    < L
+      < EXID >
+      < L
+        < ACKA >
+        < L
+          < ERRCODE >
+          < ERRTEXT >
+        >
+      >
+    >
   sample_data: |-
     {
     "EXID": "EX123",
@@ -866,7 +1174,15 @@ S06F01:
   reply: True
   reply_required: False
   multi_block: True
-  structure: [TRID, SMPLN, STIME, [SV]]
+  structure: |
+    < L
+      < TRID >
+      < SMPLN >
+      < STIME >
+      < L
+        < SV >
+      >
+    >
   sample_data: |-
     {
     "TRID": 1,
@@ -881,7 +1197,8 @@ S06F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC6
+  structure: |
+   < ACKC6 >
   sample_data: 'secsgem.secs.data_items.ACKC6.ACCEPTED'
 
 S06F05:
@@ -891,7 +1208,11 @@ S06F05:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [DATAID, DATALENGTH]
+  structure: |
+    < L
+      < DATAID >
+      < DATALENGTH >
+    >
   sample_data: '{"DATAID": 1, "DATALENGTH": 1337}'
 
 S06F06:
@@ -901,7 +1222,8 @@ S06F06:
   reply: False
   reply_required: False
   multi_block: False
-  structure: GRANT6
+  structure: |
+   < GRANT6 >
   sample_data: 'secsgem.secs.data_items.GRANT6.BUSY'
 
 S06F07:
@@ -911,7 +1233,8 @@ S06F07:
   reply: True
   reply_required: True
   multi_block: False
-  structure: DATAID
+  structure: |
+   < DATAID >
   sample_data: '1'
 
 S06F08:
@@ -921,7 +1244,22 @@ S06F08:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [DATAID, CEID, [["DS", DSID, [["DV", DVNAME, DVVAL]]]]]
+  structure: |
+    < L
+      < DATAID >
+      < CEID >
+      < L DS
+        < L
+          < DSID >
+          < L DV
+            < L
+              < DVNAME >
+              < DVVAL >
+            >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATAID": 1,
@@ -939,7 +1277,19 @@ S06F11:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [DATAID, CEID, [["RPT", RPTID, [V]]]]
+  structure: |
+    < L
+      < DATAID >
+      < CEID >
+      < L RPT
+        < L
+          < RPTID >
+          < L
+            < V >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATAID": 1,
@@ -955,7 +1305,8 @@ S06F12:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC6
+  structure: |
+   < ACKC6 >
   sample_data: 'secsgem.secs.data_items.ACKC6.ACCEPTED'
 
 S06F15:
@@ -965,7 +1316,8 @@ S06F15:
   reply: True
   reply_required: True
   multi_block: False
-  structure: CEID
+  structure: |
+   < CEID >
   sample_data: '1337'
 
 S06F16:
@@ -975,7 +1327,19 @@ S06F16:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [DATAID, CEID, [["RPT", RPTID, [V]]]]
+  structure: |
+    < L
+      < DATAID >
+      < CEID >
+      < L RPT
+        < L
+          < RPTID >
+          < L
+            < V >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATAID": 1,
@@ -991,7 +1355,8 @@ S06F19:
   reply: True
   reply_required: True
   multi_block: False
-  structure: RPTID
+  structure: |
+   < RPTID >
   sample_data: 'secsgem.secs.variables.U4(1337)'
 
 S06F20:
@@ -1001,7 +1366,10 @@ S06F20:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [V]
+  structure: |
+    < L
+      < V >
+    >
   sample_data: '["ASD", 1337]'
 
 S06F21:
@@ -1011,7 +1379,8 @@ S06F21:
   reply: True
   reply_required: True
   multi_block: False
-  structure: RPTID
+  structure: |
+   < RPTID >
   sample_data: 'secsgem.secs.variables.U4(1337)'
 
 S06F22:
@@ -1037,7 +1406,8 @@ S06F23:
   reply: True
   reply_required: True
   multi_block: False
-  structure: RSDC
+  structure: |
+   < RSDC >
   sample_data: 'secsgem.secs.data_items.RSDC.PURGE'
 
 S06F24:
@@ -1047,7 +1417,8 @@ S06F24:
   reply: False
   reply_required: False
   multi_block: False
-  structure: RSDA
+  structure: |
+   < RSDA >
   sample_data: 'secsgem.secs.data_items.RSDA.ACK'
 
 S07F00:
@@ -1065,7 +1436,11 @@ S07F01:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [PPID, LENGTH]
+  structure: |
+    < L
+      < PPID >
+      < LENGTH >
+    >
   sample_data: '{"PPID": "program", "LENGTH": 4}'
 
 S07F02:
@@ -1075,7 +1450,8 @@ S07F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: PPGNT
+  structure: |
+   < PPGNT >
   sample_data: 'secsgem.secs.data_items.PPGNT.OK'
 
 S07F03:
@@ -1085,7 +1461,11 @@ S07F03:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [PPID, PPBODY]
+  structure: |
+    < L
+      < PPID >
+      < PPBODY >
+    >
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F04:
@@ -1095,7 +1475,8 @@ S07F04:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC7
+  structure: |
+   < ACKC7 >
   sample_data: 'secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW'
 
 S07F05:
@@ -1105,7 +1486,8 @@ S07F05:
   reply: True
   reply_required: True
   multi_block: False
-  structure: PPID
+  structure: |
+   < PPID >
   sample_data: '"program"'
 
 S07F06:
@@ -1115,7 +1497,11 @@ S07F06:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [PPID, PPBODY]
+  structure: |
+    < L
+      < PPID >
+      < PPBODY >
+    >
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F17:
@@ -1125,7 +1511,10 @@ S07F17:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [PPID]
+  structure: |
+    < L
+      < PPID >
+    >
   sample_data: '["program1", "program2"]'
 
 S07F18:
@@ -1135,7 +1524,8 @@ S07F18:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC7
+  structure: |
+   < ACKC7 >
   sample_data: 'secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED'
 
 S07F19:
@@ -1153,7 +1543,10 @@ S07F20:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [PPID]
+  structure: |
+    < L
+      < PPID >
+    >
   sample_data: '["program1", "program2"]'
 
 S09F00:
@@ -1171,7 +1564,8 @@ S09F01:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MHEAD
+  structure: |
+   < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F03:
@@ -1181,7 +1575,8 @@ S09F03:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MHEAD
+  structure: |
+   < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F05:
@@ -1191,7 +1586,8 @@ S09F05:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MHEAD
+  structure: |
+   < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F07:
@@ -1201,7 +1597,8 @@ S09F07:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MHEAD
+  structure: |
+   < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F09:
@@ -1211,7 +1608,8 @@ S09F09:
   reply: False
   reply_required: False
   multi_block: False
-  structure: SHEAD
+  structure: |
+   < SHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F11:
@@ -1221,7 +1619,8 @@ S09F11:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MHEAD
+  structure: |
+   < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F13:
@@ -1231,7 +1630,11 @@ S09F13:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [MEXP, EDID]
+  structure: |
+    < L
+      < MEXP >
+      < EDID>
+    >
   sample_data: '{"MEXP": "S01E01", "EDID": "data"}'
 
 S10F00:
@@ -1249,7 +1652,11 @@ S10F01:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [TID, TEXT]
+  structure: |
+    < L
+      < TID >
+      < TEXT >
+    >
   sample_data: '{"TID": 0, "TEXT": "hello?"}'
 
 S10F02:
@@ -1259,7 +1666,8 @@ S10F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC10
+  structure: |
+   < ACKC10 >
   sample_data: 'secsgem.secs.data_items.ACKC10.ACCEPTED'
 
 S10F03:
@@ -1269,7 +1677,11 @@ S10F03:
   reply: True
   reply_required: False
   multi_block: False
-  structure: [TID, TEXT]
+  structure: |
+    < L
+      < TID >
+      < TEXT >
+    >
   sample_data: '{"TID": 0, "TEXT": "hello!"}'
 
 S10F04:
@@ -1279,7 +1691,8 @@ S10F04:
   reply: False
   reply_required: False
   multi_block: False
-  structure: ACKC10
+  structure: |
+   < ACKC10 >
   sample_data: 'secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE'
 
 S12F00:
@@ -1305,7 +1718,7 @@ S12F01:
       < FFROT >
       < ORLOC >
       < RPSEL >
-      < L REFP
+      < L
         < REFP >
       >
       < DUTMS >
@@ -1342,7 +1755,8 @@ S12F02:
   reply: False
   reply_required: False
   multi_block: False
-  structure: SDACK
+  structure: |
+   < SDACK >
   sample_data: 'secsgem.secs.data_items.SDACK.ACK'
 
 S12F03:
@@ -1352,7 +1766,18 @@ S12F03:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP, MAPFT, FNLOC, FFROT, ORLOC, PRAXI, BCEQU, NULBC]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < MAPFT >
+      < FNLOC >
+      < FFROT >
+      < ORLOC >
+      < PRAXI >
+      < BCEQU >
+      < NULBC >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1379,7 +1804,7 @@ S12F04:
       < FNLOC >
       < ORLOC >
       < RPSEL >
-      < L REFP
+      < L
         < REFP >
       >
       < DUTMS >
@@ -1417,7 +1842,13 @@ S12F05:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP, MAPFT, MLCL]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < MAPFT >
+      < MLCL >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1432,7 +1863,8 @@ S12F06:
   reply: False
   reply_required: False
   multi_block: False
-  structure: GRNT1
+  structure: |
+   < GRNT1 >
   sample_data: 'secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN'
 
 S12F07:
@@ -1442,7 +1874,17 @@ S12F07:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [MID, IDTYP, [[RSINF, BINLT]]]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < L
+        < L
+          < RSINF >
+          < BINLT >
+        >
+      >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1458,7 +1900,8 @@ S12F08:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MDACK
+  structure: |
+   < MDACK >
   sample_data: 'secsgem.secs.data_items.MDACK.ABORT_MAP'
 
 S12F09:
@@ -1468,7 +1911,13 @@ S12F09:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [MID, IDTYP, STRP, BINLT]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < STRP >
+      < BINLT >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1483,7 +1932,8 @@ S12F10:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MDACK
+  structure: |
+   < MDACK >
   sample_data: 'secsgem.secs.data_items.MDACK.ACK'
 
 S12F11:
@@ -1493,7 +1943,17 @@ S12F11:
   reply: True
   reply_required: True
   multi_block: True
-  structure: [MID, IDTYP, [[XYPOS, BINLT]]]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < L
+        < L
+          < XYPOS >
+          < BINLT >
+        >
+      >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1509,7 +1969,8 @@ S12F12:
   reply: False
   reply_required: False
   multi_block: False
-  structure: MDACK
+  structure: |
+   < MDACK >
   sample_data: 'secsgem.secs.data_items.MDACK.FORMAT_ERROR'
 
 S12F13:
@@ -1519,7 +1980,11 @@ S12F13:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+    >
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F14:
@@ -1529,7 +1994,17 @@ S12F14:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [MID, IDTYP, [[RSINF, BINLT]]]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < L
+        < L
+          < RSINF >
+          < BINLT >
+        >
+      >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1545,7 +2020,11 @@ S12F15:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+    >
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F16:
@@ -1555,7 +2034,13 @@ S12F16:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [MID, IDTYP, STRP, BINLT]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < STRP >
+      < BINLT >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1570,7 +2055,12 @@ S12F17:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [MID, IDTYP, SDBIN]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < SDBIN >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1584,7 +2074,17 @@ S12F18:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [MID, IDTYP, [[XYPOS, BINLT]]]
+  structure: |
+    < L
+      < MID >
+      < IDTYP >
+      < L
+        < L
+          < XYPOS >
+          < BINLT >
+        >
+      >
+    >
   sample_data: |-
     {
     "MID": "materialID",
@@ -1600,7 +2100,11 @@ S12F19:
   reply: False
   reply_required: False
   multi_block: False
-  structure: [MAPER, DATLC]
+  structure: |
+    < L
+      < MAPER >
+      < DATLC >
+    >
   sample_data: '{"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0}'
 
 S14F00:
@@ -1618,7 +2122,24 @@ S14F01:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [OBJSPEC, OBJTYPE, [OBJID], [["FILTER", ATTRID, ATTRDATA, ATTRRELN]], [ATTRID]]
+  structure: |
+    < L
+      < OBJSPEC >
+      < OBJTYPE >
+      < L
+        < OBJID >
+      >
+      < L FILTER
+        < L
+          < ATTRID >
+          < ATTRDATA >
+          < ATTRRELN >
+        >
+      >
+      < L
+        < ATTRID >
+      >
+    >
   sample_data: |-
     {
     "OBJSPEC": '',
@@ -1634,7 +2155,29 @@ S14F02:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[[OBJID, [["ATTRIBS", ATTRID, ATTRDATA]]]], ["ERRORS", OBJACK, [["ERROR", ERRCODE, ERRTEXT]]]]
+  structure: |
+    < L
+      < L
+        < L
+          < OBJID >
+          < L ATTRIBS
+            < L
+              < ATTRID >
+              < ATTRDATA >
+            >
+          >
+        >
+      >
+      < L ERRORS
+        < OBJACK >
+        < L ERROR
+          < L
+            < ERRCODE >
+            < ERRTEXT >
+          >
+        >
+      >
+    >
   sample_data: |-
     {
     "DATA": [{
@@ -1644,8 +2187,13 @@ S14F02:
             {"ATTRID": "Rows", "ATTRDATA": 4},
             {"ATTRID": "Columns", "ATTRDATA": 4},
             {"ATTRID": "CellStatus", "ATTRDATA": 6},
-            {"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}],
-        "ERRORS": {"OBJACK": 0}}
+            {"ATTRID": "LotID", "ATTRDATA":"LOT001"}
+          ]
+      }],
+      "ERRORS": {
+        "OBJACK": 0
+      }
+    }
 
 S14F03:
   description: SetAttr request
@@ -1654,7 +2202,20 @@ S14F03:
   reply: True
   reply_required: True
   multi_block: False
-  structure: [OBJSPEC, OBJTYPE, [OBJID], [["ATTRIBS", ATTRID, ATTRDATA]]]
+  structure: |
+    < L
+      < OBJSPEC >
+      < OBJTYPE >
+      < L
+        < OBJID >
+      >
+      < L ATTRIBS
+        < L
+          < ATTRID >
+          < ATTRDATA >
+        >
+      >
+    >
   sample_data: |-
     {
       "OBJSPEC": '',

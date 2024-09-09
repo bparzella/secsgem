@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 46."""
 
-from secsgem.secs.data_items import LIMITACK, LIMITID, LVACK, VID, VLAACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -81,19 +80,21 @@ class SecsS02F46(SecsStreamFunction):
     _stream = 2
     _function = 46
 
-    _data_format = [
-        VLAACK,
-        [
-            [
-                VID,
-                LVACK,
-                [
-                    LIMITID,
-                    LIMITACK,
-                ],
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < VLAACK >
+      < L
+        < L
+          < VID >
+          < LVACK >
+          < L
+            < LIMITID >
+            < LIMITACK >
+          >
+        >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 24."""
 
-from secsgem.secs.data_items import TIAACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F24(SecsStreamFunction):
     _stream = 2
     _function = 24
 
-    _data_format = TIAACK
+    _data_format = """
+    < TIAACK >
+    """
 
     _to_host = True
     _to_equipment = False

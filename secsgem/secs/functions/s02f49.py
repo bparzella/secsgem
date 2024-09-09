@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 49."""
 
-from secsgem.secs.data_items import CEPVAL, CPNAME, DATAID, OBJSPEC, RCMD
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -75,18 +74,19 @@ class SecsS02F49(SecsStreamFunction):
     _stream = 2
     _function = 49
 
-    _data_format = [
-        DATAID,
-        OBJSPEC,
-        RCMD,
-        [
-            [
-                "PARAMS",
-                CPNAME,
-                CEPVAL,
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < DATAID >
+      < OBJSPEC >
+      < RCMD >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CEPVAL >
+        >
+      >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

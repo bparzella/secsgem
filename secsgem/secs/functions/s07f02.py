@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 07 function 02."""
 
-from secsgem.secs.data_items import PPGNT
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS07F02(SecsStreamFunction):
     _stream = 7
     _function = 2
 
-    _data_format = PPGNT
+    _data_format = """
+    < PPGNT >
+    """
 
     _to_host = True
     _to_equipment = True

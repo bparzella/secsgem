@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 08."""
 
-from secsgem.secs.data_items import CEID, DATAID, DSID, DVNAME, DVVAL
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -88,23 +87,23 @@ class SecsS06F08(SecsStreamFunction):
     _stream = 6
     _function = 8
 
-    _data_format = [
-        DATAID,
-        CEID,
-        [
-            [
-                "DS",
-                DSID,
-                [
-                    [
-                        "DV",
-                        DVNAME,
-                        DVVAL,
-                    ],
-                ],
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < DATAID >
+      < CEID >
+      < L DS
+        < L
+          < DSID >
+          < L DV
+            < L
+              < DVNAME >
+              < DVVAL >
+            >
+          >
+        >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 23."""
 
-from secsgem.secs.data_items import CEID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -49,7 +48,11 @@ class SecsS01F23(SecsStreamFunction):
     _stream = 1
     _function = 23
 
-    _data_format = [CEID]
+    _data_format = """
+    < L
+      < CEID >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 12 function 06."""
 
-from secsgem.secs.data_items import GRNT1
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS12F06(SecsStreamFunction):
     _stream = 12
     _function = 6
 
-    _data_format = GRNT1
+    _data_format = """
+    < GRNT1 >
+    """
 
     _to_host = False
     _to_equipment = True

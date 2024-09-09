@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 50."""
 
-from secsgem.secs.data_items import CPACK, CPNAME, HCACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -70,16 +69,17 @@ class SecsS02F50(SecsStreamFunction):
     _stream = 2
     _function = 50
 
-    _data_format = [
-        HCACK,
-        [
-            [
-                "PARAMS",
-                CPNAME,
-                CPACK,
-            ],
-        ],
-    ]
+    _data_format = """
+    < L
+      < HCACK >
+      < L PARAMS
+        < L
+          < CPNAME >
+          < CPACK >
+        >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

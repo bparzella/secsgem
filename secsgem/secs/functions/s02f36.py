@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 36."""
 
-from secsgem.secs.data_items import LRACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F36(SecsStreamFunction):
     _stream = 2
     _function = 36
 
-    _data_format = LRACK
+    _data_format = """
+    < LRACK >
+    """
 
     _to_host = True
     _to_equipment = False

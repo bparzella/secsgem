@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 12 function 09."""
 
-from secsgem.secs.data_items import BINLT, IDTYP, MID, STRP
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -60,12 +59,14 @@ class SecsS12F09(SecsStreamFunction):
     _stream = 12
     _function = 9
 
-    _data_format = [
-        MID,
-        IDTYP,
-        STRP,
-        BINLT,
-    ]
+    _data_format = """
+    < L
+      < MID >
+      < IDTYP >
+      < STRP >
+      < BINLT >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

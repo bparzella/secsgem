@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 12 function 03."""
 
-from secsgem.secs.data_items import BCEQU, FFROT, FNLOC, IDTYP, MAPFT, MID, NULBC, ORLOC, PRAXI
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -80,17 +79,19 @@ class SecsS12F03(SecsStreamFunction):
     _stream = 12
     _function = 3
 
-    _data_format = [
-        MID,
-        IDTYP,
-        MAPFT,
-        FNLOC,
-        FFROT,
-        ORLOC,
-        PRAXI,
-        BCEQU,
-        NULBC,
-    ]
+    _data_format = """
+    < L
+      < MID >
+      < IDTYP >
+      < MAPFT >
+      < FNLOC >
+      < FFROT >
+      < ORLOC >
+      < PRAXI >
+      < BCEQU >
+      < NULBC >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

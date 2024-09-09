@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 25."""
 
-from secsgem.secs.data_items import ABS
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F25(SecsStreamFunction):
     _stream = 2
     _function = 25
 
-    _data_format = ABS
+    _data_format = """
+    < ABS >
+    """
 
     _to_host = True
     _to_equipment = True

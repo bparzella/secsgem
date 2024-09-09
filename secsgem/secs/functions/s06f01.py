@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 01."""
 
-from secsgem.secs.data_items import SMPLN, STIME, SV, TRID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -66,12 +65,16 @@ class SecsS06F01(SecsStreamFunction):
     _stream = 6
     _function = 1
 
-    _data_format = [
-        TRID,
-        SMPLN,
-        STIME,
-        [SV],
-    ]
+    _data_format = """
+    < L
+      < TRID >
+      < SMPLN >
+      < STIME >
+      < L
+        < SV >
+      >
+    >
+    """
 
     _to_host = True
     _to_equipment = False

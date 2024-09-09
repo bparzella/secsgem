@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 16."""
 
-from secsgem.secs.data_items import OFLACK
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS01F16(SecsStreamFunction):
     _stream = 1
     _function = 16
 
-    _data_format = OFLACK
+    _data_format = """
+    < OFLACK >
+    """
 
     _to_host = True
     _to_equipment = False

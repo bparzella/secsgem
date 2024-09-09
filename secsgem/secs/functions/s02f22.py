@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 22."""
 
-from secsgem.secs.data_items import CMDA
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F22(SecsStreamFunction):
     _stream = 2
     _function = 22
 
-    _data_format = CMDA
+    _data_format = """
+    < CMDA >
+    """
 
     _to_host = True
     _to_equipment = False

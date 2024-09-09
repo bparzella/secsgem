@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 02 function 16."""
 
-from secsgem.secs.data_items import EAC
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS02F16(SecsStreamFunction):
     _stream = 2
     _function = 16
 
-    _data_format = EAC
+    _data_format = """
+    < EAC >
+    """
 
     _to_host = True
     _to_equipment = False

@@ -117,7 +117,7 @@ class SecsS12F01(SecsStreamFunction):
       < FFROT >
       < ORLOC >
       < RPSEL >
-      < L REFP
+      < L
         < REFP >
       >
       < DUTMS >

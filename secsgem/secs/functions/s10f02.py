@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 10 function 02."""
 
-from secsgem.secs.data_items import ACKC10
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS10F02(SecsStreamFunction):
     _stream = 10
     _function = 2
 
-    _data_format = ACKC10
+    _data_format = """
+    < ACKC10 >
+    """
 
     _to_host = False
     _to_equipment = True

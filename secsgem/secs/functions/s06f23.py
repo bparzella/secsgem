@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 23."""
 
-from secsgem.secs.data_items import RSDC
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS06F23(SecsStreamFunction):
     _stream = 6
     _function = 23
 
-    _data_format = RSDC
+    _data_format = """
+    < RSDC >
+    """
 
     _to_host = False
     _to_equipment = True

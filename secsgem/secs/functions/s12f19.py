@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 12 function 19."""
 
-from secsgem.secs.data_items import DATLC, MAPER
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -50,10 +49,12 @@ class SecsS12F19(SecsStreamFunction):
     _stream = 12
     _function = 19
 
-    _data_format = [
-        MAPER,
-        DATLC,
-    ]
+    _data_format = """
+    < L
+      < MAPER >
+      < DATLC >
+    >
+    """
 
     _to_host = True
     _to_equipment = True

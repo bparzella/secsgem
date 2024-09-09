@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 01 function 21."""
 
-from secsgem.secs.data_items import VID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -49,7 +48,11 @@ class SecsS01F21(SecsStreamFunction):
     _stream = 1
     _function = 21
 
-    _data_format = [VID]
+    _data_format = """
+    < L
+      < VID >
+    >
+    """
 
     _to_host = False
     _to_equipment = True

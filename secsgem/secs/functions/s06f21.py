@@ -15,7 +15,6 @@
 #####################################################################
 """Class for stream 06 function 21."""
 
-from secsgem.secs.data_items import RPTID
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
@@ -43,7 +42,9 @@ class SecsS06F21(SecsStreamFunction):
     _stream = 6
     _function = 21
 
-    _data_format = RPTID
+    _data_format = """
+    < RPTID >
+    """
 
     _to_host = False
     _to_equipment = True
