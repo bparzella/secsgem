@@ -61,6 +61,7 @@ def _generate_from_sfdl(tokenizer: SFDLTokenizer, token_name: str | None = None)
     item_key_token = None
     if tokenizer.tokens.peek().value not in "<>":
         item_key_token = tokenizer.tokens.next()
+        token_name = item_key_token.value
 
     sub_items: list = []
 
