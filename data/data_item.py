@@ -124,6 +124,7 @@ class DataItem:
 
         data_item_template = env.get_template("data_items.py.j2")
         data_item_init_template = env.get_template("data_items_init.py.j2")
+        data_item_all_template = env.get_template("data_items_all.py.j2")
         data_item_md_template = env.get_template("data_items.md.j2")
 
         for data_item in data_items:
@@ -138,6 +139,14 @@ class DataItem:
 
         out_path = target_path / "__init__.py"
         out_path.write_text(init_code)
+
+        all_code = data_item_all_template.render(
+            data_items=data_items,
+        )
+
+        out_path = target_path / "_all.py"
+        out_path.write_text(all_code)
+
 
         md_code = data_item_md_template.render(
             data_items=data_items,
