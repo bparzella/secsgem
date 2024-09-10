@@ -47,6 +47,8 @@ class {{ data.name }}(DataItemBase):{{ data.linter_message }}
 
 {% endif %}    """
 
+    name = "{{ data.name }}"
+
   {% if data.single_type %}
     __type__ = variables.{{ data.type[0] }}
   {% else %}
