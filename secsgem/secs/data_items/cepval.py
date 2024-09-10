@@ -44,6 +44,8 @@ class CEPVAL(DataItemBase):
 
     """
 
+    name = "CEPVAL"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Array,

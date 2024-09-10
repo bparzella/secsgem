@@ -37,6 +37,8 @@ class YDIES(DataItemBase):
 
     """
 
+    name = "YDIES"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

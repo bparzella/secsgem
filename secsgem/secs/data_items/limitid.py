@@ -33,5 +33,7 @@ class LIMITID(DataItemBase):
 
     """
 
+    name = "LIMITID"
+
     __type__ = variables.Binary
     __count__ = 1

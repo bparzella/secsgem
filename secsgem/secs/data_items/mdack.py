@@ -48,6 +48,8 @@ class MDACK(DataItemBase):
 
     """
 
+    name = "MDACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -55,3 +57,10 @@ class MDACK(DataItemBase):
     FORMAT_ERROR = 1
     UNKNOWN_ID = 2
     ABORT_MAP = 3
+
+    _values = {
+        "ACK": 0,
+        "FORMAT_ERROR": 1,
+        "UNKNOWN_ID": 2,
+        "ABORT_MAP": 3,
+    }

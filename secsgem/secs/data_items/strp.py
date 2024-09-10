@@ -36,6 +36,8 @@ class STRP(DataItemBase):
 
     """
 
+    name = "STRP"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

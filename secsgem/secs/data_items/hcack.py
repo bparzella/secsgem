@@ -53,6 +53,8 @@ class HCACK(DataItemBase):
 
     """
 
+    name = "HCACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -63,3 +65,13 @@ class HCACK(DataItemBase):
     ACK_FINISH_LATER = 4
     ALREADY_IN_CONDITION = 5
     NO_OBJECT = 6
+
+    _values = {
+        "ACK": 0,
+        "INVALID_COMMAND": 1,
+        "CANT_PERFORM_NOW": 2,
+        "PARAMETER_INVALID": 3,
+        "ACK_FINISH_LATER": 4,
+        "ALREADY_IN_CONDITION": 5,
+        "NO_OBJECT": 6,
+    }

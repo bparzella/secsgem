@@ -31,5 +31,7 @@ class SHEAD(DataItemBase):
 
     """
 
+    name = "SHEAD"
+
     __type__ = variables.Binary
     __count__ = 10

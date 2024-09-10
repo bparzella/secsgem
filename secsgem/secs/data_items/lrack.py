@@ -50,6 +50,8 @@ class LRACK(DataItemBase):
 
     """
 
+    name = "LRACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -59,3 +61,12 @@ class LRACK(DataItemBase):
     CEID_LINKED = 3
     CEID_UNKNOWN = 4
     RPTID_UNKNOWN = 5
+
+    _values = {
+        "ACK": 0,
+        "INSUFFICIENT_SPACE": 1,
+        "INVALID_FORMAT": 2,
+        "CEID_LINKED": 3,
+        "CEID_UNKNOWN": 4,
+        "RPTID_UNKNOWN": 5,
+    }

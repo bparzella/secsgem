@@ -40,6 +40,8 @@ class EDID(DataItemBase):
 
     """
 
+    name = "EDID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

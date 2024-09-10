@@ -33,5 +33,7 @@ class TIMESTAMP(DataItemBase):
 
     """
 
+    name = "TIMESTAMP"
+
     __type__ = variables.String
     __count__ = 32

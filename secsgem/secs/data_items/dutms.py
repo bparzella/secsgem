@@ -31,4 +31,6 @@ class DUTMS(DataItemBase):
 
     """
 
+    name = "DUTMS"
+
     __type__ = variables.String

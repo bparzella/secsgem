@@ -33,5 +33,7 @@ class ALTX(DataItemBase):
 
     """
 
+    name = "ALTX"
+
     __type__ = variables.String
     __count__ = 120

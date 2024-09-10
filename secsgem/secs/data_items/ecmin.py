@@ -43,6 +43,8 @@ class ECMIN(DataItemBase):
 
     """
 
+    name = "ECMIN"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

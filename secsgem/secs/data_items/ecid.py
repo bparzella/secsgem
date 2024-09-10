@@ -42,6 +42,8 @@ class ECID(DataItemBase):
 
     """
 
+    name = "ECID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

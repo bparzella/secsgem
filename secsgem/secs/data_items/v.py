@@ -47,6 +47,8 @@ class V(DataItemBase):  # pylint: disable=invalid-name
 
     """
 
+    name = "V"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Array,

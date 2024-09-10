@@ -44,9 +44,17 @@ class ONLACK(DataItemBase):
 
     """
 
+    name = "ONLACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
     NOT_ALLOWED = 1
     ALREADY_ON = 2
+
+    _values = {
+        "ACCEPTED": 0,
+        "NOT_ALLOWED": 1,
+        "ALREADY_ON": 2,
+    }

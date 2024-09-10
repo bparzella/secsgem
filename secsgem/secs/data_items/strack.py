@@ -44,6 +44,8 @@ class STRACK(DataItemBase):
 
     """
 
+    name = "STRACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -51,3 +53,10 @@ class STRACK(DataItemBase):
     STREAM_UNKNOWN = 2
     FUNCTION_UNKNOWN = 3
     SECONDARY = 4
+
+    _values = {
+        "NOT_ALLOWED": 1,
+        "STREAM_UNKNOWN": 2,
+        "FUNCTION_UNKNOWN": 3,
+        "SECONDARY": 4,
+    }

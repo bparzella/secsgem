@@ -40,6 +40,8 @@ class TRID(DataItemBase):
 
     """
 
+    name = "TRID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

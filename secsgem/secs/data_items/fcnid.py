@@ -32,5 +32,7 @@ class FCNID(DataItemBase):
 
     """
 
+    name = "FCNID"
+
     __type__ = variables.U1
     __count__ = 1

@@ -56,9 +56,17 @@ class IDTYP(DataItemBase):
 
     """
 
+    name = "IDTYP"
+
     __type__ = variables.Binary
     __count__ = 1
 
     WAFER = 0
     WAFER_CASSETTE = 1
     FILM_FRAME = 2
+
+    _values = {
+        "WAFER": 0,
+        "WAFER_CASSETTE": 1,
+        "FILM_FRAME": 2,
+    }

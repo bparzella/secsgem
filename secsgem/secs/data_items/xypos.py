@@ -36,6 +36,8 @@ class XYPOS(DataItemBase):
 
     """
 
+    name = "XYPOS"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

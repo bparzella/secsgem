@@ -55,6 +55,8 @@ class PRAXI(DataItemBase):
 
     """
 
+    name = "PRAXI"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -66,3 +68,14 @@ class PRAXI(DataItemBase):
     COLS_LEFT_DECR = 5
     COLS_RIGHT_INCR = 6
     COLS_RIGHT_DECR = 7
+
+    _values = {
+        "ROWS_TOP_INCR": 0,
+        "ROWS_TOP_DECR": 1,
+        "ROWS_BOT_INCR": 2,
+        "ROWS_BOT_DECR": 3,
+        "COLS_LEFT_INCR": 4,
+        "COLS_LEFT_DECR": 5,
+        "COLS_RIGHT_INCR": 6,
+        "COLS_RIGHT_DECR": 7,
+    }

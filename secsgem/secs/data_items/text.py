@@ -41,6 +41,8 @@ class TEXT(DataItemBase):
 
     """
 
+    name = "TEXT"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

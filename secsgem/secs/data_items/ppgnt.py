@@ -50,6 +50,8 @@ class PPGNT(DataItemBase):
 
     """
 
+    name = "PPGNT"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -59,3 +61,12 @@ class PPGNT(DataItemBase):
     INVALID_PPID = 3
     BUSY = 4
     WILL_NOT_ACCEPT = 5
+
+    _values = {
+        "OK": 0,
+        "ALREADY_HAVE": 1,
+        "NO_SPACE": 2,
+        "INVALID_PPID": 3,
+        "BUSY": 4,
+        "WILL_NOT_ACCEPT": 5,
+    }

@@ -33,6 +33,8 @@ class BCEQU(DataItemBase):
 
     """
 
+    name = "BCEQU"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

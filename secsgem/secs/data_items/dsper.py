@@ -30,4 +30,6 @@ class DSPER(DataItemBase):
 
     """
 
+    name = "DSPER"
+
     __type__ = variables.String

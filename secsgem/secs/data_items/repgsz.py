@@ -39,6 +39,8 @@ class REPGSZ(DataItemBase):
 
     """
 
+    name = "REPGSZ"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

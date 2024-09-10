@@ -39,6 +39,8 @@ class TOTSMP(DataItemBase):
 
     """
 
+    name = "TOTSMP"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

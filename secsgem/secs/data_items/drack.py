@@ -48,6 +48,8 @@ class DRACK(DataItemBase):
 
     """
 
+    name = "DRACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -56,3 +58,11 @@ class DRACK(DataItemBase):
     INVALID_FORMAT = 2
     RPTID_REDEFINED = 3
     VID_UNKNOWN = 4
+
+    _values = {
+        "ACK": 0,
+        "INSUFFICIENT_SPACE": 1,
+        "INVALID_FORMAT": 2,
+        "RPTID_REDEFINED": 3,
+        "VID_UNKNOWN": 4,
+    }

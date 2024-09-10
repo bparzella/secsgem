@@ -41,6 +41,8 @@ class PPBODY(DataItemBase):
 
     """
 
+    name = "PPBODY"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

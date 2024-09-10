@@ -33,4 +33,6 @@ class FFROT(DataItemBase):
 
     """
 
+    name = "FFROT"
+
     __type__ = variables.U2

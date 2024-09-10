@@ -30,4 +30,6 @@ class CENAME(DataItemBase):
 
     """
 
+    name = "CENAME"
+
     __type__ = variables.String

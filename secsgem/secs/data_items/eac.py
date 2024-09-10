@@ -46,6 +46,8 @@ class EAC(DataItemBase):
 
     """
 
+    name = "EAC"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -53,3 +55,10 @@ class EAC(DataItemBase):
     INVALID_CONSTANT = 1
     BUSY = 2
     OUT_OF_RANGE = 3
+
+    _values = {
+        "ACK": 0,
+        "INVALID_CONSTANT": 1,
+        "BUSY": 2,
+        "OUT_OF_RANGE": 3,
+    }

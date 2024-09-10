@@ -45,6 +45,8 @@ class CMDA(DataItemBase):
 
     """
 
+    name = "CMDA"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,
@@ -54,3 +56,9 @@ class CMDA(DataItemBase):
     DONE = 0
     COMMAND_UNKNOWN = 1
     NOT_NOW = 2
+
+    _values = {
+        "DONE": 0,
+        "COMMAND_UNKNOWN": 1,
+        "NOT_NOW": 2,
+    }

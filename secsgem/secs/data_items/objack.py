@@ -43,8 +43,15 @@ class OBJACK(DataItemBase):
 
     """
 
+    name = "OBJACK"
+
     __type__ = variables.U1
     __count__ = 1
 
     SUCCESSFUL = 0
     ERROR = 1
+
+    _values = {
+        "SUCCESSFUL": 0,
+        "ERROR": 1,
+    }

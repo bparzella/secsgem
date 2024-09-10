@@ -43,6 +43,8 @@ class LIMITMAX(DataItemBase):
 
     """
 
+    name = "LIMITMAX"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

@@ -44,9 +44,17 @@ class MAPER(DataItemBase):
 
     """
 
+    name = "MAPER"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ID_UNKNOWN = 0
     INVALID_DATA = 1
     FORMAT_ERROR = 2
+
+    _values = {
+        "ID_UNKNOWN": 0,
+        "INVALID_DATA": 1,
+        "FORMAT_ERROR": 2,
+    }

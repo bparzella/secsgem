@@ -42,8 +42,15 @@ class COMMACK(DataItemBase):
 
     """
 
+    name = "COMMACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
     DENIED = 1
+
+    _values = {
+        "ACCEPTED": 0,
+        "DENIED": 1,
+    }

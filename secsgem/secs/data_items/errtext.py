@@ -35,5 +35,7 @@ class ERRTEXT(DataItemBase):
 
     """
 
+    name = "ERRTEXT"
+
     __type__ = variables.String
     __count__ = 120

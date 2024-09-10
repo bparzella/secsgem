@@ -31,5 +31,7 @@ class STIME(DataItemBase):
 
     """
 
+    name = "STIME"
+
     __type__ = variables.String
     __count__ = 32

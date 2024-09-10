@@ -48,6 +48,8 @@ class LVACK(DataItemBase):
 
     """
 
+    name = "LVACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -56,3 +58,11 @@ class LVACK(DataItemBase):
     NO_LIMITS = 2
     DUPLICATE_VARIABLE = 3
     LIMIT_ERROR = 4
+
+    _values = {
+        "OK": 0,
+        "VARIABLE_UNKNOWN": 1,
+        "NO_LIMITS": 2,
+        "DUPLICATE_VARIABLE": 3,
+        "LIMIT_ERROR": 4,
+    }

@@ -54,6 +54,8 @@ class LIMITACK(DataItemBase):
 
     """
 
+    name = "LIMITACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -65,3 +67,14 @@ class LIMITACK(DataItemBase):
     ILLEGAL_FORMAT = 5
     ASCII_ILLEGAL = 6
     DUPLICATE = 7
+
+    _values = {
+        "OK": 0,
+        "LIMITID_UNKNOWN": 1,
+        "UPPERDB_MORE_LIMITMAX": 2,
+        "LOWERDB_LESS_LIMITMIN": 3,
+        "UPPERDB_LESS_LOWERDB": 4,
+        "ILLEGAL_FORMAT": 5,
+        "ASCII_ILLEGAL": 6,
+        "DUPLICATE": 7,
+    }

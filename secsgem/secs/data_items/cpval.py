@@ -41,6 +41,8 @@ class CPVAL(DataItemBase):
 
     """
 
+    name = "CPVAL"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

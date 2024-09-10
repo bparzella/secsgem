@@ -34,4 +34,6 @@ class FNLOC(DataItemBase):
 
     """
 
+    name = "FNLOC"
+
     __type__ = variables.U2

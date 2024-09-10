@@ -28,5 +28,7 @@ class SOFTREV(DataItemBase):
 
     """
 
+    name = "SOFTREV"
+
     __type__ = variables.String
     __count__ = 20

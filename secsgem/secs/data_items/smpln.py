@@ -38,6 +38,8 @@ class SMPLN(DataItemBase):
 
     """
 
+    name = "SMPLN"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

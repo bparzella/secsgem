@@ -42,8 +42,15 @@ class ERACK(DataItemBase):
 
     """
 
+    name = "ERACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
     CEID_UNKNOWN = 1
+
+    _values = {
+        "ACCEPTED": 0,
+        "CEID_UNKNOWN": 1,
+    }

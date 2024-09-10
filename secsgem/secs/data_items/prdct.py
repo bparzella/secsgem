@@ -35,6 +35,8 @@ class PRDCT(DataItemBase):
 
     """
 
+    name = "PRDCT"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

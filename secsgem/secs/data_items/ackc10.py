@@ -45,9 +45,17 @@ class ACKC10(DataItemBase):
 
     """
 
+    name = "ACKC10"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
     NOT_DISPLAYED = 1
     TERMINAL_NOT_AVAILABLE = 2
+
+    _values = {
+        "ACCEPTED": 0,
+        "NOT_DISPLAYED": 1,
+        "TERMINAL_NOT_AVAILABLE": 2,
+    }

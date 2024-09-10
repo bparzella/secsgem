@@ -37,5 +37,7 @@ class EXID(DataItemBase):
 
     """
 
+    name = "EXID"
+
     __type__ = variables.String
     __count__ = 20

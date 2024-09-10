@@ -40,7 +40,13 @@ class OFLACK(DataItemBase):
 
     """
 
+    name = "OFLACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
+
+    _values = {
+        "ACK": 0,
+    }

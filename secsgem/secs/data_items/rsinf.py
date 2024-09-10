@@ -36,6 +36,8 @@ class RSINF(DataItemBase):
 
     """
 
+    name = "RSINF"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

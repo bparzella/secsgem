@@ -45,6 +45,8 @@ class MID(DataItemBase):
 
     """
 
+    name = "MID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.String,

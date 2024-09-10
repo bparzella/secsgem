@@ -35,6 +35,8 @@ class RCMD(DataItemBase):
 
     """
 
+    name = "RCMD"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

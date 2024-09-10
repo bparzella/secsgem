@@ -32,5 +32,7 @@ class STRID(DataItemBase):
 
     """
 
+    name = "STRID"
+
     __type__ = variables.U1
     __count__ = 1

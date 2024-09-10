@@ -38,6 +38,8 @@ class PPID(DataItemBase):
 
     """
 
+    name = "PPID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.String,

@@ -45,9 +45,17 @@ class MAPFT(DataItemBase):
 
     """
 
+    name = "MAPFT"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ROW = 0
     ARRAY = 1
     COORDINATE = 2
+
+    _values = {
+        "ROW": 0,
+        "ARRAY": 1,
+        "COORDINATE": 2,
+    }

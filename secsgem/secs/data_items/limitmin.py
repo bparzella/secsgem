@@ -43,6 +43,8 @@ class LIMITMIN(DataItemBase):
 
     """
 
+    name = "LIMITMIN"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

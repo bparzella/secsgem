@@ -53,6 +53,8 @@ class ACKC7(DataItemBase):
 
     """
 
+    name = "ACKC7"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -63,3 +65,13 @@ class ACKC7(DataItemBase):
     PPID_NOT_FOUND = 4
     MODE_UNSUPPORTED = 5
     PERFORMED_LATER = 6
+
+    _values = {
+        "ACCEPTED": 0,
+        "NO_PERMISSION": 1,
+        "LENGTH_ERROR": 2,
+        "MATRIX_OVERFLOW": 3,
+        "PPID_NOT_FOUND": 4,
+        "MODE_UNSUPPORTED": 5,
+        "PERFORMED_LATER": 6,
+    }

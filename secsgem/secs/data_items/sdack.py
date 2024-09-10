@@ -40,7 +40,13 @@ class SDACK(DataItemBase):
 
     """
 
+    name = "SDACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
+
+    _values = {
+        "ACK": 0,
+    }

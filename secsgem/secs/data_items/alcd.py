@@ -60,6 +60,8 @@ class ALCD(DataItemBase):
 
     """
 
+    name = "ALCD"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -72,3 +74,15 @@ class ALCD(DataItemBase):
     ATTENTION_FLAGS = 7
     DATA_INTEGRITY = 8
     ALARM_SET = 128
+
+    _values = {
+        "PERSONAL_SAFETY": 1,
+        "EQUIPMENT_SAFETY": 2,
+        "PARAMETER_CONTROL_WARNING": 3,
+        "PARAMETER_CONTROL_ERROR": 4,
+        "IRRECOVERABLE_ERROR": 5,
+        "EQUIPMENT_STATUS_WARNING": 6,
+        "ATTENTION_FLAGS": 7,
+        "DATA_INTEGRITY": 8,
+        "ALARM_SET": 128,
+    }

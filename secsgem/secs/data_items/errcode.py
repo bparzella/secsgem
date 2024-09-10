@@ -187,6 +187,8 @@ class ERRCODE(DataItemBase):
 
     """
 
+    name = "ERRCODE"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.I1,

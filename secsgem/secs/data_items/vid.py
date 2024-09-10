@@ -47,6 +47,8 @@ class VID(DataItemBase):
 
     """
 
+    name = "VID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

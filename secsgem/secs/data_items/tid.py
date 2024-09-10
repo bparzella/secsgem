@@ -32,5 +32,7 @@ class TID(DataItemBase):
 
     """
 
+    name = "TID"
+
     __type__ = variables.Binary
     __count__ = 1

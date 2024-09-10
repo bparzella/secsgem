@@ -42,8 +42,15 @@ class RSPACK(DataItemBase):
 
     """
 
+    name = "RSPACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
     REJECTED = 1
+
+    _values = {
+        "ACK": 0,
+        "REJECTED": 1,
+    }

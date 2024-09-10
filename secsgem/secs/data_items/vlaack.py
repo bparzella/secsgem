@@ -44,9 +44,17 @@ class VLAACK(DataItemBase):
 
     """
 
+    name = "VLAACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
     LIMIT_DEF_ERROR = 1
     NOT_NOW = 2
+
+    _values = {
+        "ACK": 0,
+        "LIMIT_DEF_ERROR": 1,
+        "NOT_NOW": 2,
+    }

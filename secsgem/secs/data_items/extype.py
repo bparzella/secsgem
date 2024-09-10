@@ -31,4 +31,6 @@ class EXTYPE(DataItemBase):
 
     """
 
+    name = "EXTYPE"
+
     __type__ = variables.String

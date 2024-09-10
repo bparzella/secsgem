@@ -50,6 +50,8 @@ class TIAACK(DataItemBase):
 
     """
 
+    name = "TIAACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -59,3 +61,12 @@ class TIAACK(DataItemBase):
     INVALID_PERIOD = 3
     SVID_UNKNOWN = 4
     REPGSZ_INVALID = 5
+
+    _values = {
+        "OK": 0,
+        "SVID_EXCEEDED": 1,
+        "TRACES_DENIED": 2,
+        "INVALID_PERIOD": 3,
+        "SVID_UNKNOWN": 4,
+        "REPGSZ_INVALID": 5,
+    }

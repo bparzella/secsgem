@@ -31,4 +31,6 @@ class ABS(DataItemBase):
 
     """
 
+    name = "ABS"
+
     __type__ = variables.Binary

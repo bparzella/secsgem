@@ -35,5 +35,7 @@ class MHEAD(DataItemBase):
 
     """
 
+    name = "MHEAD"
+
     __type__ = variables.Binary
     __count__ = 10

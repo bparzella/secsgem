@@ -30,4 +30,6 @@ class DATLC(DataItemBase):
 
     """
 
+    name = "DATLC"
+
     __type__ = variables.U1

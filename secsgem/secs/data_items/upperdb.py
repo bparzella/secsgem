@@ -44,6 +44,8 @@ class UPPERDB(DataItemBase):
 
     """
 
+    name = "UPPERDB"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

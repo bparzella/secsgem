@@ -31,5 +31,7 @@ class CEED(DataItemBase):
 
     """
 
+    name = "CEED"
+
     __type__ = variables.Boolean
     __count__ = 1

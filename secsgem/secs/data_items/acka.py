@@ -33,5 +33,7 @@ class ACKA(DataItemBase):
 
     """
 
+    name = "ACKA"
+
     __type__ = variables.Boolean
     __count__ = 1

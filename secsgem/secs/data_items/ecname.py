@@ -30,4 +30,6 @@ class ECNAME(DataItemBase):
 
     """
 
+    name = "ECNAME"
+
     __type__ = variables.String

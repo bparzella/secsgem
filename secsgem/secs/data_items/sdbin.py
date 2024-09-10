@@ -42,8 +42,15 @@ class SDBIN(DataItemBase):
 
     """
 
+    name = "SDBIN"
+
     __type__ = variables.Binary
     __count__ = 1
 
     SEND = 0
     DONT_SEND = 1
+
+    _values = {
+        "SEND": 0,
+        "DONT_SEND": 1,
+    }

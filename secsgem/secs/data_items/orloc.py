@@ -50,6 +50,8 @@ class ORLOC(DataItemBase):
 
     """
 
+    name = "ORLOC"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -58,3 +60,11 @@ class ORLOC(DataItemBase):
     UPPER_LEFT = 2
     LOWER_LEFT = 3
     LOWER_RIGHT = 4
+
+    _values = {
+        "CENTER_DIE": 0,
+        "UPPER_RIGHT": 1,
+        "UPPER_LEFT": 2,
+        "LOWER_LEFT": 3,
+        "LOWER_RIGHT": 4,
+    }

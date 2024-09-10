@@ -42,8 +42,15 @@ class RSDC(DataItemBase):
 
     """
 
+    name = "RSDC"
+
     __type__ = variables.U1
     __count__ = 1
 
     TRANSMIT = 0
     PURGE = 1
+
+    _values = {
+        "TRANSMIT": 0,
+        "PURGE": 1,
+    }

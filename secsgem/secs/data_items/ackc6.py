@@ -41,8 +41,15 @@ class ACKC6(DataItemBase):
 
     """
 
+    name = "ACKC6"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACCEPTED = 0
     ERROR = 1
+
+    _values = {
+        "ACCEPTED": 0,
+        "ERROR": 1,
+    }

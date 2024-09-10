@@ -44,6 +44,8 @@ class CEPACK(DataItemBase):
 
     """
 
+    name = "CEPACK"
+
     __type__ = variables.Binary
 
     NO_ERROR = 0
@@ -51,3 +53,11 @@ class CEPACK(DataItemBase):
     CEPVAL_ILLEGAL_VALUE = 2
     CEPVAL_ILLEGAL_FORMAT = 3
     CPNAME_INVALID = 4
+
+    _values = {
+        "NO_ERROR": 0,
+        "CPNAME_UNKNOWN": 1,
+        "CEPVAL_ILLEGAL_VALUE": 2,
+        "CEPVAL_ILLEGAL_FORMAT": 3,
+        "CPNAME_INVALID": 4,
+    }

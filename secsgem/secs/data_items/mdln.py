@@ -33,5 +33,7 @@ class MDLN(DataItemBase):
 
     """
 
+    name = "MDLN"
+
     __type__ = variables.String
     __count__ = 20

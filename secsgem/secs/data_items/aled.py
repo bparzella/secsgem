@@ -44,8 +44,15 @@ class ALED(DataItemBase):
 
     """
 
+    name = "ALED"
+
     __type__ = variables.Binary
     __count__ = 1
 
     DISABLE = 0
     ENABLE = 128
+
+    _values = {
+        "DISABLE": 0,
+        "ENABLE": 128,
+    }

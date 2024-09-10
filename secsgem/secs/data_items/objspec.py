@@ -32,4 +32,6 @@ class OBJSPEC(DataItemBase):
 
     """
 
+    name = "OBJSPEC"
+
     __type__ = variables.String

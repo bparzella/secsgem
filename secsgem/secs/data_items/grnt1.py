@@ -52,6 +52,8 @@ class GRNT1(DataItemBase):
 
     """
 
+    name = "GRNT1"
+
     __type__ = variables.Binary
     __count__ = 1
 
@@ -62,3 +64,13 @@ class GRNT1(DataItemBase):
     DUPLICATE_ID = 4
     MATERIALID_UNKNOWN = 5
     UNKNOWN_MAP_FORMAT = 6
+
+    _values = {
+        "ACK": 0,
+        "BUSY": 1,
+        "NO_SPACE": 2,
+        "MAP_TOO_LARGE": 3,
+        "DUPLICATE_ID": 4,
+        "MATERIALID_UNKNOWN": 5,
+        "UNKNOWN_MAP_FORMAT": 6,
+    }

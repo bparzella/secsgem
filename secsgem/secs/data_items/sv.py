@@ -45,6 +45,8 @@ class SV(DataItemBase):
 
     """
 
+    name = "SV"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Array,

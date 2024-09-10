@@ -37,6 +37,8 @@ class BINLT(DataItemBase):
 
     """
 
+    name = "BINLT"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

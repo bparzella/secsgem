@@ -45,6 +45,8 @@ class ECV(DataItemBase):
 
     """
 
+    name = "ECV"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Array,

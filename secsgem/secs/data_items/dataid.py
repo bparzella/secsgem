@@ -47,6 +47,8 @@ class DATAID(DataItemBase):
 
     """
 
+    name = "DATAID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

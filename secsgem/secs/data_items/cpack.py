@@ -45,9 +45,17 @@ class CPACK(DataItemBase):
 
     """
 
+    name = "CPACK"
+
     __type__ = variables.Binary
     __count__ = 1
 
     PARAMETER_UNKNOWN = 1
     CPVAL_ILLEGAL_VALUE = 2
     CPVAL_ILLEGAL_FORMAT = 3
+
+    _values = {
+        "PARAMETER_UNKNOWN": 1,
+        "CPVAL_ILLEGAL_VALUE": 2,
+        "CPVAL_ILLEGAL_FORMAT": 3,
+    }

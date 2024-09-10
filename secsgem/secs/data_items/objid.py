@@ -38,6 +38,8 @@ class OBJID(DataItemBase):
 
     """
 
+    name = "OBJID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

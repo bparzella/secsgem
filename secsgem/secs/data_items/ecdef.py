@@ -43,6 +43,8 @@ class ECDEF(DataItemBase):
 
     """
 
+    name = "ECDEF"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

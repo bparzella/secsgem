@@ -39,6 +39,8 @@ class DVNAME(DataItemBase):
 
     """
 
+    name = "DVNAME"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

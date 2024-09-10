@@ -53,6 +53,8 @@ class ATTRRELN(DataItemBase):
 
     """
 
+    name = "ATTRRELN"
+
     __type__ = variables.U1
 
     EQUAL = 0
@@ -63,3 +65,14 @@ class ATTRRELN(DataItemBase):
     MORE_EQUAL = 5
     PRESENT = 6
     ABSENT = 7
+
+    _values = {
+        "EQUAL": 0,
+        "NOT_EQUAL": 1,
+        "LESS": 2,
+        "LESS_EQUAL": 3,
+        "MORE": 4,
+        "MORE_EQUAL": 5,
+        "PRESENT": 6,
+        "ABSENT": 7,
+    }

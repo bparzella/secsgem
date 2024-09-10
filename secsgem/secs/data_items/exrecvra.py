@@ -32,5 +32,7 @@ class EXRECVRA(DataItemBase):
 
     """
 
+    name = "EXRECVRA"
+
     __type__ = variables.String
     __count__ = 40

@@ -47,6 +47,8 @@ class ATTRDATA(DataItemBase):
 
     """
 
+    name = "ATTRDATA"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Array,

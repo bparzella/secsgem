@@ -30,4 +30,6 @@ class DVVALNAME(DataItemBase):
 
     """
 
+    name = "DVVALNAME"
+
     __type__ = variables.String

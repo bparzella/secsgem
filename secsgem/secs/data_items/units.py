@@ -33,4 +33,6 @@ class UNITS(DataItemBase):
 
     """
 
+    name = "UNITS"
+
     __type__ = variables.String

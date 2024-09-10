@@ -31,4 +31,6 @@ class EXMESSAGE(DataItemBase):
 
     """
 
+    name = "EXMESSAGE"
+
     __type__ = variables.String

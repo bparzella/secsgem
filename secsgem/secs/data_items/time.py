@@ -31,5 +31,7 @@ class TIME(DataItemBase):
 
     """
 
+    name = "TIME"
+
     __type__ = variables.String
     __count__ = 32

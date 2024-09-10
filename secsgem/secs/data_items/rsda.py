@@ -44,9 +44,17 @@ class RSDA(DataItemBase):
 
     """
 
+    name = "RSDA"
+
     __type__ = variables.Binary
     __count__ = 1
 
     ACK = 0
     DENIED_BUSY = 1
     DENIED_NO_DATA = 2
+
+    _values = {
+        "ACK": 0,
+        "DENIED_BUSY": 1,
+        "DENIED_NO_DATA": 2,
+    }

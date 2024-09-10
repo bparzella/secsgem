@@ -44,6 +44,8 @@ class LOWERDB(DataItemBase):
 
     """
 
+    name = "LOWERDB"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.Boolean,

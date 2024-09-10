@@ -31,4 +31,6 @@ class RPSEL(DataItemBase):
 
     """
 
+    name = "RPSEL"
+
     __type__ = variables.U1

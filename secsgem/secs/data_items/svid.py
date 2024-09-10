@@ -42,6 +42,8 @@ class SVID(DataItemBase):
 
     """
 
+    name = "SVID"
+
     __type__ = variables.Dynamic
     __allowedtypes__ = [
         variables.U1,

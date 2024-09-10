@@ -44,9 +44,17 @@ class GRANT6(DataItemBase):
 
     """
 
+    name = "GRANT6"
+
     __type__ = variables.Binary
     __count__ = 1
 
     GRANTED = 0
     BUSY = 1
     NOT_INTERESTED = 2
+
+    _values = {
+        "GRANTED": 0,
+        "BUSY": 1,
+        "NOT_INTERESTED": 2,
+    }
