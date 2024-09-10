@@ -267,6 +267,7 @@ class DataItem:
             return ""
 
         variables = []
+        constants = []
         for name, value in self._data["values"].items():
             if "constant" not in value:
                 continue
@@ -275,14 +276,16 @@ class DataItem:
             if "-" in val:
                 val = val.split("-", maxsplit=1)[0]
 
-            variables.append(f"{value['constant']} = {val}")
+            variables.append(f"\"{value['constant']}\": {val},")
+            constants.append(f"{value['constant']} = {val}")
 
         if len(variables) < 1:
             return ""
 
-        join_text = "\n    "
+        join_text_variables = "\n        "
+        join_text_constants = "\n    "
 
-        return f"\n    {join_text.join(variables)}\n"
+        return f"\n    {join_text_constants.join(constants)}\n\n    _values = {{\n        {join_text_variables.join(variables)}\n    }}\n"
 
     @property
     def file_name(self) -> str:
