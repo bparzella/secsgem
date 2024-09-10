@@ -1,7 +1,7 @@
 #####################################################################
 # base.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,6 +15,7 @@
 #####################################################################
 # pylint: disable=non-parent-init-called
 """Data item base class."""
+
 from __future__ import annotations
 
 from secsgem.secs import variables
@@ -26,8 +27,18 @@ class DataItemMeta(type):
     def __new__(cls, name, bases, attrs):
         """Meta class creation."""
         if name != "DataItemBase":
-            bases += (attrs["__type__"], )
+            bases += (attrs["__type__"],)
         return type.__new__(cls, name, bases, attrs)
+
+    def __getattr__(cls, key: str) -> int:
+        """Get class values by key."""
+        if not hasattr(cls, "_values"):
+            raise AttributeError(key)
+
+        if key not in cls._values:
+            raise AttributeError(key)
+
+        return cls._values[key]
 
 
 class DataItemBase(metaclass=DataItemMeta):
