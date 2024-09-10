@@ -69,7 +69,7 @@ data_item_schema = {
                 "values": {
                     "type": "object",
                     "patternProperties": {
-                        "^[0-9-]+$": {
+                        "^(\\d+)-?(\\d*)": {
                             "type": "object",
                             "properties": {
                                 "description": {
