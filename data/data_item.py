@@ -147,7 +147,6 @@ class DataItem:
         out_path = target_path / "_all.py"
         out_path.write_text(all_code)
 
-
         md_code = data_item_md_template.render(
             data_items=data_items,
         )
@@ -285,7 +284,10 @@ class DataItem:
         join_text_variables = "\n        "
         join_text_constants = "\n    "
 
-        return f"\n    {join_text_constants.join(constants)}\n\n    _values = {{\n        {join_text_variables.join(variables)}\n    }}\n"
+        return (
+            f"\n    {join_text_constants.join(constants)}\n\n"
+            f"    _values = {{\n        {join_text_variables.join(variables)}\n    }}\n"
+        )
 
     @property
     def file_name(self) -> str:
