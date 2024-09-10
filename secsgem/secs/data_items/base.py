@@ -32,7 +32,7 @@ class DataItemMeta(type):
 
     def __getattr__(cls, key: str) -> int:
         """Get class values by key."""
-        if not hasattr(cls, "_values"):
+        if not "_values" not in cls.__dict__:
             raise AttributeError(key)
 
         if key not in cls._values:
