@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import typing
 
+from secsgem.secs.data_items.data_items import DataItems
+
 from ._all import secs_streams_functions
 from .base import SecsStreamFunction
 
@@ -32,12 +34,14 @@ class StreamsFunctions:
     def __init__(
         self,
         functions: list[type[SecsStreamFunction]] | None = None,
+        data_items: DataItems | None = None,
     ) -> None:
         """Initialize streams functions container."""
         if functions is None:
             functions = secs_streams_functions.copy()
 
         self._functions = functions
+        self._data_items = data_items if data_items is not None else DataItems()
 
     def stream(self, stream: int) -> list[type[SecsStreamFunction]]:
         """Get all functions for a stream.
@@ -107,3 +111,8 @@ class StreamsFunctions:
                 self._functions.remove(func)
 
         self._functions.append(function)
+
+    @property
+    def data_items(self) -> DataItems:
+        """Get data items container."""
+        return self._data_items

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for SECS commands."""
+
 from __future__ import annotations
 
 import logging
@@ -21,6 +22,9 @@ import typing
 
 import secsgem.common
 import secsgem.hsms
+
+if typing.TYPE_CHECKING:
+    from .data_items.data_items import DataItems
 
 
 class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
@@ -298,3 +302,17 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
             raise KeyError(f"Undefined function requested: S{stream:02d}F{function:02d}")
 
         return klass
+
+    @property
+    def data_items(self) -> DataItems:
+        """Get class for stream and function.
+
+        Args:
+            stream: stream to get class for
+            function: function to get class for
+
+        Returns:
+            class for function
+
+        """
+        return self.settings.streams_functions.data_items
