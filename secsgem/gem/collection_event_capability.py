@@ -133,7 +133,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
         threading.Thread(target=_ce_sender, daemon=True).start()
 
-    def _on_s02f33(  # noqa: C901
+    def _on_s02f33(  # pylint: disable=too-many-branches  # noqa: C901
         self,
         handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
@@ -191,7 +191,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
         return result
 
-    def _on_s02f35(  # noqa: C901
+    def _on_s02f35(  # pylint: disable=too-many-branches  # noqa: C901
         self,
         handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
