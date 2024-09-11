@@ -35,10 +35,12 @@ class DataItemMeta(type):
         if not "_values" not in cls.__dict__:
             raise AttributeError(key)
 
-        if key not in cls._values:
+        values = cls.__dict__["_values"]
+
+        if key not in values:
             raise AttributeError(key)
 
-        return cls._values[key]
+        return values[key]
 
 
 class DataItemBase(metaclass=DataItemMeta):
