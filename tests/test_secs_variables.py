@@ -2,7 +2,7 @@
 #####################################################################
 # test_secs_variables.py
 #
-# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -23,7 +23,7 @@ import pytest
 
 from secsgem.secs.variables import *
 from secsgem.secs.variables.functions import generate, get_format
-from secsgem.secs.data_items import MDLN, OBJACK, SOFTREV, SVID
+from secsgem.secs.data_items.data_items import DataItems
 
 
 def printable_value(value):
@@ -448,7 +448,7 @@ class TestSecsVarDynamic(unittest.TestCase):
     def testSetDerivedItem(self):
         secsvar = Dynamic([U1, U2, U4, U8, I1, I2, I4, I8, String])
 
-        secsvar.set(SVID(10))
+        secsvar.set(DataItems().SVID(10))
 
         self.assertEqual(secsvar, 10)
 
@@ -456,12 +456,12 @@ class TestSecsVarDynamic(unittest.TestCase):
         secsvar = Dynamic([U1, U2, U4, U8, I1, I2, I4, I8])
 
         with self.assertRaises(ValueError):
-            secsvar.set(SVID("asdfg"))
+            secsvar.set(DataItems().SVID("asdfg"))
 
 
 class TestSecsVarList(unittest.TestCase):
     def testConstructor(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         self.assertEqual(secsvar.MDLN.get(), "MDLN")
         self.assertEqual(secsvar["MDLN"].get(), "MDLN")
@@ -471,7 +471,7 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[1].get(), "SOFTREV")
 
     def testConstructorWithoutDefaults(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
 
         secsvar.MDLN.set("MDLN")
         secsvar.SOFTREV.set("SOFTREV")
@@ -485,14 +485,14 @@ class TestSecsVarList(unittest.TestCase):
 
     def testConstructorIllegalValue(self):
         with self.assertRaises(ValueError):
-            secsvar = List([OBJACK, SOFTREV], ["MDLN", "SOFTREV"])
+            secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
     def testHash(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
         hash(secsvar)
 
     def testAttributeSetterMatchingSecsVar(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar.MDLN = String("NLDM")
 
@@ -501,13 +501,13 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testAttributeSetterIllegalSecsVar(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(TypeError):
             secsvar.OBJACK = String("NLDM")
 
     def testAttributeSetterMatchingValue(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar.MDLN = "NLDM"
 
@@ -516,25 +516,25 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testAttributeSetterIllegalValue(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(ValueError):
             secsvar.OBJACK = "NLDM"
 
     def testAttributeGetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(AttributeError):
             secsvar.ASDF
 
     def testAttributeSetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(AttributeError):
             secsvar.ASDF = String("NLDM")
 
     def testItemSetterMatchingSecsVar(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar["MDLN"] = String("NLDM")
 
@@ -547,13 +547,13 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0], String("NLDM"))
 
     def testItemSetterIllegalSecsVar(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(TypeError):
             secsvar["OBJACK"] = String("NLDM")
 
     def testItemSetterMatchingValue(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar["MDLN"] = "NLDM"
 
@@ -562,25 +562,25 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalValue(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(ValueError):
             secsvar["OBJACK"] = "NLDM"
 
     def testItemGetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(KeyError):
             secsvar["ASDF"]
 
     def testItemSetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(KeyError):
             secsvar["ASDF"] = String("NLDM")
 
     def testIndexSetterMatchingSecsVar(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar[0] = String("NLDM")
 
@@ -589,13 +589,13 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testIndexSetterIllegalSecsVar(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(TypeError):
             secsvar[0] = String("NLDM")
 
     def testIndexSetterMatchingValue(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         secsvar[0] = "NLDM"
 
@@ -604,25 +604,25 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testIndexSetterIllegalValue(self):
-        secsvar = List([OBJACK, SOFTREV], [0, "SOFTREV"])
+        secsvar = List([DataItems().OBJACK, DataItems().SOFTREV], [0, "SOFTREV"])
 
         with self.assertRaises(ValueError):
             secsvar[0] = "NLDM"
 
     def testIndexGetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(IndexError):
             secsvar[3]
 
     def testIndexSetterUnknown(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN", "SOFTREV"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN", "SOFTREV"])
 
         with self.assertRaises(IndexError):
             secsvar[3] = String("NLDM")
 
     def testIteration(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])
 
         for key in secsvar:
             self.assertIn(key, ["MDLN", "SOFTREV"])
@@ -630,16 +630,16 @@ class TestSecsVarList(unittest.TestCase):
 
     def testIteratorsIterator(self):
         # does not need to be tested, but raises coverage
-        iter(iter(List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])))
+        iter(iter(List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])))
 
     def testRepr(self):
-        print(List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"]))
+        print(List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"]))
 
     def testEmptyRepr(self):
         print(List([]))
 
     def testLen(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])
 
         self.assertEqual(len(secsvar), 2)
 
@@ -655,29 +655,29 @@ class TestSecsVarList(unittest.TestCase):
             List.get_name_from_format(None)
 
     def testSettingListToSmall(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
 
         secsvar.set(["MDLN"])
 
     def testSettingListMatchingLength(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
 
         secsvar.set(["MDLN", "SOFTREV"])
 
     def testSettingListToBig(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
 
         with self.assertRaises(ValueError):
             secsvar.set(["MDLN", "SOFTREV", "MDLN2"])
 
     def testSettingInvalidValue(self):
-        secsvar = List([MDLN, SOFTREV])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV])
 
         with self.assertRaises(TypeError):
             secsvar.set("MDLN")
 
     def testGettingList(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])
 
         var = secsvar.get()
 
@@ -685,12 +685,12 @@ class TestSecsVarList(unittest.TestCase):
         self.assertEqual(var["SOFTREV"], "SOFTREV1")
 
     def testEncode(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])
 
         self.assertEqual(secsvar.encode(), b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
     def testDecode(self):
-        secsvar = List([MDLN, SOFTREV], ["MDLN1", "SOFTREV1"])
+        secsvar = List([DataItems().MDLN, DataItems().SOFTREV], ["MDLN1", "SOFTREV1"])
 
         secsvar.MDLN = ""
         secsvar.SOFTREV = ""
@@ -702,96 +702,96 @@ class TestSecsVarList(unittest.TestCase):
 
         self.assertEqual(secsvar.MDLN, "MDLN1")
         self.assertEqual(secsvar.SOFTREV, "SOFTREV1")
-        
+
 
 class TestSecsVarArray(unittest.TestCase):
     def testConstructor(self):
-        secsvar = Array(MDLN, ["MDLN1", "MDLN2"])
+        secsvar = Array(DataItems().MDLN, ["MDLN1", "MDLN2"])
 
         self.assertEqual(secsvar[0], "MDLN1")
         self.assertEqual(secsvar[1], "MDLN2")
 
     def testConstructorIllegalValue(self):
         with self.assertRaises(ValueError):
-            secsvar = Array(OBJACK, ["MDLN1", "MDLN2"])
+            secsvar = Array(DataItems().OBJACK, ["MDLN1", "MDLN2"])
 
     def testHash(self):
-        secsvar = Array(MDLN)
+        secsvar = Array(DataItems().MDLN)
         hash(secsvar)
 
     def testItemSetterMatchingSecsVar(self):
-        secsvar = Array(MDLN, ["MDLN", "SOFTREV"])
+        secsvar = Array(DataItems().MDLN, ["MDLN", "SOFTREV"])
 
         secsvar[0] = String("NLDM")
 
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalSecsVar(self):
-        secsvar = Array(OBJACK, [0, 1])
+        secsvar = Array(DataItems().OBJACK, [0, 1])
 
         with self.assertRaises(TypeError):
             secsvar[0] = String("NLDM")
 
     def testItemSetterMatchingValue(self):
-        secsvar = Array(MDLN, ["MDLN", "SOFTREV"])
+        secsvar = Array(DataItems().MDLN, ["MDLN", "SOFTREV"])
 
         secsvar[0] = "NLDM"
 
         self.assertEqual(secsvar[0].get(), "NLDM")
 
     def testItemSetterIllegalValue(self):
-        secsvar = Array(OBJACK, [0, 1])
+        secsvar = Array(DataItems().OBJACK, [0, 1])
 
         with self.assertRaises(ValueError):
             secsvar[0] = "NLDM"
 
     def testItemGetterUnknown(self):
-        secsvar = Array(MDLN, ["MDLN", "SOFTREV"])
+        secsvar = Array(DataItems().MDLN, ["MDLN", "SOFTREV"])
 
         with self.assertRaises(IndexError):
             secsvar[3]
 
     def testItemSetterUnknown(self):
-        secsvar = Array(MDLN, ["MDLN", "SOFTREV"])
+        secsvar = Array(DataItems().MDLN, ["MDLN", "SOFTREV"])
 
         with self.assertRaises(IndexError):
             secsvar[3] = String("NLDM")
 
     def testIteration(self):
-        secsvar = Array(MDLN, ["MDLN1", "MDLN2"])
+        secsvar = Array(DataItems().MDLN, ["MDLN1", "MDLN2"])
 
         for value in secsvar:
             self.assertIn(value, ["MDLN1", "MDLN2"])
 
     def testIteratorsIterator(self):
         # does not need to be tested, but raises coverage
-        iter(iter(Array(MDLN, ["MDLN1", "MDLN2"])))
+        iter(iter(Array(DataItems().MDLN, ["MDLN1", "MDLN2"])))
 
     def testSettingListToSmall(self):
-        secsvar = Array(MDLN, count=2)
+        secsvar = Array(DataItems().MDLN, count=2)
 
         with self.assertRaises(ValueError):
             secsvar.set(["MDLN"])
 
     def testSettingListMatchingLength(self):
-        secsvar = Array(MDLN, count=2)
+        secsvar = Array(DataItems().MDLN, count=2)
 
         secsvar.set(["MDLN", "SOFTREV"])
 
     def testSettingListToBig(self):
-        secsvar = Array(MDLN, count=2)
+        secsvar = Array(DataItems().MDLN, count=2)
 
         with self.assertRaises(ValueError):
             secsvar.set(["MDLN", "SOFTREV", "MDLN2"])
 
     def testSettingInvalidValue(self):
-        secsvar = Array(MDLN, count=2)
+        secsvar = Array(DataItems().MDLN, count=2)
 
         with self.assertRaises(TypeError):
             secsvar.set("MDLN")
 
     def testGettingList(self):
-        secsvar = Array(MDLN, ["MDLN1", "SOFTREV1"])
+        secsvar = Array(DataItems().MDLN, ["MDLN1", "SOFTREV1"])
 
         var = secsvar.get()
 
@@ -799,12 +799,12 @@ class TestSecsVarArray(unittest.TestCase):
         self.assertEqual(var[1], "SOFTREV1")
 
     def testEncode(self):
-        secsvar = Array(MDLN, ["MDLN1", "SOFTREV1"])
+        secsvar = Array(DataItems().MDLN, ["MDLN1", "SOFTREV1"])
 
         self.assertEqual(secsvar.encode(), b"\x01\x02A\x05MDLN1A\x08SOFTREV1")
 
     def testDecode(self):
-        secsvar = Array(MDLN, ["MDLN1", "SOFTREV1"])
+        secsvar = Array(DataItems().MDLN, ["MDLN1", "SOFTREV1"])
 
         secsvar[0] = ""
         secsvar[1] = ""
@@ -858,7 +858,7 @@ class TestSecsVarBinary(unittest.TestCase):
 
     def testGettingUninitialized(self):
         secsvar = Binary()
-        
+
         self.assertEqual(secsvar.get(), b"")
 
     def testEncodeEmpty(self):
@@ -947,7 +947,7 @@ class TestSecsVarBoolean(unittest.TestCase):
 
     def testGettingUninitialized(self):
         secsvar = Boolean()
-        
+
         self.assertEqual(secsvar.get(), [])
 
     def testEncodeEmpty(self):
@@ -1255,17 +1255,17 @@ class TestSecsVarI8(unittest.TestCase):
 
     def testGettingUninitialized(self):
         secsvar = I8()
-        
+
         self.assertEqual(secsvar.get(), [])
 
     def testEncode(self):
         secsvar = I8(1337)
-        
+
         self.assertEqual(secsvar.encode(), b"a\x08\x00\x00\x00\x00\x00\x00\x059")
 
     def testWrongLengthDecode(self):
         secsvar = I8(0)
-        
+
         with self.assertRaises(ValueError):
             secsvar.decode(b"a\x08\x00\x00\x00\x00\x00\x00")
 

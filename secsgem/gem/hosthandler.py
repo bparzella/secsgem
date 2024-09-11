@@ -1,7 +1,7 @@
 #####################################################################
 # hosthandler.py
 #
-# (c) Copyright 2013-2021, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,14 +14,18 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM host."""
+
 from __future__ import annotations
 
 import collections
+import typing
 
 import secsgem.common
-import secsgem.secs
 
 from .handler import GemHandler
+
+if typing.TYPE_CHECKING:
+    import secsgem.secs
 
 
 class GemHostHandler(GemHandler):
@@ -53,10 +57,7 @@ class GemHostHandler(GemHandler):
         # delete all reports
         self.disable_ceid_reports()
 
-    def subscribe_collection_event(self,
-                                   ceid: int | str,
-                                   dvs: list[int | str],
-                                   report_id: int | str | None = None):
+    def subscribe_collection_event(self, ceid: int | str, dvs: list[int | str], report_id: int | str | None = None):
         """Subscribe to a collection event.
 
         :param ceid: ID of the collection event
@@ -76,19 +77,19 @@ class GemHostHandler(GemHandler):
         self.report_subscriptions[report_id] = dvs
 
         # create report
-        self.send_and_waitfor_response(self.stream_function(2, 33)(
-            {"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}))
+        self.send_and_waitfor_response(
+            self.stream_function(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]})
+        )
 
         # link event report to collection event
-        self.send_and_waitfor_response(self.stream_function(2, 35)(
-            {"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}))
+        self.send_and_waitfor_response(
+            self.stream_function(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]})
+        )
 
         # enable collection event
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
-    def send_remote_command(self,
-                            rcmd: int | str,
-                            params: list[str]):
+    def send_remote_command(self, rcmd: int | str, params: list[str]):
         """Send a remote command.
 
         :param rcmd: Name of command
@@ -110,8 +111,7 @@ class GemHostHandler(GemHandler):
         # send remote command
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(s2f41))
 
-    def delete_process_programs(self,
-                                ppids: list[int | str]):
+    def delete_process_programs(self, ppids: list[int | str]):
         """Delete a list of process program.
 
         :param ppids: Process programs to delete
@@ -121,7 +121,8 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))).get()
+            self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))
+        ).get()
 
     def get_process_program_list(self) -> secsgem.secs.SecsStreamFunction:
         """Get process program list."""
@@ -129,7 +130,8 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(7, 19)())).get()
+            self.send_and_waitfor_response(self.stream_function(7, 19)())
+        ).get()
 
     def go_online(self) -> str | None:
         """Set control state to online."""
@@ -148,7 +150,8 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(1, 15)())).get()
+            self.send_and_waitfor_response(self.stream_function(1, 15)())
+        ).get()
 
     def enable_alarm(self, alid: int | str):
         """Enable alarm.
@@ -158,8 +161,11 @@ class GemHostHandler(GemHandler):
         """
         self._logger.info("Enable alarm %d", alid)
 
-        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
-            {"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": alid}))).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(
+                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.ENABLE, "ALID": alid})
+            )
+        ).get()
 
     def disable_alarm(self, alid: int | str):
         """Disable alarm.
@@ -169,11 +175,13 @@ class GemHostHandler(GemHandler):
         """
         self._logger.info("Disable alarm %d", alid)
 
-        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(5, 3)(
-            {"ALED": secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}))).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(
+                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.DISABLE, "ALID": alid})
+            )
+        ).get()
 
-    def list_alarms(self,
-                    alids: list[int | str] | None = None):
+    def list_alarms(self, alids: list[int | str] | None = None):
         """List alarms.
 
         :param alids: alarms to list details for
@@ -186,22 +194,24 @@ class GemHostHandler(GemHandler):
             self._logger.info("List alarms %s", alids)
 
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(5, 5)(alids))).get()
+            self.send_and_waitfor_response(self.stream_function(5, 5)(alids))
+        ).get()
 
     def list_enabled_alarms(self):
         """List enabled alarms."""
         self._logger.info("List all enabled alarms")
 
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(5, 7)())).get()
+            self.send_and_waitfor_response(self.stream_function(5, 7)())
+        ).get()
 
     def _on_alarm_received(self, handler, alarm_id, alarm_code, alarm_text):
         del handler, alarm_id, alarm_code, alarm_text  # unused variables
-        return secsgem.secs.data_items.ACKC5.ACCEPTED
+        return self.settings.data_items.ACKC5.ACCEPTED
 
-    def _on_s05f01(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s05f01(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 1, Alarm request.
 
         Args:
@@ -213,14 +223,16 @@ class GemHostHandler(GemHandler):
 
         result = self._callback_handler.alarm_received(handler, s5f1.ALID, s5f1.ALCD, s5f1.ALTX)
 
-        self.events.fire("alarm_received", {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX,
-                                            "handler": self.protocol, "peer": self})
+        self.events.fire(
+            "alarm_received",
+            {"code": s5f1.ALCD, "alid": s5f1.ALID, "text": s5f1.ALTX, "handler": self.protocol, "peer": self},
+        )
 
         return self.stream_function(5, 2)(result)
 
-    def _on_s06f11(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s06f11(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 6, Function 11, Event Report Send.
 
         Args:
@@ -239,22 +251,26 @@ class GemHostHandler(GemHandler):
             values = []
 
             for index, data_value_id in enumerate(report_dvs):
-                values.append({"dvid": data_value_id,
-                               "value": report_values[index]})
+                values.append({"dvid": data_value_id, "value": report_values[index]})
 
-            data = {"ceid": function.CEID, "rptid": report.RPTID, "values": values,
-                    "handler": self.protocol, "peer": self}
+            data = {
+                "ceid": function.CEID,
+                "rptid": report.RPTID,
+                "values": values,
+                "handler": self.protocol,
+                "peer": self,
+            }
             self.events.fire("collection_event_received", data)
 
         return self.stream_function(6, 12)(0)
 
     def _on_terminal_received(self, handler, terminal_id, text):
         del handler, terminal_id, text  # unused variables
-        return secsgem.secs.data_items.ACKC10.ACCEPTED
+        return self.settings.data_items.ACKC10.ACCEPTED
 
-    def _on_s10f01(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s10f01(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 10, Function 1, Terminal Request.
 
         Args:
@@ -265,7 +281,8 @@ class GemHostHandler(GemHandler):
         s10f1 = self.settings.streams_functions.decode(message)
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
-        self.events.fire("terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol,
-                                               "peer": self})
+        self.events.fire(
+            "terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol, "peer": self}
+        )
 
         return self.stream_function(10, 2)(result)

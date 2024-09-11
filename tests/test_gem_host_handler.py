@@ -1,7 +1,7 @@
 #####################################################################
 # test_gem_host_handler.py
 #
-# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -27,7 +27,7 @@ from test_gem_handler import GemHandlerPassiveGroup
 
 class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
     __testClass = secsgem.gem.GemHostHandler
-    
+
     def setUp(self):
         self.assertIsNotNone(self.__testClass)
 
@@ -39,7 +39,7 @@ class TestGemHostHandlerPassive(unittest.TestCase, GemHandlerPassiveGroup):
 
     def tearDown(self):
         self.client.disable()
-    
+
     def testClearCollectionEvents(self):
         self.establishCommunication()
 

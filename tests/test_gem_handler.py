@@ -1,7 +1,7 @@
 #####################################################################
 # test_gem_handler.py
 #
-# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@ import secsgem.hsms
 import secsgem.secs
 import secsgem.gem.communication_state_machine
 import secsgem.gem
+from secsgem.secs.data_items.data_items import DataItems
 
 from mock_protocol import MockProtocol
 from mock_settings import MockSettings
@@ -224,7 +225,7 @@ class GemHandlerPassiveGroup:
 
         message = self.settings.protocol.expect_message(stream=7)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F04(secsgem.secs.data_items.ACKC7.ACCEPTED), message.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS07F04(DataItems().ACKC7.ACCEPTED), message.header.system))
 
         clientCommandThread.join(10)
         self.assertFalse(clientCommandThread.is_alive())

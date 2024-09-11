@@ -170,7 +170,7 @@ class SampleEquipment(secsgem.gem.GemEquipmentHandler):
         })
 
         self.alarms.update({
-            25: secsgem.gem.Alarm(25, "test alarm", "test text", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
+            25: secsgem.gem.Alarm(25, "test alarm", "test text", self.data_items.ALCD.PERSONAL_SAFETY | self.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
         })
 
     def set_sample_alarm():

@@ -1,7 +1,7 @@
 #####################################################################
 # test_gem_equipment_handler.py
 #
-# (c) Copyright 2013-2016, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -25,6 +25,8 @@ import secsgem.hsms
 import secsgem.secs
 import secsgem.gem
 import secsgem.gem.control_state_machine
+
+from secsgem.secs.data_items.data_items import DataItems
 
 from test_gem_handler import GemHandlerPassiveGroup
 
@@ -160,26 +162,26 @@ class TestEquipmentConstant(unittest.TestCase):
 
 class TestAlarm(unittest.TestCase):
     def testConstructorWithInt(self):
-        alarm = secsgem.gem.Alarm(123, "TestAlarm", "TestAlarmText", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
-                                  secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025, param1="param1", param2=2)
+        alarm = secsgem.gem.Alarm(123, "TestAlarm", "TestAlarmText", DataItems().ALCD.PERSONAL_SAFETY |
+                                  DataItems().ALCD.EQUIPMENT_SAFETY, 100025, 200025, param1="param1", param2=2)
 
         self.assertEqual(alarm.alid, 123)
         self.assertEqual(alarm.name, "TestAlarm")
         self.assertEqual(alarm.text, "TestAlarmText")
-        self.assertEqual(alarm.code, secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(alarm.code, DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(alarm.ce_on, 100025)
         self.assertEqual(alarm.ce_off, 200025)
         self.assertEqual(alarm.param1, "param1")
         self.assertEqual(alarm.param2, 2)
 
     def testConstructorWithStr(self):
-        alarm = secsgem.gem.Alarm("AL123", "TestAlarm", "TestAlarmText", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY |
-                                  secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025, param1="param1", param2=2)
+        alarm = secsgem.gem.Alarm("AL123", "TestAlarm", "TestAlarmText", DataItems().ALCD.PERSONAL_SAFETY |
+                                  DataItems().ALCD.EQUIPMENT_SAFETY, 100025, 200025, param1="param1", param2=2)
 
         self.assertEqual(alarm.alid, "AL123")
         self.assertEqual(alarm.name, "TestAlarm")
         self.assertEqual(alarm.text, "TestAlarmText")
-        self.assertEqual(alarm.code, secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(alarm.code, DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(alarm.ce_on, 100025)
         self.assertEqual(alarm.ce_off, 200025)
         self.assertEqual(alarm.param1, "param1")
@@ -680,7 +682,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -694,7 +696,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -722,8 +724,8 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
             200030: secsgem.gem.CollectionEvent(200030, "test alarm 2 off", []),
         })
         self.client.alarms.update({
-            25: secsgem.gem.Alarm(25, "test alarm", "test text", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100025, 200025),
-            30: secsgem.gem.Alarm(30, "test alarm 2", "test text 2", secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY, 100030, 200030),
+            25: secsgem.gem.Alarm(25, "test alarm", "test text", DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY, 100025, 200025),
+            30: secsgem.gem.Alarm(30, "test alarm 2", "test text 2", DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY, 100030, 200030),
         })
 
     def setupTestRemoteCommands(self):
@@ -786,7 +788,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
     def sendAlarmEnable(self, enable=True, alid=25):
         system_id = self.settings.protocol.get_next_system_counter()
         self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F03(
-            {"ALED": secsgem.secs.data_items.ALED.ENABLE if enable else secsgem.secs.data_items.ALED.DISABLE, "ALID": alid}), system_id))
+            {"ALED": DataItems().ALED.ENABLE if enable else DataItems().ALED.DISABLE, "ALID": alid}), system_id))
 
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
@@ -1494,7 +1496,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.sendAlarmEnable()
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ACCEPTED)
+        self.assertEqual(function.get(), DataItems().ACKC5.ACCEPTED)
         self.assertTrue(self.client.alarms[25].enabled)
 
     def testAlarmEnableUnknown(self):
@@ -1502,7 +1504,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.sendAlarmEnable(alid=26)
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ERROR)
+        self.assertEqual(function.get(), DataItems().ACKC5.ERROR)
 
     def testAlarmDisable(self):
         self.setupTestAlarms()
@@ -1512,12 +1514,12 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.sendAlarmEnable()
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ACCEPTED)
+        self.assertEqual(function.get(), DataItems().ACKC5.ACCEPTED)
         self.assertTrue(self.client.alarms[25].enabled)
 
         function = self.sendAlarmEnable(enable=False)
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ACCEPTED)
+        self.assertEqual(function.get(), DataItems().ACKC5.ACCEPTED)
         self.assertFalse(self.client.alarms[25].enabled)
 
     def testAlarmDisableUnknown(self):
@@ -1525,7 +1527,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.sendAlarmEnable(enable=False, alid=26)
 
-        self.assertEqual(function.get(), secsgem.secs.data_items.ACKC5.ERROR)
+        self.assertEqual(function.get(), DataItems().ACKC5.ERROR)
 
     def testAlarmTriggerOn(self):
         self.setupTestAlarms()
@@ -1548,11 +1550,11 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.client.settings.streams_functions.decode(packet)
 
-        self.assertEqual(function.ALCD.get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY | secsgem.secs.data_items.ALCD.ALARM_SET)
+        self.assertEqual(function.ALCD.get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY | DataItems().ALCD.ALARM_SET)
         self.assertEqual(function.ALID.get(), 25)
         self.assertEqual(function.ALTX.get(), "test text")
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1573,7 +1575,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1593,11 +1595,11 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         function = self.client.settings.streams_functions.decode(packet)
 
-        self.assertEqual(function.ALCD.get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(function.ALCD.get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(function.ALID.get(), 25)
         self.assertEqual(function.ALTX.get(), "test text")
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1657,7 +1659,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1711,7 +1713,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         packet = self.settings.protocol.expect_message(stream=6)
 
@@ -1769,7 +1771,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1782,7 +1784,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         packet = self.settings.protocol.expect_message(stream=6)
 
@@ -1842,7 +1844,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
 
         packet = self.settings.protocol.expect_message(function=1)
 
-        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(secsgem.secs.data_items.ACKC5.ACCEPTED), packet.header.system))
+        self.settings.protocol.simulate_message(self.settings.protocol.create_message_for_function(secsgem.secs.functions.SecsS05F02(DataItems().ACKC5.ACCEPTED), packet.header.system))
 
         clientCommandThread.join(1)
         self.assertFalse(clientCommandThread.is_alive())
@@ -1928,13 +1930,13 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         AL25 = next((x for x in function if x[1].get() == 25), None)
 
         self.assertIsNotNone(AL25)
-        self.assertEqual(AL25[0].get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(AL25[0].get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(AL25[2].get(), "test text")
 
         AL30 = next((x for x in function if x[1].get() == 30), None)
 
         self.assertIsNotNone(AL30)
-        self.assertEqual(AL30[0].get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(AL30[0].get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(AL30[2].get(), "test text 2")
 
     def testAlarmListSingle(self):
@@ -1958,7 +1960,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         AL25 = function[0]
 
         self.assertIsNotNone(AL25)
-        self.assertEqual(AL25[0].get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(AL25[0].get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(AL25[1].get(), 25)
         self.assertEqual(AL25[2].get(), "test text")
 
@@ -1985,7 +1987,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         AL25 = function[0]
 
         self.assertIsNotNone(AL25)
-        self.assertEqual(AL25[0].get(), secsgem.secs.data_items.ALCD.PERSONAL_SAFETY | secsgem.secs.data_items.ALCD.EQUIPMENT_SAFETY)
+        self.assertEqual(AL25[0].get(), DataItems().ALCD.PERSONAL_SAFETY | DataItems().ALCD.EQUIPMENT_SAFETY)
         self.assertEqual(AL25[1].get(), 25)
         self.assertEqual(AL25[2].get(), "test text")
 
@@ -2018,7 +2020,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.ACK_FINISH_LATER)
 
         packet = self.settings.protocol.expect_message(stream=6)
 
@@ -2052,7 +2054,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.INVALID_COMMAND)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.INVALID_COMMAND)
 
     def testRemoteCommandUnregisteredCallback(self):
         self.setupTestRemoteCommands()
@@ -2071,7 +2073,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.INVALID_COMMAND)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.INVALID_COMMAND)
 
     def testRemoteCommandUnknownParameter(self):
         self.setupTestRemoteCommands()
@@ -2095,7 +2097,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.PARAMETER_INVALID)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.PARAMETER_INVALID)
 
         assert not f.called
 
@@ -2123,7 +2125,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.ACK_FINISH_LATER)
 
         packet = self.settings.protocol.expect_message(stream=6)
 
@@ -2163,7 +2165,7 @@ class TestGemEquipmentHandlerPassiveControlState(unittest.TestCase):
         function = self.client.settings.streams_functions.decode(packet)
 
         self.assertIsNotNone(function)
-        self.assertEqual(function.HCACK.get(), secsgem.secs.data_items.HCACK.ACK_FINISH_LATER)
+        self.assertEqual(function.HCACK.get(), DataItems().HCACK.ACK_FINISH_LATER)
 
         packet = self.settings.protocol.expect_message(stream=6)
 
