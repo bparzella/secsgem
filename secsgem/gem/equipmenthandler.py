@@ -1,7 +1,7 @@
 #####################################################################
 # equipmenthandler.py
 #
-# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -14,12 +14,12 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM equipment."""
+
 from __future__ import annotations
 
 import typing
 
 import secsgem.common
-import secsgem.secs.data_items
 
 from .alarm_capability import AlarmCapability
 from .clock_capability import ClockCapability
@@ -45,13 +45,16 @@ class GemEquipmentHandler(  # pylint: disable=too-many-ancestors
     StateModelsCapability,
     CollectionEventCapability,
     StatusDataCollectionCapability,
-    GemHandler):
+    GemHandler,
+):
     """Baseclass for creating equipment models. Inherit from this class and override required functions."""
 
-    def __init__(self,
-                 settings: secsgem.common.Settings,
-                 initial_control_state: str = "ATTEMPT_ONLINE",
-                 initial_online_control_state: str = "REMOTE"):
+    def __init__(
+        self,
+        settings: secsgem.common.Settings,
+        initial_control_state: str = "ATTEMPT_ONLINE",
+        initial_online_control_state: str = "REMOTE",
+    ):
         """Initialize a gem equipment handler.
 
         Args:
