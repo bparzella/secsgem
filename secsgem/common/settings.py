@@ -23,6 +23,7 @@ import typing
 from .timeouts import Timeouts
 
 if typing.TYPE_CHECKING:
+    from secsgem.secs.data_items.data_items import DataItems
     from secsgem.secs.functions import StreamsFunctions
 
     from .connection import Connection
@@ -96,6 +97,14 @@ class Settings(abc.ABC):
         Default: Global predefined stream function list
         """
         return self._streams_functions
+
+    @property
+    def data_items(self) -> DataItems:
+        """Container with data items.
+
+        Default: Global predefined data items list
+        """
+        return self._streams_functions.data_items
 
     @property
     def session_id(self) -> int:
