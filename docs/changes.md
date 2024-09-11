@@ -231,6 +231,7 @@ All generator data is located in the `data` directory in the project root, inclu
 * [Fail when initializing settings with invalid arguments](#fail-when-initializing-settings-with-invalid-arguments)
 * [Add simple customization of equipment specific functions](#add-simple-customization-of-equipment-specific-functions)
 * [Add function definition language](#add-function-definition-language)
+* [Change data item and data item access](#change-data-item-and-data-item-access)
 
 ### Fail when initializing settings with invalid arguments
 
@@ -255,9 +256,10 @@ The container is accessible from the settings.
 
 ```python
 class UNITS_New(DataItemBase):
-    __type__ = SecsVarDynamic
-    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
-        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+    name = "UNITS"
+
+    __type__ = SecsVarDynamic  # changed
+    __allowedtypes__ = [SecsVarU1, SecsVarU2, SecsVarU4, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarString]  # changed
 
 class SecsS01F12_New(secsgem.secs.SecsStreamFunction):
     _stream = 1
@@ -272,7 +274,7 @@ class SecsS01F12_New(secsgem.secs.SecsStreamFunction):
     ]
 
     _to_host = True
-    _to_equipment = False
+    _to_equipment = True  # Changed
 
     _has_reply = False
     _is_reply_required = False
@@ -357,3 +359,32 @@ class SecsS06F08(SecsStreamFunction):
 
     _is_multi_block = True
 ```
+
+### Change data item and data item access
+A new container for the data items was introduced.
+This container is usually accessible via the settings object and the handler, as it represents the equipment specific data items.
+This allows the customization of the data items on a per-equipment level.
+
+Custom data item classes need new attributes to work.
+
+```python
+class UNITS_New(DataItemBase):
+    name = "UNITS"
+
+    __type__ = SecsVarDynamic
+    __allowedtypes__ = [SecsVarArray, SecsVarBoolean, SecsVarU1, SecsVarU2, SecsVarU4, SecsVarU8, SecsVarI1, SecsVarI2, SecsVarI4, SecsVarI8, \
+        SecsVarF4, SecsVarF8, SecsVarString, SecsVarBinary]
+```
+
+The `name` attribute marks the name of the data item.
+This is required for lookup of the data item class using the settings / handler.
+It is also used when updating the data item using the container in the settings.
+
+The `_value` attribute is the mapping used for the constants as a dictionary.
+It is used for lookup of the constants.
+
+The downside of this implementation is that code suggestions in the IDE won't work any more.
+
+#### Recommendation: Start accessing the data items using the handler / settings.
+The plan is to remove the function and data item classes and read the configuration directly from the yaml files.
+This means code written using the classes will need to be rechanged.
