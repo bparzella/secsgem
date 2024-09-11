@@ -41,10 +41,14 @@ class ConnectionStateMachine(secsgem.common.StateMachine):
         self.not_connected = secsgem.common.State(ConnectionState.NOT_CONNECTED, "NOT_CONNECTED", initial=True)
         self.connected = secsgem.common.State(ConnectionState.CONNECTED, "CONNECTED")
         self.connected_not_selected = secsgem.common.State(
-            ConnectionState.CONNECTED_NOT_SELECTED, "CONNECTED_NOT_SELECTED", parent=self.connected,
+            ConnectionState.CONNECTED_NOT_SELECTED,
+            "CONNECTED_NOT_SELECTED",
+            parent=self.connected,
         )
         self.connected_selected = secsgem.common.State(
-            ConnectionState.CONNECTED_SELECTED, "CONNECTED_SELECTED", parent=self.connected,
+            ConnectionState.CONNECTED_SELECTED,
+            "CONNECTED_SELECTED",
+            parent=self.connected,
         )
 
         # transition 1
@@ -53,7 +57,9 @@ class ConnectionStateMachine(secsgem.common.StateMachine):
         self._transitions: list[secsgem.common.Transition] = [
             secsgem.common.Transition("connect", self.not_connected, self.connected_not_selected),  # 2
             secsgem.common.Transition(
-                "disconnect", [self.connected_not_selected, self.connected_selected], self.not_connected,
+                "disconnect",
+                [self.connected_not_selected, self.connected_selected],
+                self.not_connected,
             ),  # 3
             secsgem.common.Transition("select", self.connected_not_selected, self.connected_selected),  # 4
             secsgem.common.Transition("deselect", self.connected_selected, self.connected_not_selected),  # 5

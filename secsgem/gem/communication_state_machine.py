@@ -147,7 +147,8 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
 
         """
         self._comm_delay_timer = threading.Timer(
-            self._settings.establish_communication_timeout, self._on_wait_comm_delay_timeout,
+            self._settings.establish_communication_timeout,
+            self._on_wait_comm_delay_timeout,
         )
         self._comm_delay_timer.start()
 

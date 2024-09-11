@@ -111,7 +111,9 @@ class StateModelsCapability(GemHandler, Capability):
         self._control_state.switch_online_remote()
 
     def _on_s01f15(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 15, Request offline.
 
@@ -131,7 +133,9 @@ class StateModelsCapability(GemHandler, Capability):
         return self.stream_function(1, 16)(oflack)
 
     def _on_s01f17(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 17, Request online.
 

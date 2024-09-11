@@ -38,16 +38,24 @@ class CollectionEventCapability(GemHandler, Capability):
 
         self._collection_events: dict[int | str | CollectionEventId, CollectionEvent] = {
             CollectionEventId.EQUIPMENT_OFFLINE.value: CollectionEvent(
-                CollectionEventId.EQUIPMENT_OFFLINE, "EquipmentOffline", [],
+                CollectionEventId.EQUIPMENT_OFFLINE,
+                "EquipmentOffline",
+                [],
             ),
             CollectionEventId.CONTROL_STATE_LOCAL.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_LOCAL, "ControlStateLocal", [],
+                CollectionEventId.CONTROL_STATE_LOCAL,
+                "ControlStateLocal",
+                [],
             ),
             CollectionEventId.CONTROL_STATE_REMOTE.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_REMOTE, "ControlStateRemote", [],
+                CollectionEventId.CONTROL_STATE_REMOTE,
+                "ControlStateRemote",
+                [],
             ),
             CollectionEventId.CMD_START_DONE.value: CollectionEvent(
-                CollectionEventId.CMD_START_DONE, "CmdStartDone", [],
+                CollectionEventId.CMD_START_DONE,
+                "CmdStartDone",
+                [],
             ),
             CollectionEventId.CMD_STOP_DONE.value: CollectionEvent(CollectionEventId.CMD_STOP_DONE, "CmdStopDone", []),
         }
@@ -227,13 +235,16 @@ class CollectionEventCapability(GemHandler, Capability):
                             collection_event.reports.append(rptid)
                     else:
                         self._registered_collection_events[event.CEID.get()] = CollectionEventLink(
-                            self._collection_events[event.CEID.get()], event.RPTID.get(),
+                            self._collection_events[event.CEID.get()],
+                            event.RPTID.get(),
                         )
 
         return self.stream_function(2, 36)(lrack)
 
     def _on_s02f37(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
@@ -254,7 +265,9 @@ class CollectionEventCapability(GemHandler, Capability):
         return self.stream_function(2, 38)(erack)
 
     def _on_s06f15(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 6, Function 15, event report request.
 

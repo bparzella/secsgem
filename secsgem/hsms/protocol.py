@@ -133,7 +133,8 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         # start select process if connection is active
         if self._settings.is_active:
             self._select_req_thread = threading.Thread(
-                target=self._send_select_req_thread, name="secsgem_hsmsProtocol_sendSelectReqThread",
+                target=self._send_select_req_thread,
+                name="secsgem_hsmsProtocol_sendSelectReqThread",
             )
             self._select_req_thread.daemon = True  # kill thread automatically on main program termination
             self._select_req_thread.start()
@@ -279,7 +280,10 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
                 out_message = HsmsMessage(HsmsRejectReqHeader(message.header.system, message.header.s_type, 4), b"")
                 self._communication_logger.info(
-                    "> %s\n  %s", out_message, out_message.header.s_type.text, extra=self._get_log_extra(),
+                    "> %s\n  %s",
+                    out_message,
+                    out_message.header.s_type.text,
+                    extra=self._get_log_extra(),
                 )
                 self.send_message(out_message)
 
