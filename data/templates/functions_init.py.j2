@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Module init for SECS stream and functions."""
+
 from .base import SecsStreamFunction
 from .streams_functions import StreamsFunctions
 

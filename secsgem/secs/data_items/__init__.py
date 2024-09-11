@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Data items module initializer."""
+
 from .base import DataItemBase
 
 # isort: split

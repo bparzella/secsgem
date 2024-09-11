@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """List of all SECS stream and functions."""
+
 {% for function in functions %}
 from .{{ function.module_name }} import Secs{{ function.name }}
 {% endfor %}

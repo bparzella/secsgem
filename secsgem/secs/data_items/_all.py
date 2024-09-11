@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """List of all SECS data items."""
+
 from .abs import ABS
 from .acka import ACKA
 from .ackc5 import ACKC5

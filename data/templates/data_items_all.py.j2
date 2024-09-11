@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """List of all SECS data items."""
+
 {% for data_item in data_items %}
 from .{{ data_item.module_name }} import {{ data_item.name }}
 {% endfor %}
