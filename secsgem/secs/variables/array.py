@@ -88,16 +88,10 @@ class Array(Base):
             array_name = ""
 
         if isinstance(data_format, list):
-            return (
-                f"{array_name}[\n"
-                f"{secsgem.common.indent_block(List.get_format(data_format), 4)}\n"
-                f"    ...\n]"
-            )
+            return f"{array_name}[\n" f"{secsgem.common.indent_block(List.get_format(data_format), 4)}\n" f"    ...\n]"
 
         return (
-            f"{array_name}[\n"
-            f"{secsgem.common.indent_block(data_format.get_format(not showname), 4)}\n"
-            f"    ...\n]"
+            f"{array_name}[\n" f"{secsgem.common.indent_block(data_format.get_format(not showname), 4)}\n" f"    ...\n]"
         )
 
     def __repr__(self):
@@ -161,6 +155,7 @@ class Array(Base):
 
         for item in value:
             from .functions import generate  # pylint: disable=import-outside-toplevel,cyclic-import
+
             new_object = generate(self.item_decriptor)
             new_object.set(item)
             self.data.append(new_object)

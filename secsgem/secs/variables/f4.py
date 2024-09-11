@@ -30,8 +30,8 @@ class F4(BaseNumber):
     format_code = 0o44
     text_code = "F4"
     _base_type = float
-    _min = -3.40282e+38
-    _max = 3.40282e+38
+    _min = -3.40282e38
+    _max = 3.40282e38
     _bytes = 4
     _struct_code = "f"
     preferred_types = [float]

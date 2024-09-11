@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Base class for for SECS stream and functions."""
+
 from __future__ import annotations
 
 import typing
@@ -149,8 +150,7 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
         if hasattr(self.data, "append") and callable(self.data.append):
             self.data.append(data)
         else:
-            raise AttributeError(
-                f"class {self.__class__.__name__} has no attribute 'append'")
+            raise AttributeError(f"class {self.__class__.__name__} has no attribute 'append'")
 
     def encode(self):
         """Generate the encoded hsms data of the stream/function parameter.

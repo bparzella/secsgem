@@ -129,14 +129,16 @@ class Dynamic(Base):
                 if not isinstance(value.value, tuple(self.types)) and self.types:
                     raise ValueError(
                         f"Unsupported type {value.value.__class__.__name__} "
-                        f"for this instance of Dynamic, allowed {self.types}")
+                        f"for this instance of Dynamic, allowed {self.types}",
+                    )
 
                 self.value = value.value
             else:
                 if not isinstance(value, tuple(self.types)) and self.types:
                     raise ValueError(
                         f"Unsupported type {value.__class__.__name__} "
-                        f"for this instance of Dynamic, allowed {self.types}")
+                        f"for this instance of Dynamic, allowed {self.types}",
+                    )
 
                 self.value = value
         else:
@@ -144,7 +146,8 @@ class Dynamic(Base):
 
             if matched_type is None:
                 raise ValueError(
-                    f'Value "{value}" of type {value.__class__.__name__} not valid for SecsDynamic with {self.types}')
+                    f'Value "{value}" of type {value.__class__.__name__} not valid for SecsDynamic with {self.types}',
+                )
 
             self.value = matched_type(count=self.count)
             self.value.set(value)
@@ -198,8 +201,7 @@ class Dynamic(Base):
         }
 
         if format_code not in format_codes or not self.__type_supported(format_codes[format_code]):
-            raise ValueError(
-                f"Unsupported format {format_code} for this instance of Dynamic, allowed {self.types}")
+            raise ValueError(f"Unsupported format {format_code} for this instance of Dynamic, allowed {self.types}")
 
         typ = format_codes[format_code]
         if typ == Array:
@@ -213,8 +215,7 @@ class Dynamic(Base):
         var_types = self.types
         # if no types are set use internal order
         if not self.types:
-            var_types = [Boolean, U1, U2, U4, U8, I1, I2, I4,
-                         I8, F4, F8, String, Binary]
+            var_types = [Boolean, U1, U2, U4, U8, I1, I2, I4, I8, F4, F8, String, Binary]
 
         # first try to find the preferred type for the kind of value
         for var_type in var_types:

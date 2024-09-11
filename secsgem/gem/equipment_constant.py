@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM equipment constant."""
+
 from __future__ import annotations
 
 import enum
@@ -23,6 +24,7 @@ import secsgem.secs
 
 class EquipmentConstantId(enum.Enum):
     """Default IDs for equipment constants."""
+
     ESTABLISH_COMMUNICATIONS_TIMEOUT = 1
     TIME_FORMAT = 2
 

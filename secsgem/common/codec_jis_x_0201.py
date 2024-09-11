@@ -14,13 +14,16 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """JIS X 0201 Codec required for JIS8 encoding of JIS8."""
+
 import codecs
 
 jis8_decoding_map = codecs.make_identity_dict(range(256))  # type: ignore[attr-defined]
-jis8_decoding_map.update({
-    0x005C: 0x00A5,  # Yen Sign
-    0x007E: 0x203E,  # Overline
-})
+jis8_decoding_map.update(
+    {
+        0x005C: 0x00A5,  # Yen Sign
+        0x007E: 0x203E,  # Overline
+    },
+)
 
 for i in range(0x00A1, 0x00E0):
     jis8_decoding_map[i] = i + 0xFEC0

@@ -129,7 +129,8 @@ class List(Base):
             self.data[index] = value
         elif isinstance(value, Base):
             raise TypeError(
-                f"Wrong type {value.__class__.__name__} when expecting {self.data[index].__class__.__name__}")
+                f"Wrong type {value.__class__.__name__} when expecting {self.data[index].__class__.__name__}",
+            )
         else:
             self.data[index].set(value)
 
@@ -176,7 +177,8 @@ class List(Base):
                 self.data[item] = value
             elif isinstance(value, Base):
                 raise TypeError(
-                    f"Wrong type {value.__class__.__name__} when expecting {self.data[item].__class__.__name__}")
+                    f"Wrong type {value.__class__.__name__} when expecting {self.data[item].__class__.__name__}",
+                )
             else:
                 self.data[item].set(value)
         else:

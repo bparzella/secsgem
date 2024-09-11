@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM remote command."""
+
 from __future__ import annotations
 
 import enum
@@ -27,18 +28,22 @@ if typing.TYPE_CHECKING:
 
 class RemoteCommandId(enum.Enum):
     """Default IDs for remote commands."""
+
     START = "START"
     STOP = "STOP"
+
 
 class RemoteCommand:  # pylint: disable=too-few-public-methods
     """Remote command definition."""
 
-    def __init__(self,
-                 rcmd: int | str | RemoteCommandId,
-                 name: str,
-                 params: list[str],
-                 ce_finished: int | str | CollectionEventId,
-                 **kwargs):
+    def __init__(
+        self,
+        rcmd: int | str | RemoteCommandId,
+        name: str,
+        params: list[str],
+        ce_finished: int | str | CollectionEventId,
+        **kwargs,
+    ):
         """Initialize a remote command.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.

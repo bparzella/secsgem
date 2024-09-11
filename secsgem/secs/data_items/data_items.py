@@ -78,9 +78,7 @@ class DataItems:
             data_item: data item class
 
         """
-        data_items = [
-            item for item in self._data_items if item.name == data_item.name
-        ]
+        data_items = [item for item in self._data_items if item.name == data_item.name]
 
         if data_items:
             for item in data_items:

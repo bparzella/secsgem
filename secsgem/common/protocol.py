@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """protocol base class."""
+
 from __future__ import annotations
 
 import abc
@@ -52,7 +53,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         self._event_producer = EventProducer()
         self._event_producer.targets += self
 
-        self._system_counter = random.randint(0, (2 ** 32) - 1)  # noqa: S311
+        self._system_counter = random.randint(0, (2**32) - 1)  # noqa: S311
 
         self._logger = logging.getLogger(self.__module__ + "." + self.__class__.__name__)
         self._communication_logger = logging.getLogger("communication")
@@ -143,7 +144,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         """
         self._system_counter += 1
 
-        if self._system_counter > ((2 ** 32) - 1):
+        if self._system_counter > ((2**32) - 1):
             self._system_counter = 0
 
         return self._system_counter
@@ -219,9 +220,9 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
     @abc.abstractmethod
     def _create_message_for_function(
-            self,
-            function: SecsStreamFunction,
-            system_id: int,
+        self,
+        function: SecsStreamFunction,
+        system_id: int,
     ) -> Message:
         """Create a protocol specific message for a function.
 

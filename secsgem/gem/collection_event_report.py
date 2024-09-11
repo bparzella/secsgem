@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM collection event report."""
+
 from __future__ import annotations
 
 import secsgem.secs
@@ -22,10 +23,7 @@ import secsgem.secs
 class CollectionEventReport:  # pylint: disable=too-few-public-methods
     """Report definition for registered collection events."""
 
-    def __init__(self,
-                 rptid: int | str,
-                 variables: list[int | str],
-                 **kwargs):
+    def __init__(self, rptid: int | str, variables: list[int | str], **kwargs):
         """Initialize a collection event report.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.

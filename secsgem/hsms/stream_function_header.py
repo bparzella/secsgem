@@ -25,12 +25,8 @@ class HsmsStreamFunctionHeader(HsmsHeader):
     """
 
     def __init__(  # pylint: disable=too-many-arguments
-            self,
-            system: int,
-            stream: int,
-            function: int,
-            require_response: bool,
-            session_id: int):
+        self, system: int, stream: int, function: int, require_response: bool, session_id: int,
+    ):
         """Initialize a stream function secs header.
 
         Args:

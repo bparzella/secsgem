@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains objects and functions to create and handle serial connections."""
+
 from __future__ import annotations
 
 import logging

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Handler for GEM commands."""
+
 from __future__ import annotations
 
 import logging
@@ -73,9 +74,13 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         """
         data = self.protocol.serialize_data()
-        data.update({"communicationState": self._communication_state.current,
-                     "commDelayTimeout": self.settings.establish_communication_timeout,
-                     "reportIDCounter": self._report_id_counter})
+        data.update(
+            {
+                "communicationState": self._communication_state.current,
+                "commDelayTimeout": self.settings.establish_communication_timeout,
+                "reportIDCounter": self._report_id_counter,
+            },
+        )
         return data
 
     def enable(self) -> None:
@@ -103,13 +108,17 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         if self._communication_state.current == CommunicationState.WAIT_CRA:
             if message.header.stream == 1 and message.header.function == 13:
                 if self._is_host:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                                                    "MDLN": []}),
-                                       message.header.system)
+                    self.send_response(
+                        self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []}),
+                        message.header.system,
+                    )
                 else:
-                    self.send_response(self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                                                    "MDLN": [self._mdln, self._softrev]}),
-                                       message.header.system)
+                    self.send_response(
+                        self.stream_function(1, 14)(
+                            {"COMMACK": self.on_commack_requested(), "MDLN": [self._mdln, self._softrev]},
+                        ),
+                        message.header.system,
+                    )
 
                 self._communication_state.s1f13received()
             elif message.header.stream == 1 and message.header.function == 14:
@@ -166,9 +175,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         """
         return 0
 
-    def send_process_program(self,
-                             ppid: int | str,
-                             ppbody: str):
+    def send_process_program(self, ppid: int | str, ppbody: str):
         """Send a process program.
 
         Args:
@@ -179,11 +186,11 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         # send remote command
         self._logger.info("Send process program %s", ppid)
 
-        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(7, 3)(
-            {"PPID": ppid, "PPBODY": ppbody}))).get()
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(7, 3)({"PPID": ppid, "PPBODY": ppbody})),
+        ).get()
 
-    def request_process_program(self,
-                                ppid: int | str) -> tuple[int | str, str]:
+    def request_process_program(self, ppid: int | str) -> tuple[int | str, str]:
         """Request a process program.
 
         ppid: Transferred process programs ID
@@ -218,9 +225,9 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         return result
 
-    def _on_s01f01(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f01(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 1, Are You There.
 
         Args:
@@ -235,9 +242,9 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
         return self.stream_function(1, 2)([self._mdln, self._softrev])
 
-    def _on_s01f13(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f13(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 13, Establish Communication Request.
 
         Args:
@@ -250,5 +257,6 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         if self._is_host:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
 
-        return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(),
-                                            "MDLN": [self._mdln, self._softrev]})
+        return self.stream_function(1, 14)(
+            {"COMMACK": self.on_commack_requested(), "MDLN": [self._mdln, self._softrev]},
+        )

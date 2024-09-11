@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Timeout class."""
+
 from __future__ import annotations
 
 

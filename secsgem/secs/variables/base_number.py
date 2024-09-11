@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """SECS numeric variable base type."""
+
 from __future__ import annotations
 
 import struct
@@ -210,11 +211,12 @@ class BaseNumber(Base):
         result = []
 
         for _ in range(length // self._bytes):
-            result_text = data[text_pos:text_pos + self._bytes]
+            result_text = data[text_pos : text_pos + self._bytes]
 
             if len(result_text) != self._bytes:
                 raise ValueError(
-                    f"No enough data found for {self.__class__.__name__} with length {length} at position {start} ")
+                    f"No enough data found for {self.__class__.__name__} with length {length} at position {start} ",
+                )
 
             result.append(struct.unpack(f">{self._struct_code}", result_text)[0])
 

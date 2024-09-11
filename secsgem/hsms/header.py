@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Header for the hsms messages."""
+
 from __future__ import annotations
 
 import enum
@@ -71,14 +72,15 @@ class HsmsHeader(secsgem.common.Header):
     length = 10
 
     def __init__(  # pylint: disable=too-many-arguments
-            self,
-            system: int,
-            session_id: int,
-            stream: int = 0,
-            function: int = 0,
-            requires_response: bool = False,
-            p_type: int = 0x00,
-            s_type: HsmsSType = HsmsSType.SELECT_REQ):
+        self,
+        system: int,
+        session_id: int,
+        stream: int = 0,
+        function: int = 0,
+        requires_response: bool = False,
+        p_type: int = 0x00,
+        s_type: HsmsSType = HsmsSType.SELECT_REQ,
+    ):
         """Initialize a hsms header.
 
         Args:

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains hsms message class."""
+
 from __future__ import annotations
 
 import secsgem.common

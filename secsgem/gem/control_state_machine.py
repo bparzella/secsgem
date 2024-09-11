@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """State machine for control state."""
+
 from __future__ import annotations
 
 import enum
@@ -52,107 +53,49 @@ class ControlStateMachine(secsgem.common.StateMachine):  # pylint: disable=too-m
         self._online_control_states = ["LOCAL", "REMOTE"]
         self._online_control_state = initial_online_control_state
 
-        self.init = secsgem.common.State(
-            ControlState.INIT,
-            "INIT",
-            initial=True)
-        self.control = secsgem.common.State(
-            ControlState.CONTROL,
-            "CONTROL")
-        self.offline = secsgem.common.State(
-            ControlState.OFFLINE,
-            "OFFLINE")
-        self.equipment_offline = secsgem.common.State(
-            ControlState.EQUIPMENT_OFFLINE,
-            "EQUIPMENT_OFFLINE")
-        self.attempt_online = secsgem.common.State(
-            ControlState.ATTEMPT_ONLINE,
-            "ATTEMPT_ONLINE")
-        self.host_offline = secsgem.common.State(
-            ControlState.HOST_OFFLINE,
-            "HOST_OFFLINE")
-        self.online = secsgem.common.State(
-            ControlState.ONLINE,
-            "ONLINE")
-        self.online_local = secsgem.common.State(
-            ControlState.ONLINE_LOCAL,
-            "ONLINE_LOCAL")
-        self.online_remote = secsgem.common.State(
-            ControlState.ONLINE_REMOTE,
-            "ONLINE_REMOTE")
+        self.init = secsgem.common.State(ControlState.INIT, "INIT", initial=True)
+        self.control = secsgem.common.State(ControlState.CONTROL, "CONTROL")
+        self.offline = secsgem.common.State(ControlState.OFFLINE, "OFFLINE")
+        self.equipment_offline = secsgem.common.State(ControlState.EQUIPMENT_OFFLINE, "EQUIPMENT_OFFLINE")
+        self.attempt_online = secsgem.common.State(ControlState.ATTEMPT_ONLINE, "ATTEMPT_ONLINE")
+        self.host_offline = secsgem.common.State(ControlState.HOST_OFFLINE, "HOST_OFFLINE")
+        self.online = secsgem.common.State(ControlState.ONLINE, "ONLINE")
+        self.online_local = secsgem.common.State(ControlState.ONLINE_LOCAL, "ONLINE_LOCAL")
+        self.online_remote = secsgem.common.State(ControlState.ONLINE_REMOTE, "ONLINE_REMOTE")
 
         # transition 1
         self._current_state: secsgem.common.State = self.init
 
         self._transitions: list[secsgem.common.Transition] = [
-                secsgem.common.Transition(
-                    "start",
-                    self.init,
-                    self.control),  # 1
-                secsgem.common.Transition(
-                    "initial_offline",
-                    self.control,
-                    self.offline),  # 1
-                secsgem.common.Transition(
-                    "initial_equipment_offline",
-                    self.offline,
-                    self.equipment_offline),  # 2
-                secsgem.common.Transition(
-                    "initial_attempt_online",
-                    self.offline,
-                    self.attempt_online),  # 2
-                secsgem.common.Transition(
-                    "initial_host_offline",
-                    self.offline,
-                    self.host_offline),  # 2
-                secsgem.common.Transition(
-                    "switch_online",
-                    self.equipment_offline,
-                    self.attempt_online),  # 3
-                secsgem.common.Transition(
-                    "attempt_online_fail_equipment_offline",
-                    self.attempt_online,
-                    self.equipment_offline),  # 4
-                secsgem.common.Transition(
-                    "attempt_online_fail_host_offline",
-                    self.attempt_online,
-                    self.host_offline),  # 4
-                secsgem.common.Transition(
-                    "attempt_online_success",
-                    self.attempt_online,
-                    self.online),  # 5
-                secsgem.common.Transition(
-                    "switch_offline",
-                    [self.online, self.online_local, self.online_remote],
-                    self.equipment_offline),  # 6, 12
-                secsgem.common.Transition(
-                    "initial_online",
-                    self.control,
-                    self.online),  # 1
-                secsgem.common.Transition(
-                    "initial_online_local",
-                    self.online,
-                    self.online_local),  # 7
-                secsgem.common.Transition(
-                    "initial_online_remote",
-                    self.online,
-                    self.online_remote),  # 7
-                secsgem.common.Transition(
-                    "switch_online_local",
-                    self.online_remote,
-                    self.online_local),  # 8
-                secsgem.common.Transition(
-                    "switch_online_remote",
-                    self.online_local,
-                    self.online_remote),  # 9
-                secsgem.common.Transition(
-                    "remote_offline",
-                    [self.online, self.online_local, self.online_remote],
-                    self.host_offline),  # 10
-                secsgem.common.Transition(
-                    "remote_online",
-                    self.host_offline,
-                    self.online),  # 11
+            secsgem.common.Transition("start", self.init, self.control),  # 1
+            secsgem.common.Transition("initial_offline", self.control, self.offline),  # 1
+            secsgem.common.Transition("initial_equipment_offline", self.offline, self.equipment_offline),  # 2
+            secsgem.common.Transition("initial_attempt_online", self.offline, self.attempt_online),  # 2
+            secsgem.common.Transition("initial_host_offline", self.offline, self.host_offline),  # 2
+            secsgem.common.Transition("switch_online", self.equipment_offline, self.attempt_online),  # 3
+            secsgem.common.Transition(
+                "attempt_online_fail_equipment_offline",
+                self.attempt_online,
+                self.equipment_offline,
+            ),  # 4
+            secsgem.common.Transition("attempt_online_fail_host_offline", self.attempt_online, self.host_offline),  # 4
+            secsgem.common.Transition("attempt_online_success", self.attempt_online, self.online),  # 5
+            secsgem.common.Transition(
+                "switch_offline",
+                [self.online, self.online_local, self.online_remote],
+                self.equipment_offline,
+            ),  # 6, 12
+            secsgem.common.Transition("initial_online", self.control, self.online),  # 1
+            secsgem.common.Transition("initial_online_local", self.online, self.online_local),  # 7
+            secsgem.common.Transition("initial_online_remote", self.online, self.online_remote),  # 7
+            secsgem.common.Transition("switch_online_local", self.online_remote, self.online_local),  # 8
+            secsgem.common.Transition("switch_online_remote", self.online_local, self.online_remote),  # 9
+            secsgem.common.Transition(
+                "remote_offline",
+                [self.online, self.online_local, self.online_remote],
+                self.host_offline,
+            ),  # 10
+            secsgem.common.Transition("remote_online", self.host_offline, self.online),  # 11
         ]
 
         # 1, forward online/offline depending on configuration

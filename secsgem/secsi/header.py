@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Header for the secs messagess."""
+
 from __future__ import annotations
 
 import struct
@@ -31,15 +32,16 @@ class SecsIHeader(secsgem.common.Header):
     length = 10
 
     def __init__(  # pylint: disable=too-many-arguments
-            self,
-            system: int,
-            session_id: int,
-            stream: int = 0,
-            function: int = 0,
-            block: int = 0,
-            from_equipment: bool = False,
-            require_response: bool = False,
-            last_block: bool = True):
+        self,
+        system: int,
+        session_id: int,
+        stream: int = 0,
+        function: int = 0,
+        block: int = 0,
+        from_equipment: bool = False,
+        require_response: bool = False,
+        last_block: bool = True,
+    ):
         """Initialize a SECS I header.
 
         Args:

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains helper functions."""
+
 import errno
 import sys
 import types

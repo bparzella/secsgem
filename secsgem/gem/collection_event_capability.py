@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Event Notification (collection events) capability."""
+
 from __future__ import annotations
 
 import threading
@@ -37,25 +38,18 @@ class CollectionEventCapability(GemHandler, Capability):
 
         self._collection_events: dict[int | str | CollectionEventId, CollectionEvent] = {
             CollectionEventId.EQUIPMENT_OFFLINE.value: CollectionEvent(
-                CollectionEventId.EQUIPMENT_OFFLINE,
-                "EquipmentOffline",
-                []),
+                CollectionEventId.EQUIPMENT_OFFLINE, "EquipmentOffline", [],
+            ),
             CollectionEventId.CONTROL_STATE_LOCAL.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_LOCAL,
-                "ControlStateLocal",
-                []),
+                CollectionEventId.CONTROL_STATE_LOCAL, "ControlStateLocal", [],
+            ),
             CollectionEventId.CONTROL_STATE_REMOTE.value: CollectionEvent(
-                CollectionEventId.CONTROL_STATE_REMOTE,
-                "ControlStateRemote",
-                []),
+                CollectionEventId.CONTROL_STATE_REMOTE, "ControlStateRemote", [],
+            ),
             CollectionEventId.CMD_START_DONE.value: CollectionEvent(
-                CollectionEventId.CMD_START_DONE,
-                "CmdStartDone",
-                []),
-            CollectionEventId.CMD_STOP_DONE.value: CollectionEvent(
-                CollectionEventId.CMD_STOP_DONE,
-                "CmdStopDone",
-                []),
+                CollectionEventId.CMD_START_DONE, "CmdStartDone", [],
+            ),
+            CollectionEventId.CMD_STOP_DONE.value: CollectionEvent(CollectionEventId.CMD_STOP_DONE, "CmdStopDone", []),
         }
 
         self._registered_reports: dict[int | str, CollectionEventReport] = {}
@@ -112,6 +106,7 @@ class CollectionEventCapability(GemHandler, Capability):
             ceids: List of collection events
 
         """
+
         def _ce_sender():
             nonlocal ceids
             if not isinstance(ceids, list):
@@ -124,14 +119,17 @@ class CollectionEventCapability(GemHandler, Capability):
                 if ceid in self._registered_collection_events and self._registered_collection_events[ceid].enabled:
                     reports = self._build_collection_event(ceid)
 
-                    self.send_and_waitfor_response(self.stream_function(6, 11)(
-                        {"DATAID": 1, "CEID": ceid, "RPT": reports}))
+                    self.send_and_waitfor_response(
+                        self.stream_function(6, 11)({"DATAID": 1, "CEID": ceid, "RPT": reports}),
+                    )
 
         threading.Thread(target=_ce_sender, daemon=True).start()
 
-    def _on_s02f33(self,  # noqa: C901, pylint: disable=too-many-branches
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f33(  # noqa: C901
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 33, Define Report.
 
         Args:
@@ -185,9 +183,11 @@ class CollectionEventCapability(GemHandler, Capability):
 
         return result
 
-    def _on_s02f35(self,  # noqa: C901, pylint: disable=too-many-branches
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f35(  # noqa: C901
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 35, Link event report.
 
         Args:
@@ -226,14 +226,15 @@ class CollectionEventCapability(GemHandler, Capability):
                         for rptid in event.RPTID.get():
                             collection_event.reports.append(rptid)
                     else:
-                        self._registered_collection_events[event.CEID.get()] = \
-                            CollectionEventLink(self._collection_events[event.CEID.get()], event.RPTID.get())
+                        self._registered_collection_events[event.CEID.get()] = CollectionEventLink(
+                            self._collection_events[event.CEID.get()], event.RPTID.get(),
+                        )
 
         return self.stream_function(2, 36)(lrack)
 
-    def _on_s02f37(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s02f37(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
 
         Args:
@@ -252,9 +253,9 @@ class CollectionEventCapability(GemHandler, Capability):
 
         return self.stream_function(2, 38)(erack)
 
-    def _on_s06f15(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s06f15(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 6, Function 15, event report request.
 
         Args:

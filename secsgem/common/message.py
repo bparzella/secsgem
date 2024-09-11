@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Message base class."""
+
 from __future__ import annotations
 
 import abc
@@ -86,7 +87,7 @@ class Block(abc.ABC, typing.Generic[BlockHeaderT]):
         )
 
         if self.checksum_format != "":
-            struct_args += (self.checksum, )
+            struct_args += (self.checksum,)
 
         return struct.pack(
             f">{self.length_format}{self.header.length}s{data_length}s{self.checksum_format}",
@@ -146,7 +147,7 @@ class Message(abc.ABC, typing.Generic[BlockT]):
         if len(data) == 0:
             data_blocks = [data]
         else:
-            data_blocks = [data[i: i + cls.block_size] for i in range(0, len(data), cls.block_size)]
+            data_blocks = [data[i : i + cls.block_size] for i in range(0, len(data), cls.block_size)]
 
         blocks = []
         for index, block_data in enumerate(data_blocks):

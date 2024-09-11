@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains callback handling routines."""
+
 from __future__ import annotations
 
 import typing

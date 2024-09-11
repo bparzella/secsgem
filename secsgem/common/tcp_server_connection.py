@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """TCP server connection."""
+
 from __future__ import annotations
 
 import select
@@ -105,7 +106,8 @@ class TcpServerConnection(TcpConnection):
     def __start_server_thread(self):
         self._server_thread = threading.Thread(
             target=self.__server_thread,
-            name=f"secsgem_tcpServerConnection_serverThread_{self._settings.address}")
+            name=f"secsgem_tcpServerConnection_serverThread_{self._settings.address}",
+        )
         self._server_thread.start()
 
     def __server_thread(self):

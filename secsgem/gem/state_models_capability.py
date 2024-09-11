@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """State Models capability."""
+
 from __future__ import annotations
 
 import typing
@@ -109,9 +110,9 @@ class StateModelsCapability(GemHandler, Capability):
         """Operator switches to the local online control state."""
         self._control_state.switch_online_remote()
 
-    def _on_s01f15(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f15(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 15, Request offline.
 
         Args:
@@ -129,9 +130,9 @@ class StateModelsCapability(GemHandler, Capability):
 
         return self.stream_function(1, 16)(oflack)
 
-    def _on_s01f17(self,
-                   handler: secsgem.secs.SecsHandler,
-                   message: secsgem.common.Message) -> secsgem.secs.SecsStreamFunction | None:
+    def _on_s01f17(
+        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message,
+    ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 17, Request online.
 
         Args:
@@ -146,9 +147,11 @@ class StateModelsCapability(GemHandler, Capability):
         if self._control_state.current == ControlState.HOST_OFFLINE:
             self._control_state.remote_online()
             onlack = 0
-        elif self._control_state.current in [ControlState.ONLINE,
-                                             ControlState.ONLINE_LOCAL,
-                                             ControlState.ONLINE_REMOTE]:
+        elif self._control_state.current in [
+            ControlState.ONLINE,
+            ControlState.ONLINE_LOCAL,
+            ControlState.ONLINE_REMOTE,
+        ]:
             onlack = 2
 
         return self.stream_function(1, 18)(onlack)

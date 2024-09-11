@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Helper to track block send result across threads."""
+
 from __future__ import annotations
 
 import enum

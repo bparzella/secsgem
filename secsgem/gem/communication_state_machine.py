@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """State machine for communication state."""
+
 from __future__ import annotations
 
 import enum
@@ -35,6 +36,7 @@ class CommunicationState(enum.Enum):
     WAIT_CRA = 7
     COMMUNICATING = 8
 
+
 class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable=too-many-instance-attributes
     """Communication state machine.
 
@@ -53,48 +55,43 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
 
         self._settings = settings
 
-        self.disabled = secsgem.common.State(
-            CommunicationState.DISABLED,
-            "DISABLED",
-            initial=True)
-        self.enabled = secsgem.common.State(
-            CommunicationState.ENABLED,
-            "ENABLED")
+        self.disabled = secsgem.common.State(CommunicationState.DISABLED, "DISABLED", initial=True)
+        self.enabled = secsgem.common.State(CommunicationState.ENABLED, "ENABLED")
         self.not_communicating = secsgem.common.State(
             CommunicationState.NOT_COMMUNICATING,
             "NOT_COMMUNICATING",
-            parent=self.enabled)
+            parent=self.enabled,
+        )
         self.host_initiated_connect = secsgem.common.State(
             CommunicationState.HOST_INITIATED_CONNECT,
             "HOST_INITIATED_CONNECT",
-            parent=self.enabled)
+            parent=self.enabled,
+        )
         self.wait_cr_from_host = secsgem.common.State(
             CommunicationState.WAIT_CR_FROM_HOST,
             "WAIT_CR_FROM_HOST",
-            parent=self.enabled)
+            parent=self.enabled,
+        )
         self.equipment_initiated_connect = secsgem.common.State(
             CommunicationState.EQUIPMENT_INITIATED_CONNECT,
             "EQUIPMENT_INITIATED_CONNECT",
-            parent=self.enabled)
-        self.wait_delay = secsgem.common.State(
-            CommunicationState.WAIT_DELAY,
-            "WAIT_DELAY",
-            parent=self.enabled)
-        self.wait_cra = secsgem.common.State(
-            CommunicationState.WAIT_CRA,
-            "WAIT_CRA",
-            parent=self.enabled)
+            parent=self.enabled,
+        )
+        self.wait_delay = secsgem.common.State(CommunicationState.WAIT_DELAY, "WAIT_DELAY", parent=self.enabled)
+        self.wait_cra = secsgem.common.State(CommunicationState.WAIT_CRA, "WAIT_CRA", parent=self.enabled)
         self.communicating = secsgem.common.State(
             CommunicationState.COMMUNICATING,
             "COMMUNICATING",
-            parent=self.enabled)
+            parent=self.enabled,
+        )
 
         # transition 1
         self._current_state: secsgem.common.State = self.disabled
 
         self._transitions: list[secsgem.common.Transition] = [
             secsgem.common.Transition("enable", self.disabled, self.not_communicating),  # 2 and 4
-            secsgem.common.Transition("disable",
+            secsgem.common.Transition(
+                "disable",
                 [
                     self.enabled,
                     self.not_communicating,
@@ -105,20 +102,23 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
                     self.host_initiated_connect,
                     self.wait_cr_from_host,
                 ],
-                self.disabled),  # 3
+                self.disabled,
+            ),  # 3
             secsgem.common.Transition("select", self.not_communicating, self.wait_cra),  # 5
             secsgem.common.Transition("communicationreqfail", self.wait_cra, self.wait_delay),  # 6
             secsgem.common.Transition("delayexpired", self.wait_delay, self.wait_cra),  # 7
             secsgem.common.Transition("messagereceived", self.wait_delay, self.wait_cra),  # 8
             secsgem.common.Transition("s1f14received", self.wait_cra, self.communicating),  # 9
             secsgem.common.Transition("communicationfail", self.communicating, self.not_communicating),  # 14
-            secsgem.common.Transition("s1f13received",
+            secsgem.common.Transition(
+                "s1f13received",
                 [
                     self.wait_cr_from_host,
                     self.wait_delay,
                     self.wait_cra,
                 ],
-                self.communicating),  # 14
+                self.communicating,
+            ),  # 14
         ]
 
         self._wait_cra_timer: threading.Thread | None = None
@@ -146,8 +146,9 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
             data: event attributes
 
         """
-        self._comm_delay_timer = threading.Timer(self._settings.establish_communication_timeout,
-                                                 self._on_wait_comm_delay_timeout)
+        self._comm_delay_timer = threading.Timer(
+            self._settings.establish_communication_timeout, self._on_wait_comm_delay_timeout,
+        )
         self._comm_delay_timer.start()
 
     def _on_state_leave_wait_cra(self, _):

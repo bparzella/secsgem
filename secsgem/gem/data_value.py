@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM data value."""
+
 from __future__ import annotations
 
 import secsgem.secs
@@ -22,12 +23,14 @@ import secsgem.secs
 class DataValue:
     """Data value definition."""
 
-    def __init__(self,
-                 dvid: int | str,
-                 name: str,
-                 value_type: type[secsgem.secs.variables.Base],
-                 use_callback: bool = True,
-                 **kwargs):
+    def __init__(
+        self,
+        dvid: int | str,
+        name: str,
+        value_type: type[secsgem.secs.variables.Base],
+        use_callback: bool = True,
+        **kwargs,
+    ):
         """Initialize a data value.
 
         You can manually set the secs-type of the id with the 'id_type' keyword argument.

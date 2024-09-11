@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Contains objects and functions to create and handle tcp connection."""
+
 from __future__ import annotations
 
 import logging
@@ -75,7 +76,8 @@ class TcpConnection(Connection):
             "remoteAddress": self._settings.address,
             "remotePort": self._settings.port,
             "session_id": self._settings.session_id,
-            "connected": self._connected}
+            "connected": self._connected,
+        }
 
     def __str__(self):
         """Get the contents of this object as a string."""
@@ -91,8 +93,11 @@ class TcpConnection(Connection):
         Will also do the initial Select and Linktest requests.
         """
         # start data receiving thread
-        threading.Thread(target=self.__receiver_thread, args=(),
-                         name=f"secsgem_tcpConnection_receiver_{self._settings.address}:{self._settings.port}").start()
+        threading.Thread(
+            target=self.__receiver_thread,
+            args=(),
+            name=f"secsgem_tcpConnection_receiver_{self._settings.address}:{self._settings.port}",
+        ).start()
 
         # wait until thread is running
         while not self._thread_running:

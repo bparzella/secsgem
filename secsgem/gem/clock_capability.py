@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Clock capability."""
+
 from __future__ import annotations
 
 import datetime

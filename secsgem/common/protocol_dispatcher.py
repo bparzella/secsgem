@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Thread that can be triggered and call a callback."""
+
 from __future__ import annotations
 
 import logging
@@ -30,10 +31,10 @@ class ProtocolDispatcher:  # pylint: disable=too-many-instance-attributes
     """Thread that calls a target function when a trigger was raised."""
 
     def __init__(
-            self,
-            receiver_target: typing.Callable,
-            dispatcher_target: typing.Callable,
-            settings: Settings,
+        self,
+        receiver_target: typing.Callable,
+        dispatcher_target: typing.Callable,
+        settings: Settings,
     ) -> None:
         """Initialize thread object.
 

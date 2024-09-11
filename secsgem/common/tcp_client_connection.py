@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """TCP client connection."""
+
 from __future__ import annotations
 
 import socket
@@ -120,7 +121,8 @@ class TcpClientConnection(TcpConnection):
     def __start_connect_thread(self):
         self.connection_thread = threading.Thread(
             target=self.__connect_thread,
-            name=f"secsgem_tcpClientConnection_connectThread_{self._settings.address}")
+            name=f"secsgem_tcpClientConnection_connectThread_{self._settings.address}",
+        )
         self.connection_thread.start()
 
     def __connect_thread(self):

@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Secs I over TCP settings class."""
+
 from __future__ import annotations
 
 import enum

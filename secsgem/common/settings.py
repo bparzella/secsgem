@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """settings base class."""
+
 from __future__ import annotations
 
 import abc
@@ -75,7 +76,6 @@ class Settings(abc.ABC):
 
         if invalid_args:
             raise ValueError(f"{self.__class__.__name__} initialized with unknown arguments: {', '.join(invalid_args)}")
-
 
     @property
     def timeouts(self) -> Timeouts:

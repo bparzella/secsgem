@@ -375,7 +375,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
             if not sample["data"]:
                 code = SAMPLE_DATA_CODE_EMPTY.format(
-                    imports=imports, data_item=self.structure, sample_value=sample["data"],
+                    imports=imports,
+                    data_item=self.structure,
+                    sample_value=sample["data"],
                 )
             else:
                 code = SAMPLE_DATA_CODE.format(imports=imports, data_item=self.structure, sample_value=sample["data"])

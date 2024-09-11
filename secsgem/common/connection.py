@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Connection base function."""
+
 import abc
 
 from .events import Event

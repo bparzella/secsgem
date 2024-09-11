@@ -30,8 +30,8 @@ class F8(BaseNumber):
     format_code = 0o40
     text_code = "F8"
     _base_type = float
-    _min = -1.79769e+308
-    _max = 1.79769e+308
+    _min = -1.79769e308
+    _max = 1.79769e308
     _bytes = 8
     _struct_code = "d"
     preferred_types = [float]

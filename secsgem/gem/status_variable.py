@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Wrapper for GEM status variable."""
+
 from __future__ import annotations
 
 import enum
@@ -23,6 +24,7 @@ import secsgem.secs
 
 class StatusVariableId(enum.Enum):
     """Default IDs for status variables."""
+
     CLOCK = 1001
     CONTROL_STATE = 1002
     EVENTS_ENABLED = 1003

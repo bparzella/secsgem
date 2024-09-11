@@ -14,6 +14,7 @@
 # GNU Lesser General Public License for more details.
 #####################################################################
 """Queue for bytes."""
+
 from __future__ import annotations
 
 import threading
@@ -114,6 +115,7 @@ class ByteQueue:
             Found bytes
 
         """
+
         def min_size() -> bool:
             return len(self._buffer) >= size
 
