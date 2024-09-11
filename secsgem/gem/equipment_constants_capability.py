@@ -42,7 +42,13 @@ class EquipmentConstantsCapability(GemHandler, Capability):
                 secsgem.secs.variables.I2,
             ),
             EquipmentConstantId.TIME_FORMAT.value: EquipmentConstant(
-                EquipmentConstantId.TIME_FORMAT, "TimeFormat", 0, 2, 1, "", secsgem.secs.variables.I4
+                EquipmentConstantId.TIME_FORMAT,
+                "TimeFormat",
+                0,
+                2,
+                1,
+                "",
+                secsgem.secs.variables.I4,
             ),
         }
 
@@ -57,7 +63,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         return self._equipment_constants
 
     def on_ec_value_request(
-        self, equipment_constant_id: secsgem.secs.variables.Base, equipment_constant: EquipmentConstant
+        self,
+        equipment_constant_id: secsgem.secs.variables.Base,
+        equipment_constant: EquipmentConstant,
     ) -> secsgem.secs.variables.Base:
         """Get the equipment constant value depending on its configuation.
 
@@ -133,7 +141,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             equipment_constant.value = value
 
     def _on_s02f13(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 13, Equipment constant request.
 
@@ -163,7 +173,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         return self.stream_function(2, 14)(responses)
 
     def _on_s02f15(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 15, Equipment constant send.
 
@@ -197,7 +209,9 @@ class EquipmentConstantsCapability(GemHandler, Capability):
         return self.stream_function(2, 16)(eac)
 
     def _on_s02f29(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 29, EC namelist request.
 
@@ -238,7 +252,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
                             "ECMAX": eq_constant.max_value if eq_constant.max_value is not None else "",
                             "ECDEF": eq_constant.default_value,
                             "UNITS": eq_constant.unit,
-                        }
+                        },
                     )
 
         return self.stream_function(2, 30)(responses)

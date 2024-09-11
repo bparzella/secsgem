@@ -71,8 +71,8 @@ class AlarmCapability(GemHandler, Capability):
                         "ALCD": self.alarms[alid].code | self.settings.data_items.ALCD.ALARM_SET,
                         "ALID": alid,
                         "ALTX": self.alarms[alid].text,
-                    }
-                )
+                    },
+                ),
             )
 
         self.alarms[alid].set = True
@@ -95,8 +95,8 @@ class AlarmCapability(GemHandler, Capability):
         if self.alarms[alid].enabled:
             self.send_and_waitfor_response(
                 self.stream_function(5, 1)(
-                    {"ALCD": self.alarms[alid].code, "ALID": alid, "ALTX": self.alarms[alid].text}
-                )
+                    {"ALCD": self.alarms[alid].code, "ALID": alid, "ALTX": self.alarms[alid].text},
+                ),
             )
 
         self.alarms[alid].set = False
@@ -104,7 +104,9 @@ class AlarmCapability(GemHandler, Capability):
         self.trigger_collection_events([self.alarms[alid].ce_off])
 
     def _on_s05f03(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 3, Alarm en-/disabled.
 
@@ -128,7 +130,9 @@ class AlarmCapability(GemHandler, Capability):
         return self.stream_function(5, 4)(result)
 
     def _on_s05f05(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 5, Alarm list.
 
@@ -159,7 +163,9 @@ class AlarmCapability(GemHandler, Capability):
         return self.stream_function(5, 6)(result)
 
     def _on_s05f07(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 7, Enabled alarm list.
 

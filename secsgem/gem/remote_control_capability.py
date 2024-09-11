@@ -37,10 +37,16 @@ class RemoteControlCapability(GemHandler, Capability):
 
         self._remote_commands: dict[int | str | RemoteCommandId, RemoteCommand] = {
             RemoteCommandId.START.value: RemoteCommand(
-                RemoteCommandId.START, "Start", [], CollectionEventId.CMD_START_DONE.value
+                RemoteCommandId.START,
+                "Start",
+                [],
+                CollectionEventId.CMD_START_DONE.value,
             ),
             RemoteCommandId.STOP.value: RemoteCommand(
-                RemoteCommandId.STOP, "Stop", [], CollectionEventId.CMD_STOP_DONE.value
+                RemoteCommandId.STOP,
+                "Stop",
+                [],
+                CollectionEventId.CMD_STOP_DONE.value,
             ),
         }
 
@@ -55,7 +61,9 @@ class RemoteControlCapability(GemHandler, Capability):
         return self._remote_commands
 
     def _on_s02f41(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 41, host command send.
 
@@ -87,7 +95,7 @@ class RemoteControlCapability(GemHandler, Capability):
             if param.CPNAME.get() not in self._remote_commands[rcmd_name].params:
                 self._logger.warning("parameter %s for remote command %s not available", param.CPNAME.get(), rcmd_name)
                 return self.stream_function(2, 42)(
-                    {"HCACK": self.settings.data_items.HCACK.PARAMETER_INVALID, "PARAMS": []}
+                    {"HCACK": self.settings.data_items.HCACK.PARAMETER_INVALID, "PARAMS": []},
                 )
 
         self.send_response(

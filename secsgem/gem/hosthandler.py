@@ -78,12 +78,12 @@ class GemHostHandler(GemHandler):
 
         # create report
         self.send_and_waitfor_response(
-            self.stream_function(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]})
+            self.stream_function(2, 33)({"DATAID": 0, "DATA": [{"RPTID": report_id, "VID": dvs}]}),
         )
 
         # link event report to collection event
         self.send_and_waitfor_response(
-            self.stream_function(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]})
+            self.stream_function(2, 35)({"DATAID": 0, "DATA": [{"CEID": ceid, "RPTID": [report_id]}]}),
         )
 
         # enable collection event
@@ -121,7 +121,7 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(7, 17)(ppids))
+            self.send_and_waitfor_response(self.stream_function(7, 17)(ppids)),
         ).get()
 
     def get_process_program_list(self) -> secsgem.secs.SecsStreamFunction:
@@ -130,7 +130,7 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(7, 19)())
+            self.send_and_waitfor_response(self.stream_function(7, 19)()),
         ).get()
 
     def go_online(self) -> str | None:
@@ -150,7 +150,7 @@ class GemHostHandler(GemHandler):
 
         # send remote command
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(1, 15)())
+            self.send_and_waitfor_response(self.stream_function(1, 15)()),
         ).get()
 
     def enable_alarm(self, alid: int | str):
@@ -163,8 +163,8 @@ class GemHostHandler(GemHandler):
 
         return self.settings.streams_functions.decode(
             self.send_and_waitfor_response(
-                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.ENABLE, "ALID": alid})
-            )
+                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.ENABLE, "ALID": alid}),
+            ),
         ).get()
 
     def disable_alarm(self, alid: int | str):
@@ -177,8 +177,8 @@ class GemHostHandler(GemHandler):
 
         return self.settings.streams_functions.decode(
             self.send_and_waitfor_response(
-                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.DISABLE, "ALID": alid})
-            )
+                self.stream_function(5, 3)({"ALED": self.settings.data_items.ALED.DISABLE, "ALID": alid}),
+            ),
         ).get()
 
     def list_alarms(self, alids: list[int | str] | None = None):
@@ -194,7 +194,7 @@ class GemHostHandler(GemHandler):
             self._logger.info("List alarms %s", alids)
 
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(5, 5)(alids))
+            self.send_and_waitfor_response(self.stream_function(5, 5)(alids)),
         ).get()
 
     def list_enabled_alarms(self):
@@ -202,7 +202,7 @@ class GemHostHandler(GemHandler):
         self._logger.info("List all enabled alarms")
 
         return self.settings.streams_functions.decode(
-            self.send_and_waitfor_response(self.stream_function(5, 7)())
+            self.send_and_waitfor_response(self.stream_function(5, 7)()),
         ).get()
 
     def _on_alarm_received(self, handler, alarm_id, alarm_code, alarm_text):
@@ -210,7 +210,9 @@ class GemHostHandler(GemHandler):
         return self.settings.data_items.ACKC5.ACCEPTED
 
     def _on_s05f01(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 1, Alarm request.
 
@@ -231,7 +233,9 @@ class GemHostHandler(GemHandler):
         return self.stream_function(5, 2)(result)
 
     def _on_s06f11(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 6, Function 11, Event Report Send.
 
@@ -269,7 +273,9 @@ class GemHostHandler(GemHandler):
         return self.settings.data_items.ACKC10.ACCEPTED
 
     def _on_s10f01(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 10, Function 1, Terminal Request.
 
@@ -282,7 +288,8 @@ class GemHostHandler(GemHandler):
 
         result = self._callback_handler.terminal_received(handler, s10f1.TID, s10f1.TEXT)
         self.events.fire(
-            "terminal_received", {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol, "peer": self}
+            "terminal_received",
+            {"text": s10f1.TEXT, "terminal": s10f1.TID, "handler": self.protocol, "peer": self},
         )
 
         return self.stream_function(10, 2)(result)

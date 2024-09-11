@@ -33,19 +33,34 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
         self.__status_variables: dict[int | str, StatusVariable] = {
             StatusVariableId.CLOCK.value: StatusVariable(
-                StatusVariableId.CLOCK, "Clock", "", secsgem.secs.variables.String
+                StatusVariableId.CLOCK,
+                "Clock",
+                "",
+                secsgem.secs.variables.String,
             ),
             StatusVariableId.CONTROL_STATE.value: StatusVariable(
-                StatusVariableId.CONTROL_STATE, "ControlState", "", secsgem.secs.variables.Binary
+                StatusVariableId.CONTROL_STATE,
+                "ControlState",
+                "",
+                secsgem.secs.variables.Binary,
             ),
             StatusVariableId.EVENTS_ENABLED.value: StatusVariable(
-                StatusVariableId.EVENTS_ENABLED, "EventsEnabled", "", secsgem.secs.variables.Array
+                StatusVariableId.EVENTS_ENABLED,
+                "EventsEnabled",
+                "",
+                secsgem.secs.variables.Array,
             ),
             StatusVariableId.ALARMS_ENABLED.value: StatusVariable(
-                StatusVariableId.ALARMS_ENABLED, "AlarmsEnabled", "", secsgem.secs.variables.Array
+                StatusVariableId.ALARMS_ENABLED,
+                "AlarmsEnabled",
+                "",
+                secsgem.secs.variables.Array,
             ),
             StatusVariableId.ALARMS_SET.value: StatusVariable(
-                StatusVariableId.ALARMS_SET, "AlarmsSet", "", secsgem.secs.variables.Array
+                StatusVariableId.ALARMS_SET,
+                "AlarmsSet",
+                "",
+                secsgem.secs.variables.Array,
             ),
         }
 
@@ -64,7 +79,9 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         return self._status_variables
 
     def on_sv_value_request(
-        self, svid: secsgem.secs.variables.Base, status_variable: StatusVariable
+        self,
+        svid: secsgem.secs.variables.Base,
+        status_variable: StatusVariable,
     ) -> secsgem.secs.variables.Base:
         """Get the status variable value depending on its configuation.
 
@@ -114,7 +131,9 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         return result
 
     def _on_s01f03(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 3, Equipment status request.
 
@@ -142,7 +161,9 @@ class StatusDataCollectionCapability(GemHandler, Capability):
         return self.stream_function(1, 4)(responses)
 
     def _on_s01f11(
-        self, handler: secsgem.secs.SecsHandler, message: secsgem.common.Message
+        self,
+        handler: secsgem.secs.SecsHandler,
+        message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 11, SV namelist request.
 
@@ -173,7 +194,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
                 else:
                     status_variable = self._status_variables[status_variable_id]
                     responses.append(
-                        {"SVID": status_variable.svid, "SVNAME": status_variable.name, "UNITS": status_variable.unit}
+                        {"SVID": status_variable.svid, "SVNAME": status_variable.name, "UNITS": status_variable.unit},
                     )
 
         return self.stream_function(1, 12)(responses)
