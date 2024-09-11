@@ -25,6 +25,7 @@ class Base:
     """
 
     format_code = -1
+    text_code = ""
     preferred_types: list[type] | None
 
 

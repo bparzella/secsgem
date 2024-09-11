@@ -83,7 +83,13 @@ class DataItemBase(metaclass=DataItemMeta):
         """
         clsname = format(cls.__name__) if showname else "DATA"
 
+        if cls.__type__ is None:
+            raise ValueError(f"'__type__' not set for data item `{cls.__name__}`")
+
         if cls.__type__ is variables.Dynamic:
+            if cls.__allowedtypes__ is None:
+                raise ValueError(f"'__allowedtypes__' not set for dynamic data item `{cls.__name__}`")
+
             if cls.__count__ > 0:
                 return f"{clsname}: {'/'.join([x.text_code for x in cls.__allowedtypes__])}[{cls.__count__}]"
 
