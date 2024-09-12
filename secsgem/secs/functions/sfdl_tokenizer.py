@@ -231,6 +231,8 @@ class SFDLTokenizer:
 
     whitespaces = " \t\n\r"
     operators = "<>"
+    comment_start_chars = "#"
+    comment_end_chars = "\n\r"
 
     def __init__(self, source: str) -> None:
         """Parse the sfdl text to a structure."""
@@ -338,6 +340,7 @@ class SFDLTokenizer:
     def parse_all(self):
         """Parse all tokens in the source code."""
         current_token = ""
+        in_comment = False
         location = _SFDLSourceLocation()
         elements = _SFDLElementList()
 
@@ -353,6 +356,14 @@ class SFDLTokenizer:
 
                 self._tokens = SFDLTokens(self._process_tokens(elements))
                 return
+
+            if char in self.comment_start_chars:
+                in_comment = True
+
+            if in_comment:
+                if char in self.comment_end_chars:
+                    in_comment = False
+                continue
 
             if char in self.whitespaces:
                 current_token = self._process_whitespace(elements, current_token, location)

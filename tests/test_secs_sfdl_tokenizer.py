@@ -82,12 +82,46 @@ class TestSFDLTokenizer:
             assert token.location.line == expected_token["line"]
             assert token.location.column == expected_token["col"]
 
+
+    def test_source_with_comment(self):
+        source = """< L SAMPLE_NAME
+    <L # comment1
+        <DVNAME>  # comment2
+        < DVVAL >  # comment 3 until eol
+    >
+>"""
+
+        tokenizer = SFDLTokenizer(source)
+        print(tokenizer)
+
+        expected_tokens = [
+            {"value": "<", "line": 1, "col": 1},
+            {"value": "L", "line": 1, "col": 3},
+            {"value": "SAMPLE_NAME", "line": 1, "col": 5},
+            {"value": "<", "line": 2, "col": 4},
+            {"value": "L", "line": 2, "col": 5},
+            {"value": "<", "line": 3, "col": 8},
+            {"value": "DVNAME", "line": 3, "col": 9},
+            {"value": ">", "line": 3, "col": 15},
+            {"value": "<", "line": 4, "col": 8},
+            {"value": "DVVAL", "line": 4, "col": 10},
+            {"value": ">", "line": 4, "col": 16},
+            {"value": ">", "line": 5, "col": 4},
+            {"value": ">", "line": 6, "col": 1},
+        ]
+
+        for expected_token in expected_tokens:
+            token = tokenizer.tokens.next()
+            assert token.value == expected_token["value"]
+            assert token.location.line == expected_token["line"]
+            assert token.location.column == expected_token["col"]
+
     def test_empty_source(self):
         source = """"""
 
         with pytest.raises(SFDLParseError) as exc:
             SFDLTokenizer(source)
-        
+
         assert str(exc.value) == "\n\n^-- Opening tag '<' expected"
 
 
