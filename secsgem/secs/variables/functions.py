@@ -81,13 +81,15 @@ def _generate_from_sfdl(tokenizer: SFDLTokenizer, token_name: str | None = None)
         sub_items.append(_generate_from_sfdl(tokenizer, item_key_token.value if item_key_token else None))
 
 
-def generate(data_format):
+def generate(data_format: str | list | Base) -> Base:
     """Generate actual variable from data format.
 
-    :param data_format: data format to create variable for
-    :type data_format: list/Base based class
-    :returns: created variable
-    :rtype: Base based class
+    Args:
+        data_format: data format to create variable for
+
+    Returns:
+        created variable
+
     """
     from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
     from .list_type import List  # pylint: disable=import-outside-toplevel,cyclic-import
@@ -111,11 +113,16 @@ def generate(data_format):
     raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")
 
 
-def get_format(data_format, showname=False):
+def get_format(data_format: str | list | Base, showname: bool = False) -> str:
     """Get the format of the function.
 
-    :returns: returns the string representation of the function
-    :rtype: string
+    Args:
+        data_format: data format to create string representation for
+        showname: Display the real class name when True
+
+    Returns:
+        string representation of the function
+
     """
     del showname  # unused variable
 
