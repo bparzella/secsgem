@@ -294,6 +294,10 @@ Wrapping the function definition in python data types is not very intuitive.
 So a new description language was added, based on SML, which is known in combination with secs.
 For more information check the documentation ([Secs Function Definition Language](firststeps/sfdl.md)).
 
+```{attention}
+Custom data types are currently not supported with SFDL.
+```
+
 Old:
 ```python
 class SecsS06F08(SecsStreamFunction):
