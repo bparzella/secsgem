@@ -6,13 +6,15 @@ SFDL is derived from SML but allows the definition of a function without obfusca
 
 Data items are defined with their name in a set of pointed brackets.
 
-Structure definition for standard S6F2:
-```
+```{code-block}
+:caption: Structure definition for standard S6F2
+
 < ACKC6 >
 ```
 
-Structure definition for standard S2F36:
-```
+```{code-block}
+:caption: Structure definition for standard S2F36
+
 < LRACK >
 ```
 
@@ -25,8 +27,9 @@ Lists are described with 'L' on the opening bracket in a set of pointed brackets
 A list with multiple different data items is mapped to a dict or object.
 This can be accessed with the data item name as key.
 
-Structure definition for standard S5F1:
-```
+```{code-block}
+:caption: Structure definition for standard S5F1
+
 < L
     < ALCD >
     < ALID >
@@ -38,8 +41,9 @@ Structure definition for standard S5F1:
 Open lists are defined with only one data item.
 They can hold multiple values with the same data type.
 
-Structure definition for standard S1F3:
-```
+```{code-block}
+:caption: Structure definition for standard S1F3
+
 < L
     < SVID >
 >
@@ -49,8 +53,9 @@ Structure definition for standard S1F3:
 
 Lists can be nested within each other.
 
-Structure definition for standard S1F22:
-```
+```{code-block}
+:caption: Structure definition for standard S1F22
+
 < L
     < L
         < VID >
@@ -64,8 +69,9 @@ Structure definition for standard S1F22:
 
 If an open list with a single data item is nested within a fixed length list ( mapped to a dict/object), the name of the nested data item is used to override the key of the parent list.
 
-Structure definition for standard S2F23:
-```
+```{code-block}
+:caption: Structure definition for standard S2F23
+
 < L
     < TRID >
     < DSPER >
@@ -83,8 +89,9 @@ If an open list of fixed length is nested in a fixed length list (oof) resolving
 In this case the item is simply named "DATA".
 But this name can be overridden, by passing the name after the L tag
 
-Structure definition for standard S2F33:
-```
+```{code-block}
+:caption: Structure definition for standard S2F33
+
 < L
     < DATAID >
     < L REPORTS
@@ -102,8 +109,9 @@ In this case the list of reports will accessible with the key/attribute REPORTS.
 
 But also other nested lists can be named this way
 
-Structure definition for standard S2F23:
-```
+```{code-block}
+:caption: Structure definition for standard S2F23
+
 < L
     < TRID >
     < DSPER >
@@ -117,8 +125,9 @@ Structure definition for standard S2F23:
 
 This will make the list of SVIDs available with the key/attribute SVIDS.
 
-Structure definition for standard S6F8:
-```
+```{code-block}
+:caption: Structure definition for standard S6F8
+
 < L
     < DATAID >
     < CEID >
@@ -133,6 +142,19 @@ Structure definition for standard S6F8:
             >
         >
     >
+>
+```
+
+## Comments
+
+Comments start with a `#` and end with the line break.
+
+```{code-block}
+:caption: Structure definition for custom message
+
+< L  # Sample list
+    < DATAID >  # The data id
+    < CEID >    # The collection event id
 >
 ```
 
