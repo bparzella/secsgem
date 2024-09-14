@@ -16,7 +16,7 @@ project = u'secsgem'
 copyright = u'2015-2024, Benjamin Parzella'
 
 version = '0.3'
-release = '0.3.0-beta.1'
+release = '0.3.0'
 
 extensions = [
     'sphinx.ext.napoleon',
