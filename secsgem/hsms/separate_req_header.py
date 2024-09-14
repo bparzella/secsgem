@@ -27,8 +27,8 @@ class HsmsSeparateReqHeader(HsmsHeader):
     def __init__(self, system: int):
         """Initialize a hsms separate request header.
 
-        :param system: message ID
-        :type system: integer
+        Args:
+            system: message ID
 
         Example:
             >>> import secsgem.hsms

@@ -27,8 +27,8 @@ class HsmsSelectReqHeader(HsmsHeader):
     def __init__(self, system: int):
         """Initialize a hsms select request.
 
-        :param system: message ID
-        :type system: integer
+        Args:
+            system: message ID
 
         Example:
             >>> import secsgem.hsms

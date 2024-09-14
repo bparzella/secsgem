@@ -27,12 +27,10 @@ class HsmsRejectReqHeader(HsmsHeader):
     def __init__(self, system: int, s_type: HsmsSType, reason: int):
         """Initialize a hsms reject request.
 
-        :param system: message ID
-        :type system: integer
-        :param s_type: s_type of rejected message
-        :type s_type: integer
-        :param reason: reason for rejection
-        :type reason: integer
+        Args:
+            system: message ID
+            s_type: s_type of rejected message
+            reason: reason for rejection
 
         Example:
             >>> import secsgem.hsms
