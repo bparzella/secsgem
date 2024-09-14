@@ -64,7 +64,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
     def on_ec_value_request(
         self,
-        equipment_constant_id: secsgem.secs.variables.Base,
+        _equipment_constant_id: secsgem.secs.variables.Base,
         equipment_constant: EquipmentConstant,
     ) -> secsgem.secs.variables.Base:
         """Get the equipment constant value depending on its configuation.
@@ -79,13 +79,11 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             The value encoded in the corresponding type
 
         """
-        del equipment_constant_id  # unused variable
-
         return equipment_constant.value_type(equipment_constant.value)
 
     def on_ec_value_update(
         self,
-        equipment_constant_id: secsgem.secs.variables.Base,
+        _equipment_constant_id: secsgem.secs.variables.Base,
         equipment_constant: EquipmentConstant,
         value: int | float,
     ):
@@ -99,8 +97,6 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             value: The value encoded in the corresponding type
 
         """
-        del equipment_constant_id  # unused variable
-
         equipment_constant.value = value
 
     def _get_ec_value(self, equipment_constant: EquipmentConstant) -> secsgem.secs.variables.Base:
@@ -142,7 +138,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
     def _on_s02f13(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 13, Equipment constant request.
@@ -152,8 +148,6 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         responses = []
@@ -174,7 +168,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
     def _on_s02f15(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 15, Equipment constant send.
@@ -184,8 +178,6 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         eac = 0
@@ -210,7 +202,7 @@ class EquipmentConstantsCapability(GemHandler, Capability):
 
     def _on_s02f29(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 29, EC namelist request.
@@ -220,8 +212,6 @@ class EquipmentConstantsCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         responses = []

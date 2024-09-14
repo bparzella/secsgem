@@ -62,7 +62,7 @@ class RemoteControlCapability(GemHandler, Capability):
 
     def _on_s02f41(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 41, host command send.
@@ -76,8 +76,6 @@ class RemoteControlCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         rcmd_name = function.RCMD.get()

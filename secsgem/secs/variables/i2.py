@@ -21,10 +21,10 @@ from .base_number import BaseNumber
 class I2(BaseNumber):
     """Secs type for 2 byte signed data.
 
-    :param value: initial value
-    :type value: list/integer
-    :param count: number of items this value
-    :type count: integer
+    Args:
+        value: initial value
+        count: number of items this value
+
     """
 
     format_code = 0o32

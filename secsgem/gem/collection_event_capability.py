@@ -96,8 +96,9 @@ class CollectionEventCapability(GemHandler, Capability):
     def _get_events_enabled(self) -> list[int | str]:
         """List of the enabled collection events.
 
-        :returns: collection event
-        :rtype: list of various
+        Returns:
+            collection event
+
         """
         enabled_ceid = []
 
@@ -135,7 +136,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
     def _on_s02f33(  # pylint: disable=too-many-branches  # noqa: C901
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 33, Define Report.
@@ -145,8 +146,6 @@ class CollectionEventCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         drack = secsgem.secs.data_items.DRACK.ACK
@@ -193,7 +192,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
     def _on_s02f35(  # pylint: disable=too-many-branches  # noqa: C901
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 2, Function 35, Link event report.
@@ -203,8 +202,6 @@ class CollectionEventCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         lrack = secsgem.secs.data_items.LRACK.ACK
@@ -243,7 +240,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
     def _on_s02f37(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 2, Function 37, En-/Disable Event Report.
@@ -253,8 +250,6 @@ class CollectionEventCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         erack = secsgem.secs.data_items.ERACK.ACCEPTED
@@ -266,7 +261,7 @@ class CollectionEventCapability(GemHandler, Capability):
 
     def _on_s06f15(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Callback handler for Stream 6, Function 15, event report request.
@@ -276,8 +271,6 @@ class CollectionEventCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         ceid = function.get()

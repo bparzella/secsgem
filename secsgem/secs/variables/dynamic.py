@@ -38,12 +38,11 @@ class Dynamic(Base):
     def __init__(self, types, value=None, count=-1):
         """Initialize a dynamic secs variable.
 
-        :param types: list of supported types, default first. empty means all types are support, String default
-        :type types: list of :class:`secsgem.secs.variables.Base` classes
-        :param value: initial value
-        :type value: various
-        :param count: max number of items in type
-        :type count: integer
+        Args:
+            types: list of supported types, default first. empty means all types are support, String default
+            value: initial value
+            count: max number of items in type
+
         """
         super().__init__()
 
@@ -110,6 +109,9 @@ class Dynamic(Base):
         In doubt provide the variable wrapped in the matching :class:`secsgem.secs.variables.Base` class,
         to avoid confusion.
 
+        Args:
+            value: new value
+
         Example:
             >>> import secsgem.secs
             >>>
@@ -121,8 +123,6 @@ class Dynamic(Base):
 
         If no type is provided the default type is used which might not be the expected type.
 
-        :param value: new value
-        :type value: various
         """
         if isinstance(value, Base):
             if isinstance(value, Dynamic):
@@ -155,31 +155,34 @@ class Dynamic(Base):
     def get(self):
         """Return the internal value.
 
-        :returns: internal value
-        :rtype: various
+        Returns:
+            internal value
+
         """
         if self.value is not None:
             return self.value.get()
 
         return None
 
-    def encode(self):
+    def encode(self) -> bytes:
         """Encode the value to secs data.
 
-        :returns: encoded data bytes
-        :rtype: string
+        Returns:
+            encoded data bytes
+
         """
         return self.value.encode()
 
     def decode(self, data, start=0):
         """Decode the secs byte data to the value.
 
-        :param data: encoded data bytes
-        :type data: string
-        :param start: start position of value the data
-        :type start: integer
-        :returns: new start position
-        :rtype: integer
+        Args:
+            data: encoded data bytes
+            start: start position of value the data
+
+        Returns:
+            new start position
+
         """
         (_, format_code, _) = self.decode_item_header(data, start)
 
@@ -259,7 +262,8 @@ class ANYVALUE(Dynamic):
     def __init__(self, value=None):
         """Initialize an ANYVALUE variable.
 
-        :param value: value of the variable
+        Args:
+            value: value of the variable
         """
         self.name = self.__class__.__name__
 

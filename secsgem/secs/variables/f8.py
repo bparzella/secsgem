@@ -21,10 +21,10 @@ from .base_number import BaseNumber
 class F8(BaseNumber):
     """Secs type for 8 byte float data.
 
-    :param value: initial value
-    :type value: list/float
-    :param count: number of items this value
-    :type count: integer
+    Args:
+        value: initial value
+        count: number of items this value
+
     """
 
     format_code = 0o40

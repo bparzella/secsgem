@@ -112,8 +112,8 @@ class StateModelsCapability(GemHandler, Capability):
 
     def _on_s01f15(
         self,
-        handler: secsgem.secs.SecsHandler,
-        message: secsgem.common.Message,
+        _handler: secsgem.secs.SecsHandler,
+        _message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 15, Request offline.
 
@@ -122,8 +122,6 @@ class StateModelsCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler, message  # unused parameters
-
         oflack = 0
 
         if self._control_state.current in [ControlState.ONLINE, ControlState.ONLINE_LOCAL, ControlState.ONLINE_REMOTE]:
@@ -134,8 +132,8 @@ class StateModelsCapability(GemHandler, Capability):
 
     def _on_s01f17(
         self,
-        handler: secsgem.secs.SecsHandler,
-        message: secsgem.common.Message,
+        _handler: secsgem.secs.SecsHandler,
+        _message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 17, Request online.
 
@@ -144,8 +142,6 @@ class StateModelsCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler, message  # unused parameters
-
         onlack = 1
 
         if self._control_state.current == ControlState.HOST_OFFLINE:
@@ -163,8 +159,8 @@ class StateModelsCapability(GemHandler, Capability):
     def _get_control_state_id(self) -> int:
         """Get id of the control state for the current control state.
 
-        :returns: control state
-        :rtype: integer
+        Returns:
+            control state
         """
         if self._control_state.current == ControlState.EQUIPMENT_OFFLINE:
             return 1

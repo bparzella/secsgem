@@ -227,8 +227,8 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f01(
         self,
-        handler: secsgem.secs.SecsHandler,
-        message: secsgem.common.Message,
+        _handler: secsgem.secs.SecsHandler,
+        _message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 1, Are You There.
 
@@ -237,8 +237,6 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
             message: complete message received
 
         """
-        del handler, message  # unused parameters
-
         if self._is_host:
             return self.stream_function(1, 2)()
 
@@ -246,8 +244,8 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
 
     def _on_s01f13(
         self,
-        handler: secsgem.secs.SecsHandler,
-        message: secsgem.common.Message,
+        _handler: secsgem.secs.SecsHandler,
+        _message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 13, Establish Communication Request.
 
@@ -256,8 +254,6 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
             message: complete message received
 
         """
-        del handler, message  # unused parameters
-
         if self._is_host:
             return self.stream_function(1, 14)({"COMMACK": self.on_commack_requested(), "MDLN": []})
 

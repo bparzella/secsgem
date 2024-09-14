@@ -113,7 +113,7 @@ def generate(data_format: str | list | Base) -> Base:
     raise TypeError(f"Can't handle item of class {data_format.__class__.__name__}")
 
 
-def get_format(data_format: str | list | Base, showname: bool = False) -> str:
+def get_format(data_format: str | list | Base, _showname: bool = False) -> str:
     """Get the format of the function.
 
     Args:
@@ -124,8 +124,6 @@ def get_format(data_format: str | list | Base, showname: bool = False) -> str:
         string representation of the function
 
     """
-    del showname  # unused variable
-
     from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
     from .list_type import List  # pylint: disable=import-outside-toplevel,cyclic-import
 

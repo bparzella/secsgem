@@ -52,14 +52,13 @@ class RemoteCommand:  # pylint: disable=too-few-public-methods
         they will be passed to the GemEquipmentHandlers callback
         :func:`secsgem.gem.equipmenthandler.GemEquipmentHandler._on_rcmd_<remote_command>`.
 
-        :param rcmd: ID of the status variable
-        :type rcmd: various
-        :param name: long name of the status variable
-        :type name: string
-        :param params: array of available parameter names
-        :type params: list
-        :param ce_finished: collection event to trigger when remote command was finished
-        :type ce_finished: types supported by data item CEID
+        Args:
+            rcmd: ID of the status variable
+            name: long name of the status variable
+            params: array of available parameter names
+            ce_finished: collection event to trigger when remote command was finished
+            kwargs: additional parameters
+
         """
         self.rcmd = rcmd
         self.name = name

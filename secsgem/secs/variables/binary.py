@@ -28,10 +28,10 @@ class Binary(Base):
     def __init__(self, value=None, count=-1):
         """Initialize a binary secs variable.
 
-        :param value: initial value
-        :type value: string/integer
-        :param count: number of items this value
-        :type count: integer
+        Args:
+            value: initial value
+            count: number of items this value
+
         """
         super().__init__()
 
@@ -100,8 +100,12 @@ class Binary(Base):
     def supports_value(self, value) -> bool:
         """Check if the current instance supports the provided value.
 
-        :param value: value to test
-        :type value: any
+        Args:
+            value: value to test
+
+        Returns:
+            True if the value is supported, False otherwise
+
         """
         if isinstance(value, (list, tuple)):
             return self._supports_value_list(value)
@@ -141,8 +145,9 @@ class Binary(Base):
     def set(self, value):
         """Set the internal value to the provided value.
 
-        :param value: new value
-        :type value: string/integer
+        Args:
+            value: new value
+
         """
         if value is None:
             return
@@ -173,19 +178,21 @@ class Binary(Base):
     def get(self):
         """Return the internal value.
 
-        :returns: internal value
-        :rtype: list/integer
+        Returns:
+            internal value
+
         """
         if len(self.value) == 1:
             return self.value[0]
 
         return bytes(self.value)
 
-    def encode(self):
+    def encode(self) -> bytes:
         """Encode the value to secs data.
 
-        :returns: encoded data bytes
-        :rtype: string
+        Returns:
+            encoded data bytes
+
         """
         result = self.encode_item_header(len(self.value) if self.value is not None else 0)
 
@@ -197,12 +204,12 @@ class Binary(Base):
     def decode(self, data, start=0):
         """Decode the secs byte data to the value.
 
-        :param data: encoded data bytes
-        :type data: string
-        :param start: start position of value the data
-        :type start: integer
-        :returns: new start position
-        :rtype: integer
+        Args:
+            data: encoded data bytes
+            start: start position of value the data
+
+        Returns:
+            new start position
         """
         (text_pos, _, length) = self.decode_item_header(data, start)
 

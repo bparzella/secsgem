@@ -53,7 +53,8 @@ class DataItemBase(metaclass=DataItemMeta):
     def __init__(self, value=None):
         """Initialize a data item.
 
-        :param value: Value of the data item
+        Args:
+            value: Value of the data item
         """
         self.name = self.__class__.__name__
 

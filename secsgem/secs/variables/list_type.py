@@ -15,6 +15,8 @@
 #####################################################################
 """SECS list variable type."""
 
+from __future__ import annotations
+
 from collections import OrderedDict
 
 import secsgem.common
@@ -50,12 +52,11 @@ class List(Base):
     def __init__(self, data_format, value=None):
         """Initialize a secs list variable.
 
-        :param data_format: internal data values
-        :type data_format: OrderedDict
-        :param value: initial value
-        :type value: dict/list
-        :param count: number of fields in the list
-        :type count: integer
+        Args:
+            data_format: internal data values
+            value: initial value
+            count: number of fields in the list
+
         """
         super().__init__()
 
@@ -72,8 +73,9 @@ class List(Base):
     def get_format(data_format, showname=False):
         """Get the format of the variable.
 
-        :returns: returns the string representation of the function
-        :rtype: string
+        Returns:
+            string representation of the function
+
         """
         from .array import Array  # pylint: disable=import-outside-toplevel,cyclic-import
 
@@ -188,10 +190,12 @@ class List(Base):
     def get_name_from_format(data_format):
         """Generate a name for the passed data_format.
 
-        :param data_format: data_format to get name for
-        :type data_format: list/Base based class
-        :returns: name for data_format
-        :rtype: str
+        Args:
+            data_format: data_format to get name for
+
+        Returns:
+            name for data_format
+
         """
         if not isinstance(data_format, list):
             raise TypeError(f"Can't generate item name of class {data_format.__class__.__name__}")
@@ -204,8 +208,8 @@ class List(Base):
     def set(self, value):
         """Set the internal value to the provided value.
 
-        :param value: new value
-        :type value: dict/list
+        Args:
+            value: new value
         """
         if isinstance(value, dict):
             for field_name in value:
@@ -222,8 +226,9 @@ class List(Base):
     def get(self):
         """Return the internal value.
 
-        :returns: internal value
-        :rtype: list
+        Returns:
+            internal value
+
         """
         data = {}
         for field_name in self.data:
@@ -231,11 +236,12 @@ class List(Base):
 
         return data
 
-    def encode(self):
+    def encode(self) -> bytes:
         """Encode the value to secs data.
 
-        :returns: encoded data bytes
-        :rtype: string
+        Returns:
+            encoded data bytes
+
         """
         result = self.encode_item_header(len(self.data))
 
@@ -247,12 +253,13 @@ class List(Base):
     def decode(self, data, start=0):
         """Decode the secs byte data to the value.
 
-        :param data: encoded data bytes
-        :type data: string
-        :param start: start position of value the data
-        :type start: integer
-        :returns: new start position
-        :rtype: integer
+        Args:
+            data: encoded data bytes
+            start: start position of value the data
+
+        Returns:
+            new start position
+
         """
         (text_pos, _, length) = self.decode_item_header(data, start)
 

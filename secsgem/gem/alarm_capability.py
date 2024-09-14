@@ -105,7 +105,7 @@ class AlarmCapability(GemHandler, Capability):
 
     def _on_s05f03(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 3, Alarm en-/disabled.
@@ -115,8 +115,6 @@ class AlarmCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         result = self.settings.data_items.ACKC5.ACCEPTED
@@ -131,7 +129,7 @@ class AlarmCapability(GemHandler, Capability):
 
     def _on_s05f05(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 5, Alarm list.
@@ -141,8 +139,6 @@ class AlarmCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         alids = function.get()
@@ -164,8 +160,8 @@ class AlarmCapability(GemHandler, Capability):
 
     def _on_s05f07(
         self,
-        handler: secsgem.secs.SecsHandler,
-        message: secsgem.common.Message,
+        _handler: secsgem.secs.SecsHandler,
+        _message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 5, Function 7, Enabled alarm list.
 
@@ -174,8 +170,6 @@ class AlarmCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler, message  # unused parameters
-
         result = [
             {
                 "ALCD": self.alarms[alid].code
@@ -192,8 +186,9 @@ class AlarmCapability(GemHandler, Capability):
     def _get_alarms_enabled(self) -> list[int | str]:
         """List of the enabled alarms.
 
-        :returns: alarms
-        :rtype: list of various
+        Returns:
+            alarms
+
         """
         enabled_alarms = []
 
@@ -206,8 +201,9 @@ class AlarmCapability(GemHandler, Capability):
     def _get_alarms_set(self) -> list[int | str]:
         """List of the set alarms.
 
-        :returns: alarms
-        :rtype: list of various
+        Returns:
+            alarms
+
         """
         set_alarms = []
 

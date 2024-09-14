@@ -80,7 +80,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
     def on_sv_value_request(
         self,
-        svid: secsgem.secs.variables.Base,
+        _svid: secsgem.secs.variables.Base,
         status_variable: StatusVariable,
     ) -> secsgem.secs.variables.Base:
         """Get the status variable value depending on its configuation.
@@ -95,8 +95,6 @@ class StatusDataCollectionCapability(GemHandler, Capability):
             The value encoded in the corresponding type
 
         """
-        del svid  # unused variable
-
         return status_variable.value_type(status_variable.value)
 
     def _get_sv_value(self, status_variable: StatusVariable) -> secsgem.secs.variables.Base:
@@ -132,7 +130,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
     def _on_s01f03(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 3, Equipment status request.
@@ -142,8 +140,6 @@ class StatusDataCollectionCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         responses = []
@@ -162,7 +158,7 @@ class StatusDataCollectionCapability(GemHandler, Capability):
 
     def _on_s01f11(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 1, Function 11, SV namelist request.
@@ -172,8 +168,6 @@ class StatusDataCollectionCapability(GemHandler, Capability):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         responses = []

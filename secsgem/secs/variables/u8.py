@@ -21,10 +21,10 @@ from .base_number import BaseNumber
 class U8(BaseNumber):
     """Secs type for 8 byte unsigned data.
 
-    :param value: initial value
-    :type value: list/integer
-    :param count: number of items this value
-    :type count: integer
+    Args:
+        value: initial value
+        count: number of items this value
+
     """
 
     format_code = 0o50

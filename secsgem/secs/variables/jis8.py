@@ -25,10 +25,10 @@ from .base_text import BaseText
 class JIS8(BaseText):
     """Secs type for string data.
 
-    :param value: initial value
-    :type value: string
-    :param count: number of items this value
-    :type count: integer
+    Args:
+        value: initial value
+        count: number of items this value
+
     """
 
     format_code = 0o21

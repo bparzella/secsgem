@@ -36,18 +36,21 @@ class Base:
     def set(self, value):
         """Set the internal value to the provided value.
 
-        :param value: new value
-        :type value: various
+        Args:
+            value: new value
+
         """
         raise NotImplementedError("Function set not implemented on " + self.__class__.__name__)
 
     def encode_item_header(self, length):
         """Encode item header depending on the number of length bytes required.
 
-        :param length: number of bytes in data
-        :type length: integer
-        :returns: encoded item header bytes
-        :rtype: string
+        Args:
+            length: number of bytes in data
+
+        Returns:
+            encoded item header bytes
+
         """
         if length < 0:
             raise ValueError(f"Encoding {self.__class__.__name__} not possible, data length too small {length}")
@@ -69,15 +72,16 @@ class Base:
         format_byte = (self.format_code << 2) | length_bytes
         return bytes(bytearray((format_byte, (length & 0x0000FF))))
 
-    def decode_item_header(self, data, text_pos=0):
+    def decode_item_header(self, data, text_pos=0) -> tuple[int, int, int]:
         """Encode item header depending on the number of length bytes required.
 
-        :param data: encoded data
-        :type data: string
-        :param text_pos: start of item header in data
-        :type text_pos: integer
-        :returns: start position for next item, format code, length item of data
-        :rtype: (integer, integer, integer)
+        Args:
+            data: encoded data
+            text_pos: start of item header in data
+
+        Returns:
+            start position for next item, format code, length item of data
+
         """
         if len(data) == 0:
             raise ValueError(f"Decoding for {self.__class__.__name__} without any text")

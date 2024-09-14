@@ -32,15 +32,12 @@ class HsmsTestConnection(secsgem.common.Connection):
 
     Handles connections incoming connection from hsmsMultiPassiveServer
 
-    :param address: IP address of target host
-    :type address: string
-    :param port: TCP port of target host
-    :type port: integer
-    :param session_id: session / device ID to use for connection
-    :type session_id: integer
-    :param delegate: target for messages
-    :type delegate: inherited from :class:`secsgem.hsms.HsmsHandler`
-
+    Args:
+        settings: settings for this connection
+        port: TCP port of target host
+        session_id: session / device ID to use for connection
+        delegate: target for messages
+    
     Example:
 
         # TODO: create example

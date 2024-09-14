@@ -59,7 +59,7 @@ class DataValueCapability(GemHandler, Capability):
 
     def on_dv_value_request(
         self,
-        data_value_id: secsgem.secs.variables.Base,
+        _data_value_id: secsgem.secs.variables.Base,
         data_value: DataValue,
     ) -> secsgem.secs.variables.Base:
         """Get the data value depending on its configuation.
@@ -74,8 +74,6 @@ class DataValueCapability(GemHandler, Capability):
             The value encoded in the corresponding type
 
         """
-        del data_value_id  # unused variable
-
         return data_value.value_type(data_value.value)
 
     def _get_dv_value(self, data_value: DataValue) -> secsgem.secs.variables.Base:

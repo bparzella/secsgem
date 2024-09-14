@@ -63,6 +63,9 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     def __init__(self, value=None):
         """Initialize a stream function object.
 
+        Args:
+            value: set the value of stream/function parameters
+
         Example:
             class SecsS02F30(SecsStreamFunction):
                 _stream = 2
@@ -87,8 +90,6 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
                     ]
                 ]
 
-        :param value: set the value of stream/function parameters
-        :type value: various
         """
         self.data = functions.generate(self._data_format)
 
@@ -144,19 +145,21 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     def append(self, data):
         """Append data to list, if stream/function parameter is a list.
 
-        :param data: list item to add
-        :type data: various
+        Args:
+            data: list item to add
+
         """
         if hasattr(self.data, "append") and callable(self.data.append):
             self.data.append(data)
         else:
             raise AttributeError(f"class {self.__class__.__name__} has no attribute 'append'")
 
-    def encode(self):
+    def encode(self) -> bytes:
         """Generate the encoded hsms data of the stream/function parameter.
 
-        :returns: encoded data
-        :rtype: string
+        Returns:
+            encoded data
+
         """
         if self.data is None:
             return b""
@@ -166,8 +169,9 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     def decode(self, data):
         """Update stream/function parameter data from the passed data.
 
-        :param data: encoded data
-        :type data: string
+        Args:
+            data: encoded data
+
         """
         if self.data is not None:
             self.data.decode(data)
@@ -175,16 +179,18 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     def set(self, value):
         """Update the value of the stream/function parameter.
 
-        :param value: new value for the parameter
-        :type value: various
+        Args:
+            value: new value for the parameter
+
         """
         self.data.set(value)
 
     def get(self):
         """Get the current value of the stream/function parameter.
 
-        :returns: current parameter value
-        :rtype: various
+        Returns:
+            current parameter value
+
         """
         if self.data is None:
             return None
@@ -195,8 +201,9 @@ class SecsStreamFunction(metaclass=StructureDisplayingMeta):  # pylint: disable=
     def get_format(cls):
         """Get the format of the function.
 
-        :returns: returns the string representation of the function
-        :rtype: string
+        Returns:
+            string representation of the function
+
         """
         if cls._data_format is not None:
             return functions.get_format(cls._data_format)

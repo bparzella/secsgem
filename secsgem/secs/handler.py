@@ -97,12 +97,11 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
     def register_stream_function(self, stream: int, function: int, callback):
         """Register the function callback for stream and function.
 
-        :param stream: stream to register callback for
-        :type stream: integer
-        :param function: function to register callback for
-        :type function: integer
-        :param callback: method to call when stream and functions is received
-        :type callback: def callback(connection)
+        Args:
+            stream: stream to register callback for
+            function: function to register callback for
+            callback: method to call when stream and functions is received
+
         """
         name = self._generate_sf_callback_name(stream, function)
         setattr(self._callback_handler, name, callback)
@@ -110,10 +109,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
     def unregister_stream_function(self, stream, function):
         """Unregister the function callback for stream and function.
 
-        :param stream: stream to unregister callback for
-        :type stream: integer
-        :param function: function to register callback for
-        :type function: integer
+        Args:
+            stream: stream to unregister callback for
+            function: function to register callback for
+
         """
         name = self._generate_sf_callback_name(stream, function)
         setattr(self._callback_handler, name, None)
@@ -165,8 +164,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
     def list_svs(self, svs=None):
         """Get list of available Service Variables.
 
-        :returns: available Service Variables
-        :rtype: list
+        Args:
+            svs: Service Variables to list
+
+        Returns:
+            available Service Variables
+
         """
         self.logger.info("Get list of service variables")
 
@@ -177,13 +180,15 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(message)
 
-    def request_svs(self, svs):
+    def request_svs(self, svs: list):
         """Request contents of supplied Service Variables.
 
-        :param svs: Service Variables to request
-        :type svs: list
-        :returns: values of requested Service Variables
-        :rtype: list
+        Args:
+            svs: Service Variables to request
+
+        Returns:
+            values of requested Service Variables
+
         """
         self.logger.info("Get value of service variables %s", svs)
 
@@ -191,13 +196,15 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(message)
 
-    def request_sv(self, sv_id):
+    def request_sv(self, sv_id: int):
         """Request contents of one Service Variable.
 
-        :param sv_id: id of Service Variable
-        :type sv_id: int
-        :returns: value of requested Service Variable
-        :rtype: various
+        Args:
+            sv_id: id of Service Variable
+
+        Returns:
+            value of requested Service Variable
+
         """
         self.logger.info("Get value of service variable %s", sv_id)
 
@@ -206,8 +213,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
     def list_ecs(self, ecs=None):
         """Get list of available Equipment Constants.
 
-        :returns: available Equipment Constants
-        :rtype: list
+        Args:
+            ecs: Equipment Constants to list
+
+        Returns:
+            available Equipment Constants
+
         """
         self.logger.info("Get list of equipment constants")
 
@@ -217,13 +228,15 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(message)
 
-    def request_ecs(self, ecs):
+    def request_ecs(self, ecs: list[int | str]):
         """Request contents of supplied Equipment Constants.
 
-        :param ecs: Equipment Constants to request
-        :type ecs: list
-        :returns: values of requested Equipment Constants
-        :rtype: list
+        Args:
+            ecs: Equipment Constants to request
+
+        Returns:
+            values of requested Equipment Constants
+
         """
         self.logger.info("Get value of equipment constants %s", ecs)
 
@@ -231,23 +244,26 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(message)
 
-    def request_ec(self, ec_id):
+    def request_ec(self, ec_id: int | str):
         """Request contents of one Equipment Constant.
 
-        :param ec_id: id of Equipment Constant
-        :type ec_id: int
-        :returns: value of requested Equipment Constant
-        :rtype: various
+        Args:
+            ec_id: id of Equipment Constant
+
+        Returns:
+            value of requested Equipment Constant
+
         """
         self.logger.info("Get value of equipment constant %s", ec_id)
 
         return self.request_ecs([ec_id])
 
-    def set_ecs(self, ecs):
+    def set_ecs(self, ecs: list[list[typing.Any]]):
         """Set contents of supplied Equipment Constants.
 
-        :param ecs: list containing list of id / value pairs
-        :type ecs: list
+        Args:
+            ecs: list containing list of id / value pairs
+
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
@@ -255,25 +271,25 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(message).get()
 
-    def set_ec(self, ec_id, value):
+    def set_ec(self, ec_id: int | str, value: typing.Any):
         """Set contents of one Equipment Constant.
 
-        :param ec_id: id of Equipment Constant
-        :type ec_id: int
-        :param value: new content of Equipment Constant
-        :type value: various
+        Args:
+            ec_id: id of Equipment Constant
+            value: new content of Equipment Constant
+
         """
         self.logger.info("Set value of equipment constant %s to %s", ec_id, value)
 
         return self.set_ecs([[ec_id, value]])
 
-    def send_equipment_terminal(self, terminal_id, text):
+    def send_equipment_terminal(self, terminal_id: int, text: str):
         """Set text to equipment terminal.
 
-        :param terminal_id: ID of terminal
-        :type terminal_id: int
-        :param text: text to send
-        :type text: string
+        Args:
+            terminal_id: ID of terminal
+            text: text to send
+
         """
         self.logger.info("Send text to terminal %s", terminal_id)
 
@@ -305,14 +321,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
     @property
     def data_items(self) -> DataItems:
-        """Get class for stream and function.
-
-        Args:
-            stream: stream to get class for
-            function: function to get class for
+        """Get data item container.
 
         Returns:
-            class for function
+            data item container
 
         """
         return self.settings.streams_functions.data_items
