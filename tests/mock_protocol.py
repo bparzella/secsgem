@@ -23,6 +23,8 @@ import secsgem.common
 import secsgem.secs
 
 if typing.TYPE_CHECKING:
+    from secsgem.common.protocol import Protocol
+
     from .mock_settings import MockSettings
 
 
@@ -92,7 +94,7 @@ class MockMessage(secsgem.common.Message[MockBlock]):
         return self._header
 
     @property
-    def data(self) -> secsgem.secs.SecsStreamFunction:
+    def data(self):
         """Get the header."""
         return self._function
 
@@ -112,12 +114,30 @@ class MockProtocol(secsgem.common.Protocol[secsgem.common.Message, secsgem.commo
         self.received_messages: list[secsgem.common.Message] = []
 
     def _on_connected(self, _: dict[str, typing.Any]):
+        """Handle connection was established event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("MockProtocol._on_connected missing implementation")
 
     def _on_disconnecting(self, _: dict[str, typing.Any]):
+        """Handle connection is about to be closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("MockProtocol._on_disconnecting missing implementation")
 
     def _on_disconnected(self, _: dict[str, typing.Any]):
+        """Handle connection was closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("MockProtocol._on_disconnected missing implementation")
 
     def _process_send_queue(self):
@@ -129,12 +149,17 @@ class MockProtocol(secsgem.common.Protocol[secsgem.common.Message, secsgem.commo
         raise NotImplementedError("MockProtocol._process_received_data missing implementation")
 
     def serialize_data(self) -> dict[str, typing.Any]:
-        """Get protocol serialized data for debugging."""
+        """Get protocol serialized data for debugging.
+
+        Returns:
+            data to serialize for this object
+
+        """
         return {
             "mock": True
         }
 
-    def _on_connection_message_received(self, source: object, message: secsgem.common.Message):
+    def _on_connection_message_received(self, source: Protocol, message: secsgem.common.Message):
         """Message received by connection.
 
         Args:
@@ -220,6 +245,12 @@ class MockProtocol(secsgem.common.Protocol[secsgem.common.Message, secsgem.commo
                     return None
 
     def simulate_message(self, message: MockMessage):
+        """Simulate a message to the protocol.
+
+        Args:
+            message: message to be injected
+
+        """
         if message.header.system in self._response_queues:
             self._response_queues[message.header.system].put_nowait(message)
         else:

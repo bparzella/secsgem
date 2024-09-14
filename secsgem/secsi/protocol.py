@@ -25,6 +25,7 @@ from .header import SecsIHeader
 from .message import SecsIBlock, SecsIMessage
 
 if typing.TYPE_CHECKING:
+    from secsgem.common.protocol import Protocol
     from secsgem.secs.functions.base import SecsStreamFunction
     from secsgem.secsitcp.settings import SecsITcpSettings
 
@@ -102,8 +103,9 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
     def serialize_data(self) -> dict[str, typing.Any]:
         """Return data for serialization.
 
-        :returns: data to serialize for this object
-        :rtype: dict
+        Returns:
+            data to serialize for this object
+
         """
         from .settings import SecsISettings  # pylint: disable=import-outside-toplevel
 
@@ -124,13 +126,23 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         }
 
     def _on_connected(self, _: dict[str, typing.Any]):
-        """Handle connection was established event."""
+        """Handle connection was established event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         self._thread.start()
         self.events.fire("connected", {"connection": self})
         self.events.fire("communicating", {"connection": self})
 
     def _on_disconnected(self, _: dict[str, typing.Any]):
-        """Handle connection was _ event."""
+        """Handle connection was closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         # clear receive buffer
         self.events.fire("disconnected", {"connection": self})
 
@@ -139,9 +151,15 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         self._receive_buffer.clear()
 
     def _on_disconnecting(self, _: dict[str, typing.Any]):
-        pass
+        """Handle connection is about to be closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
 
     def _process_send_queue(self):
+        """Process the send to communication queue."""
         if self._send_queue.empty():
             return
 
@@ -165,6 +183,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
             block_info.resolve(data_response == self.ACK)
 
     def _process_received_data(self):
+        """Process the receive from communication queue."""
         if len(self._receive_buffer) < 1:
             return
 
@@ -191,7 +210,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
 
             self._connection.send_data(bytes([self.ACK]))
 
-    def _on_connection_message_received(self, source: object, message: SecsIMessage):
+    def _on_connection_message_received(self, source: Protocol, message: SecsIMessage):
         """Message received from connection.
 
         Args:

@@ -38,6 +38,7 @@ from .separate_req_header import HsmsSeparateReqHeader
 from .stream_function_header import HsmsStreamFunctionHeader
 
 if typing.TYPE_CHECKING:
+    from secsgem.common.protocol import Protocol
     from secsgem.secs.functions.base import SecsStreamFunction
 
     from .settings import HsmsSettings
@@ -108,6 +109,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         return self._connection_state
 
     def _send_select_req_thread(self):
+        """Send select request thread function."""
         try:
             response = self.send_select_req()
             if response is None:
@@ -116,6 +118,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             self._logger.warning("exception in _send_select_req_thread", exc_info=exc)
 
     def _start_linktest_timer(self):
+        """Start the linktest timer."""
         self._linktest_timer = threading.Timer(self._linktest_timeout, self._on_linktest_timer)
         self._linktest_timer.daemon = True  # kill thread automatically on main program termination
         self._linktest_timer.name = "secsgem_hsmsProtocol_linktestTimer"
@@ -124,8 +127,9 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
     def _on_state_connect(self, _: dict[str, typing.Any]):
         """Handle connection state model got event connect.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         # start linktest timer
         self._start_linktest_timer()
@@ -142,8 +146,9 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
     def _on_state_disconnect(self, _: dict[str, typing.Any]):
         """Handle connection state model got event disconnect.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         # stop linktest timer
         if self._linktest_timer:
@@ -154,8 +159,9 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
     def _on_state_select(self, _: dict[str, typing.Any]):
         """Handle connection state model got event select.
 
-        :param data: event attributes
-        :type data: object
+        Args:
+            data: event attributes
+
         """
         # send event
         self.events.fire("communicating", {"connection": self})
@@ -169,7 +175,12 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self._start_linktest_timer()
 
     def _on_connected(self, _: dict[str, typing.Any]):
-        """Handle connection was established event."""
+        """Handle connection was established event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         self._connected = True
 
         self._thread.start()
@@ -180,12 +191,22 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self.events.fire("connected", {"connection": self})
 
     def _on_disconnecting(self, _: dict[str, typing.Any]):
-        """Handle connection is about to be closed event."""
+        """Handle connection is about to be closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         # send separate request
         self.send_separate_req()
 
     def _on_disconnected(self, _: dict[str, typing.Any]):
-        """Handle connection was _ event."""
+        """Handle connection was closed event.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         # update connection state
         self._connected = False
         self._connection_state.disconnect()
@@ -196,6 +217,12 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         self.events.fire("disconnected", {"connection": self})
 
     def __handle_hsms_requests_select_req(self, message: HsmsMessage):
+        """Handle HSMS Select Request.
+
+        Args:
+            message: received message
+
+        """
         if self._connection.disconnecting:
             self.send_reject_rsp(message.header.system, message.header.s_type, 4)
         else:
@@ -204,12 +231,24 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             self._connection_state.select()
 
     def __handle_hsms_requests_select_rsp(self, message: HsmsMessage):
+        """Handle HSMS Select Response.
+
+        Args:
+            message: received message
+
+        """
         self._connection_state.select()
 
         if message.header.system in self._response_queues:
             self._response_queues[message.header.system].put_nowait(message)
 
     def __handle_hsms_requests_deselect_req(self, message: HsmsMessage):
+        """Handle HSMS Deselect Request.
+
+        Args:
+            message: received message
+
+        """
         if self._connection.disconnecting:
             self.send_reject_rsp(message.header.system, message.header.s_type, 4)
         else:
@@ -218,18 +257,36 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             self._connection_state.deselect()
 
     def __handle_hsms_requests_deselect_rsp(self, message: HsmsMessage):
+        """Handle HSMS Deselect Response.
+
+        Args:
+            message: received message
+
+        """
         self._connection_state.deselect()
 
         if message.header.system in self._response_queues:
             self._response_queues[message.header.system].put_nowait(message)
 
     def __handle_hsms_requests_linktest_req(self, message: HsmsMessage):
+        """Handle HSMS Linktest Request.
+
+        Args:
+            message: received message
+
+        """
         if self._connection.disconnecting:
             self.send_reject_rsp(message.header.system, message.header.s_type, 4)
         else:
             self.send_linktest_rsp(message.header.system)
 
     def __handle_hsms_requests(self, message: HsmsMessage):
+        """Handle HSMS messages.
+
+        Args:
+            message: received message
+
+        """
         self._communication_logger.info("< %s\n  %s", message, message.header.s_type.text, extra=self._get_log_extra())
 
         if message.header.s_type == HsmsSType.SELECT_REQ:
@@ -247,6 +304,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
                 self._response_queues[message.header.system].put_nowait(message)
 
     def _process_received_data(self):
+        """Process the received data from communication queue."""
         if len(self._receive_buffer) < 4:
             return
 
@@ -261,7 +319,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
             self._thread.queue_block(self, response)
 
-    def _on_connection_message_received(self, _: object, message: HsmsMessage):
+    def _on_connection_message_received(self, _: Protocol, message: HsmsMessage):
         """Message received by connection.
 
         Args:
@@ -300,8 +358,9 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
     def serialize_data(self) -> dict[str, typing.Any]:
         """Return data for serialization.
 
-        :returns: data to serialize for this object
-        :rtype: dict
+        Returns:
+            data to serialize for this object
+
         """
         return {
             "address": self._settings.address,
@@ -313,6 +372,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         }
 
     def _process_send_queue(self):
+        """Process the send to communication queue."""
         if self._send_queue.empty():
             return
 
@@ -357,11 +417,12 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             function.encode(),
         )
 
-    def send_select_req(self):
+    def send_select_req(self) -> HsmsMessage | None:
         """Send a Select Request to the remote host.
 
-        :returns: System of the sent request
-        :rtype: integer
+        Returns:
+            received message or None
+
         """
         system_id = self.get_next_system_counter()
 
@@ -383,21 +444,26 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
         return response
 
-    def send_select_rsp(self, system_id):
+    def send_select_rsp(self, system_id: int) -> bool:
         """Send a Select Response to the remote host.
 
-        :param system_id: System of the request to reply for
-        :type system_id: integer
+        Args:
+            system_id: System of the request to reply for
+
+        Returns:
+            False if sending was not successful
+
         """
         message = HsmsMessage(HsmsSelectRspHeader(system_id), b"")
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text, extra=self._get_log_extra())
         return self.send_message(message)
 
-    def send_linktest_req(self):
+    def send_linktest_req(self) -> HsmsMessage | None:
         """Send a Linktest Request to the remote host.
 
-        :returns: System of the sent request
-        :rtype: integer
+        Returns:
+            received message or None
+
         """
         system_id = self.get_next_system_counter()
 
@@ -419,21 +485,26 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
         return response
 
-    def send_linktest_rsp(self, system_id):
+    def send_linktest_rsp(self, system_id: int) -> bool:
         """Send a Linktest Response to the remote host.
 
-        :param system_id: System of the request to reply for
-        :type system_id: integer
+        Args:
+            system_id: System of the request to reply for
+
+        Returns:
+            False if sending was not successful
+
         """
         message = HsmsMessage(HsmsLinktestRspHeader(system_id), b"")
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text, extra=self._get_log_extra())
         return self.send_message(message)
 
-    def send_deselect_req(self):
+    def send_deselect_req(self) -> HsmsMessage | None:
         """Send a Deselect Request to the remote host.
 
-        :returns: System of the sent request
-        :rtype: integer
+        Returns:
+            received message or None
+
         """
         system_id = self.get_next_system_counter()
 
@@ -455,32 +526,43 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
 
         return response
 
-    def send_deselect_rsp(self, system_id):
+    def send_deselect_rsp(self, system_id: int) -> bool:
         """Send a Deselect Response to the remote host.
 
-        :param system_id: System of the request to reply for
-        :type system_id: integer
+        Args:
+            system_id: System of the request to reply for
+
+        Returns:
+            False if sending was not successful
+
         """
         message = HsmsMessage(HsmsDeselectRspHeader(system_id), b"")
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text, extra=self._get_log_extra())
         return self.send_message(message)
 
-    def send_reject_rsp(self, system_id: int, s_type: HsmsSType, reason: int):
+    def send_reject_rsp(self, system_id: int, s_type: HsmsSType, reason: int) -> bool:
         """Send a Reject Response to the remote host.
 
-        :param system_id: System of the request to reply for
-        :type system_id: integer
-        :param s_type: s_type of rejected message
-        :type s_type: integer
-        :param reason: reason for rejection
-        :type reason: integer
+        Args:
+            system_id: System of the request to reply for
+            s_type: Type of the request to reply for
+            reason: Reason of the rejection
+
+        Returns:
+            False if sending was not successful
+
         """
         message = HsmsMessage(HsmsRejectReqHeader(system_id, s_type, reason), b"")
         self._communication_logger.info("> %s\n  %s", message, message.header.s_type.text, extra=self._get_log_extra())
         return self.send_message(message)
 
-    def send_separate_req(self):
-        """Send a Separate Request to the remote host."""
+    def send_separate_req(self) -> int | None:
+        """Send a Separate Request to the remote host.
+
+        Returns:
+            system id of the request or None if sending failed
+
+        """
         system_id = self.get_next_system_counter()
 
         message = HsmsMessage(HsmsSeparateReqHeader(system_id), b"")

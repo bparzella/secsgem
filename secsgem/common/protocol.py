@@ -45,7 +45,12 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
     message_type: type[MessageT]
 
     def __init__(self, settings: Settings) -> None:
-        """Initialize protocol base object."""
+        """Initialize protocol base object.
+
+        Args:
+            settings: settings object
+
+        """
         super().__init__()
 
         self._settings = settings
@@ -74,6 +79,14 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
     @property
     def _connection(self) -> Connection:
+        """Get the connection object.
+
+        If no connection object is available, a new one is created.
+
+        Returns:
+            connection object
+
+        """
         if self.__connection is None:
             self.__connection = self._settings.create_connection()
             self.__connection.on_connected.register(self._on_connected)
@@ -85,18 +98,40 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
     @abc.abstractmethod
     def _on_connected(self, _: dict[str, typing.Any]):
+        """Abstract method called when connection is established.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("Protocol._on_connected missing implementation")
 
     @abc.abstractmethod
     def _on_disconnecting(self, _: dict[str, typing.Any]):
+        """Abstract method called when connection is closing.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("Protocol._on_disconnecting missing implementation")
 
     @abc.abstractmethod
     def _on_disconnected(self, _: dict[str, typing.Any]):
+        """Abstract method called when connection is closed.
+
+        The arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+
+        """
         raise NotImplementedError("Protocol._on_disconnected missing implementation")
 
     def _on_connection_data_received(self, data: dict[str, typing.Any]):
-        """Data received by connection.
+        """Method called when data is received by connection.
+
+        The `data` arguemnt is a dictionary with the following keys
+        - source: connection object that triggered the event
+        - data: received data
 
         Args:
             data: received data
@@ -106,7 +141,11 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         self._thread.trigger_receiver()
 
     def _process_data(self):
-        """Parse the receive buffer and dispatch callbacks."""
+        """Process input and output data.
+
+        First, the send queue is processed, then the received data is processed.
+
+        """
         self._process_send_queue()
         self._process_received_data()
 
@@ -120,7 +159,14 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         """Process the receive from communication queue."""
         raise NotImplementedError("Protocol._process_received_data missing implementation")
 
-    def _dispatch_block(self, source: object, block: BlockT):
+    def _dispatch_block(self, source: Protocol, block: BlockT):
+        """Dispatch block to message handler.
+
+        Args:
+            source: source of event
+            block: block to dispatch
+
+        """
         result = self._add_message_block(block)
         if result is None:
             return
@@ -159,11 +205,16 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
     @abc.abstractmethod
     def serialize_data(self) -> dict[str, typing.Any]:
-        """Get protocol serialized data for debugging."""
+        """Get protocol serialized data for debugging.
+
+        Returns:
+            data to serialize for this object
+
+        """
         raise NotImplementedError("Protocol.serialize_data missing implementation")
 
     @abc.abstractmethod
-    def _on_connection_message_received(self, source: object, message: MessageT):
+    def _on_connection_message_received(self, source: Protocol, message: MessageT):
         """Message received by connection.
 
         Args:
