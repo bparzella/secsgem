@@ -60,12 +60,11 @@ class GemHostHandler(GemHandler):
     def subscribe_collection_event(self, ceid: int | str, dvs: list[int | str], report_id: int | str | None = None):
         """Subscribe to a collection event.
 
-        :param ceid: ID of the collection event
-        :type ceid: integer
-        :param dvs: DV IDs to add for collection event
-        :type dvs: list of integers
-        :param report_id: optional - ID for report, autonumbering if None
-        :type report_id: integer
+        Args:
+            ceid: ID of the collection event
+            dvs: DV IDs to add for collection event
+            report_id: optional - ID for report, autonumbering if None
+
         """
         self._logger.info("Subscribing to collection event %s", ceid)
 
@@ -89,13 +88,16 @@ class GemHostHandler(GemHandler):
         # enable collection event
         self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": True, "CEID": [ceid]}))
 
-    def send_remote_command(self, rcmd: int | str, params: list[str]):
+    def send_remote_command(self, rcmd: int | str, params: list[str]) -> secsgem.secs.SecsStreamFunction:
         """Send a remote command.
 
-        :param rcmd: Name of command
-        :type rcmd: string
-        :param params: DV IDs to add for collection event
-        :type params: list of strings
+        Args:
+            rcmd: Name of command
+            params: DV IDs to add for collection event
+
+        Returns:
+            response from remote
+
         """
         self._logger.info("Send RCMD %s", rcmd)
 
@@ -114,8 +116,12 @@ class GemHostHandler(GemHandler):
     def delete_process_programs(self, ppids: list[int | str]):
         """Delete a list of process program.
 
-        :param ppids: Process programs to delete
-        :type ppids: list of strings
+        Args:
+            ppids: Process programs to delete
+
+        Returns:
+            response from remote
+
         """
         self._logger.info("Delete process programs %s", ppids)
 
@@ -124,8 +130,13 @@ class GemHostHandler(GemHandler):
             self.send_and_waitfor_response(self.stream_function(7, 17)(ppids)),
         ).get()
 
-    def get_process_program_list(self) -> secsgem.secs.SecsStreamFunction:
-        """Get process program list."""
+    def get_process_program_list(self):
+        """Get process program list.
+
+        Returns:
+            response from remote
+
+        """
         self._logger.info("Get process program list")
 
         # send remote command
@@ -133,8 +144,13 @@ class GemHostHandler(GemHandler):
             self.send_and_waitfor_response(self.stream_function(7, 19)()),
         ).get()
 
-    def go_online(self) -> str | None:
-        """Set control state to online."""
+    def go_online(self):
+        """Set control state to online.
+
+        Returns:
+            response text or None if no response text
+
+        """
         self._logger.info("Go online")
 
         # send remote command
@@ -144,8 +160,13 @@ class GemHostHandler(GemHandler):
 
         return resp.get()
 
-    def go_offline(self) -> str | None:
-        """Set control state to offline."""
+    def go_offline(self):
+        """Set control state to offline.
+
+        Returns:
+            response text or None if no response text
+
+        """
         self._logger.info("Go offline")
 
         # send remote command
@@ -156,8 +177,12 @@ class GemHostHandler(GemHandler):
     def enable_alarm(self, alid: int | str):
         """Enable alarm.
 
-        :param alid: alarm id to enable
-        :type alid: :class:`secsgem.secs.dataitems.ALID`
+        Args:
+            alid: alarm id to enable
+
+        Returns:
+            response from remote
+
         """
         self._logger.info("Enable alarm %d", alid)
 
@@ -170,8 +195,12 @@ class GemHostHandler(GemHandler):
     def disable_alarm(self, alid: int | str):
         """Disable alarm.
 
-        :param alid: alarm id to disable
-        :type alid: :class:`secsgem.secs.dataitems.ALID`
+        Args:
+            alid: alarm id to disable
+
+        Returns:
+            response from remote
+
         """
         self._logger.info("Disable alarm %d", alid)
 
@@ -184,8 +213,12 @@ class GemHostHandler(GemHandler):
     def list_alarms(self, alids: list[int | str] | None = None):
         """List alarms.
 
-        :param alids: alarms to list details for
-        :type alids: array of int/str
+        Args:
+            alids: alarms to list details for
+
+        Returns:
+            response from remote
+
         """
         if alids is None:
             alids = []
@@ -198,15 +231,37 @@ class GemHostHandler(GemHandler):
         ).get()
 
     def list_enabled_alarms(self):
-        """List enabled alarms."""
+        """List enabled alarms.
+
+        Returns:
+            response from remote
+
+        """
         self._logger.info("List all enabled alarms")
 
         return self.settings.streams_functions.decode(
             self.send_and_waitfor_response(self.stream_function(5, 7)()),
         ).get()
 
-    def _on_alarm_received(self, handler, alarm_id, alarm_code, alarm_text):
-        del handler, alarm_id, alarm_code, alarm_text  # unused variables
+    def _on_alarm_received(
+        self,
+        _handler: secsgem.secs.SecsHandler,
+        _alarm_id: int,
+        _alarm_code: int,
+        _alarm_text: str,
+    ):
+        """Handle received alarm.
+
+        Args:
+            handler: handler the message was received on
+            alarm_id: alarm ID
+            alarm_code: alarm code
+            alarm_text: alarm text
+
+        Returns:
+            response to alarm
+
+        """
         return self.settings.data_items.ACKC5.ACCEPTED
 
     def _on_s05f01(
@@ -234,7 +289,7 @@ class GemHostHandler(GemHandler):
 
     def _on_s06f11(
         self,
-        handler: secsgem.secs.SecsHandler,
+        _handler: secsgem.secs.SecsHandler,
         message: secsgem.common.Message,
     ) -> secsgem.secs.SecsStreamFunction | None:
         """Handle Stream 6, Function 11, Event Report Send.
@@ -244,8 +299,6 @@ class GemHostHandler(GemHandler):
             message: complete message received
 
         """
-        del handler  # unused parameters
-
         function = self.settings.streams_functions.decode(message)
 
         for report in function.RPT:
@@ -268,8 +321,15 @@ class GemHostHandler(GemHandler):
 
         return self.stream_function(6, 12)(0)
 
-    def _on_terminal_received(self, handler, terminal_id, text):
-        del handler, terminal_id, text  # unused variables
+    def _on_terminal_received(self, _handler: secsgem.secs.SecsHandler, _terminal_id: int, _text: str):
+        """Handle received terminal message.
+
+        Args:
+            handler: handler the message was received on
+            terminal_id: terminal ID
+            text: messsage text
+
+        """
         return self.settings.data_items.ACKC10.ACCEPTED
 
     def _on_s10f01(
