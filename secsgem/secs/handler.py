@@ -25,6 +25,7 @@ import secsgem.hsms
 
 if typing.TYPE_CHECKING:
     from .data_items.data_items import DataItems
+    from .functions.base import SecsStreamFunction
 
 
 class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-public-methods
@@ -72,29 +73,29 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """Disable the connection."""
         self.protocol.disable()
 
-    def send_response(self, *args, **kwargs):
+    def send_response(self, function: SecsStreamFunction, system: int) -> bool:
         """Wrapper for connections send_response function."""
-        return self.protocol.send_response(*args, **kwargs)
+        return self.protocol.send_response(function, system)
 
-    def send_and_waitfor_response(self, *args, **kwargs):
+    def send_and_waitfor_response(self, function: SecsStreamFunction) -> secsgem.common.Message | None:
         """Wrapper for connections send_and_waitfor_response function."""
-        return self.protocol.send_and_waitfor_response(*args, **kwargs)
+        return self.protocol.send_and_waitfor_response(function)
 
-    def send_stream_function(self, *args, **kwargs):
+    def send_stream_function(self, function: SecsStreamFunction) -> bool:
         """Wrapper for connections send_stream_function function."""
-        return self.protocol.send_stream_function(*args, **kwargs)
+        return self.protocol.send_stream_function(function)
 
     @property
-    def events(self):
+    def events(self) -> secsgem.common.EventProducer:
         """Wrapper for connections events."""
         return self.protocol.events
 
     @property
-    def callbacks(self):
+    def callbacks(self) -> secsgem.common.CallbackHandler:
         """Property for callback handling."""
         return self._callback_handler
 
-    def register_stream_function(self, stream: int, function: int, callback):
+    def register_stream_function(self, stream: int, function: int, callback: typing.Callable):
         """Register the function callback for stream and function.
 
         Args:
@@ -106,7 +107,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         name = self._generate_sf_callback_name(stream, function)
         setattr(self._callback_handler, name, callback)
 
-    def unregister_stream_function(self, stream, function):
+    def unregister_stream_function(self, stream: int, function: int):
         """Unregister the function callback for stream and function.
 
         Args:
@@ -134,7 +135,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         # return S09F05 if no callback present
         if sf_callback_index not in self._callback_handler:
             self._handle_unknown_functions(message)
-
             return
 
         try:
@@ -158,19 +158,19 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         # check if callbacks available for this stream and function
         self._handle_stream_function(message)
 
-    def disable_ceids(self):
+    def disable_ceids(self) -> secsgem.common.Message | None:
         """Disable all Collection Events."""
         self.logger.info("Disable all collection events")
 
         return self.send_and_waitfor_response(self.stream_function(2, 37)({"CEED": False, "CEID": []}))
 
-    def disable_ceid_reports(self):
+    def disable_ceid_reports(self) -> secsgem.common.Message | None:
         """Disable all Collection Event Reports."""
         self.logger.info("Disable all collection event reports")
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
-    def list_svs(self, svs=None):
+    def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction | None:
         """Get list of available Service Variables.
 
         Args:
@@ -185,11 +185,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         if svs is None:
             svs = []
 
-        message = self.send_and_waitfor_response(self.stream_function(1, 11)(svs))
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 11)(svs)))
 
-        return self.settings.streams_functions.decode(message)
-
-    def request_svs(self, svs: list):
+    def request_svs(self, svs: list[str | int]) -> SecsStreamFunction | None:
         """Request contents of supplied Service Variables.
 
         Args:
@@ -201,11 +199,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Get value of service variables %s", svs)
 
-        message = self.send_and_waitfor_response(self.stream_function(1, 3)(svs))
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 3)(svs)))
 
-        return self.settings.streams_functions.decode(message)
-
-    def request_sv(self, sv_id: int):
+    def request_sv(self, sv_id: int | str) -> int | str | None:
         """Request contents of one Service Variable.
 
         Args:
@@ -217,9 +213,14 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Get value of service variable %s", sv_id)
 
-        return self.request_svs([sv_id])[0]
+        result = self.request_svs([sv_id])
 
-    def list_ecs(self, ecs=None):
+        if result is None:
+            return None
+
+        return result[0]
+
+    def list_ecs(self, ecs: list[str | int] | None = None) -> SecsStreamFunction | None:
         """Get list of available Equipment Constants.
 
         Args:
@@ -233,11 +234,10 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         if ecs is None:
             ecs = []
-        message = self.send_and_waitfor_response(self.stream_function(2, 29)(ecs))
 
-        return self.settings.streams_functions.decode(message)
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(2, 29)(ecs)))
 
-    def request_ecs(self, ecs: list[int | str]):
+    def request_ecs(self, ecs: list[int | str]) -> SecsStreamFunction | None:
         """Request contents of supplied Equipment Constants.
 
         Args:
@@ -249,11 +249,9 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Get value of equipment constants %s", ecs)
 
-        message = self.send_and_waitfor_response(self.stream_function(2, 13)(ecs))
+        return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(2, 13)(ecs)))
 
-        return self.settings.streams_functions.decode(message)
-
-    def request_ec(self, ec_id: int | str):
+    def request_ec(self, ec_id: int | str) -> SecsStreamFunction | None:
         """Request contents of one Equipment Constant.
 
         Args:
@@ -267,7 +265,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.request_ecs([ec_id])
 
-    def set_ecs(self, ecs: list[list[typing.Any]]):
+    def set_ecs(self, ecs: list[list[str | int | float]]) -> int | str | float | bytes | None:
         """Set contents of supplied Equipment Constants.
 
         Args:
@@ -276,11 +274,11 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
-        message = self.send_and_waitfor_response(self.stream_function(2, 15)(ecs))
+        return self.settings.streams_functions.decode(
+            self.send_and_waitfor_response(self.stream_function(2, 15)(ecs)),
+        ).get()
 
-        return self.settings.streams_functions.decode(message).get()
-
-    def set_ec(self, ec_id: int | str, value: typing.Any):
+    def set_ec(self, ec_id: int | str, value: int | str | float) -> int | str | float | bytes | None:
         """Set contents of one Equipment Constant.
 
         Args:
@@ -292,7 +290,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.set_ecs([[ec_id, value]])
 
-    def send_equipment_terminal(self, terminal_id: int, text: str):
+    def send_equipment_terminal(self, terminal_id: int, text: str) -> secsgem.common.Message | None:
         """Set text to equipment terminal.
 
         Args:
@@ -304,13 +302,13 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.send_and_waitfor_response(self.stream_function(10, 3)({"TID": terminal_id, "TEXT": text}))
 
-    def are_you_there(self):
+    def are_you_there(self) -> secsgem.common.Message | None:
         """Check if remote is still replying."""
         self.logger.info("Requesting 'are you there'")
 
         return self.send_and_waitfor_response(self.stream_function(1, 1)())
 
-    def stream_function(self, stream: int, function: int) -> type[secsgem.secs.SecsStreamFunction]:
+    def stream_function(self, stream: int, function: int) -> type[SecsStreamFunction]:
         """Get class for stream and function.
 
         Args:

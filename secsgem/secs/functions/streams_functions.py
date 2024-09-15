@@ -75,7 +75,7 @@ class StreamsFunctions:
 
         return functions[0]
 
-    def decode(self, message: secsgem.common.Message) -> SecsStreamFunction:
+    def decode(self, message: secsgem.common.Message | None) -> SecsStreamFunction:
         """Get object of decoded stream and function class, or None if no class is available.
 
         Args:
