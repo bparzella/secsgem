@@ -181,7 +181,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
         """Property for event handling."""
         return self._event_producer
 
-    def get_next_system_counter(self):
+    def get_next_system_counter(self) -> int:
         """Return the next System.
 
         Returns:
@@ -372,7 +372,7 @@ class Protocol(abc.ABC, typing.Generic[MessageT, BlockT]):  # pylint: disable=to
 
         return self.send_message(out_message)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate textual representation for an object of this class."""
         return f"{self.__class__.__name__} {self.serialize_data()}"
 

@@ -140,7 +140,7 @@ class EventProducer:
 
         return self._events[name]
 
-    def __iadd__(self, other) -> EventProducer:
+    def __iadd__(self, other: EventProducer) -> EventProducer:
         """Add a the callbacks and targets of another EventProducer to this one."""
         for event_name in other._events:
             if event_name not in self._events:
