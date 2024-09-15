@@ -117,14 +117,23 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         name = self._generate_sf_callback_name(stream, function)
         setattr(self._callback_handler, name, None)
 
-    def _handle_stream_function(self, message):
+    def _handle_unknown_functions(self, message: secsgem.common.Message):
+        self.logger.warning(
+            "unexpected function received S%02dF%02d\n%s",
+            message.header.stream,
+            message.header.function,
+            message.header,
+        )
+
+        if message.header.require_response:
+            self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
+
+    def _handle_stream_function(self, message: secsgem.common.Message):
         sf_callback_index = self._generate_sf_callback_name(message.header.stream, message.header.function)
 
         # return S09F05 if no callback present
         if sf_callback_index not in self._callback_handler:
-            self.logger.warning("unexpected function received %s\n%s", sf_callback_index, message.header)
-            if message.header.require_response:
-                self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
+            self._handle_unknown_functions(message)
 
             return
 
