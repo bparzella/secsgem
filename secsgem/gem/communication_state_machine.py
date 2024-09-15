@@ -121,15 +121,15 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
             ),  # 14
         ]
 
-        self._wait_cra_timer: threading.Thread | None = None
-        self._comm_delay_timer: threading.Thread | None = None
+        self._wait_cra_timer: threading.Timer | None = None
+        self._comm_delay_timer: threading.Timer | None = None
 
         self.wait_cra.events.enter.register(self._on_state_wait_cra)
         self.wait_delay.events.enter.register(self._on_state_wait_delay)
         self.wait_cra.events.leave.register(self._on_state_leave_wait_cra)
         self.wait_delay.events.leave.register(self._on_state_leave_wait_delay)
 
-    def _on_state_wait_cra(self, _):
+    def _on_state_wait_cra(self, _data: dict):
         """Connection state model changed to state WAIT_CRA.
 
         Args:
@@ -139,7 +139,7 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
         self._wait_cra_timer = threading.Timer(self._settings.timeouts.t3, self._on_wait_cra_timeout)
         self._wait_cra_timer.start()
 
-    def _on_state_wait_delay(self, _):
+    def _on_state_wait_delay(self, _data: dict):
         """Connection state model changed to state WAIT_DELAY.
 
         Args:
@@ -152,7 +152,7 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
         )
         self._comm_delay_timer.start()
 
-    def _on_state_leave_wait_cra(self, _):
+    def _on_state_leave_wait_cra(self, _data: dict):
         """Connection state model changed to state WAIT_CRA.
 
         Args:
@@ -162,7 +162,7 @@ class CommunicationStateMachine(secsgem.common.StateMachine):  # pylint: disable
         if self._wait_cra_timer is not None:
             self._wait_cra_timer.cancel()
 
-    def _on_state_leave_wait_delay(self, _):
+    def _on_state_leave_wait_delay(self, _data: dict):
         """Connection state model changed to state WAIT_DELAY.
 
         Args:
