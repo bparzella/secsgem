@@ -47,7 +47,7 @@ class HsmsSettings(secsgem.common.Settings):
         >>>
         >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
         >>> settings.device_type
-        <DeviceType.EQUIPMENT: 0>
+        Equipment
         >>> settings.address
         '127.0.0.1'
 
@@ -136,7 +136,7 @@ class ExistingProtocolSettings(HsmsSettings):
         >>>
         >>> settings = secsgem.hsms.HsmsSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
         >>> settings.device_type
-        <DeviceType.EQUIPMENT: 0>
+        Equipment
 
     """
 

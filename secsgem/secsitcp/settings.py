@@ -47,7 +47,7 @@ class SecsITcpSettings(secsgem.common.Settings):
         >>>
         >>> settings = secsgem.secsitcp.SecsITcpSettings(device_type=secsgem.common.DeviceType.EQUIPMENT)
         >>> settings.device_type
-        <DeviceType.EQUIPMENT: 0>
+        Equipment
         >>> settings.address
         '127.0.0.1'
 
