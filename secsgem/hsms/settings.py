@@ -32,6 +32,10 @@ class HsmsConnectMode(enum.Enum):
         """String representation of object."""
         return "Active" if self == self.ACTIVE else "Passive"
 
+    def __str__(self) -> str:
+        """String representation of object."""
+        return "Active" if self == self.ACTIVE else "Passive"
+
 
 class HsmsSettings(secsgem.common.Settings):
     """Settings for HSMS connection.

@@ -40,6 +40,14 @@ class DeviceType(enum.Enum):
     # This device is host
     HOST = 1
 
+    def __repr__(self) -> str:
+        """String representation of object."""
+        return "Equipment" if self == self.EQUIPMENT else "Host"
+
+    def __str__(self) -> str:
+        """String representation of object."""
+        return "Equipment" if self == self.EQUIPMENT else "Host"
+
 
 class Settings(abc.ABC):
     r"""Settings base class.

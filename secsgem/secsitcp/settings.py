@@ -32,6 +32,10 @@ class SecsITcpConnectMode(enum.Enum):
         """String representation of object."""
         return "Client" if self == self.CLIENT else "Server"
 
+    def __str__(self) -> str:
+        """String representation of object."""
+        return "Client" if self == self.CLIENT else "Server"
+
 
 class SecsITcpSettings(secsgem.common.Settings):
     """Settings for Secs I over TCP connection.
