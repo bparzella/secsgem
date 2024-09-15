@@ -1,7 +1,7 @@
 #####################################################################
 # handler.py
 #
-# (c) Copyright 2013-2023, Benjamin Parzella. All rights reserved.
+# (c) Copyright 2013-2024, Benjamin Parzella. All rights reserved.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -126,13 +126,13 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
             message.header,
         )
 
+        # reply S09F05 if no callback present
         if message.header.require_response:
             self.send_response(self.stream_function(9, 5)(message.header.encode()), message.header.system)
 
     def _handle_stream_function(self, message: secsgem.common.Message):
         sf_callback_index = self._generate_sf_callback_name(message.header.stream, message.header.function)
 
-        # return S09F05 if no callback present
         if sf_callback_index not in self._callback_handler:
             self._handle_unknown_functions(message)
             return
