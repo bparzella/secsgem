@@ -128,11 +128,16 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         elif self._communication_state.current == CommunicationState.COMMUNICATING:
             self._handle_stream_function(message)
 
-    def _on_communicating(self, _):
-        """Selected received from hsms layer."""
+    def _on_communicating(self, _data: dict[str, typing.Any]):
+        """Selected received from hsms layer.
+
+        Args:
+            data: received event data
+
+        """
         self._communication_state.select()
 
-    def _on_state_wait_cra(self, _):
+    def _on_state_wait_cra(self, _data: dict):
         """Connection state model changed to state WAIT_CRA.
 
         Args:
@@ -144,7 +149,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         else:
             self.send_stream_function(self.stream_function(1, 13)([self._mdln, self._softrev]))
 
-    def _on_state_communicating(self, _):
+    def _on_state_communicating(self, _data: dict):
         """Connection state model changed to state COMMUNICATING.
 
         Args:
@@ -156,8 +161,13 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         for event in self._wait_event_list:
             event.set()
 
-    def on_connection_closed(self, _):
-        """Handle connection was closed event."""
+    def on_connection_closed(self, _connection: secsgem.common.Connection):
+        """Handle connection was closed event.
+
+        Args:
+            connection: connection that was closed
+
+        """
         self._logger.info("Connection was closed")
 
         if self._communication_state.current == CommunicationState.COMMUNICATING:
@@ -175,12 +185,15 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         """
         return 0
 
-    def send_process_program(self, ppid: int | str, ppbody: str):
+    def send_process_program(self, ppid: int | str, ppbody: str) -> int:
         """Send a process program.
 
         Args:
             ppid: Transferred process programs ID
             ppbody: Content of process program
+
+        Returns:
+            Send result
 
         """
         # send remote command
