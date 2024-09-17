@@ -296,7 +296,7 @@ CMDA:
       constant: NOT_NOW
     3-63:
       description: Reserved, equipment specific error
-    
+
 COLCT:
   type:
     - U1
@@ -813,7 +813,7 @@ GRANT6:
       constant: NOT_INTERESTED
     3-63:
       description: Other error
-      
+
 GRNT1:
   type: Binary
   description: Grant code
@@ -1108,14 +1108,14 @@ MHEAD:
   length: 10
 
 MID:
-  type: 
+  type:
     - String
     - Binary
   description: Material ID
   length: 80
 
 MLCL:
-  type: 
+  type:
     - U1
     - U2
     - U4
@@ -1123,7 +1123,7 @@ MLCL:
   description: Message length
 
 NULBC:
-  type: 
+  type:
     - U1
     - String
   description: Column count in dies
@@ -1527,7 +1527,7 @@ SVID:
 SVNAME:
   type: String
   description: Status variable name
- 
+
 TEXT:
   type:
     - U1
@@ -1577,7 +1577,7 @@ TIME:
   type: String
   description: Time of day
   length: 32
- 
+
 TIMESTAMP:
   type: String
   description: Timestamp
