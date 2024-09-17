@@ -36,7 +36,7 @@ S01F02:
   sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H
-    - data: ''
+    - data: ""
       info: H->E
   extra_help: |-
     .. caution::
@@ -86,11 +86,11 @@ S01F11:
   reply: True
   reply_required: True
   multi_block: False
-  structure:  |
+  structure: |
     < L
       < SVID >
     >
-  sample_data: '[1, 1337]'
+  sample_data: "[1, 1337]"
   extra_help: An empty list will return all available status variables.
 
 S01F12:
@@ -119,14 +119,14 @@ S01F13:
   reply: True
   reply_required: True
   multi_block: False
-  structure:  |
+  structure: |
     < L
       < MDLN >
     >
   sample_data:
     - data: '["secsgem", "0.0.6"]'
       info: E->H
-    - data: ''
+    - data: ""
       info: H->E
   extra_help: |-
     .. caution::
@@ -201,7 +201,7 @@ S01F16:
   multi_block: False
   structure: |
     < OFLACK >
-  sample_data: 'secsgem.secs.data_items.OFLACK.ACK'
+  sample_data: "secsgem.secs.data_items.OFLACK.ACK"
 
 S01F17:
   description: request online
@@ -220,7 +220,7 @@ S01F18:
   multi_block: False
   structure: |
     < ONLACK >
-  sample_data: 'secsgem.secs.data_items.ONLACK.ALREADY_ON'
+  sample_data: "secsgem.secs.data_items.ONLACK.ALREADY_ON"
 
 S01F21:
   description: Data variable namelist request
@@ -303,7 +303,7 @@ S02F13:
     < L
       < ECID >
     >
-  sample_data: '[1, 1337]'
+  sample_data: "[1, 1337]"
   extra_help: An empty list will return all available equipment constants.
 
 S02F14:
@@ -313,7 +313,7 @@ S02F14:
   reply: False
   reply_required: False
   multi_block: True
-  structure:  |
+  structure: |
     < L
       < ECV >
     >
@@ -347,7 +347,7 @@ S02F16:
   multi_block: False
   structure: |
     < EAC >
-  sample_data: 'secsgem.secs.data_items.EAC.BUSY'
+  sample_data: "secsgem.secs.data_items.EAC.BUSY"
 
 S02F17:
   description: date and time - request
@@ -388,7 +388,7 @@ S02F22:
   multi_block: False
   structure: |
     < CMDA >
-  sample_data: 'secsgem.secs.data_items.CMDA.DONE'
+  sample_data: "secsgem.secs.data_items.CMDA.DONE"
 
 S02F23:
   description: Trace initialize
@@ -424,7 +424,7 @@ S02F24:
   multi_block: False
   structure: |
     < TIAACK >
-  sample_data: 'secsgem.secs.data_items.TIAACK.SVID_EXCEEDED'
+  sample_data: "secsgem.secs.data_items.TIAACK.SVID_EXCEEDED"
 
 S02F25:
   description: Loopback diagnostic request
@@ -459,7 +459,7 @@ S02F29:
     < L
       < ECID >
     >
-  sample_data: '[1, 1337]'
+  sample_data: "[1, 1337]"
   extra_help: An empty list will return all available equipment constants.
 
 S02F30:
@@ -527,7 +527,7 @@ S02F34:
   multi_block: False
   structure: |
     < DRACK >
-  sample_data: 'secsgem.secs.data_items.DRACK.INVALID_FORMAT'
+  sample_data: "secsgem.secs.data_items.DRACK.INVALID_FORMAT"
 
 S02F35:
   description: link event report
@@ -559,7 +559,7 @@ S02F36:
   multi_block: False
   structure: |
     < LRACK >
-  sample_data: 'secsgem.secs.data_items.LRACK.CEID_UNKNOWN'
+  sample_data: "secsgem.secs.data_items.LRACK.CEID_UNKNOWN"
 
 S02F37:
   description: en-/disable event report
@@ -585,8 +585,8 @@ S02F38:
   reply_required: False
   multi_block: False
   structure: |
-   < ERACK >
-  sample_data: 'secsgem.secs.data_items.ERACK.CEID_UNKNOWN'
+    < ERACK >
+  sample_data: "secsgem.secs.data_items.ERACK.CEID_UNKNOWN"
 
 S02F41:
   description: host command - send
@@ -852,7 +852,6 @@ S02F50:
         {"CPNAME": "PARAM1", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_VALUE},
         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
 
-
 S05F00:
   description: abort transaction stream 5
   to_host: True
@@ -889,8 +888,8 @@ S05F02:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC5 >
-  sample_data: 'secsgem.secs.data_items.ACKC5.ACCEPTED'
+    < ACKC5 >
+  sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F03:
   description: en-/disable alarm - send
@@ -914,8 +913,8 @@ S05F04:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC5 >
-  sample_data: 'secsgem.secs.data_items.ACKC5.ACCEPTED'
+    < ACKC5 >
+  sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F05:
   description: list alarms - request
@@ -928,7 +927,7 @@ S05F05:
     < L
       < ALID >
     >
-  sample_data: '[100, 200]'
+  sample_data: "[100, 200]"
 
 S05F06:
   description: list alarms - data
@@ -1129,7 +1128,7 @@ S05F17:
   reply_required: True
   multi_block: False
   structure: |
-   < EXID >
+    < EXID >
   sample_data: '"EX123"'
 
 S05F18:
@@ -1198,8 +1197,8 @@ S06F02:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC6 >
-  sample_data: 'secsgem.secs.data_items.ACKC6.ACCEPTED'
+    < ACKC6 >
+  sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F05:
   description: multi block data inquiry
@@ -1223,8 +1222,8 @@ S06F06:
   reply_required: False
   multi_block: False
   structure: |
-   < GRANT6 >
-  sample_data: 'secsgem.secs.data_items.GRANT6.BUSY'
+    < GRANT6 >
+  sample_data: "secsgem.secs.data_items.GRANT6.BUSY"
 
 S06F07:
   description: data transfer request
@@ -1234,8 +1233,8 @@ S06F07:
   reply_required: True
   multi_block: False
   structure: |
-   < DATAID >
-  sample_data: '1'
+    < DATAID >
+  sample_data: "1"
 
 S06F08:
   description: data transfer data
@@ -1306,8 +1305,8 @@ S06F12:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC6 >
-  sample_data: 'secsgem.secs.data_items.ACKC6.ACCEPTED'
+    < ACKC6 >
+  sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F15:
   description: event report request
@@ -1317,8 +1316,8 @@ S06F15:
   reply_required: True
   multi_block: False
   structure: |
-   < CEID >
-  sample_data: '1337'
+    < CEID >
+  sample_data: "1337"
 
 S06F16:
   description: event report data
@@ -1356,8 +1355,8 @@ S06F19:
   reply_required: True
   multi_block: False
   structure: |
-   < RPTID >
-  sample_data: 'secsgem.secs.variables.U4(1337)'
+    < RPTID >
+  sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F20:
   description: individual report data
@@ -1380,8 +1379,8 @@ S06F21:
   reply_required: True
   multi_block: False
   structure: |
-   < RPTID >
-  sample_data: 'secsgem.secs.variables.U4(1337)'
+    < RPTID >
+  sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F22:
   description: annotated individual report data
@@ -1407,8 +1406,8 @@ S06F23:
   reply_required: True
   multi_block: False
   structure: |
-   < RSDC >
-  sample_data: 'secsgem.secs.data_items.RSDC.PURGE'
+    < RSDC >
+  sample_data: "secsgem.secs.data_items.RSDC.PURGE"
 
 S06F24:
   description: Request spooled data acknowledge
@@ -1418,8 +1417,8 @@ S06F24:
   reply_required: False
   multi_block: False
   structure: |
-   < RSDA >
-  sample_data: 'secsgem.secs.data_items.RSDA.ACK'
+    < RSDA >
+  sample_data: "secsgem.secs.data_items.RSDA.ACK"
 
 S07F00:
   description: abort transaction stream 7
@@ -1451,8 +1450,8 @@ S07F02:
   reply_required: False
   multi_block: False
   structure: |
-   < PPGNT >
-  sample_data: 'secsgem.secs.data_items.PPGNT.OK'
+    < PPGNT >
+  sample_data: "secsgem.secs.data_items.PPGNT.OK"
 
 S07F03:
   description: process program - send
@@ -1476,8 +1475,8 @@ S07F04:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC7 >
-  sample_data: 'secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW'
+    < ACKC7 >
+  sample_data: "secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW"
 
 S07F05:
   description: process program - request
@@ -1487,7 +1486,7 @@ S07F05:
   reply_required: True
   multi_block: False
   structure: |
-   < PPID >
+    < PPID >
   sample_data: '"program"'
 
 S07F06:
@@ -1525,8 +1524,8 @@ S07F18:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC7 >
-  sample_data: 'secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED'
+    < ACKC7 >
+  sample_data: "secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED"
 
 S07F19:
   description: current equipment process program - request
@@ -1565,7 +1564,7 @@ S09F01:
   reply_required: False
   multi_block: False
   structure: |
-   < MHEAD >
+    < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F03:
@@ -1576,7 +1575,7 @@ S09F03:
   reply_required: False
   multi_block: False
   structure: |
-   < MHEAD >
+    < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F05:
@@ -1587,7 +1586,7 @@ S09F05:
   reply_required: False
   multi_block: False
   structure: |
-   < MHEAD >
+    < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F07:
@@ -1598,7 +1597,7 @@ S09F07:
   reply_required: False
   multi_block: False
   structure: |
-   < MHEAD >
+    < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F09:
@@ -1609,7 +1608,7 @@ S09F09:
   reply_required: False
   multi_block: False
   structure: |
-   < SHEAD >
+    < SHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F11:
@@ -1620,7 +1619,7 @@ S09F11:
   reply_required: False
   multi_block: False
   structure: |
-   < MHEAD >
+    < MHEAD >
   sample_data: '"HEADERDATA"'
 
 S09F13:
@@ -1667,8 +1666,8 @@ S10F02:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC10 >
-  sample_data: 'secsgem.secs.data_items.ACKC10.ACCEPTED'
+    < ACKC10 >
+  sample_data: "secsgem.secs.data_items.ACKC10.ACCEPTED"
 
 S10F03:
   description: terminal single - display
@@ -1692,8 +1691,8 @@ S10F04:
   reply_required: False
   multi_block: False
   structure: |
-   < ACKC10 >
-  sample_data: 'secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE'
+    < ACKC10 >
+  sample_data: "secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE"
 
 S12F00:
   description: abort transaction stream 12
@@ -1756,8 +1755,8 @@ S12F02:
   reply_required: False
   multi_block: False
   structure: |
-   < SDACK >
-  sample_data: 'secsgem.secs.data_items.SDACK.ACK'
+    < SDACK >
+  sample_data: "secsgem.secs.data_items.SDACK.ACK"
 
 S12F03:
   description: map setup data - request
@@ -1864,8 +1863,8 @@ S12F06:
   reply_required: False
   multi_block: False
   structure: |
-   < GRNT1 >
-  sample_data: 'secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN'
+    < GRNT1 >
+  sample_data: "secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN"
 
 S12F07:
   description: map data type 1 - send
@@ -1901,8 +1900,8 @@ S12F08:
   reply_required: False
   multi_block: False
   structure: |
-   < MDACK >
-  sample_data: 'secsgem.secs.data_items.MDACK.ABORT_MAP'
+    < MDACK >
+  sample_data: "secsgem.secs.data_items.MDACK.ABORT_MAP"
 
 S12F09:
   description: map data type 2 - send
@@ -1933,8 +1932,8 @@ S12F10:
   reply_required: False
   multi_block: False
   structure: |
-   < MDACK >
-  sample_data: 'secsgem.secs.data_items.MDACK.ACK'
+    < MDACK >
+  sample_data: "secsgem.secs.data_items.MDACK.ACK"
 
 S12F11:
   description: map data type 3 - send
@@ -1970,8 +1969,8 @@ S12F12:
   reply_required: False
   multi_block: False
   structure: |
-   < MDACK >
-  sample_data: 'secsgem.secs.data_items.MDACK.FORMAT_ERROR'
+    < MDACK >
+  sample_data: "secsgem.secs.data_items.MDACK.FORMAT_ERROR"
 
 S12F13:
   description: map data type 1 - request
@@ -2232,7 +2231,11 @@ S14F04:
   reply: False
   reply_required: False
   multi_block: True
-  structure: [[[OBJID, [["ATTRIBS", ATTRID, ATTRDATA]]]], ["ERRORS", OBJACK, [["ERROR", ERRCODE, ERRTEXT]]]]
+  structure:
+    [
+      [[OBJID, [["ATTRIBS", ATTRID, ATTRDATA]]]],
+      ["ERRORS", OBJACK, [["ERROR", ERRCODE, ERRTEXT]]],
+    ]
   sample_data: |-
     {
     "DATA": [{
@@ -2244,4 +2247,3 @@ S14F04:
             {"ATTRID": "CellStatus", "ATTRDATA": 6},
             {"ATTRID": "LotID", "ATTRDATA":"LOT001"}]}],
         "ERRORS": {"OBJACK": 0}}
-
