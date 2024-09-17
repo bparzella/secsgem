@@ -2231,11 +2231,28 @@ S14F04:
   reply: False
   reply_required: False
   multi_block: True
-  structure:
-    [
-      [[OBJID, [["ATTRIBS", ATTRID, ATTRDATA]]]],
-      ["ERRORS", OBJACK, [["ERROR", ERRCODE, ERRTEXT]]],
-    ]
+  structure: |
+    < L
+      < L
+        < L
+          < OBJID >
+          < L ATTRIBS
+            < L
+              < ATTRID >
+              < ATTRDATA >
+            >
+          >
+        >
+      >
+      < L ERRORS
+        < OBJACK >
+        < L ERROR
+          < L
+            < ERRCODE >
+            < ERRTEXT >
+          >
+        >
+      >
   sample_data: |-
     {
     "DATA": [{
