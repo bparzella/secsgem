@@ -72,8 +72,8 @@ def run():
 
     env.filters["py_indent"] = py_indent
 
-    data_items = DataItem.load_all(root)
-    functions = Function.load_all(root, {item.name: item for item in data_items})
+    data_items = DataItem.load_all()
+    functions = Function.load_all({item.name: item for item in data_items})
 
     DataItem.render_list(data_items, env, functions, root / ".." / "secsgem" / "secs" / "data_items")
 

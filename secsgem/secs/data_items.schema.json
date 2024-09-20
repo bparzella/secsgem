@@ -1,0 +1,98 @@
+{
+  "description": "Root array of data items definition",
+  "type": "object",
+  "patternProperties": {
+    "^[A-Z0-9]+$": {
+      "description": "Data item definition",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "oneOf": [
+            {
+              "type": [
+                "array",
+                "string"
+              ],
+              "enum": [
+                "A",
+                "Array",
+                "Binary",
+                "Boolean",
+                "F4",
+                "F8",
+                "I1",
+                "I2",
+                "I4",
+                "I8",
+                "String",
+                "U1",
+                "U2",
+                "U4",
+                "U8"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "A",
+                  "Array",
+                  "Binary",
+                  "Boolean",
+                  "F4",
+                  "F8",
+                  "I1",
+                  "I2",
+                  "I4",
+                  "I8",
+                  "String",
+                  "U1",
+                  "U2",
+                  "U4",
+                  "U8"
+                ]
+              }
+            }
+          ]
+        },
+        "length": {
+          "type": "integer"
+        },
+        "values": {
+          "type": "object",
+          "patternProperties": {
+            "^(\\d+)-?(\\d*)$": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "constant": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "linter_message": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "type"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

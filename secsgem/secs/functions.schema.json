@@ -1,0 +1,76 @@
+{
+    "description": "Root array of functions definition",
+    "type": "object",
+    "patternProperties": {
+        "^S\\d+F\\d+$": {
+            "description": "Function definition",
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "to_host": {
+                    "type": "boolean"
+                },
+                "to_equipment": {
+                    "type": "boolean"
+                },
+                "reply": {
+                    "type": "boolean"
+                },
+                "reply_required": {
+                    "type": "boolean"
+                },
+                "multi_block": {
+                    "type": "boolean"
+                },
+                "structure": {
+                    "type": [
+                        "array",
+                        "string"
+                    ]
+                },
+                "sample_data": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "type": "string"
+                                    },
+                                    "info": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "data",
+                                    "info"
+                                ],
+                                "additionalProperties": false
+                    
+                            }
+                        }
+                    ]
+                },
+                "extra_help": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "description",
+                "to_host",
+                "to_equipment",
+                "reply",
+                "reply_required",
+                "multi_block"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}
