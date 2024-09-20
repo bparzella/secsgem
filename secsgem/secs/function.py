@@ -33,11 +33,12 @@ default_yaml_path = _script_path / "functions.yaml"
 schema_path = _script_path / "functions.schema.json"
 
 
-class _FunctionSchema:
+class _FunctionSchema:  # pylint: disable=too-few-public-methods
     __schema = None
 
     @classmethod
     def get(cls) -> dict[str, typing.Any]:
+        """Get the schema for the functions.yaml file."""
         if cls.__schema is None:
             cls.__schema = json.loads(schema_path.read_text(encoding="utf8"))
 
@@ -62,7 +63,7 @@ def parse_stream_function(value: str) -> tuple[int, int]:
 
 
 @dataclasses.dataclass
-class FunctionDescriptor:
+class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     """Function descriptor class."""
 
     stream: int

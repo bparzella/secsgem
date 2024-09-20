@@ -33,11 +33,12 @@ default_yaml_path = _script_path / "data_items.yaml"
 schema_path = _script_path / "data_items.schema.json"
 
 
-class _DataItemSchema:
+class _DataItemSchema:  # pylint: disable=too-few-public-methods
     __schema = None
 
     @classmethod
     def get(cls) -> dict[str, typing.Any]:
+        """Get the schema for the data_items.yaml file."""
         if cls.__schema is None:
             cls.__schema = json.loads(schema_path.read_text(encoding="utf8"))
 
