@@ -30,6 +30,7 @@ descriptor_value_range_regex = re.compile("^(\\d+)-?(\\d*)$")
 
 _script_path = pathlib.Path(__file__).resolve().absolute().parent
 default_yaml_path = _script_path / "data_items.yaml"
+schema_path = _script_path / "data_items.schema.json"
 
 
 class _DataItemSchema:
@@ -38,7 +39,6 @@ class _DataItemSchema:
     @classmethod
     def get(cls) -> dict[str, typing.Any]:
         if cls.__schema is None:
-            schema_path = _script_path / "data_items.schema.json"
             cls.__schema = json.loads(schema_path.read_text(encoding="utf8"))
 
         return cls.__schema

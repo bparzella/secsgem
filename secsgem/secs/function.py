@@ -30,6 +30,7 @@ stream_function_regex = re.compile("^S(\\d+)F(\\d+$)")
 
 _script_path = pathlib.Path(__file__).resolve().absolute().parent
 default_yaml_path = _script_path / "functions.yaml"
+schema_path = _script_path / "functions.schema.json"
 
 
 class _FunctionSchema:
@@ -38,7 +39,6 @@ class _FunctionSchema:
     @classmethod
     def get(cls) -> dict[str, typing.Any]:
         if cls.__schema is None:
-            schema_path = _script_path / "functions.schema.json"
             cls.__schema = json.loads(schema_path.read_text(encoding="utf8"))
 
         return cls.__schema
