@@ -70,6 +70,7 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     function: int
 
     name: str
+    mnemonic: str
     to_host: bool
     to_equipment: bool
     reply: bool
