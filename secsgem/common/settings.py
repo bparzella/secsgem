@@ -63,7 +63,7 @@ class Settings(abc.ABC):
         self._timeouts = Timeouts(**kwargs)
         self._device_type = kwargs.get("device_type", DeviceType.HOST)
         self._streams_functions = kwargs.get("streams_functions", StreamsFunctions())
-        self._session_id = kwargs.get("session_id", 0)
+        self._device_id = kwargs.get("device_id", 0)
         self._establish_communication_timeout = kwargs.get("establish_communication_timeout", 10)
 
     @classmethod
@@ -74,7 +74,7 @@ class Settings(abc.ABC):
             *Timeouts.args(),
             "device_type",
             "streams_functions",
-            "session_id",
+            "device_id",
             "establish_communication_timeout",
         ]
 
@@ -115,12 +115,12 @@ class Settings(abc.ABC):
         return self._streams_functions.data_items
 
     @property
-    def session_id(self) -> int:
-        """Session / device ID to use for connection.
+    def device_id(self) -> int:
+        """Device ID to use for connection.
 
         Default: 0
         """
-        return self._session_id
+        return self._device_id
 
     @property
     def establish_communication_timeout(self) -> int:

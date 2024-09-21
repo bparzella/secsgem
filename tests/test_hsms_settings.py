@@ -26,7 +26,7 @@ class TestHsmsSettings:
 
         assert settings.device_type == secsgem.common.DeviceType.HOST
         assert isinstance(settings.streams_functions, secsgem.secs.functions.StreamsFunctions)
-        assert settings.session_id == 0
+        assert settings.device_id == 0
         assert settings.establish_communication_timeout == 10
 
         assert settings.connect_mode == secsgem.hsms.HsmsConnectMode.ACTIVE
@@ -36,7 +36,7 @@ class TestHsmsSettings:
     def test_with_args(self):
         settings = secsgem.hsms.HsmsSettings(
             device_type=secsgem.common.DeviceType.HOST,
-            session_id=1,
+            device_id=1,
             establish_communication_timeout=1,
             connect_mode=secsgem.hsms.HsmsConnectMode.PASSIVE,
             address="123.123.123.123",
@@ -45,7 +45,7 @@ class TestHsmsSettings:
 
         assert settings.device_type == secsgem.common.DeviceType.HOST
         assert isinstance(settings.streams_functions, secsgem.secs.functions.StreamsFunctions)
-        assert settings.session_id == 1
+        assert settings.device_id == 1
         assert settings.establish_communication_timeout == 1
 
         assert settings.connect_mode == secsgem.hsms.HsmsConnectMode.PASSIVE

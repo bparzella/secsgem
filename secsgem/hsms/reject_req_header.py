@@ -36,7 +36,7 @@ class HsmsRejectReqHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsRejectReqHeader(17, secsgem.hsms.HsmsSType.DESELECT_REQ, 4)
-            HsmsRejectReqHeader({session_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, \
+            HsmsRejectReqHeader({device_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, \
 system:0x00000011, require_response:False})
         """
         super().__init__(system, 0xFFFF, s_type.value, reason, False, 0x00, HsmsSType.REJECT_REQ)

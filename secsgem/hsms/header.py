@@ -74,7 +74,7 @@ class HsmsHeader(secsgem.common.Header):
     def __init__(  # pylint: disable=too-many-arguments
         self,
         system: int,
-        session_id: int,
+        device_id: int,
         stream: int = 0,
         function: int = 0,
         requires_response: bool = False,
@@ -85,7 +85,7 @@ class HsmsHeader(secsgem.common.Header):
 
         Args:
             system: message ID
-            session_id: device / session ID
+            device_id: device ID
             stream: stream
             function: function
             requires_response: is response required
@@ -96,18 +96,18 @@ class HsmsHeader(secsgem.common.Header):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsHeader(3, 100)
-            HsmsHeader({session_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
+            HsmsHeader({device_id:0x0064, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x00000003, \
 require_response:False})
 
         """
-        super().__init__(system, session_id, stream, function, requires_response)
+        super().__init__(system, device_id, stream, function, requires_response)
         self._p_type = p_type
         self._s_type = s_type
 
     def __str__(self) -> str:
         """Generate string representation for an object of this class."""
         return (
-            f"{{session_id:0x{self.session_id:04x}, "
+            f"{{device_id:0x{self.device_id:04x}, "
             f"stream:{self.stream:02d}, "
             f"function:{self.function:02d}, "
             f"p_type:0x{self.p_type:02x}, "
@@ -140,7 +140,7 @@ require_response:False})
         """
         return {
             "system": self._system,
-            "session_id": self._session_id,
+            "device_id": self._device_id,
             "stream": self._stream,
             "function": self._function,
             "requires_response": self._require_response,
@@ -169,7 +169,7 @@ require_response:False})
 
         return struct.pack(
             ">HBBBBL",
-            self.session_id,
+            self.device_id,
             header_stream,
             self.function,
             self.p_type,

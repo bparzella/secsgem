@@ -34,7 +34,7 @@ class HsmsLinktestRspHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsLinktestRspHeader(10)
-            HsmsLinktestRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, \
+            HsmsLinktestRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, \
 system:0x0000000a, require_response:False})
 
         """

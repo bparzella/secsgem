@@ -34,7 +34,7 @@ class HsmsDeselectRspHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsDeselectRspHeader(1)
-            HsmsDeselectRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x04, \
+            HsmsDeselectRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x04, \
 system:0x00000001, require_response:False})
 
         """

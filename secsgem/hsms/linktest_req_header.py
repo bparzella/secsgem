@@ -34,7 +34,7 @@ class HsmsLinktestReqHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsLinktestReqHeader(2)
-            HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, \
+            HsmsLinktestReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, \
 system:0x00000002, require_response:False})
 
         """

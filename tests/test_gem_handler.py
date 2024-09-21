@@ -109,7 +109,7 @@ class GemHandlerPassiveGroup:
         message = self.settings.protocol.expect_message(function=13)
 
         self.assertIsNot(message, None)
-        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.device_id, 0x0)
         self.assertEqual(message.header.stream, 0x01)
         self.assertEqual(message.header.function, 0x0d)
 
@@ -136,7 +136,7 @@ class GemHandlerPassiveGroup:
         s01f13ReceivedPacket = self.settings.protocol.expect_message(function=13)
 
         self.assertIsNot(s01f13ReceivedPacket, None)
-        self.assertEqual(s01f13ReceivedPacket.header.session_id, 0x0)
+        self.assertEqual(s01f13ReceivedPacket.header.device_id, 0x0)
         self.assertEqual(s01f13ReceivedPacket.header.stream, 0x01)
         self.assertEqual(s01f13ReceivedPacket.header.function, 0x0d)
 
@@ -156,7 +156,7 @@ class GemHandlerPassiveGroup:
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 0x01)
         self.assertEqual(packet.header.function, 0x0e)
 
@@ -181,7 +181,7 @@ class GemHandlerPassiveGroup:
         message = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(message, None)
-        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.device_id, 0x0)
         self.assertEqual(message.header.stream, 1)
         self.assertEqual(message.header.function, 2)
 
@@ -194,7 +194,7 @@ class GemHandlerPassiveGroup:
         message = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(message, None)
-        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.device_id, 0x0)
         self.assertEqual(message.header.stream, 1)
         self.assertEqual(message.header.function, 14)
 
@@ -231,7 +231,7 @@ class GemHandlerPassiveGroup:
         self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(message)
-        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.device_id, 0x0)
         self.assertEqual(message.header.stream, 7)
         self.assertEqual(message.header.function, 3)
 
@@ -258,7 +258,7 @@ class GemHandlerPassiveGroup:
         self.assertFalse(clientCommandThread.is_alive())
 
         self.assertIsNotNone(message)
-        self.assertEqual(message.header.session_id, 0x0)
+        self.assertEqual(message.header.device_id, 0x0)
         self.assertEqual(message.header.stream, 7)
         self.assertEqual(message.header.function, 5)
 

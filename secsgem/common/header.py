@@ -31,7 +31,7 @@ class Header(abc.ABC):
     def __init__(  # pylint: disable=too-many-arguments
         self,
         system: int,
-        session_id: int,
+        device_id: int,
         stream: int,
         function: int,
         require_response: bool,
@@ -40,22 +40,22 @@ class Header(abc.ABC):
 
         Args:
             system: message ID
-            session_id: device / session ID
+            device_id: device ID
             stream: stream
             function: function
             require_response: True when a response is required
 
         """
-        self._session_id = session_id
+        self._device_id = device_id
         self._stream = stream
         self._function = function
         self._system = system
         self._require_response = require_response
 
     @property
-    def session_id(self) -> int:
-        """Get session id."""
-        return self._session_id
+    def device_id(self) -> int:
+        """Get device id."""
+        return self._device_id
 
     @property
     def stream(self) -> int:

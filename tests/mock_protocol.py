@@ -62,7 +62,7 @@ class MockHeader(secsgem.common.Header):
         """
         return {
             "system": self._system,
-            "session_id": self._session_id,
+            "device_id": self._device_id,
             "stream": self._stream,
             "function": self._function,
         }

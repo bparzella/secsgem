@@ -33,6 +33,6 @@ class TestExampleSecsGem(unittest.TestCase):
         result_message = self.handler.send_linktest_req()
 
         self.assertEqual(result_message.header.s_type.value, 6)
-        self.assertEqual(result_message.header.session_id, 65535)
+        self.assertEqual(result_message.header.device_id, 65535)
 
 

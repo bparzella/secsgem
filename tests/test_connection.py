@@ -35,7 +35,7 @@ class HsmsTestConnection(secsgem.common.Connection):
     Args:
         settings: settings for this connection
         port: TCP port of target host
-        session_id: session / device ID to use for connection
+        device_id: device ID to use for connection
         delegate: target for messages
     
     Example:
@@ -202,5 +202,5 @@ class HsmsTestServer:
     def get_next_system_counter(self):
         return self.connection.get_next_system_counter()
 
-    def generate_stream_function_packet(self, system_id, packet, session_id=0):
-        return secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, session_id), packet.encode())
+    def generate_stream_function_packet(self, system_id, packet, device_id=0):
+        return secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsStreamFunctionHeader(system_id, packet.stream, packet.function, True, device_id), packet.encode())

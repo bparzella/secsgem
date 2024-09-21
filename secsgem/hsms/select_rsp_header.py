@@ -34,7 +34,7 @@ class HsmsSelectRspHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsSelectRspHeader(24)
-            HsmsSelectRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x02, \
+            HsmsSelectRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x02, \
 system:0x00000018, require_response:False})
         """
         super().__init__(system, 0xFFFF, 0, 0, False, 0x00, HsmsSType.SELECT_RSP)

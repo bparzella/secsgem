@@ -67,7 +67,7 @@ class SerialConnection(Connection):  # pylint: disable=too-many-instance-attribu
         return (
             f"Serial connection to "
             f"{self._settings.port}@{self._settings.speed}"
-            f" session_id={self._settings.session_id}"
+            f" device_id={self._settings.device_id}"
         )
 
     def enable(self):

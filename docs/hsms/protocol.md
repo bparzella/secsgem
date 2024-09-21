@@ -13,7 +13,7 @@ It also replies to incoming HSMS requests like linktest automatically.
 >>> client.enable()
 Connected
 >>> client.protocol.send_linktest_req()
-HsmsMessage({'header': HsmsHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, system:0x75b78c48, require_response:False}), 'data': ''})
+HsmsMessage({'header': HsmsHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, system:0x75b78c48, require_response:False}), 'data': ''})
 >>> client.disable()
 ```
 

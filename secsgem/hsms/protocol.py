@@ -366,7 +366,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
             "address": self._settings.address,
             "port": self._settings.port,
             "connect_mode": self._settings.connect_mode,
-            "session_id": self._settings.session_id,
+            "device_id": self._settings.device_id,
             "name": self._settings.name,
             "connected": self._connected,
         }
@@ -412,7 +412,7 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
                 function.stream,
                 function.function,
                 function.is_reply_required,
-                self._settings.session_id,
+                self._settings.device_id,
             ),
             function.encode(),
         )
@@ -580,6 +580,6 @@ class HsmsProtocol(secsgem.common.Protocol[HsmsMessage, HsmsBlock]):  # pylint: 
         return {
             "address": self._settings.address,
             "port": self._settings.port,
-            "session_id": self._settings.session_id,
+            "device_id": self._settings.device_id,
             "remoteName": self._settings.name,
         }

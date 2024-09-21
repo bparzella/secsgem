@@ -91,7 +91,7 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
         return SecsIMessage(
             SecsIHeader(
                 system_id,
-                self._settings.session_id,
+                self._settings.device_id,
                 function.stream,
                 function.function,
                 require_response=function.is_reply_required,
@@ -114,14 +114,14 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
                 "address": self._settings.address,
                 "port": self._settings.port,
                 "connect_mode": self._settings.connect_mode,
-                "session_id": self._settings.session_id,
+                "device_id": self._settings.device_id,
                 "name": self._settings.name,
             }
 
         return {
             "port": self._settings.port,
             "baud_rate": self._settings.speed,
-            "session_id": self._settings.session_id,
+            "device_id": self._settings.device_id,
             "name": self._settings.name,
         }
 
@@ -236,13 +236,13 @@ class SecsIProtocol(secsgem.common.Protocol[SecsIMessage, SecsIBlock]):
                 "address": self._settings.address,
                 "port": self._settings.port,
                 "connect_mode": self._settings.connect_mode,
-                "session_id": self._settings.session_id,
+                "device_id": self._settings.device_id,
                 "remoteName": self._settings.name,
             }
 
         return {
             "port": self._settings.port,
             "speed": self._settings.speed,
-            "session_id": self._settings.session_id,
+            "device_id": self._settings.device_id,
             "remoteName": self._settings.name,
         }

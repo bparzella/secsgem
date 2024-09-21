@@ -34,7 +34,7 @@ class SecsIHeader(secsgem.common.Header):
     def __init__(  # pylint: disable=too-many-arguments
         self,
         system: int,
-        session_id: int,
+        device_id: int,
         stream: int = 0,
         function: int = 0,
         block: int = 0,
@@ -46,7 +46,7 @@ class SecsIHeader(secsgem.common.Header):
 
         Args:
             system: message ID
-            session_id: device / session ID
+            device_id: device ID
             stream: stream
             function: function
             block: block number
@@ -58,11 +58,11 @@ class SecsIHeader(secsgem.common.Header):
             >>> import secsgem.secsi
             >>>
             >>> secsgem.secsi.SecsIHeader(3, 100)
-            SecsIHeader({session_id:0x0064, stream:00, function:00, system:0x00000003, block:0x0000, from_host:False, \
+            SecsIHeader({device_id:0x0064, stream:00, function:00, system:0x00000003, block:0x0000, from_host:False, \
 require_response:False, last_block:True})
 
         """
-        super().__init__(system, session_id, stream, function, require_response)
+        super().__init__(system, device_id, stream, function, require_response)
 
         self._block = block
         self._from_equipment = from_equipment
@@ -99,7 +99,7 @@ require_response:False, last_block:True})
         """
         return {
             "system": self._system,
-            "session_id": self._session_id,
+            "device_id": self._device_id,
             "stream": self._stream,
             "function": self._function,
             "block": self._block,
@@ -112,7 +112,7 @@ require_response:False, last_block:True})
         """Generate string representation for an object of this class."""
         return (
             "{"
-            f"session_id:0x{self.session_id:04x}, "
+            f"device_id:0x{self.device_id:04x}, "
             f"stream:{self.stream:02d}, "
             f"function:{self.function:02d}, "
             f"system:0x{self.system:08x}, "
@@ -142,9 +142,9 @@ require_response:False, last_block:True})
             '00:64:00:00:80:00:00:00:00:02'
 
         """
-        session_id = self.session_id
+        device_id = self.device_id
         if self.from_equipment:
-            session_id |= 0b1000000000000000
+            device_id |= 0b1000000000000000
 
         stream = self.stream
         if self.require_response:
@@ -156,7 +156,7 @@ require_response:False, last_block:True})
 
         return struct.pack(
             ">HBBHI",
-            session_id,
+            device_id,
             stream,
             self.function,
             block,

@@ -26,7 +26,7 @@ class TestSecsISettings:
 
         assert settings.device_type == secsgem.common.DeviceType.HOST
         assert isinstance(settings.streams_functions, secsgem.secs.functions.StreamsFunctions)
-        assert settings.session_id == 0
+        assert settings.device_id == 0
         assert settings.establish_communication_timeout == 10
 
         assert settings.port == ""
@@ -35,7 +35,7 @@ class TestSecsISettings:
     def test_with_args(self):
         settings = secsgem.secsi.SecsISettings(
             device_type=secsgem.common.DeviceType.HOST,
-            session_id=1,
+            device_id=1,
             establish_communication_timeout=1,
             port="SomePort",
             speed=1234,
@@ -43,7 +43,7 @@ class TestSecsISettings:
 
         assert settings.device_type == secsgem.common.DeviceType.HOST
         assert isinstance(settings.streams_functions, secsgem.secs.functions.StreamsFunctions)
-        assert settings.session_id == 1
+        assert settings.device_id == 1
         assert settings.establish_communication_timeout == 1
 
         assert settings.port == "SomePort"

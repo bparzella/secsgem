@@ -42,7 +42,7 @@ class TestHsmsSelectReqHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 1)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsSelectRspHeader(unittest.TestCase):
@@ -69,7 +69,7 @@ class TestHsmsSelectRspHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 2)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsDeselectReqHeader(unittest.TestCase):
@@ -96,7 +96,7 @@ class TestHsmsDeselectReqHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 3)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsDeselectRspHeader(unittest.TestCase):
@@ -123,7 +123,7 @@ class TestHsmsDeselectRspHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 4)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsLinktestReqHeader(unittest.TestCase):
@@ -150,7 +150,7 @@ class TestHsmsLinktestReqHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 5)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsLinktestRspHeader(unittest.TestCase):
@@ -177,7 +177,7 @@ class TestHsmsLinktestRspHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 6)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsRejectReqHeader(unittest.TestCase):
@@ -204,7 +204,7 @@ class TestHsmsRejectReqHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 7)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsSeparateReqHeader(unittest.TestCase):
@@ -231,7 +231,7 @@ class TestHsmsSeparateReqHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 9)
         self.assertEqual(packet.header.require_response, False)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 0xFFFF)
+        self.assertEqual(packet.header.device_id, 0xFFFF)
 
 
 class TestHsmsStreamFunctionHeader(unittest.TestCase):
@@ -258,7 +258,7 @@ class TestHsmsStreamFunctionHeader(unittest.TestCase):
         self.assertEqual(packet.header.s_type.value, 0)
         self.assertEqual(packet.header.require_response, True)
         self.assertEqual(packet.header.system, 123)
-        self.assertEqual(packet.header.session_id, 100)
+        self.assertEqual(packet.header.device_id, 100)
 
 
 class TestHsmsPacket(unittest.TestCase):
@@ -266,10 +266,10 @@ class TestHsmsPacket(unittest.TestCase):
         block = secsgem.hsms.HsmsBlock.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
         packet = secsgem.hsms.HsmsMessage.from_block(block)
 
-        assert packet.__repr__() == "HsmsMessage({'header': HsmsHeader({session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True}), 'data': ''})"
+        assert packet.__repr__() == "HsmsMessage({'header': HsmsHeader({device_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True}), 'data': ''})"
 
     def testStr(self):
         block = secsgem.hsms.HsmsBlock.decode(b"\x00\x00\x00\n\x00d\x81\x01\x00\x00\x00\x00\x00{")
         packet = secsgem.hsms.HsmsMessage.from_block(block)
 
-        assert str(packet) == "'header': {session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True} "
+        assert str(packet) == "'header': {device_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x0000007b, require_response:True} "

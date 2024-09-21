@@ -8,7 +8,7 @@ For HSMS data only one block exists in a message, as the message doesn't need to
 
 ```python
 >>> secsgem.hsms.HsmsMessage(secsgem.hsms.HsmsLinktestReqHeader(2), b"")
-HsmsMessage({'header': HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
+HsmsMessage({'header': HsmsLinktestReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False}), 'data': ''})
 ```
 
 Every header has a system id to match the response to a certain request.
@@ -50,7 +50,7 @@ Establish HSMS communication
 
 ```python
 >>> secsgem.hsms.HsmsSelectReqHeader(14)
-HsmsSelectReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x0000000e, require_response:False})
+HsmsSelectReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, system:0x0000000e, require_response:False})
 ```
 
 ## Select Response
@@ -59,7 +59,7 @@ Result of select request
 
 ```python
 >>> secsgem.hsms.HsmsSelectRspHeader(24)
-HsmsSelectRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x02, system:0x00000018, require_response:False})
+HsmsSelectRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x02, system:0x00000018, require_response:False})
 ```
 
 ## Deselect Request
@@ -68,7 +68,7 @@ Grateful close HSMS communication before disconnecting
 
 ```python
 >>> secsgem.hsms.HsmsDeselectReqHeader(1)
-HsmsDeselectReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x03, system:0x00000001, require_response:False})
+HsmsDeselectReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x03, system:0x00000001, require_response:False})
 ```
 
 ## Deselect Response
@@ -77,7 +77,7 @@ Result of deselect request
 
 ```python
 >>> secsgem.hsms.HsmsDeselectRspHeader(1)
-HsmsDeselectRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x04, system:0x00000001, require_response:False})
+HsmsDeselectRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x04, system:0x00000001, require_response:False})
 ```
 
 ## Linktest Request
@@ -86,7 +86,7 @@ Check the HSMS connection link is good
 
 ```python
 >>> secsgem.hsms.HsmsLinktestReqHeader(2)
-HsmsLinktestReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False})
+HsmsLinktestReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x05, system:0x00000002, require_response:False})
 ```
 
 ## Linktest Response
@@ -95,7 +95,7 @@ Result of linktest request
 
 ```python
 >>> secsgem.hsms.HsmsLinktestRspHeader(10)
-HsmsLinktestRspHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, system:0x0000000a, require_response:False})
+HsmsLinktestRspHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x06, system:0x0000000a, require_response:False})
 ```
 
 ## Reject Request
@@ -104,7 +104,7 @@ Response to unsupported HSMS message
 
 ```python
 >>> secsgem.hsms.HsmsRejectReqHeader(17, secsgem.hsms.HsmsSType.DESELECT_REQ, 4)
-HsmsRejectReqHeader({session_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, system:0x00000011, require_response:False})
+HsmsRejectReqHeader({device_id:0xffff, stream:03, function:04, p_type:0x00, s_type:0x07, system:0x00000011, require_response:False})
 ```
 
 ## Separate Request
@@ -113,7 +113,7 @@ Immediate termination of the HSMS connection
 
 ```python
 >>> secsgem.hsms.HsmsSeparateReqHeader(17)
-HsmsSeparateReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x09, system:0x00000011, require_response:False})
+HsmsSeparateReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x09, system:0x00000011, require_response:False})
 ```
 
 ## Data Message
@@ -122,5 +122,5 @@ Secs stream and function message
 
 ```python
 >>> secsgem.hsms.HsmsStreamFunctionHeader(22, 1, 1, True, 100)
-HsmsStreamFunctionHeader({session_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x00000016, require_response:True})
+HsmsStreamFunctionHeader({device_id:0x0064, stream:01, function:01, p_type:0x00, s_type:0x00, system:0x00000016, require_response:True})
 ```

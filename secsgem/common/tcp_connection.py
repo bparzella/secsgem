@@ -75,7 +75,7 @@ class TcpConnection(Connection):
             "connect_mode": self._settings.connect_mode,
             "remoteAddress": self._settings.address,
             "remotePort": self._settings.port,
-            "session_id": self._settings.session_id,
+            "device_id": self._settings.device_id,
             "connected": self._connected,
         }
 
@@ -84,7 +84,7 @@ class TcpConnection(Connection):
         return (
             f"{self._settings.connect_mode} connection to "
             f"{self._settings.address}:{self._settings.port}"
-            f" session_id={self._settings.session_id}"
+            f" device_id={self._settings.device_id}"
         )
 
     def _start_receiver(self):

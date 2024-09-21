@@ -388,3 +388,63 @@ The downside of this implementation is that code suggestions in the IDE won't wo
 #### Recommendation: Start accessing the data items using the handler / settings.
 The plan is to remove the function and data item classes and read the configuration directly from the yaml files.
 This means code written using the classes will need to be rechanged.
+
+## v0.4.0 [planned]
+
+* [Rename session_id to device_id](#rename-session-id-to-device-id)
+
+### Rename session_id to device_id
+
+```{danger}
+This might break your code, changes to your code might be required.
+```
+
+Rename all session_id fields to device_id.
+This changes the naming of the variable to match the semi naming of the variable and to avoid confusion about this variable.
+
+
+
+### Load data item definition from yaml directly
+
+Data item class files were generated using the yaml file.
+This made it necessary to run the class generator after changing the yaml file.
+
+Instead of using the classes the data item definitions are now loaded from the yaml file directly.
+This makes the boilerplate class definition obsolete.
+No generator step is needed in between any more.
+
+For now the data item classes are generated dynamically using the same base class as before.
+But the goal is to make the data item definition more flexible, without the use of data item classes.
+
+The generated data item files are deleted from the package.
+This means that development IDEs won't recognize the data items for autocompletion any more.
+
+If you use data item classes directly, you need to update the way you get the data items.
+The data item list is available using the settings in the handler / protocol / connection.
+
+Old:
+```python
+lrack = secsgem.secs.data_items.LRACK.ACK
+```
+
+New:
+```python
+lrack = secsgem.secs.data_items.DataItems().LRACK.ACK
+
+# or
+
+lrack = handler.settings.data_items.LRACK.ACK
+
+```
+
+The streams / functions now need the data_items as first parameter to initialize.
+
+To find stream function initialization using the classes directly use the following regex:
+```regex
+SecsS\d\dF\d\d\s*\(
+```
+
+To find new setting / handler based function initialization use the following regex:
+```regex
+\.stream_function\(
+```

@@ -51,7 +51,7 @@ Also streams/functions can be sent and received with the handler:
 ```python
 >>> f = secsgem.secs.functions.SecsS01F01()
 >>> client.send_and_waitfor_response(f)
-HsmsMessage({'header': HsmsHeader({session_id:0x0000, stream:01, function:02, p_type:0x00, s_type:0x00, system:0x75b78c3e, require_response:False}), 'data': '\x01\x02A\x06EQUIPMA\x06SV n/a'})
+HsmsMessage({'header': HsmsHeader({device_id:0x0000, stream:01, function:02, p_type:0x00, s_type:0x00, system:0x75b78c3e, require_response:False}), 'data': '\x01\x02A\x06EQUIPMA\x06SV n/a'})
 ```
 
 ## Events

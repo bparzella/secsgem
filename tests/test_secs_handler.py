@@ -119,7 +119,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0)
+        self.assertEqual(packet.header.device_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 2)
 
@@ -135,7 +135,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0)
+        self.assertEqual(packet.header.device_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
 
@@ -154,7 +154,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0)
+        self.assertEqual(packet.header.device_id, 0)
         self.assertEqual(packet.header.stream, 9)
         self.assertEqual(packet.header.function, 5)
 
@@ -172,7 +172,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(system_id=system_id)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0)
+        self.assertEqual(packet.header.device_id, 0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 0)
 
@@ -186,7 +186,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=37)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 37)
 
@@ -211,7 +211,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=33)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 33)
 
@@ -236,7 +236,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=11)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
@@ -260,7 +260,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=11)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 11)
 
@@ -284,7 +284,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
@@ -308,7 +308,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 3)
 
@@ -332,7 +332,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=29)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
@@ -357,7 +357,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=29)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 29)
 
@@ -382,7 +382,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=13)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
@@ -406,7 +406,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=13)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 13)
 
@@ -430,7 +430,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=15)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
@@ -454,7 +454,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=15)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 2)
         self.assertEqual(packet.header.function, 15)
 
@@ -479,7 +479,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=3)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 10)
         self.assertEqual(packet.header.function, 3)
 
@@ -504,7 +504,7 @@ class TestSecsHandlerPassive(unittest.TestCase):
         packet = self.settings.protocol.expect_message(function=1)
 
         self.assertIsNot(packet, None)
-        self.assertEqual(packet.header.session_id, 0x0)
+        self.assertEqual(packet.header.device_id, 0x0)
         self.assertEqual(packet.header.stream, 1)
         self.assertEqual(packet.header.function, 1)
 

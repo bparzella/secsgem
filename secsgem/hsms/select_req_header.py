@@ -34,7 +34,7 @@ class HsmsSelectReqHeader(HsmsHeader):
             >>> import secsgem.hsms
             >>>
             >>> secsgem.hsms.HsmsSelectReqHeader(14)
-            HsmsSelectReqHeader({session_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, \
+            HsmsSelectReqHeader({device_id:0xffff, stream:00, function:00, p_type:0x00, s_type:0x01, \
 system:0x0000000e, require_response:False})
         """
         super().__init__(system, 0xFFFF, 0, 0, False, 0x00, HsmsSType.SELECT_REQ)
