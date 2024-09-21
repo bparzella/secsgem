@@ -62,7 +62,7 @@ def parse_stream_function(value: str) -> tuple[int, int]:
     return int(match.group(1)), int(match.group(2))
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     """Function descriptor class."""
 
@@ -98,7 +98,7 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
         return cls(stream=stream, function=function, **dataset)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class FunctionDescriptors:
     """Function descriptors class."""
 

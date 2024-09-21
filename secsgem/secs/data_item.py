@@ -45,7 +45,7 @@ class _DataItemSchema:  # pylint: disable=too-few-public-methods
         return cls.__schema
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class DataItemDescriptorValue:
     """Data item descriptor values class."""
 
@@ -90,7 +90,7 @@ class DataItemDescriptorValue:
         return cls(**dataset)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class DataItemDescriptor:
     """Data item descriptor class."""
 
@@ -186,7 +186,7 @@ class DataItemDescriptor:
         return cls(**dataset)
 
 
-@dataclasses.dataclass
+@dataclasses.dataclass(frozen=True)
 class DataItemDescriptors:
     """Data item descriptors class."""
 
