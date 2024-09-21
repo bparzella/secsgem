@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F03(SecsStreamFunction):
-    """Selected equipment status - request.
+    """Selected Equipment Status request (SSR).
 
     Args:
         value: parameters for this function (see example)

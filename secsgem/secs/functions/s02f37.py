@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F37(SecsStreamFunction):
-    """en-/disable event report.
+    """Enable/Disable Event Report (EDER).
 
     Args:
         value: parameters for this function (see example)

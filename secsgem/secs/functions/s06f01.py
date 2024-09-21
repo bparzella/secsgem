@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F01(SecsStreamFunction):
-    """Trace data send.
+    """Trace Data Send (TDS).
 
     Args:
         value: parameters for this function (see example)

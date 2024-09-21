@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F24(SecsStreamFunction):
-    """Trace initialize - acknowledge.
+    """Trace Initialize Acknowledge (TIA).
 
     Args:
         value: parameters for this function (see example)

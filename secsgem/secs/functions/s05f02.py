@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F02(SecsStreamFunction):
-    """alarm report - acknowledge.
+    """Alarm Report Acknowledge (ARA).
 
     Args:
         value: parameters for this function (see example)

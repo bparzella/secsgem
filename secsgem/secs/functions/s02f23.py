@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F23(SecsStreamFunction):
-    """Trace initialize.
+    """Trace Initialize Send (TIS).
 
     Args:
         value: parameters for this function (see example)

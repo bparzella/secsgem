@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F02(SecsStreamFunction):
-    """Trace data - acknowledge.
+    """Trace Data Acknowledge (TDA).
 
     Args:
         value: parameters for this function (see example)

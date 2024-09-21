@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F06(SecsStreamFunction):
-    """multi block data grant.
+    """Multi-block Grant (MBG).
 
     Args:
         value: parameters for this function (see example)

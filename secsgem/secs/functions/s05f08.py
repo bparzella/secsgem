@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F08(SecsStreamFunction):
-    """list enabled alarms - data.
+    """List Enabled Alarm Data (LEAD).
 
     Args:
         value: parameters for this function (see example)

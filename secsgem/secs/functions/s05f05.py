@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F05(SecsStreamFunction):
-    """list alarms - request.
+    """List Alarms Request (LAR).
 
     Args:
         value: parameters for this function (see example)

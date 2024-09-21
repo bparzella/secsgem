@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F03(SecsStreamFunction):
-    """map setup data - request.
+    """Map Set-up Data Request (MSDR).
 
     Args:
         value: parameters for this function (see example)

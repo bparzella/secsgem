@@ -188,6 +188,11 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return self._data["name"]
 
     @property
+    def mnemonic(self) -> str:
+        """Get the mnemonic of the function."""
+        return self._data["mnemonic"]
+
+    @property
     def to_host(self) -> bool:
         """Get the to_host flag."""
         return self._data["to_host"]

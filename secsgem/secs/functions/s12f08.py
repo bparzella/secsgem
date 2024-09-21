@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F08(SecsStreamFunction):
-    """map data type 1 - acknowledge.
+    """Map Data Acknowledge Type 1 (MDA1).
 
     Args:
         value: parameters for this function (see example)

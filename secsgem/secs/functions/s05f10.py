@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F10(SecsStreamFunction):
-    """exception post - confirm.
+    """Exception Post Confirm (EXPC).
 
     Examples:
         >>> import secsgem.secs

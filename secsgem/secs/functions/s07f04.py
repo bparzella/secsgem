@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F04(SecsStreamFunction):
-    """process program - acknowledge.
+    """Process Program Acknowledge (PPA).
 
     Args:
         value: parameters for this function (see example)

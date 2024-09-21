@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F50(SecsStreamFunction):
-    """Enhanced remote command - acknowledge.
+    """Enhanced Remote Command Acknowledge (S2F50).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F22(SecsStreamFunction):
-    """Data variable namelist.
+    """Data Variable Namelist (DVN).
 
     Args:
         value: parameters for this function (see example)

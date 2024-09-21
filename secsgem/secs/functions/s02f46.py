@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F46(SecsStreamFunction):
-    """Define variable limit attributes - acknowledge.
+    """Variable Limit Attribute Acknowledge (VLAA).
 
     Args:
         value: parameters for this function (see example)

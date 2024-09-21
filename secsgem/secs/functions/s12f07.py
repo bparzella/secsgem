@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F07(SecsStreamFunction):
-    """map data type 1 - send.
+    """Map Data Send Type 1 (MDS1).
 
     Args:
         value: parameters for this function (see example)

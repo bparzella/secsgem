@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F13(SecsStreamFunction):
-    """exception recover - request.
+    """Exception Recover Request (EXRR).
 
     Args:
         value: parameters for this function (see example)

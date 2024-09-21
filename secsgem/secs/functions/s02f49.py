@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F49(SecsStreamFunction):
-    """Enhanced remote command.
+    """Enhanced Remote Command (S2F49).
 
     Args:
         value: parameters for this function (see example)

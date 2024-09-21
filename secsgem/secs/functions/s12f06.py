@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F06(SecsStreamFunction):
-    """map transmit - grant.
+    """Map Transmit Grant (MAPTG).
 
     Args:
         value: parameters for this function (see example)

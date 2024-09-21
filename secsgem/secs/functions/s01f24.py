@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F24(SecsStreamFunction):
-    """Collection event namelist.
+    """Collection Event Namelist (CEN).
 
     Args:
         value: parameters for this function (see example)

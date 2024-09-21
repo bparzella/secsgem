@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F01(SecsStreamFunction):
-    """process program load - inquire.
+    """Process Program Load Inquire (PPI).
 
     Args:
         value: parameters for this function (see example)

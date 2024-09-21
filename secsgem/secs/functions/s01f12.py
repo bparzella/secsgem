@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F12(SecsStreamFunction):
-    """status variable namelist - reply.
+    """Status Variable Namelist Reply (SVNRR).
 
     Args:
         value: parameters for this function (see example)

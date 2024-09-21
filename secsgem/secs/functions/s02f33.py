@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F33(SecsStreamFunction):
-    """define report.
+    """Define Report (DR).
 
     Args:
         value: parameters for this function (see example)

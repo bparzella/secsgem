@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F18(SecsStreamFunction):
-    """date and time - data.
+    """Date and Time Data (DTD).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS14F01(SecsStreamFunction):
-    """GetAttr request.
+    """GetAttr Request (GAR).
 
     Args:
         value: parameters for this function (see example)

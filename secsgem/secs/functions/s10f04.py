@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS10F04(SecsStreamFunction):
-    """terminal single - acknowledge.
+    """Terminal Display, Single Acknowledge (VTA).
 
     Args:
         value: parameters for this function (see example)

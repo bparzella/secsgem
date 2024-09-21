@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F22(SecsStreamFunction):
-    """Remote command - acknowledge.
+    """Remote Command Acknowledge (RCA).
 
     Args:
         value: parameters for this function (see example)

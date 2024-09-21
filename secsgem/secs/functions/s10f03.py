@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS10F03(SecsStreamFunction):
-    """terminal single - display.
+    """Terminal Display, Single (VTN).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F16(SecsStreamFunction):
-    """exception recover complete - confirm.
+    """Exception Recovery Complete Confirm (EXRCC).
 
     Examples:
         >>> import secsgem.secs

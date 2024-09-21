@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F00(SecsStreamFunction):
-    """abort transaction stream 6.
+    """Abort transaction (S6F0).
 
     Examples:
         >>> import secsgem.secs

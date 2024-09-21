@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F13(SecsStreamFunction):
-    """conversation timeout.
+    """Conversation Timeout (CTN).
 
     Args:
         value: parameters for this function (see example)

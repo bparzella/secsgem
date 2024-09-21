@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F13(SecsStreamFunction):
-    """equipment constant - request.
+    """Equipment Constant Request (ECR).
 
     Args:
         value: parameters for this function (see example)

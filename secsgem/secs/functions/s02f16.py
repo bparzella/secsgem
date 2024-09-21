@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F16(SecsStreamFunction):
-    """new equipment constant - acknowledge.
+    """New Equipment Constant Acknowledge (ECA).
 
     Args:
         value: parameters for this function (see example)

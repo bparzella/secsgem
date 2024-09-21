@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F01(SecsStreamFunction):
-    """alarm report - send.
+    """Alarm Report Send (ARS).
 
     Args:
         value: parameters for this function (see example)

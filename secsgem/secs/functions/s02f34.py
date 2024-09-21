@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F34(SecsStreamFunction):
-    """define report - acknowledge.
+    """Define Report Acknowledge (DRA).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F14(SecsStreamFunction):
-    """establish communication - acknowledge.
+    """Establish Communications Request Acknowledge (CRA).
 
     Args:
         value: parameters for this function (see example)

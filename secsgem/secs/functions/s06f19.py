@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F19(SecsStreamFunction):
-    """individual report request.
+    """Individual Report Request (IRR).
 
     Args:
         value: parameters for this function (see example)

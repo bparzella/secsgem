@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F45(SecsStreamFunction):
-    """Define variable limit attributes.
+    """Define Variable Limit Attributes (DVLA).
 
     Args:
         value: parameters for this function (see example)

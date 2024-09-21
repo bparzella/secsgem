@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F06(SecsStreamFunction):
-    """process program - data.
+    """Process Program Data (PPD).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F18(SecsStreamFunction):
-    """delete process program - acknowledge.
+    """Delete Process Program Acknowledge (DPA).
 
     Args:
         value: parameters for this function (see example)

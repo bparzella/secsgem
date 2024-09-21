@@ -9,6 +9,9 @@
                 "name": {
                     "type": "string"
                 },
+                "mnemonic": {
+                    "type": "string"
+                },
                 "to_host": {
                     "type": "boolean"
                 },
@@ -63,6 +66,7 @@
             },
             "required": [
                 "name",
+                "mnemonic",
                 "to_host",
                 "to_equipment",
                 "reply",

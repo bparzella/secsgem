@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F17(SecsStreamFunction):
-    """date and time - request.
+    """Date and Time Request (DTR).
 
     Examples:
         >>> import secsgem.secs

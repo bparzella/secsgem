@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F36(SecsStreamFunction):
-    """link event report - acknowledge.
+    """Link Event Report Acknowledge (LERA).
 
     Args:
         value: parameters for this function (see example)

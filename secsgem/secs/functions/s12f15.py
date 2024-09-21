@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F15(SecsStreamFunction):
-    """map data type 2 - request.
+    """Map Data Request Type 2 (MDR2).
 
     Args:
         value: parameters for this function (see example)

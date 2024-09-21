@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F03(SecsStreamFunction):
-    """en-/disable alarm - send.
+    """Enable/Disable Alarm Send (EAS).
 
     Args:
         value: parameters for this function (see example)

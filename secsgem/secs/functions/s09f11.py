@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F11(SecsStreamFunction):
-    """data too long.
+    """Data Too Long (DLN).
 
     Args:
         value: parameters for this function (see example)

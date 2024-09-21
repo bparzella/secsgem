@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F23(SecsStreamFunction):
-    """Collection event namelist request.
+    """Collection Event Namelist Request (CENR).
 
     Args:
         value: parameters for this function (see example)

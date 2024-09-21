@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F20(SecsStreamFunction):
-    """current equipment process program - data.
+    """Current EPPD Data (RED).
 
     Args:
         value: parameters for this function (see example)

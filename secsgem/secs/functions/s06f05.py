@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F05(SecsStreamFunction):
-    """multi block data inquiry.
+    """Multi-block Data Send Inquire (MBI).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F21(SecsStreamFunction):
-    """Remote command send.
+    """Remote Command Send (RCS).
 
     Args:
         value: parameters for this function (see example)

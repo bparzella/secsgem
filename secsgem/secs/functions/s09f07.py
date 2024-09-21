@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F07(SecsStreamFunction):
-    """illegal data.
+    """Illegal Data (IDN).
 
     Args:
         value: parameters for this function (see example)

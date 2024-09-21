@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F47(SecsStreamFunction):
-    """Variable limit attribute request.
+    """Variable Limit Attribute Request (VLAR).
 
     Args:
         value: parameters for this function (see example)

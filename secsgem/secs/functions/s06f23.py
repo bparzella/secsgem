@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F23(SecsStreamFunction):
-    """Request spooled data.
+    """Request Spooled Data (RSD).
 
     Args:
         value: parameters for this function (see example)

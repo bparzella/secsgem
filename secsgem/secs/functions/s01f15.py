@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F15(SecsStreamFunction):
-    """request offline.
+    """Request OFF-LINE (ROFL).
 
     Examples:
         >>> import secsgem.secs

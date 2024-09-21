@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F18(SecsStreamFunction):
-    """online acknowledge.
+    """ON-LINE Acknowledge (ONLA).
 
     Args:
         value: parameters for this function (see example)

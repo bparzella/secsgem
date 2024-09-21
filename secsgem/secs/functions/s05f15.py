@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F15(SecsStreamFunction):
-    """exception recover complete - notify.
+    """Exception Recovery Complete Notify (EXRCN).
 
     Args:
         value: parameters for this function (see example)

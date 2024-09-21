@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F02(SecsStreamFunction):
-    """process program load - grant.
+    """Process Program Load Grant (PPG).
 
     Args:
         value: parameters for this function (see example)

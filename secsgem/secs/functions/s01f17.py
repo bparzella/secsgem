@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F17(SecsStreamFunction):
-    """request online.
+    """Request ON-LINE (RONL).
 
     Examples:
         >>> import secsgem.secs

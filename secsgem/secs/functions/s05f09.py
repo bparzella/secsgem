@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F09(SecsStreamFunction):
-    """exception post - notify.
+    """Exception Post Notify (EXPN).
 
     Args:
         value: parameters for this function (see example)

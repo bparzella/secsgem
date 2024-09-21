@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F22(SecsStreamFunction):
-    """annotated individual report data.
+    """Annotated Individual Report Data (AIRD).
 
     Args:
         value: parameters for this function (see example)

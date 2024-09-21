@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F18(SecsStreamFunction):
-    """map data type 3.
+    """Map Data Type 3 (MD3).
 
     Args:
         value: parameters for this function (see example)

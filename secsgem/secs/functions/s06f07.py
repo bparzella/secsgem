@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F07(SecsStreamFunction):
-    """data transfer request.
+    """Data Transfer Request (DDR).
 
     Args:
         value: parameters for this function (see example)

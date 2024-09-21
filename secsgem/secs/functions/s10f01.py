@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS10F01(SecsStreamFunction):
-    """terminal - request.
+    """Terminal Request (TRN).
 
     Args:
         value: parameters for this function (see example)

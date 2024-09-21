@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F12(SecsStreamFunction):
-    """exception clear - confirm.
+    """Exception Clear Confirm (EXCC).
 
     Examples:
         >>> import secsgem.secs

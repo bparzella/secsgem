@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F04(SecsStreamFunction):
-    """selected equipment status - data.
+    """Selected Equipment Status Data (SSD).
 
     Args:
         value: parameters for this function (see example)

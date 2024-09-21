@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F05(SecsStreamFunction):
-    """map transmit inquire.
+    """Map Transmit Inquire (MAPTI).
 
     Args:
         value: parameters for this function (see example)

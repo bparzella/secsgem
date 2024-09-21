@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F48(SecsStreamFunction):
-    """Define variable limit attributes - acknowledge.
+    """Variable Limit Attributes Send (VLAS).
 
     Args:
         value: parameters for this function (see example)

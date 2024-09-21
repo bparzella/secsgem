@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F14(SecsStreamFunction):
-    """equipment constant - data.
+    """Equipment Constant Data (ECD).
 
     Args:
         value: parameters for this function (see example)

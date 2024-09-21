@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F17(SecsStreamFunction):
-    """exception recover abort - request.
+    """Exception Recovery Abort Request (EXRAR).
 
     Args:
         value: parameters for this function (see example)

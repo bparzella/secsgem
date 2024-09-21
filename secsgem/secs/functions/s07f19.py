@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F19(SecsStreamFunction):
-    """current equipment process program - request.
+    """Current EPPD Request (RER).
 
     Examples:
         >>> import secsgem.secs

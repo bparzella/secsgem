@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F26(SecsStreamFunction):
-    """Loopback diagnostic data.
+    """Loopback Diagnostic Data (LDD).
 
     Args:
         value: parameters for this function (see example)

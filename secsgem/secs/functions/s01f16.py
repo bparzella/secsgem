@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F16(SecsStreamFunction):
-    """offline acknowledge.
+    """OFF-LINE Acknowledge (OFLA).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F15(SecsStreamFunction):
-    """new equipment constant - send.
+    """New Equipment Constant Send (ECS).
 
     Args:
         value: parameters for this function (see example)

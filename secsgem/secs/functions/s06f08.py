@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F08(SecsStreamFunction):
-    """data transfer data.
+    """Data Transfer Data (DDD).
 
     Args:
         value: parameters for this function (see example)

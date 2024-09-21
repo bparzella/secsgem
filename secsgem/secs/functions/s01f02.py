@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F02(SecsStreamFunction):
-    """on line data.
+    """On Line Data (D).
 
     Args:
         value: parameters for this function (see example)

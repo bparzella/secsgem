@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F11(SecsStreamFunction):
-    """status variable namelist - request.
+    """Status Variable Namelist Request (SVNR).
 
     Args:
         value: parameters for this function (see example)

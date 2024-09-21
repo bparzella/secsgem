@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F24(SecsStreamFunction):
-    """Request spooled data acknowledge.
+    """Request Spooled Data Acknowledgement Send (RSDAS).
 
     Args:
         value: parameters for this function (see example)

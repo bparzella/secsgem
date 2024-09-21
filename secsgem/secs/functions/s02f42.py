@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F42(SecsStreamFunction):
-    """host command - acknowledge.
+    """Host Command Acknowledge (HCA).
 
     Args:
         value: parameters for this function (see example)

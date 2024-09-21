@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F21(SecsStreamFunction):
-    """annotated individual report request.
+    """Annotated Individual Report Request (AIRR).
 
     Args:
         value: parameters for this function (see example)

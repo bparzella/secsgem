@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F11(SecsStreamFunction):
-    """exception clear - notify.
+    """Exception Clear Notify (EXCN).
 
     Args:
         value: parameters for this function (see example)

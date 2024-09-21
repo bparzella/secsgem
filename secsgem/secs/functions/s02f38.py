@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F38(SecsStreamFunction):
-    """en-/disable event report - acknowledge.
+    """Enable/Disable Event Report Acknowledge (EERA).
 
     Args:
         value: parameters for this function (see example)

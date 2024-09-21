@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F17(SecsStreamFunction):
-    """delete process program - send.
+    """Delete Process Program Send (DPS).
 
     Args:
         value: parameters for this function (see example)

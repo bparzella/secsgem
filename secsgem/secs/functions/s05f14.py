@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS05F14(SecsStreamFunction):
-    """exception recover - acknowledge.
+    """Exception Recover Acknowledge (EXRA).
 
     Args:
         value: parameters for this function (see example)

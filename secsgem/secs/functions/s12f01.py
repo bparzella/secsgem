@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F01(SecsStreamFunction):
-    """map setup data - send.
+    """Map Set-up Data Send (MSDS).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F05(SecsStreamFunction):
-    """process program - request.
+    """Process Program Request (PPR).
 
     Args:
         value: parameters for this function (see example)

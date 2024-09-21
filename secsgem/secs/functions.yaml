@@ -1,5 +1,6 @@
 S00F00:
-  name: Hsms communication
+  name: Hsms Communication
+  mnemonic: HSMS
   to_host: True
   to_equipment: True
   reply: False
@@ -7,7 +8,8 @@ S00F00:
   multi_block: False
 
 S01F00:
-  name: abort transaction stream 1
+  name: Abort Transaction
+  mnemonic: S1F0
   to_host: True
   to_equipment: True
   reply: False
@@ -15,7 +17,8 @@ S01F00:
   multi_block: False
 
 S01F01:
-  name: are you online - request
+  name: Are You There Request
+  mnemonic: R
   to_host: True
   to_equipment: True
   reply: True
@@ -23,7 +26,8 @@ S01F01:
   multi_block: False
 
 S01F02:
-  name: on line data
+  name: On Line Data
+  mnemonic: D
   to_host: True
   to_equipment: True
   reply: False
@@ -54,7 +58,8 @@ S01F02:
         }
 
 S01F03:
-  name: Selected equipment status - request
+  name: Selected Equipment Status request
+  mnemonic: SSR
   to_host: False
   to_equipment: True
   reply: True
@@ -67,7 +72,8 @@ S01F03:
   sample_data: '[1, "1337", 12]'
 
 S01F04:
-  name: selected equipment status - data
+  name: Selected Equipment Status Data
+  mnemonic: SSD
   to_host: True
   to_equipment: False
   reply: False
@@ -80,7 +86,8 @@ S01F04:
   sample_data: '[secsgem.secs.variables.U1(1), "text", secsgem.secs.variables.U4(1337)]'
 
 S01F11:
-  name: status variable namelist - request
+  name: Status Variable Namelist Request
+  mnemonic: SVNR
   to_host: False
   to_equipment: True
   reply: True
@@ -94,7 +101,8 @@ S01F11:
   extra_help: An empty list will return all available status variables.
 
 S01F12:
-  name: status variable namelist - reply
+  name: Status Variable Namelist Reply
+  mnemonic: SVNRR
   to_host: True
   to_equipment: False
   reply: False
@@ -113,7 +121,8 @@ S01F12:
     {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}]
 
 S01F13:
-  name: establish communication - request
+  name: Establish Communications Request
+  mnemonic: CR
   to_host: True
   to_equipment: True
   reply: True
@@ -144,7 +153,8 @@ S01F13:
         }
 
 S01F14:
-  name: establish communication - acknowledge
+  name: Establish Communications Request Acknowledge
+  mnemonic: CRA
   to_host: True
   to_equipment: True
   reply: False
@@ -185,7 +195,8 @@ S01F14:
         }
 
 S01F15:
-  name: request offline
+  name: Request OFF-LINE
+  mnemonic: ROFL
   to_host: False
   to_equipment: True
   reply: True
@@ -193,7 +204,8 @@ S01F15:
   multi_block: False
 
 S01F16:
-  name: offline acknowledge
+  name: OFF-LINE Acknowledge
+  mnemonic: OFLA
   to_host: True
   to_equipment: False
   reply: False
@@ -204,7 +216,8 @@ S01F16:
   sample_data: "secsgem.secs.data_items.OFLACK.ACK"
 
 S01F17:
-  name: request online
+  name: Request ON-LINE
+  mnemonic: RONL
   to_host: False
   to_equipment: True
   reply: True
@@ -212,7 +225,8 @@ S01F17:
   multi_block: False
 
 S01F18:
-  name: online acknowledge
+  name: ON-LINE Acknowledge
+  mnemonic: ONLA
   to_host: True
   to_equipment: False
   reply: False
@@ -223,7 +237,8 @@ S01F18:
   sample_data: "secsgem.secs.data_items.ONLACK.ALREADY_ON"
 
 S01F21:
-  name: Data variable namelist request
+  name: Data Variable Namelist Request
+  mnemonic: DVNR
   to_host: False
   to_equipment: True
   reply: True
@@ -236,7 +251,8 @@ S01F21:
   sample_data: '[1, "VARIABLEID"]'
 
 S01F22:
-  name: Data variable namelist
+  name: Data Variable Namelist
+  mnemonic: DVN
   to_host: True
   to_equipment: False
   reply: False
@@ -253,7 +269,8 @@ S01F22:
   sample_data: '[{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}]'
 
 S01F23:
-  name: Collection event namelist request
+  name: Collection Event Namelist Request
+  mnemonic: CENR
   to_host: False
   to_equipment: True
   reply: True
@@ -266,7 +283,8 @@ S01F23:
   sample_data: '[1, "COLLEVTID"]'
 
 S01F24:
-  name: Collection event namelist
+  name: Collection Event Namelist
+  mnemonic: CEN
   to_host: True
   to_equipment: False
   reply: False
@@ -285,7 +303,8 @@ S01F24:
   sample_data: '[{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}]'
 
 S02F00:
-  name: abort transaction stream 2
+  name: Abort transaction
+  mnemonic: S2F0
   to_host: True
   to_equipment: True
   reply: False
@@ -293,7 +312,8 @@ S02F00:
   multi_block: False
 
 S02F13:
-  name: equipment constant - request
+  name: Equipment Constant Request
+  mnemonic: ECR
   to_host: False
   to_equipment: True
   reply: True
@@ -307,7 +327,8 @@ S02F13:
   extra_help: An empty list will return all available equipment constants.
 
 S02F14:
-  name: equipment constant - data
+  name: Equipment Constant Data
+  mnemonic: ECD
   to_host: True
   to_equipment: False
   reply: False
@@ -320,7 +341,8 @@ S02F14:
   sample_data: '[secsgem.secs.variables.U1(1), "text"]'
 
 S02F15:
-  name: new equipment constant - send
+  name: New Equipment Constant Send
+  mnemonic: ECS
   to_host: False
   to_equipment: True
   reply: True
@@ -339,7 +361,8 @@ S02F15:
     {"ECID": "1337", "ECV": "text"}]
 
 S02F16:
-  name: new equipment constant - acknowledge
+  name: New Equipment Constant Acknowledge
+  mnemonic: ECA
   to_host: True
   to_equipment: False
   reply: False
@@ -350,7 +373,8 @@ S02F16:
   sample_data: "secsgem.secs.data_items.EAC.BUSY"
 
 S02F17:
-  name: date and time - request
+  name: Date and Time Request
+  mnemonic: DTR
   to_host: True
   to_equipment: True
   reply: True
@@ -358,7 +382,8 @@ S02F17:
   multi_block: False
 
 S02F18:
-  name: date and time - data
+  name: Date and Time Data
+  mnemonic: DTD
   to_host: True
   to_equipment: True
   reply: False
@@ -369,7 +394,8 @@ S02F18:
   sample_data: '"160816205942"'
 
 S02F21:
-  name: Remote command send
+  name: Remote Command Send
+  mnemonic: RCS
   to_host: False
   to_equipment: True
   reply: True
@@ -380,7 +406,8 @@ S02F21:
   sample_data: '"COMMMAND1"'
 
 S02F22:
-  name: Remote command - acknowledge
+  name: Remote Command Acknowledge
+  mnemonic: RCA
   to_host: True
   to_equipment: False
   reply: False
@@ -391,7 +418,8 @@ S02F22:
   sample_data: "secsgem.secs.data_items.CMDA.DONE"
 
 S02F23:
-  name: Trace initialize
+  name: Trace Initialize Send
+  mnemonic: TIS
   to_host: False
   to_equipment: True
   reply: True
@@ -416,7 +444,8 @@ S02F23:
     "SVID":[1002004,400210]}
 
 S02F24:
-  name: Trace initialize - acknowledge
+  name: Trace Initialize Acknowledge
+  mnemonic: TIA
   to_host: True
   to_equipment: False
   reply: False
@@ -427,7 +456,8 @@ S02F24:
   sample_data: "secsgem.secs.data_items.TIAACK.SVID_EXCEEDED"
 
 S02F25:
-  name: Loopback diagnostic request
+  name: Loopback Diagnostic Request
+  mnemonic: LDR
   to_host: True
   to_equipment: True
   reply: True
@@ -438,7 +468,8 @@ S02F25:
   sample_data: '"Text"'
 
 S02F26:
-  name: Loopback diagnostic data
+  name: Loopback Diagnostic Data
+  mnemonic: LDD
   to_host: True
   to_equipment: True
   reply: False
@@ -449,7 +480,8 @@ S02F26:
   sample_data: '"Text"'
 
 S02F29:
-  name: equipment constant namelist - request
+  name: Equipment Constant Namelist Request
+  mnemonic: ECNR
   to_host: False
   to_equipment: True
   reply: True
@@ -463,7 +495,8 @@ S02F29:
   extra_help: An empty list will return all available equipment constants.
 
 S02F30:
-  name: equipment constant namelist
+  name: Equipment Constant Namelist
+  mnemonic: ECN
   to_host: True
   to_equipment: False
   reply: False
@@ -496,7 +529,8 @@ S02F30:
       "UNITS": ""}]
 
 S02F33:
-  name: define report
+  name: Define Report
+  mnemonic: DR
   to_host: False
   to_equipment: True
   reply: True
@@ -519,7 +553,8 @@ S02F33:
     {"RPTID": 1001, "VID": [1, 2355]}]}
 
 S02F34:
-  name: define report - acknowledge
+  name: Define Report Acknowledge
+  mnemonic: DRA
   to_host: True
   to_equipment: False
   reply: False
@@ -530,7 +565,8 @@ S02F34:
   sample_data: "secsgem.secs.data_items.DRACK.INVALID_FORMAT"
 
 S02F35:
-  name: link event report
+  name: Link Event Report
+  mnemonic: LER
   to_host: False
   to_equipment: True
   reply: True
@@ -551,7 +587,8 @@ S02F35:
   sample_data: '{"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]}'
 
 S02F36:
-  name: link event report - acknowledge
+  name: Link Event Report Acknowledge
+  mnemonic: LERA
   to_host: True
   to_equipment: False
   reply: False
@@ -562,7 +599,8 @@ S02F36:
   sample_data: "secsgem.secs.data_items.LRACK.CEID_UNKNOWN"
 
 S02F37:
-  name: en-/disable event report
+  name: Enable/Disable Event Report
+  mnemonic: EDER
   to_host: False
   to_equipment: True
   reply: True
@@ -578,7 +616,8 @@ S02F37:
   sample_data: '{"CEED": True, "CEID": [1337]}'
 
 S02F38:
-  name: en-/disable event report - acknowledge
+  name: Enable/Disable Event Report Acknowledge
+  mnemonic: EERA
   to_host: True
   to_equipment: False
   reply: False
@@ -589,7 +628,8 @@ S02F38:
   sample_data: "secsgem.secs.data_items.ERACK.CEID_UNKNOWN"
 
 S02F41:
-  name: host command - send
+  name: Host Command Send
+  mnemonic: HCS
   to_host: False
   to_equipment: True
   reply: True
@@ -610,7 +650,8 @@ S02F41:
     {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]}
 
 S02F42:
-  name: host command - acknowledge
+  name: Host Command Acknowledge
+  mnemonic: HCA
   to_host: True
   to_equipment: False
   reply: False
@@ -634,7 +675,8 @@ S02F42:
         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
 
 S02F43:
-  name: reset spooling streams and functions - send
+  name: Reset Spooling Streams and Functions
+  mnemonic: RSSF
   to_host: False
   to_equipment: True
   reply: True
@@ -652,7 +694,8 @@ S02F43:
   sample_data: '[{"STRID": 1, "FCNID": [10, 20]}, {"STRID": 2, "FCNID": [30, 40]}]'
 
 S02F44:
-  name: reset spooling - acknowledge
+  name: Reset Spooling Acknowledge
+  mnemonic: RSA
   to_host: True
   to_equipment: False
   reply: False
@@ -679,7 +722,8 @@ S02F44:
         {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.FUNCTION_UNKNOWN, "FCNID": [20]}]}
 
 S02F45:
-  name: Define variable limit attributes
+  name: Define Variable Limit Attributes
+  mnemonic: DVLA
   to_host: False
   to_equipment: True
   reply: True
@@ -715,7 +759,8 @@ S02F45:
     }]}
 
 S02F46:
-  name: Define variable limit attributes - acknowledge
+  name: Variable Limit Attribute Acknowledge
+  mnemonic: VLAA
   to_host: True
   to_equipment: False
   reply: False
@@ -748,7 +793,8 @@ S02F46:
     }]}
 
 S02F47:
-  name: Variable limit attribute request
+  name: Variable Limit Attribute Request
+  mnemonic: VLAR
   to_host: False
   to_equipment: True
   reply: True
@@ -761,7 +807,8 @@ S02F47:
   sample_data: '[1, "VARIABLEID"]'
 
 S02F48:
-  name: Define variable limit attributes - acknowledge
+  name: Variable Limit Attributes Send
+  mnemonic: VLAS
   to_host: True
   to_equipment: False
   reply: False
@@ -800,7 +847,8 @@ S02F48:
     }}]
 
 S02F49:
-  name: Enhanced remote command
+  name: Enhanced Remote Command
+  mnemonic: S2F49
   to_host: False
   to_equipment: True
   reply: False
@@ -829,7 +877,8 @@ S02F49:
     }]}
 
 S02F50:
-  name: Enhanced remote command - acknowledge
+  name: Enhanced Remote Command Acknowledge
+  mnemonic: S2F50
   to_host: True
   to_equipment: False
   reply: False
@@ -853,7 +902,8 @@ S02F50:
         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
 
 S05F00:
-  name: abort transaction stream 5
+  name: Abort Transaction
+  mnemonic: S5F0
   to_host: True
   to_equipment: True
   reply: False
@@ -861,7 +911,8 @@ S05F00:
   multi_block: False
 
 S05F01:
-  name: alarm report - send
+  name: Alarm Report Send
+  mnemonic: ARS
   to_host: True
   to_equipment: False
   reply: True
@@ -881,7 +932,8 @@ S05F01:
     "ALTX": "text"}
 
 S05F02:
-  name: alarm report - acknowledge
+  name: Alarm Report Acknowledge
+  mnemonic: ARA
   to_host: False
   to_equipment: True
   reply: False
@@ -892,7 +944,8 @@ S05F02:
   sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F03:
-  name: en-/disable alarm - send
+  name: Enable/Disable Alarm Send
+  mnemonic: EAS
   to_host: False
   to_equipment: True
   reply: True
@@ -906,7 +959,8 @@ S05F03:
   sample_data: '{"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100}'
 
 S05F04:
-  name: en-/disable alarm - acknowledge
+  name: Enable/Disable Alarm Acknowledge
+  mnemonic: EAA
   to_host: True
   to_equipment: False
   reply: False
@@ -917,7 +971,8 @@ S05F04:
   sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F05:
-  name: list alarms - request
+  name: List Alarms Request
+  mnemonic: LAR
   to_host: False
   to_equipment: True
   reply: True
@@ -930,7 +985,8 @@ S05F05:
   sample_data: "[100, 200]"
 
 S05F06:
-  name: list alarms - data
+  name: List Alarms data
+  mnemonic: LAD
   to_host: True
   to_equipment: False
   reply: False
@@ -952,7 +1008,8 @@ S05F06:
      "ALTX": "text"}]
 
 S05F07:
-  name: list enabled alarms - request
+  name: List Enabled Alarm Request
+  mnemonic: LEAR
   to_host: False
   to_equipment: True
   reply: True
@@ -960,7 +1017,8 @@ S05F07:
   multi_block: False
 
 S05F08:
-  name: list enabled alarms - data
+  name: List Enabled Alarm Data
+  mnemonic: LEAD
   to_host: True
   to_equipment: False
   reply: False
@@ -982,7 +1040,8 @@ S05F08:
      "ALTX": "text"}]
 
 S05F09:
-  name: exception post - notify
+  name: Exception Post Notify
+  mnemonic: EXPN
   to_host: True
   to_equipment: False
   reply: True
@@ -1007,7 +1066,8 @@ S05F09:
     "EXRECVRA": ["EXRECVRA1", "EXRECVRA2"] }
 
 S05F10:
-  name: exception post - confirm
+  name: Exception Post Confirm
+  mnemonic: EXPC
   to_host: False
   to_equipment: True
   reply: False
@@ -1015,7 +1075,8 @@ S05F10:
   multi_block: False
 
 S05F11:
-  name: exception clear - notify
+  name: Exception Clear Notify
+  mnemonic: EXCN
   to_host: True
   to_equipment: False
   reply: True
@@ -1036,7 +1097,8 @@ S05F11:
     "EXMESSAGE": "Exception"}
 
 S05F12:
-  name: exception clear - confirm
+  name: Exception Clear Confirm
+  mnemonic: EXCC
   to_host: False
   to_equipment: True
   reply: False
@@ -1044,7 +1106,8 @@ S05F12:
   multi_block: False
 
 S05F13:
-  name: exception recover - request
+  name: Exception Recover Request
+  mnemonic: EXRR
   to_host: False
   to_equipment: True
   reply: True
@@ -1058,7 +1121,8 @@ S05F13:
   sample_data: '{"EXID": "EX123", "EXRECVRA": "EXRECVRA2"}'
 
 S05F14:
-  name: exception recover - acknowledge
+  name: Exception Recover Acknowledge
+  mnemonic: EXRA
   to_host: True
   to_equipment: False
   reply: False
@@ -1083,7 +1147,8 @@ S05F14:
                       "ERRTEXT": "Error"}}}
 
 S05F15:
-  name: exception recover complete - notify
+  name: Exception Recovery Complete Notify
+  mnemonic: EXRCN
   to_host: True
   to_equipment: False
   reply: True
@@ -1113,7 +1178,8 @@ S05F15:
         }}}
 
 S05F16:
-  name: exception recover complete - confirm
+  name: Exception Recovery Complete Confirm
+  mnemonic: EXRCC
   to_host: False
   to_equipment: True
   reply: False
@@ -1121,7 +1187,8 @@ S05F16:
   multi_block: False
 
 S05F17:
-  name: exception recover abort - request
+  name: Exception Recovery Abort Request
+  mnemonic: EXRAR
   to_host: False
   to_equipment: True
   reply: True
@@ -1132,7 +1199,8 @@ S05F17:
   sample_data: '"EX123"'
 
 S05F18:
-  name: exception recover abort - acknowledge
+  name: Exception Recovery Abort Acknowledge
+  mnemonic: EXRAA
   to_host: True
   to_equipment: False
   reply: False
@@ -1159,7 +1227,8 @@ S05F18:
             "ERRTEXT": "Error"}}}
 
 S06F00:
-  name: abort transaction stream 6
+  name: Abort transaction
+  mnemonic: S6F0
   to_host: True
   to_equipment: True
   reply: False
@@ -1167,7 +1236,8 @@ S06F00:
   multi_block: False
 
 S06F01:
-  name: Trace data send
+  name: Trace Data Send
+  mnemonic: TDS
   to_host: True
   to_equipment: False
   reply: True
@@ -1190,7 +1260,8 @@ S06F01:
     "SV": [1, 4]}
 
 S06F02:
-  name: Trace data - acknowledge
+  name: Trace Data Acknowledge
+  mnemonic: TDA
   to_host: False
   to_equipment: True
   reply: False
@@ -1201,7 +1272,8 @@ S06F02:
   sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F05:
-  name: multi block data inquiry
+  name: Multi-block Data Send Inquire
+  mnemonic: MBI
   to_host: True
   to_equipment: False
   reply: True
@@ -1215,7 +1287,8 @@ S06F05:
   sample_data: '{"DATAID": 1, "DATALENGTH": 1337}'
 
 S06F06:
-  name: multi block data grant
+  name: Multi-block Grant
+  mnemonic: MBG
   to_host: False
   to_equipment: True
   reply: False
@@ -1226,7 +1299,8 @@ S06F06:
   sample_data: "secsgem.secs.data_items.GRANT6.BUSY"
 
 S06F07:
-  name: data transfer request
+  name: Data Transfer Request
+  mnemonic: DDR
   to_host: False
   to_equipment: True
   reply: True
@@ -1237,7 +1311,8 @@ S06F07:
   sample_data: "1"
 
 S06F08:
-  name: data transfer data
+  name: Data Transfer Data
+  mnemonic: DDD
   to_host: True
   to_equipment: False
   reply: False
@@ -1270,7 +1345,8 @@ S06F08:
             {"DVNAME": "VAR2", "DVVAL": secsgem.secs.variables.U4(100)}]}]}
 
 S06F11:
-  name: event report
+  name: Event Report Send
+  mnemonic: ERS
   to_host: True
   to_equipment: False
   reply: True
@@ -1298,7 +1374,8 @@ S06F11:
         "V": ["VAR", secsgem.secs.variables.U4(100)]}]}
 
 S06F12:
-  name: event report - acknowledge
+  name: Event Report Acknowledge
+  mnemonic: ERA
   to_host: False
   to_equipment: True
   reply: False
@@ -1309,7 +1386,8 @@ S06F12:
   sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F15:
-  name: event report request
+  name: Event Report Request
+  mnemonic: ERR
   to_host: False
   to_equipment: True
   reply: True
@@ -1320,7 +1398,8 @@ S06F15:
   sample_data: "1337"
 
 S06F16:
-  name: event report data
+  name: Event Report Data
+  mnemonic: ERD
   to_host: True
   to_equipment: False
   reply: False
@@ -1348,7 +1427,8 @@ S06F16:
         "V": ["VAR", secsgem.secs.variables.U4(100)]}]}
 
 S06F19:
-  name: individual report request
+  name: Individual Report Request
+  mnemonic: IRR
   to_host: False
   to_equipment: True
   reply: True
@@ -1359,7 +1439,8 @@ S06F19:
   sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F20:
-  name: individual report data
+  name: Individual Report Data
+  mnemonic: IRD
   to_host: True
   to_equipment: False
   reply: False
@@ -1372,7 +1453,8 @@ S06F20:
   sample_data: '["ASD", 1337]'
 
 S06F21:
-  name: annotated individual report request
+  name: Annotated Individual Report Request
+  mnemonic: AIRR
   to_host: False
   to_equipment: True
   reply: True
@@ -1383,7 +1465,8 @@ S06F21:
   sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F22:
-  name: annotated individual report data
+  name: Annotated Individual Report Data
+  mnemonic: AIRD
   to_host: True
   to_equipment: False
   reply: False
@@ -1399,7 +1482,8 @@ S06F22:
   sample_data: '[{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}]'
 
 S06F23:
-  name: Request spooled data
+  name: Request Spooled Data 
+  mnemonic: RSD
   to_host: False
   to_equipment: True
   reply: True
@@ -1410,7 +1494,8 @@ S06F23:
   sample_data: "secsgem.secs.data_items.RSDC.PURGE"
 
 S06F24:
-  name: Request spooled data acknowledge
+  name: Request Spooled Data Acknowledgement Send
+  mnemonic: RSDAS
   to_host: True
   to_equipment: False
   reply: False
@@ -1421,7 +1506,8 @@ S06F24:
   sample_data: "secsgem.secs.data_items.RSDA.ACK"
 
 S07F00:
-  name: abort transaction stream 7
+  name: Abort Transaction
+  mnemonic: S7F0
   to_host: True
   to_equipment: True
   reply: False
@@ -1429,7 +1515,8 @@ S07F00:
   multi_block: False
 
 S07F01:
-  name: process program load - inquire
+  name: Process Program Load Inquire
+  mnemonic: PPI
   to_host: True
   to_equipment: True
   reply: True
@@ -1443,7 +1530,8 @@ S07F01:
   sample_data: '{"PPID": "program", "LENGTH": 4}'
 
 S07F02:
-  name: process program load - grant
+  name: Process Program Load Grant
+  mnemonic: PPG
   to_host: True
   to_equipment: True
   reply: False
@@ -1454,7 +1542,8 @@ S07F02:
   sample_data: "secsgem.secs.data_items.PPGNT.OK"
 
 S07F03:
-  name: process program - send
+  name: Process Program Send
+  mnemonic: PPS
   to_host: True
   to_equipment: True
   reply: True
@@ -1468,7 +1557,8 @@ S07F03:
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F04:
-  name: process program - acknowledge
+  name: Process Program Acknowledge
+  mnemonic: PPA
   to_host: True
   to_equipment: True
   reply: False
@@ -1479,7 +1569,8 @@ S07F04:
   sample_data: "secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW"
 
 S07F05:
-  name: process program - request
+  name: Process Program Request
+  mnemonic: PPR
   to_host: True
   to_equipment: True
   reply: True
@@ -1490,7 +1581,8 @@ S07F05:
   sample_data: '"program"'
 
 S07F06:
-  name: process program - data
+  name: Process Program Data
+  mnemonic: PPD
   to_host: True
   to_equipment: True
   reply: False
@@ -1504,7 +1596,8 @@ S07F06:
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F17:
-  name: delete process program - send
+  name: Delete Process Program Send
+  mnemonic: DPS
   to_host: False
   to_equipment: True
   reply: True
@@ -1517,7 +1610,8 @@ S07F17:
   sample_data: '["program1", "program2"]'
 
 S07F18:
-  name: delete process program - acknowledge
+  name: Delete Process Program Acknowledge
+  mnemonic: DPA
   to_host: True
   to_equipment: False
   reply: False
@@ -1528,7 +1622,8 @@ S07F18:
   sample_data: "secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED"
 
 S07F19:
-  name: current equipment process program - request
+  name: Current EPPD Request
+  mnemonic: RER
   to_host: False
   to_equipment: True
   reply: True
@@ -1536,7 +1631,8 @@ S07F19:
   multi_block: False
 
 S07F20:
-  name: current equipment process program - data
+  name: Current EPPD Data
+  mnemonic: RED
   to_host: True
   to_equipment: False
   reply: False
@@ -1549,7 +1645,8 @@ S07F20:
   sample_data: '["program1", "program2"]'
 
 S09F00:
-  name: abort transaction stream 9
+  name: Abort Transaction
+  mnemonic: S9F0
   to_host: True
   to_equipment: True
   reply: False
@@ -1557,7 +1654,8 @@ S09F00:
   multi_block: False
 
 S09F01:
-  name: unrecognized device id
+  name: Unrecognized Device ID
+  mnemonic: UDN
   to_host: True
   to_equipment: False
   reply: False
@@ -1568,7 +1666,8 @@ S09F01:
   sample_data: '"HEADERDATA"'
 
 S09F03:
-  name: unrecognized stream type
+  name: Unrecognized Stream Type
+  mnemonic: USN
   to_host: True
   to_equipment: False
   reply: False
@@ -1579,7 +1678,8 @@ S09F03:
   sample_data: '"HEADERDATA"'
 
 S09F05:
-  name: unrecognized function type
+  name: Unrecognized Function Type
+  mnemonic: UFN
   to_host: True
   to_equipment: False
   reply: False
@@ -1590,7 +1690,8 @@ S09F05:
   sample_data: '"HEADERDATA"'
 
 S09F07:
-  name: illegal data
+  name: Illegal Data
+  mnemonic: IDN
   to_host: True
   to_equipment: False
   reply: False
@@ -1601,7 +1702,8 @@ S09F07:
   sample_data: '"HEADERDATA"'
 
 S09F09:
-  name: transaction timer timeout
+  name: Transaction Timer Timeout
+  mnemonic: TIN
   to_host: True
   to_equipment: False
   reply: False
@@ -1612,7 +1714,8 @@ S09F09:
   sample_data: '"HEADERDATA"'
 
 S09F11:
-  name: data too long
+  name: Data Too Long
+  mnemonic: DLN
   to_host: True
   to_equipment: False
   reply: False
@@ -1623,7 +1726,8 @@ S09F11:
   sample_data: '"HEADERDATA"'
 
 S09F13:
-  name: conversation timeout
+  name: Conversation Timeout
+  mnemonic: CTN
   to_host: True
   to_equipment: False
   reply: False
@@ -1637,7 +1741,8 @@ S09F13:
   sample_data: '{"MEXP": "S01E01", "EDID": "data"}'
 
 S10F00:
-  name: abort transaction stream 10
+  name: Abort Transaction
+  mnemonic: S10F0
   to_host: True
   to_equipment: True
   reply: False
@@ -1645,7 +1750,8 @@ S10F00:
   multi_block: False
 
 S10F01:
-  name: terminal - request
+  name: Terminal Request
+  mnemonic: TRN
   to_host: True
   to_equipment: False
   reply: True
@@ -1659,7 +1765,8 @@ S10F01:
   sample_data: '{"TID": 0, "TEXT": "hello?"}'
 
 S10F02:
-  name: terminal - acknowledge
+  name: Terminal Request Acknowledge
+  mnemonic: TRA
   to_host: False
   to_equipment: True
   reply: False
@@ -1670,7 +1777,8 @@ S10F02:
   sample_data: "secsgem.secs.data_items.ACKC10.ACCEPTED"
 
 S10F03:
-  name: terminal single - display
+  name: Terminal Display, Single
+  mnemonic: VTN
   to_host: False
   to_equipment: True
   reply: True
@@ -1684,7 +1792,8 @@ S10F03:
   sample_data: '{"TID": 0, "TEXT": "hello!"}'
 
 S10F04:
-  name: terminal single - acknowledge
+  name: Terminal Display, Single Acknowledge
+  mnemonic: VTA
   to_host: True
   to_equipment: False
   reply: False
@@ -1695,7 +1804,8 @@ S10F04:
   sample_data: "secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE"
 
 S12F00:
-  name: abort transaction stream 12
+  name: Abort transaction
+  mnemonic: S12F0
   to_host: True
   to_equipment: True
   reply: False
@@ -1703,7 +1813,8 @@ S12F00:
   multi_block: False
 
 S12F01:
-  name: map setup data - send
+  name: Map Set-up Data Send
+  mnemonic: MSDS
   to_host: True
   to_equipment: False
   reply: True
@@ -1748,7 +1859,8 @@ S12F01:
     "PRAXI": secsgem.secs.data_items.PRAXI.ROWS_TOP_INCR}
 
 S12F02:
-  name: map setup data - acknowledge
+  name: Map Set-up Data Acknowledge
+  mnemonic: MSDA
   to_host: False
   to_equipment: True
   reply: False
@@ -1759,7 +1871,8 @@ S12F02:
   sample_data: "secsgem.secs.data_items.SDACK.ACK"
 
 S12F03:
-  name: map setup data - request
+  name: Map Set-up Data Request
+  mnemonic: MSDR
   to_host: True
   to_equipment: False
   reply: True
@@ -1790,7 +1903,8 @@ S12F03:
     "NULBC": "{x}"}
 
 S12F04:
-  name: map setup data
+  name: Map Set-up Data
+  mnemonic: MSD
   to_host: False
   to_equipment: True
   reply: False
@@ -1835,7 +1949,8 @@ S12F04:
     "MLCL": 0}
 
 S12F05:
-  name: map transmit inquire
+  name: Map Transmit Inquire
+  mnemonic: MAPTI
   to_host: True
   to_equipment: False
   reply: True
@@ -1856,7 +1971,8 @@ S12F05:
     "MLCL": 0}
 
 S12F06:
-  name: map transmit - grant
+  name: Map Transmit Grant
+  mnemonic: MAPTG
   to_host: False
   to_equipment: True
   reply: False
@@ -1867,7 +1983,8 @@ S12F06:
   sample_data: "secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN"
 
 S12F07:
-  name: map data type 1 - send
+  name: Map Data Send Type 1
+  mnemonic: MDS1
   to_host: True
   to_equipment: False
   reply: True
@@ -1893,7 +2010,8 @@ S12F07:
         {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]}
 
 S12F08:
-  name: map data type 1 - acknowledge
+  name: Map Data Acknowledge Type 1
+  mnemonic: MDA1
   to_host: False
   to_equipment: True
   reply: False
@@ -1904,7 +2022,8 @@ S12F08:
   sample_data: "secsgem.secs.data_items.MDACK.ABORT_MAP"
 
 S12F09:
-  name: map data type 2 - send
+  name: Map Data Send Type 2
+  mnemonic: MDS2
   to_host: True
   to_equipment: False
   reply: True
@@ -1925,7 +2044,8 @@ S12F09:
     "BINLT": [1, 2, 3, 4, 5, 6]}
 
 S12F10:
-  name: map data type 2 - acknowledge
+  name: Map Data Acknowledge Type 2
+  mnemonic: MDA2
   to_host: False
   to_equipment: True
   reply: False
@@ -1936,7 +2056,8 @@ S12F10:
   sample_data: "secsgem.secs.data_items.MDACK.ACK"
 
 S12F11:
-  name: map data type 3 - send
+  name: Map Data Send Type 3
+  mnemonic: MDS3
   to_host: True
   to_equipment: False
   reply: True
@@ -1962,7 +2083,8 @@ S12F11:
         {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]}
 
 S12F12:
-  name: map data type 3 - acknowledge
+  name: Map Data Acknowledge Type 3
+  mnemonic: MDA3
   to_host: False
   to_equipment: True
   reply: False
@@ -1973,7 +2095,8 @@ S12F12:
   sample_data: "secsgem.secs.data_items.MDACK.FORMAT_ERROR"
 
 S12F13:
-  name: map data type 1 - request
+  name: Map Data Request Type 1
+  mnemonic: MDR1
   to_host: True
   to_equipment: False
   reply: True
@@ -1987,7 +2110,8 @@ S12F13:
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F14:
-  name: map data type 1
+  name: Map Data Type 1
+  mnemonic: MD1
   to_host: False
   to_equipment: True
   reply: False
@@ -2013,7 +2137,8 @@ S12F14:
         {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]}
 
 S12F15:
-  name: map data type 2 - request
+  name: Map Data Request Type 2
+  mnemonic: MDR2
   to_host: True
   to_equipment: False
   reply: True
@@ -2027,7 +2152,8 @@ S12F15:
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F16:
-  name: map data type 2
+  name: Map Data Type 2
+  mnemonic: MD2
   to_host: False
   to_equipment: True
   reply: False
@@ -2048,7 +2174,8 @@ S12F16:
     "BINLT": [1, 2, 3, 4, 5, 6]}
 
 S12F17:
-  name: map data type 3 - request
+  name: Map Data Request Type 3
+  mnemonic: MDR3
   to_host: True
   to_equipment: False
   reply: True
@@ -2067,7 +2194,8 @@ S12F17:
     "SDBIN": secsgem.secs.data_items.SDBIN.DONT_SEND}
 
 S12F18:
-  name: map data type 3
+  name: Map Data Type 3
+  mnemonic: MD3
   to_host: False
   to_equipment: True
   reply: False
@@ -2093,7 +2221,8 @@ S12F18:
         {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]}
 
 S12F19:
-  name: map error report - send
+  name: Map Error Report Send
+  mnemonic: MERS
   to_host: True
   to_equipment: True
   reply: False
@@ -2107,7 +2236,8 @@ S12F19:
   sample_data: '{"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0}'
 
 S14F00:
-  name: abort transaction stream 14
+  name: Abort transaction
+  mnemonic: S14F0
   to_host: True
   to_equipment: True
   reply: False
@@ -2115,7 +2245,8 @@ S14F00:
   multi_block: False
 
 S14F01:
-  name: GetAttr request
+  name: GetAttr Request
+  mnemonic: GAR
   to_host: True
   to_equipment: True
   reply: True
@@ -2148,7 +2279,8 @@ S14F01:
     "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']}
 
 S14F02:
-  name: GetAttr data
+  name: GetAttr Data
+  mnemonic: GAD
   to_host: True
   to_equipment: True
   reply: False
@@ -2195,7 +2327,8 @@ S14F02:
     }
 
 S14F03:
-  name: SetAttr request
+  name: SetAttr Request
+  mnemonic: SAR
   to_host: True
   to_equipment: True
   reply: True
@@ -2225,7 +2358,8 @@ S14F03:
           "ATTRDATA": "3"}]}
 
 S14F04:
-  name: SetAttr data
+  name: SetAttr Data
+  mnemonic: SAD
   to_host: True
   to_equipment: True
   reply: False

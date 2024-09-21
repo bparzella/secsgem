@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F03(SecsStreamFunction):
-    """unrecognized stream type.
+    """Unrecognized Stream Type (USN).
 
     Args:
         value: parameters for this function (see example)

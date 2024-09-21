@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F30(SecsStreamFunction):
-    """equipment constant namelist.
+    """Equipment Constant Namelist (ECN).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS10F02(SecsStreamFunction):
-    """terminal - acknowledge.
+    """Terminal Request Acknowledge (TRA).
 
     Args:
         value: parameters for this function (see example)

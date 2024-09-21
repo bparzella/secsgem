@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F44(SecsStreamFunction):
-    """reset spooling - acknowledge.
+    """Reset Spooling Acknowledge (RSA).
 
     Args:
         value: parameters for this function (see example)

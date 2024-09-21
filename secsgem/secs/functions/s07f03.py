@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS07F03(SecsStreamFunction):
-    """process program - send.
+    """Process Program Send (PPS).
 
     Args:
         value: parameters for this function (see example)

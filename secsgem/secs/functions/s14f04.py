@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS14F04(SecsStreamFunction):
-    """SetAttr data.
+    """SetAttr Data (SAD).
 
     Args:
         value: parameters for this function (see example)

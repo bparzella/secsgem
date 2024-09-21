@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS00F00(SecsStreamFunction):
-    """Hsms communication.
+    """Hsms Communication (HSMS).
 
     Examples:
         >>> import secsgem.secs

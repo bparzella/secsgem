@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F12(SecsStreamFunction):
-    """event report - acknowledge.
+    """Event Report Acknowledge (ERA).
 
     Args:
         value: parameters for this function (see example)

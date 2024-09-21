@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F13(SecsStreamFunction):
-    """establish communication - request.
+    """Establish Communications Request (CR).
 
     Args:
         value: parameters for this function (see example)

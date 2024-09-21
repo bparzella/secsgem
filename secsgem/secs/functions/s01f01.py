@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F01(SecsStreamFunction):
-    """are you online - request.
+    """Are You There Request (R).
 
     Examples:
         >>> import secsgem.secs

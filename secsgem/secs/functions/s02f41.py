@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F41(SecsStreamFunction):
-    """host command - send.
+    """Host Command Send (HCS).
 
     Args:
         value: parameters for this function (see example)

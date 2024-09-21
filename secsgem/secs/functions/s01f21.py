@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS01F21(SecsStreamFunction):
-    """Data variable namelist request.
+    """Data Variable Namelist Request (DVNR).
 
     Args:
         value: parameters for this function (see example)

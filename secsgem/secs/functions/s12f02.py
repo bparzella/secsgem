@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F02(SecsStreamFunction):
-    """map setup data - acknowledge.
+    """Map Set-up Data Acknowledge (MSDA).
 
     Args:
         value: parameters for this function (see example)

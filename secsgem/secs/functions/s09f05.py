@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F05(SecsStreamFunction):
-    """unrecognized function type.
+    """Unrecognized Function Type (UFN).
 
     Args:
         value: parameters for this function (see example)

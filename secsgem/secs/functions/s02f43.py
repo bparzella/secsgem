@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS02F43(SecsStreamFunction):
-    """reset spooling streams and functions - send.
+    """Reset Spooling Streams and Functions (RSSF).
 
     Args:
         value: parameters for this function (see example)

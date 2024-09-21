@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F15(SecsStreamFunction):
-    """event report request.
+    """Event Report Request (ERR).
 
     Args:
         value: parameters for this function (see example)

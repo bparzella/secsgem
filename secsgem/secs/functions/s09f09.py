@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS09F09(SecsStreamFunction):
-    """transaction timer timeout.
+    """Transaction Timer Timeout (TIN).
 
     Args:
         value: parameters for this function (see example)

@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS06F20(SecsStreamFunction):
-    """individual report data.
+    """Individual Report Data (IRD).
 
     Args:
         value: parameters for this function (see example)

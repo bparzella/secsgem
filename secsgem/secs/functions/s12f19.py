@@ -19,7 +19,7 @@ from secsgem.secs.functions.base import SecsStreamFunction
 
 
 class SecsS12F19(SecsStreamFunction):
-    """map error report - send.
+    """Map Error Report Send (MERS).
 
     Args:
         value: parameters for this function (see example)
