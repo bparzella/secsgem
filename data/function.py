@@ -62,21 +62,21 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
     def __init__(
         self,
-        name: str,
+        code: str,
         data: dict[str, typing.Any],
         data_items: dict[str, typing.Any],
     ) -> None:
         """Initialize item config."""
-        self._name = name
+        self._code = code
         self._data = data
 
         self._data_items = data_items
 
         self._rendered = None
 
-        match = self.sf_regex.match(self._name)
+        match = self.sf_regex.match(self._code)
         if not match:
-            raise ValueError(f"Function name not valid {name}")
+            raise ValueError(f"Function code not valid {code}")
 
         self._stream = int(match.group(1))
         self._function = int(match.group(2))
@@ -147,7 +147,7 @@ class Function:  # pylint: disable=too-many-instance-attributes
 
     def render(self, function_template, target_path):
         """Render a function to file."""
-        print(f"# generate function {self.name}")  # noqa: T201
+        print(f"# generate function {self.code}")  # noqa: T201
 
         self._rendered = function_template.render(
             data=self,
@@ -168,9 +168,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return f"s{self._stream:02d}f{self._function:02d}"
 
     @property
-    def name(self) -> str:
+    def code(self) -> str:
         """Get the name."""
-        return self._name
+        return self._code
 
     @property
     def stream(self) -> int:
@@ -183,9 +183,9 @@ class Function:  # pylint: disable=too-many-instance-attributes
         return self._function
 
     @property
-    def description(self) -> str:
-        """Get the description of the function."""
-        return self._data["description"]
+    def name(self) -> str:
+        """Get the name of the function."""
+        return self._data["name"]
 
     @property
     def to_host(self) -> bool:

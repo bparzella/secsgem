@@ -21,14 +21,14 @@ from .streams_functions import StreamsFunctions
 # isort: split
 
 {% for function in functions %}
-from .{{ function.module_name }} import Secs{{ function.name }}
+from .{{ function.module_name }} import Secs{{ function.code }}
 {% endfor %}
 
 __all__ = [
     "SecsStreamFunction",
     "StreamsFunctions",
 {% for function in functions %}
-    "Secs{{ function.name }}",
+    "Secs{{ function.code }}",
 {% endfor %}
 ]
 

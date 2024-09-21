@@ -1,5 +1,5 @@
 S00F00:
-  description: Hsms communication
+  name: Hsms communication
   to_host: True
   to_equipment: True
   reply: False
@@ -7,7 +7,7 @@ S00F00:
   multi_block: False
 
 S01F00:
-  description: abort transaction stream 1
+  name: abort transaction stream 1
   to_host: True
   to_equipment: True
   reply: False
@@ -15,7 +15,7 @@ S01F00:
   multi_block: False
 
 S01F01:
-  description: are you online - request
+  name: are you online - request
   to_host: True
   to_equipment: True
   reply: True
@@ -23,7 +23,7 @@ S01F01:
   multi_block: False
 
 S01F02:
-  description: on line data
+  name: on line data
   to_host: True
   to_equipment: True
   reply: False
@@ -54,7 +54,7 @@ S01F02:
         }
 
 S01F03:
-  description: Selected equipment status - request
+  name: Selected equipment status - request
   to_host: False
   to_equipment: True
   reply: True
@@ -67,7 +67,7 @@ S01F03:
   sample_data: '[1, "1337", 12]'
 
 S01F04:
-  description: selected equipment status - data
+  name: selected equipment status - data
   to_host: True
   to_equipment: False
   reply: False
@@ -80,7 +80,7 @@ S01F04:
   sample_data: '[secsgem.secs.variables.U1(1), "text", secsgem.secs.variables.U4(1337)]'
 
 S01F11:
-  description: status variable namelist - request
+  name: status variable namelist - request
   to_host: False
   to_equipment: True
   reply: True
@@ -94,7 +94,7 @@ S01F11:
   extra_help: An empty list will return all available status variables.
 
 S01F12:
-  description: status variable namelist - reply
+  name: status variable namelist - reply
   to_host: True
   to_equipment: False
   reply: False
@@ -113,7 +113,7 @@ S01F12:
     {"SVID": 1337, "SVNAME": "SV2", "UNITS": ""}]
 
 S01F13:
-  description: establish communication - request
+  name: establish communication - request
   to_host: True
   to_equipment: True
   reply: True
@@ -144,7 +144,7 @@ S01F13:
         }
 
 S01F14:
-  description: establish communication - acknowledge
+  name: establish communication - acknowledge
   to_host: True
   to_equipment: True
   reply: False
@@ -185,7 +185,7 @@ S01F14:
         }
 
 S01F15:
-  description: request offline
+  name: request offline
   to_host: False
   to_equipment: True
   reply: True
@@ -193,7 +193,7 @@ S01F15:
   multi_block: False
 
 S01F16:
-  description: offline acknowledge
+  name: offline acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -204,7 +204,7 @@ S01F16:
   sample_data: "secsgem.secs.data_items.OFLACK.ACK"
 
 S01F17:
-  description: request online
+  name: request online
   to_host: False
   to_equipment: True
   reply: True
@@ -212,7 +212,7 @@ S01F17:
   multi_block: False
 
 S01F18:
-  description: online acknowledge
+  name: online acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -223,7 +223,7 @@ S01F18:
   sample_data: "secsgem.secs.data_items.ONLACK.ALREADY_ON"
 
 S01F21:
-  description: Data variable namelist request
+  name: Data variable namelist request
   to_host: False
   to_equipment: True
   reply: True
@@ -236,7 +236,7 @@ S01F21:
   sample_data: '[1, "VARIABLEID"]'
 
 S01F22:
-  description: Data variable namelist
+  name: Data variable namelist
   to_host: True
   to_equipment: False
   reply: False
@@ -253,7 +253,7 @@ S01F22:
   sample_data: '[{"VID": 1, "DVVALNAME": "EC1", "UNITS": "mm"}]'
 
 S01F23:
-  description: Collection event namelist request
+  name: Collection event namelist request
   to_host: False
   to_equipment: True
   reply: True
@@ -266,7 +266,7 @@ S01F23:
   sample_data: '[1, "COLLEVTID"]'
 
 S01F24:
-  description: Collection event namelist
+  name: Collection event namelist
   to_host: True
   to_equipment: False
   reply: False
@@ -285,7 +285,7 @@ S01F24:
   sample_data: '[{"CEID": 1, "CENAME": "CE1", "VID": [1, "VARIABLEID"]}]'
 
 S02F00:
-  description: abort transaction stream 2
+  name: abort transaction stream 2
   to_host: True
   to_equipment: True
   reply: False
@@ -293,7 +293,7 @@ S02F00:
   multi_block: False
 
 S02F13:
-  description: equipment constant - request
+  name: equipment constant - request
   to_host: False
   to_equipment: True
   reply: True
@@ -307,7 +307,7 @@ S02F13:
   extra_help: An empty list will return all available equipment constants.
 
 S02F14:
-  description: equipment constant - data
+  name: equipment constant - data
   to_host: True
   to_equipment: False
   reply: False
@@ -320,7 +320,7 @@ S02F14:
   sample_data: '[secsgem.secs.variables.U1(1), "text"]'
 
 S02F15:
-  description: new equipment constant - send
+  name: new equipment constant - send
   to_host: False
   to_equipment: True
   reply: True
@@ -339,7 +339,7 @@ S02F15:
     {"ECID": "1337", "ECV": "text"}]
 
 S02F16:
-  description: new equipment constant - acknowledge
+  name: new equipment constant - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -350,7 +350,7 @@ S02F16:
   sample_data: "secsgem.secs.data_items.EAC.BUSY"
 
 S02F17:
-  description: date and time - request
+  name: date and time - request
   to_host: True
   to_equipment: True
   reply: True
@@ -358,7 +358,7 @@ S02F17:
   multi_block: False
 
 S02F18:
-  description: date and time - data
+  name: date and time - data
   to_host: True
   to_equipment: True
   reply: False
@@ -369,7 +369,7 @@ S02F18:
   sample_data: '"160816205942"'
 
 S02F21:
-  description: Remote command send
+  name: Remote command send
   to_host: False
   to_equipment: True
   reply: True
@@ -380,7 +380,7 @@ S02F21:
   sample_data: '"COMMMAND1"'
 
 S02F22:
-  description: Remote command - acknowledge
+  name: Remote command - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -391,7 +391,7 @@ S02F22:
   sample_data: "secsgem.secs.data_items.CMDA.DONE"
 
 S02F23:
-  description: Trace initialize
+  name: Trace initialize
   to_host: False
   to_equipment: True
   reply: True
@@ -416,7 +416,7 @@ S02F23:
     "SVID":[1002004,400210]}
 
 S02F24:
-  description: Trace initialize - acknowledge
+  name: Trace initialize - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -427,7 +427,7 @@ S02F24:
   sample_data: "secsgem.secs.data_items.TIAACK.SVID_EXCEEDED"
 
 S02F25:
-  description: Loopback diagnostic request
+  name: Loopback diagnostic request
   to_host: True
   to_equipment: True
   reply: True
@@ -438,7 +438,7 @@ S02F25:
   sample_data: '"Text"'
 
 S02F26:
-  description: Loopback diagnostic data
+  name: Loopback diagnostic data
   to_host: True
   to_equipment: True
   reply: False
@@ -449,7 +449,7 @@ S02F26:
   sample_data: '"Text"'
 
 S02F29:
-  description: equipment constant namelist - request
+  name: equipment constant namelist - request
   to_host: False
   to_equipment: True
   reply: True
@@ -463,7 +463,7 @@ S02F29:
   extra_help: An empty list will return all available equipment constants.
 
 S02F30:
-  description: equipment constant namelist
+  name: equipment constant namelist
   to_host: True
   to_equipment: False
   reply: False
@@ -496,7 +496,7 @@ S02F30:
       "UNITS": ""}]
 
 S02F33:
-  description: define report
+  name: define report
   to_host: False
   to_equipment: True
   reply: True
@@ -519,7 +519,7 @@ S02F33:
     {"RPTID": 1001, "VID": [1, 2355]}]}
 
 S02F34:
-  description: define report - acknowledge
+  name: define report - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -530,7 +530,7 @@ S02F34:
   sample_data: "secsgem.secs.data_items.DRACK.INVALID_FORMAT"
 
 S02F35:
-  description: link event report
+  name: link event report
   to_host: False
   to_equipment: True
   reply: True
@@ -551,7 +551,7 @@ S02F35:
   sample_data: '{"DATAID": 1, "DATA": [{"CEID": 1337, "RPTID": [1000, 1001]}]}'
 
 S02F36:
-  description: link event report - acknowledge
+  name: link event report - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -562,7 +562,7 @@ S02F36:
   sample_data: "secsgem.secs.data_items.LRACK.CEID_UNKNOWN"
 
 S02F37:
-  description: en-/disable event report
+  name: en-/disable event report
   to_host: False
   to_equipment: True
   reply: True
@@ -578,7 +578,7 @@ S02F37:
   sample_data: '{"CEED": True, "CEID": [1337]}'
 
 S02F38:
-  description: en-/disable event report - acknowledge
+  name: en-/disable event report - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -589,7 +589,7 @@ S02F38:
   sample_data: "secsgem.secs.data_items.ERACK.CEID_UNKNOWN"
 
 S02F41:
-  description: host command - send
+  name: host command - send
   to_host: False
   to_equipment: True
   reply: True
@@ -610,7 +610,7 @@ S02F41:
     {"CPNAME": "PARAM2", "CPVAL": "VAL2"}]}
 
 S02F42:
-  description: host command - acknowledge
+  name: host command - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -634,7 +634,7 @@ S02F42:
         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
 
 S02F43:
-  description: reset spooling streams and functions - send
+  name: reset spooling streams and functions - send
   to_host: False
   to_equipment: True
   reply: True
@@ -652,7 +652,7 @@ S02F43:
   sample_data: '[{"STRID": 1, "FCNID": [10, 20]}, {"STRID": 2, "FCNID": [30, 40]}]'
 
 S02F44:
-  description: reset spooling - acknowledge
+  name: reset spooling - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -679,7 +679,7 @@ S02F44:
         {"STRID": 2, "STRACK": secsgem.secs.data_items.STRACK.FUNCTION_UNKNOWN, "FCNID": [20]}]}
 
 S02F45:
-  description: Define variable limit attributes
+  name: Define variable limit attributes
   to_host: False
   to_equipment: True
   reply: True
@@ -715,7 +715,7 @@ S02F45:
     }]}
 
 S02F46:
-  description: Define variable limit attributes - acknowledge
+  name: Define variable limit attributes - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -748,7 +748,7 @@ S02F46:
     }]}
 
 S02F47:
-  description: Variable limit attribute request
+  name: Variable limit attribute request
   to_host: False
   to_equipment: True
   reply: True
@@ -761,7 +761,7 @@ S02F47:
   sample_data: '[1, "VARIABLEID"]'
 
 S02F48:
-  description: Define variable limit attributes - acknowledge
+  name: Define variable limit attributes - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -800,7 +800,7 @@ S02F48:
     }}]
 
 S02F49:
-  description: Enhanced remote command
+  name: Enhanced remote command
   to_host: False
   to_equipment: True
   reply: False
@@ -829,7 +829,7 @@ S02F49:
     }]}
 
 S02F50:
-  description: Enhanced remote command - acknowledge
+  name: Enhanced remote command - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -853,7 +853,7 @@ S02F50:
         {"CPNAME": "PARAM2", "CPACK": secsgem.secs.data_items.CPACK.CPVAL_ILLEGAL_FORMAT}]}
 
 S05F00:
-  description: abort transaction stream 5
+  name: abort transaction stream 5
   to_host: True
   to_equipment: True
   reply: False
@@ -861,7 +861,7 @@ S05F00:
   multi_block: False
 
 S05F01:
-  description: alarm report - send
+  name: alarm report - send
   to_host: True
   to_equipment: False
   reply: True
@@ -881,7 +881,7 @@ S05F01:
     "ALTX": "text"}
 
 S05F02:
-  description: alarm report - acknowledge
+  name: alarm report - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -892,7 +892,7 @@ S05F02:
   sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F03:
-  description: en-/disable alarm - send
+  name: en-/disable alarm - send
   to_host: False
   to_equipment: True
   reply: True
@@ -906,7 +906,7 @@ S05F03:
   sample_data: '{"ALED": secsgem.secs.data_items.ALED.ENABLE, "ALID": 100}'
 
 S05F04:
-  description: en-/disable alarm - acknowledge
+  name: en-/disable alarm - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -917,7 +917,7 @@ S05F04:
   sample_data: "secsgem.secs.data_items.ACKC5.ACCEPTED"
 
 S05F05:
-  description: list alarms - request
+  name: list alarms - request
   to_host: False
   to_equipment: True
   reply: True
@@ -930,7 +930,7 @@ S05F05:
   sample_data: "[100, 200]"
 
 S05F06:
-  description: list alarms - data
+  name: list alarms - data
   to_host: True
   to_equipment: False
   reply: False
@@ -952,7 +952,7 @@ S05F06:
      "ALTX": "text"}]
 
 S05F07:
-  description: list enabled alarms - request
+  name: list enabled alarms - request
   to_host: False
   to_equipment: True
   reply: True
@@ -960,7 +960,7 @@ S05F07:
   multi_block: False
 
 S05F08:
-  description: list enabled alarms - data
+  name: list enabled alarms - data
   to_host: True
   to_equipment: False
   reply: False
@@ -982,7 +982,7 @@ S05F08:
      "ALTX": "text"}]
 
 S05F09:
-  description: exception post - notify
+  name: exception post - notify
   to_host: True
   to_equipment: False
   reply: True
@@ -1007,7 +1007,7 @@ S05F09:
     "EXRECVRA": ["EXRECVRA1", "EXRECVRA2"] }
 
 S05F10:
-  description: exception post - confirm
+  name: exception post - confirm
   to_host: False
   to_equipment: True
   reply: False
@@ -1015,7 +1015,7 @@ S05F10:
   multi_block: False
 
 S05F11:
-  description: exception clear - notify
+  name: exception clear - notify
   to_host: True
   to_equipment: False
   reply: True
@@ -1036,7 +1036,7 @@ S05F11:
     "EXMESSAGE": "Exception"}
 
 S05F12:
-  description: exception clear - confirm
+  name: exception clear - confirm
   to_host: False
   to_equipment: True
   reply: False
@@ -1044,7 +1044,7 @@ S05F12:
   multi_block: False
 
 S05F13:
-  description: exception recover - request
+  name: exception recover - request
   to_host: False
   to_equipment: True
   reply: True
@@ -1058,7 +1058,7 @@ S05F13:
   sample_data: '{"EXID": "EX123", "EXRECVRA": "EXRECVRA2"}'
 
 S05F14:
-  description: exception recover - acknowledge
+  name: exception recover - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -1083,7 +1083,7 @@ S05F14:
                       "ERRTEXT": "Error"}}}
 
 S05F15:
-  description: exception recover complete - notify
+  name: exception recover complete - notify
   to_host: True
   to_equipment: False
   reply: True
@@ -1113,7 +1113,7 @@ S05F15:
         }}}
 
 S05F16:
-  description: exception recover complete - confirm
+  name: exception recover complete - confirm
   to_host: False
   to_equipment: True
   reply: False
@@ -1121,7 +1121,7 @@ S05F16:
   multi_block: False
 
 S05F17:
-  description: exception recover abort - request
+  name: exception recover abort - request
   to_host: False
   to_equipment: True
   reply: True
@@ -1132,7 +1132,7 @@ S05F17:
   sample_data: '"EX123"'
 
 S05F18:
-  description: exception recover abort - acknowledge
+  name: exception recover abort - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -1159,7 +1159,7 @@ S05F18:
             "ERRTEXT": "Error"}}}
 
 S06F00:
-  description: abort transaction stream 6
+  name: abort transaction stream 6
   to_host: True
   to_equipment: True
   reply: False
@@ -1167,7 +1167,7 @@ S06F00:
   multi_block: False
 
 S06F01:
-  description: Trace data send
+  name: Trace data send
   to_host: True
   to_equipment: False
   reply: True
@@ -1190,7 +1190,7 @@ S06F01:
     "SV": [1, 4]}
 
 S06F02:
-  description: Trace data - acknowledge
+  name: Trace data - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1201,7 +1201,7 @@ S06F02:
   sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F05:
-  description: multi block data inquiry
+  name: multi block data inquiry
   to_host: True
   to_equipment: False
   reply: True
@@ -1215,7 +1215,7 @@ S06F05:
   sample_data: '{"DATAID": 1, "DATALENGTH": 1337}'
 
 S06F06:
-  description: multi block data grant
+  name: multi block data grant
   to_host: False
   to_equipment: True
   reply: False
@@ -1226,7 +1226,7 @@ S06F06:
   sample_data: "secsgem.secs.data_items.GRANT6.BUSY"
 
 S06F07:
-  description: data transfer request
+  name: data transfer request
   to_host: False
   to_equipment: True
   reply: True
@@ -1237,7 +1237,7 @@ S06F07:
   sample_data: "1"
 
 S06F08:
-  description: data transfer data
+  name: data transfer data
   to_host: True
   to_equipment: False
   reply: False
@@ -1270,7 +1270,7 @@ S06F08:
             {"DVNAME": "VAR2", "DVVAL": secsgem.secs.variables.U4(100)}]}]}
 
 S06F11:
-  description: event report
+  name: event report
   to_host: True
   to_equipment: False
   reply: True
@@ -1298,7 +1298,7 @@ S06F11:
         "V": ["VAR", secsgem.secs.variables.U4(100)]}]}
 
 S06F12:
-  description: event report - acknowledge
+  name: event report - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1309,7 +1309,7 @@ S06F12:
   sample_data: "secsgem.secs.data_items.ACKC6.ACCEPTED"
 
 S06F15:
-  description: event report request
+  name: event report request
   to_host: False
   to_equipment: True
   reply: True
@@ -1320,7 +1320,7 @@ S06F15:
   sample_data: "1337"
 
 S06F16:
-  description: event report data
+  name: event report data
   to_host: True
   to_equipment: False
   reply: False
@@ -1348,7 +1348,7 @@ S06F16:
         "V": ["VAR", secsgem.secs.variables.U4(100)]}]}
 
 S06F19:
-  description: individual report request
+  name: individual report request
   to_host: False
   to_equipment: True
   reply: True
@@ -1359,7 +1359,7 @@ S06F19:
   sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F20:
-  description: individual report data
+  name: individual report data
   to_host: True
   to_equipment: False
   reply: False
@@ -1372,7 +1372,7 @@ S06F20:
   sample_data: '["ASD", 1337]'
 
 S06F21:
-  description: annotated individual report request
+  name: annotated individual report request
   to_host: False
   to_equipment: True
   reply: True
@@ -1383,7 +1383,7 @@ S06F21:
   sample_data: "secsgem.secs.variables.U4(1337)"
 
 S06F22:
-  description: annotated individual report data
+  name: annotated individual report data
   to_host: True
   to_equipment: False
   reply: False
@@ -1399,7 +1399,7 @@ S06F22:
   sample_data: '[{"VID": "VID1", "V": "ASD"}, {"VID": 2, "V": 1337}]'
 
 S06F23:
-  description: Request spooled data
+  name: Request spooled data
   to_host: False
   to_equipment: True
   reply: True
@@ -1410,7 +1410,7 @@ S06F23:
   sample_data: "secsgem.secs.data_items.RSDC.PURGE"
 
 S06F24:
-  description: Request spooled data acknowledge
+  name: Request spooled data acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -1421,7 +1421,7 @@ S06F24:
   sample_data: "secsgem.secs.data_items.RSDA.ACK"
 
 S07F00:
-  description: abort transaction stream 7
+  name: abort transaction stream 7
   to_host: True
   to_equipment: True
   reply: False
@@ -1429,7 +1429,7 @@ S07F00:
   multi_block: False
 
 S07F01:
-  description: process program load - inquire
+  name: process program load - inquire
   to_host: True
   to_equipment: True
   reply: True
@@ -1443,7 +1443,7 @@ S07F01:
   sample_data: '{"PPID": "program", "LENGTH": 4}'
 
 S07F02:
-  description: process program load - grant
+  name: process program load - grant
   to_host: True
   to_equipment: True
   reply: False
@@ -1454,7 +1454,7 @@ S07F02:
   sample_data: "secsgem.secs.data_items.PPGNT.OK"
 
 S07F03:
-  description: process program - send
+  name: process program - send
   to_host: True
   to_equipment: True
   reply: True
@@ -1468,7 +1468,7 @@ S07F03:
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F04:
-  description: process program - acknowledge
+  name: process program - acknowledge
   to_host: True
   to_equipment: True
   reply: False
@@ -1479,7 +1479,7 @@ S07F04:
   sample_data: "secsgem.secs.data_items.ACKC7.MATRIX_OVERFLOW"
 
 S07F05:
-  description: process program - request
+  name: process program - request
   to_host: True
   to_equipment: True
   reply: True
@@ -1490,7 +1490,7 @@ S07F05:
   sample_data: '"program"'
 
 S07F06:
-  description: process program - data
+  name: process program - data
   to_host: True
   to_equipment: True
   reply: False
@@ -1504,7 +1504,7 @@ S07F06:
   sample_data: '{"PPID": "program", "PPBODY": secsgem.secs.variables.Binary("data")}'
 
 S07F17:
-  description: delete process program - send
+  name: delete process program - send
   to_host: False
   to_equipment: True
   reply: True
@@ -1517,7 +1517,7 @@ S07F17:
   sample_data: '["program1", "program2"]'
 
 S07F18:
-  description: delete process program - acknowledge
+  name: delete process program - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -1528,7 +1528,7 @@ S07F18:
   sample_data: "secsgem.secs.data_items.ACKC7.MODE_UNSUPPORTED"
 
 S07F19:
-  description: current equipment process program - request
+  name: current equipment process program - request
   to_host: False
   to_equipment: True
   reply: True
@@ -1536,7 +1536,7 @@ S07F19:
   multi_block: False
 
 S07F20:
-  description: current equipment process program - data
+  name: current equipment process program - data
   to_host: True
   to_equipment: False
   reply: False
@@ -1549,7 +1549,7 @@ S07F20:
   sample_data: '["program1", "program2"]'
 
 S09F00:
-  description: abort transaction stream 9
+  name: abort transaction stream 9
   to_host: True
   to_equipment: True
   reply: False
@@ -1557,7 +1557,7 @@ S09F00:
   multi_block: False
 
 S09F01:
-  description: unrecognized device id
+  name: unrecognized device id
   to_host: True
   to_equipment: False
   reply: False
@@ -1568,7 +1568,7 @@ S09F01:
   sample_data: '"HEADERDATA"'
 
 S09F03:
-  description: unrecognized stream type
+  name: unrecognized stream type
   to_host: True
   to_equipment: False
   reply: False
@@ -1579,7 +1579,7 @@ S09F03:
   sample_data: '"HEADERDATA"'
 
 S09F05:
-  description: unrecognized function type
+  name: unrecognized function type
   to_host: True
   to_equipment: False
   reply: False
@@ -1590,7 +1590,7 @@ S09F05:
   sample_data: '"HEADERDATA"'
 
 S09F07:
-  description: illegal data
+  name: illegal data
   to_host: True
   to_equipment: False
   reply: False
@@ -1601,7 +1601,7 @@ S09F07:
   sample_data: '"HEADERDATA"'
 
 S09F09:
-  description: transaction timer timeout
+  name: transaction timer timeout
   to_host: True
   to_equipment: False
   reply: False
@@ -1612,7 +1612,7 @@ S09F09:
   sample_data: '"HEADERDATA"'
 
 S09F11:
-  description: data too long
+  name: data too long
   to_host: True
   to_equipment: False
   reply: False
@@ -1623,7 +1623,7 @@ S09F11:
   sample_data: '"HEADERDATA"'
 
 S09F13:
-  description: conversation timeout
+  name: conversation timeout
   to_host: True
   to_equipment: False
   reply: False
@@ -1637,7 +1637,7 @@ S09F13:
   sample_data: '{"MEXP": "S01E01", "EDID": "data"}'
 
 S10F00:
-  description: abort transaction stream 10
+  name: abort transaction stream 10
   to_host: True
   to_equipment: True
   reply: False
@@ -1645,7 +1645,7 @@ S10F00:
   multi_block: False
 
 S10F01:
-  description: terminal - request
+  name: terminal - request
   to_host: True
   to_equipment: False
   reply: True
@@ -1659,7 +1659,7 @@ S10F01:
   sample_data: '{"TID": 0, "TEXT": "hello?"}'
 
 S10F02:
-  description: terminal - acknowledge
+  name: terminal - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1670,7 +1670,7 @@ S10F02:
   sample_data: "secsgem.secs.data_items.ACKC10.ACCEPTED"
 
 S10F03:
-  description: terminal single - display
+  name: terminal single - display
   to_host: False
   to_equipment: True
   reply: True
@@ -1684,7 +1684,7 @@ S10F03:
   sample_data: '{"TID": 0, "TEXT": "hello!"}'
 
 S10F04:
-  description: terminal single - acknowledge
+  name: terminal single - acknowledge
   to_host: True
   to_equipment: False
   reply: False
@@ -1695,7 +1695,7 @@ S10F04:
   sample_data: "secsgem.secs.data_items.ACKC10.TERMINAL_NOT_AVAILABLE"
 
 S12F00:
-  description: abort transaction stream 12
+  name: abort transaction stream 12
   to_host: True
   to_equipment: True
   reply: False
@@ -1703,7 +1703,7 @@ S12F00:
   multi_block: False
 
 S12F01:
-  description: map setup data - send
+  name: map setup data - send
   to_host: True
   to_equipment: False
   reply: True
@@ -1748,7 +1748,7 @@ S12F01:
     "PRAXI": secsgem.secs.data_items.PRAXI.ROWS_TOP_INCR}
 
 S12F02:
-  description: map setup data - acknowledge
+  name: map setup data - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1759,7 +1759,7 @@ S12F02:
   sample_data: "secsgem.secs.data_items.SDACK.ACK"
 
 S12F03:
-  description: map setup data - request
+  name: map setup data - request
   to_host: True
   to_equipment: False
   reply: True
@@ -1790,7 +1790,7 @@ S12F03:
     "NULBC": "{x}"}
 
 S12F04:
-  description: map setup data
+  name: map setup data
   to_host: False
   to_equipment: True
   reply: False
@@ -1835,7 +1835,7 @@ S12F04:
     "MLCL": 0}
 
 S12F05:
-  description: map transmit inquire
+  name: map transmit inquire
   to_host: True
   to_equipment: False
   reply: True
@@ -1856,7 +1856,7 @@ S12F05:
     "MLCL": 0}
 
 S12F06:
-  description: map transmit - grant
+  name: map transmit - grant
   to_host: False
   to_equipment: True
   reply: False
@@ -1867,7 +1867,7 @@ S12F06:
   sample_data: "secsgem.secs.data_items.GRNT1.MATERIALID_UNKNOWN"
 
 S12F07:
-  description: map data type 1 - send
+  name: map data type 1 - send
   to_host: True
   to_equipment: False
   reply: True
@@ -1893,7 +1893,7 @@ S12F07:
         {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]}
 
 S12F08:
-  description: map data type 1 - acknowledge
+  name: map data type 1 - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1904,7 +1904,7 @@ S12F08:
   sample_data: "secsgem.secs.data_items.MDACK.ABORT_MAP"
 
 S12F09:
-  description: map data type 2 - send
+  name: map data type 2 - send
   to_host: True
   to_equipment: False
   reply: True
@@ -1925,7 +1925,7 @@ S12F09:
     "BINLT": [1, 2, 3, 4, 5, 6]}
 
 S12F10:
-  description: map data type 2 - acknowledge
+  name: map data type 2 - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1936,7 +1936,7 @@ S12F10:
   sample_data: "secsgem.secs.data_items.MDACK.ACK"
 
 S12F11:
-  description: map data type 3 - send
+  name: map data type 3 - send
   to_host: True
   to_equipment: False
   reply: True
@@ -1962,7 +1962,7 @@ S12F11:
         {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]}
 
 S12F12:
-  description: map data type 3 - acknowledge
+  name: map data type 3 - acknowledge
   to_host: False
   to_equipment: True
   reply: False
@@ -1973,7 +1973,7 @@ S12F12:
   sample_data: "secsgem.secs.data_items.MDACK.FORMAT_ERROR"
 
 S12F13:
-  description: map data type 1 - request
+  name: map data type 1 - request
   to_host: True
   to_equipment: False
   reply: True
@@ -1987,7 +1987,7 @@ S12F13:
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F14:
-  description: map data type 1
+  name: map data type 1
   to_host: False
   to_equipment: True
   reply: False
@@ -2013,7 +2013,7 @@ S12F14:
         {"RSINF": [4, 5, 6], "BINLT": [5, 6, 7, 8]}]}
 
 S12F15:
-  description: map data type 2 - request
+  name: map data type 2 - request
   to_host: True
   to_equipment: False
   reply: True
@@ -2027,7 +2027,7 @@ S12F15:
   sample_data: '{"MID": "materialID", "IDTYP": secsgem.secs.data_items.IDTYP.WAFER}'
 
 S12F16:
-  description: map data type 2
+  name: map data type 2
   to_host: False
   to_equipment: True
   reply: False
@@ -2048,7 +2048,7 @@ S12F16:
     "BINLT": [1, 2, 3, 4, 5, 6]}
 
 S12F17:
-  description: map data type 3 - request
+  name: map data type 3 - request
   to_host: True
   to_equipment: False
   reply: True
@@ -2067,7 +2067,7 @@ S12F17:
     "SDBIN": secsgem.secs.data_items.SDBIN.DONT_SEND}
 
 S12F18:
-  description: map data type 3
+  name: map data type 3
   to_host: False
   to_equipment: True
   reply: False
@@ -2093,7 +2093,7 @@ S12F18:
         {"XYPOS": [3, 4], "BINLT": [5, 6, 7, 8]}]}
 
 S12F19:
-  description: map error report - send
+  name: map error report - send
   to_host: True
   to_equipment: True
   reply: False
@@ -2107,7 +2107,7 @@ S12F19:
   sample_data: '{"MAPER": secsgem.secs.data_items.MAPER.INVALID_DATA, "DATLC": 0}'
 
 S14F00:
-  description: abort transaction stream 14
+  name: abort transaction stream 14
   to_host: True
   to_equipment: True
   reply: False
@@ -2115,7 +2115,7 @@ S14F00:
   multi_block: False
 
 S14F01:
-  description: GetAttr request
+  name: GetAttr request
   to_host: True
   to_equipment: True
   reply: True
@@ -2148,7 +2148,7 @@ S14F01:
     "ATTRID": ['OriginLocation', 'Rows', 'Columns', 'CellStatus', 'LotID']}
 
 S14F02:
-  description: GetAttr data
+  name: GetAttr data
   to_host: True
   to_equipment: True
   reply: False
@@ -2195,7 +2195,7 @@ S14F02:
     }
 
 S14F03:
-  description: SetAttr request
+  name: SetAttr request
   to_host: True
   to_equipment: True
   reply: True
@@ -2225,7 +2225,7 @@ S14F03:
           "ATTRDATA": "3"}]}
 
 S14F04:
-  description: SetAttr data
+  name: SetAttr data
   to_host: True
   to_equipment: True
   reply: False

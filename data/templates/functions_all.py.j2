@@ -16,13 +16,13 @@
 """List of all SECS stream and functions."""
 
 {% for function in functions %}
-from .{{ function.module_name }} import Secs{{ function.name }}
+from .{{ function.module_name }} import Secs{{ function.code }}
 {% endfor %}
 
 secs_streams_functions = [
 {% for stream_id, stream in streams_functions.items() %}
     {% for function_id, function in stream.items() %}
-    Secs{{ function.name }},
+    Secs{{ function.code }},
     {% endfor %}
 {% endfor %}
 ]

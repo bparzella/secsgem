@@ -42,7 +42,7 @@ class {{ data.name }}(DataItemBase):{{ data.linter_message }}
 {{ data.values }}{% if used_by|length > 0 %}
     **Used In Function**
   {% for function in used_by %}
-        - :class:`Secs{{ function.name }} <secsgem.secs.functions.Secs{{ function.name }}>`
+        - :class:`Secs{{ function.code }} <secsgem.secs.functions.Secs{{ function.code }}>`
   {% endfor %}
 
 {% endif %}    """

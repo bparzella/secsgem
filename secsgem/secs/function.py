@@ -69,7 +69,7 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     stream: int
     function: int
 
-    description: str
+    name: str
     to_host: bool
     to_equipment: bool
     reply: bool

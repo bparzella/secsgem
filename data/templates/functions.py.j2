@@ -21,8 +21,8 @@ from secsgem.secs.data_items import {% for data_item in data.data_items_sorted %
 from secsgem.secs.functions.base import SecsStreamFunction
 
 
-class Secs{{ data.name }}(SecsStreamFunction):
-    """{{ data.description }}.
+class Secs{{ data.code }}(SecsStreamFunction):
+    """{{ data.name }}.
 
     {% if data.data_items|length > 0 %}
     Args:
@@ -31,12 +31,12 @@ class Secs{{ data.name }}(SecsStreamFunction):
     {% endif %}
     Examples:
         >>> import secsgem.secs
-        >>> secsgem.secs.functions.Secs{{ data.name }}
+        >>> secsgem.secs.functions.Secs{{ data.code }}
 {{ data.data_structure_text | indent(8, True) }}
 
         >>> import secsgem.secs
         {% for sample in data.samples %}
-        >>> secsgem.secs.functions.Secs{{ data.name }}({{ sample.data | py_indent(8) }}){{ sample.comment }}
+        >>> secsgem.secs.functions.Secs{{ data.code }}({{ sample.data | py_indent(8) }}){{ sample.comment }}
         S{{ data.stream }}F{{ data.function }}{{ " W" if data.is_reply_required }}
     {%- if data.data_items|length > 0 %}
 

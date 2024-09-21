@@ -6,7 +6,7 @@
             "description": "Function definition",
             "type": "object",
             "properties": {
-                "description": {
+                "name": {
                     "type": "string"
                 },
                 "to_host": {
@@ -62,7 +62,7 @@
                 }
             },
             "required": [
-                "description",
+                "name",
                 "to_host",
                 "to_equipment",
                 "reply",
