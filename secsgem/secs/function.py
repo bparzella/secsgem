@@ -28,8 +28,6 @@ import yaml
 
 from .functions.sfdl_tokenizer import SFDLTokenizer, SFDLTokens, SFDLTokenType
 
-from secsgem.secs.variables import Base
-
 if typing.TYPE_CHECKING:
     from .data_item import DataItemDescriptor, DataItemDescriptors
 
@@ -40,7 +38,7 @@ default_yaml_path = _script_path / "functions.yaml"
 schema_path = _script_path / "functions.schema.json"
 
 
-class DataStructure:
+class DataStructure:  # pylint: disable=too-few-public-methods
     """Represents a data structure for a function."""
 
     def __init__(self, structure: str, descriptors: DataItemDescriptors):
