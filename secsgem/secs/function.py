@@ -26,6 +26,13 @@ import typing
 import jsonschema
 import yaml
 
+from .functions.sfdl_tokenizer import SFDLTokenizer, SFDLTokens, SFDLTokenType
+
+from secsgem.secs.variables import Base
+
+if typing.TYPE_CHECKING:
+    from .data_item import DataItemDescriptor, DataItemDescriptors
+
 stream_function_regex = re.compile("^S(\\d+)F(\\d+$)")
 
 _script_path = pathlib.Path(__file__).resolve().absolute().parent
@@ -33,8 +40,94 @@ default_yaml_path = _script_path / "functions.yaml"
 schema_path = _script_path / "functions.schema.json"
 
 
+class DataStructure:
+    """Represents a data structure for a function."""
+
+    def __init__(self, structure: str, descriptors: DataItemDescriptors):
+        """Initialize the data structure.
+
+        Args:
+            structure: string representationo of the data.
+            descriptors: list of data item descriptors to use for this data structure.
+
+        """
+        self.text = structure
+        self.descriptors = descriptors
+
+        self.struct = self._parse(structure)
+
+    def _parse(self, structure: str) -> list | dict | DataItemDescriptor:
+        """Parse the structure string.
+
+        Args:
+            structure: string representation of the data.
+
+        Returns:
+            Parsed data structure.
+
+        """
+        tokens = SFDLTokenizer(structure).tokens
+        result = self._process_tokens(tokens)
+
+        if isinstance(result, tuple):
+            return result[1]
+
+        return result
+
+    def _process_tokens(
+        self,
+        tokens: SFDLTokens,
+    ) -> tuple[str, list | dict | DataItemDescriptor]:
+        """Process tokens for the function.
+
+        Args:
+            tokens: tokens to process.
+            descriptors: list of data item descriptors to use for this function.
+
+        Returns:
+            structure of data items for the function.
+
+        """
+        if not tokens.available:
+            raise ValueError("Expected opening tag, got end of tokens")
+
+        token = tokens.next()
+
+        if token.type != SFDLTokenType.OPEN_TAG:
+            raise ValueError(f"Expected opening tag, got: {token}")
+
+        token = tokens.next()
+
+        if token.type == SFDLTokenType.DATA_ITEM:
+            close_token = tokens.next()
+
+            if close_token.type != SFDLTokenType.CLOSE_TAG:
+                raise close_token.exception(f"Expected closing tag, got: {close_token}")
+
+            return token.value, self.descriptors[token.value]
+
+        if token.type != SFDLTokenType.LIST:
+            raise ValueError(f"Expected list or data item, got: {token}")
+
+        name = "DATA"
+        data = {}
+        if tokens.peek().type == SFDLTokenType.LIST_NAME:
+            name = tokens.next().value
+
+        while tokens.peek().type != SFDLTokenType.CLOSE_TAG:
+            result = self._process_tokens(tokens)
+            data.update({result[0]: result[1]})
+
+        close_token = tokens.next()
+
+        if len(data) == 1:
+            return name, [next(iter(data.values()))]
+
+        return name, data
+
+
 class _FunctionSchema:  # pylint: disable=too-few-public-methods
-    __schema = None
+    __schema: dict[str, typing.Any] | None = None
 
     @classmethod
     def get(cls) -> dict[str, typing.Any]:
@@ -80,6 +173,8 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     sample_data: str | list[str] | None = None
     extra_help: str | None = None
 
+    _data_structures: list[DataStructure] | None = None
+
     @classmethod
     def from_yaml_item(cls, index: tuple[int, int], data: dict[str, typing.Any]) -> FunctionDescriptor:
         """Load function descriptor from yaml structure.
@@ -97,6 +192,35 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
         stream, function = index
 
         return cls(stream=stream, function=function, **dataset)
+
+    def data_structures(self, descriptors: DataItemDescriptors) -> list[DataStructure]:
+        """Get data structures for the function.
+
+        Args:
+            descriptors: list of data item descriptors to use for this function.
+
+        Returns:
+            Data item structures for this function.
+
+        """
+        if self.structure is None:
+            return []
+
+        if self._data_structures is not None:
+            return self._data_structures
+
+        structures = self.structure
+        if isinstance(structures, str):
+            structures = [structures]
+
+        datastructures = [DataStructure(structure, descriptors) for structure in structures]
+
+        object.__setattr__(self, "_data_structures", datastructures)
+
+        if self._data_structures is None:
+            raise ValueError(f"Data structures invalid for function: {self.name}")
+
+        return self._data_structures
 
 
 @dataclasses.dataclass(frozen=True)
