@@ -21,8 +21,6 @@ classifiers = [
     "License :: OSI Approved :: GNU Lesser General Public License v2 or later (LGPLv2+)",
 
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -155,7 +153,7 @@ ignore-paths = [
 ]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 exclude = [
     "tests",
     "data",
