@@ -176,7 +176,30 @@ class ItemJ(ItemStr):
 
 
 class ItemA(ItemStr):
-    """SECS latin1 string data type wrapper."""
+    r"""SECS latin1 string data type wrapper.
+
+    Example:
+        >>> from secsgem.secs.items import ItemA, Item
+        >>>
+        >>> ItemA("Hello World")
+        < A "Hello World">
+        >>> ItemA("Hello \0 World")
+        < A "Hello " 0x0 " World">
+        >>>
+        >>> ItemA.is_valid("Hello World")
+        True
+        >>> ItemA.is_valid(10)
+        False
+        >>>
+        >>> ItemA("Hello World").encode()
+        b'A\x0bHello World'
+        >>> ItemA.decode(b'A\x0bHello World')
+        < A "Hello World">
+        >>>
+        >>> Item.from_sml('< A "Hello World">')
+        < A "Hello World">
+
+    """
 
     _sml_type = "A"
     _hsms_type = 0o20
