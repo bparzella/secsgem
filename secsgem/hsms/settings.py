@@ -144,7 +144,7 @@ class ExistingProtocolSettings(HsmsSettings):
         """Initialize settings."""
         super().__init__(**kwargs)
 
-        self._existing_protocol = kwargs.get("existing_protocol", None)
+        self._existing_protocol = kwargs.get("existing_protocol")
 
     @property
     def existing_protocol(self) -> secsgem.common.Protocol:
@@ -152,6 +152,9 @@ class ExistingProtocolSettings(HsmsSettings):
 
         Default: None
         """
+        if self._existing_protocol is None:
+            raise ValueError("Existing protocol not set")
+
         return self._existing_protocol
 
     def create_protocol(self) -> secsgem.common.Protocol:
