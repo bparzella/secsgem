@@ -124,7 +124,23 @@ class SMLToken:
 
 
 class SMLParser:
-    """SML structure parser."""
+    """SML structure parser.
+
+    Example:
+       >>> from secsgem.secs.sml import SMLParser
+       >>>
+       >>> parser = SMLParser("<L <L <U1 1> <U2 2> ")
+       >>> parser.peek_token()
+       [00001|00002] <
+       >>> parser.get_token()
+       [00001|00002] <
+       >>> parser.get_token()
+       [00001|00001] L
+       >>> parser.get_token()
+       [00001|00005] <
+       >>> parser.get_token()
+       [00001|00001] L
+    """
 
     whitespaces = " \t\n\r"
     operators = "<>[]"
