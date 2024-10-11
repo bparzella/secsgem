@@ -32,14 +32,12 @@ jobs:
           python -m poetry install --no-interaction
 
       - name: Run pytest and coverage
-        run: python -m poetry run coverage run --source=secsgem -m pytest
+        run: python -m poetry run python -m pytest
 
       - name: Publish coverage to codeclimate
         uses: paambaati/codeclimate-action@v5.0.0
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_REPORTER_ID }}
-        with:
-          coverageCommand: python -m poetry run coverage xml
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11' && github.ref == 'refs/heads/main'
 
   lint:

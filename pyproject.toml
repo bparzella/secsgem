@@ -54,7 +54,7 @@ types-pyserial = "^3.5.0.20240826"
 types-jsonschema = "^4.23.0.20240813"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules --doctest-report ndiff"
+addopts = "--doctest-modules --doctest-report ndiff --cov=secsgem --cov-branch --cov-report xml --cov-report term"
 testpaths = [
     "tests",
     "secsgem"
