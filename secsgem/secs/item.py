@@ -466,4 +466,3 @@ class Item(abc.ABC):
     @classmethod
     def _invalid_type_exception(cls, data: typing.Any) -> Exception:
         raise TypeError(f"Invalid value '{data}' of '{data.__class__.__name__}' for '{cls.__name__}'")
-

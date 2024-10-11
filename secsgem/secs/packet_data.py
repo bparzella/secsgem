@@ -82,5 +82,3 @@ class PacketData:
         self._data = self._data[length:]
 
         return result
-
-
