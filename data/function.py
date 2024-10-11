@@ -55,6 +55,7 @@ else:
     preferred_type = None
 """
 
+
 class Function:  # pylint: disable=too-many-instance-attributes
     """Function configuration from yaml."""
 
