@@ -26,6 +26,8 @@ import typing
 import jsonschema
 import yaml
 
+from secsgem.secs.items import Item
+
 descriptor_value_range_regex = re.compile("^(\\d+)-?(\\d*)$")
 
 _script_path = pathlib.Path(__file__).resolve().absolute().parent
@@ -184,6 +186,28 @@ class DataItemDescriptor:
                 DataItemDescriptorValue.from_yaml_item(key, value) for key, value in dataset["values"].items()
             ]
         return cls(**dataset)
+
+    def generate(self, value: list | str | int | float) -> Item:
+        """Generate an item object from the provided value.
+
+        Args:
+            value: value to generate the item from.
+
+        Returns:
+            Item object for the provided value.
+
+        """
+        types = self.type if isinstance(self.type, list) else [self.type]
+
+        for typ in types:
+            item_class = Item.by_yaml_type(typ)
+
+            try:
+                return item_class.from_value(value)
+            except ValueError:
+                pass
+
+        raise ValueError(f"Invalid value '{value}' for types '{types}'")
 
 
 @dataclasses.dataclass(frozen=True)
