@@ -31,7 +31,7 @@ classifiers = [
 keywords = ["development", "hsms", "secs", "gem"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 python-dateutil = "^2.8.1"
 pyserial = "^3.5"
 pyyaml = "^6.0.1"
@@ -39,9 +39,9 @@ jsonschema = "^4.23.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.3.2"
-coverage = "^7.3.2"
+coverage = "^7.6.2"
 ruff = "^0.6.5"
-pylint = "^3.2.7"
+pylint = "^3.3.1"
 mypy = "^1.11.2"
 Jinja2 = "^3.1.2"
 sphinx = "^7.1.2"

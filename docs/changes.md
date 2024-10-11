@@ -402,7 +402,9 @@ This might break your code, changes to your code might be required.
 Rename all session_id fields to device_id.
 This changes the naming of the variable to match the semi naming of the variable and to avoid confusion about this variable.
 
+### Update python minimum requirement to 3.9
 
+As the version 3.8 is now EOL, the minimum requirement was raised to 3.9.
 
 ### Load data item definition from yaml directly
 
