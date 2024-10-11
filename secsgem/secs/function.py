@@ -26,10 +26,15 @@ import typing
 import jsonschema
 import yaml
 
+from secsgem.secs.item_l import ItemL
+
+from .data_item import DataItemDescriptor
 from .functions.sfdl_tokenizer import SFDLTokenizer, SFDLTokens, SFDLTokenType
 
 if typing.TYPE_CHECKING:
-    from .data_item import DataItemDescriptor, DataItemDescriptors
+    from secsgem.secs.item import Item
+
+    from .data_item import DataItemDescriptors
 
 stream_function_regex = re.compile("^S(\\d+)F(\\d+$)")
 
@@ -123,6 +128,88 @@ class DataStructure:  # pylint: disable=too-few-public-methods
 
         return name, data
 
+    def _generate(
+        self,
+        struct: list | dict | DataItemDescriptor,
+        value: dict | list | str | int | float | None,
+    ) -> Item:
+        if isinstance(struct, list):
+            return self._generate_list(struct, value)
+        if isinstance(struct, dict):
+            return self._generate_dict(struct, value)
+        if isinstance(struct, DataItemDescriptor):
+            return self._generate_descriptor(struct, value)
+
+        raise ValueError(f"Invalid data structure: {struct} ({type(struct)})")
+
+    def _generate_list(
+        self,
+        struct: list,
+        value: dict | list | str | int | float | None,
+    ) -> Item:
+        if value is None:
+            return ItemL([])
+
+        if not isinstance(value, list):
+            raise ValueError(f"Expected list, got: {type(value)} ({value})")
+
+        if len(struct) != 1:
+            raise ValueError(f"Expected list of length 1, got {len(struct)}")
+
+        list_data = [self._generate(struct[0], value[i]) for i in range(len(value))]
+
+        return ItemL(list_data)
+
+    def _generate_dict(
+        self,
+        struct: dict,
+        value: dict | list | str | int | float | None,
+    ) -> Item:
+        if isinstance(value, list) and len(value) == len(struct):
+            dict_data = {key: self._generate(struct[key], value[index]) for index, key in enumerate(struct.keys())}
+            return ItemL(dict_data)
+
+        if not isinstance(value, dict):
+            raise ValueError(f"Expected dict, got: {type(value)} ({value})")
+
+        dict_data = {
+            key: self._generate(struct[key], value[key]) if key in value else self._generate(struct[key], None)
+            for key in struct
+        }
+
+        return ItemL(dict_data)
+
+    def _generate_descriptor(
+        self,
+        struct: DataItemDescriptor,
+        value: dict | list | str | int | float | None,
+    ) -> Item:
+        if isinstance(value, dict):
+            raise ValueError(f"Expected value, got dict: {value}")
+
+        if value is None:
+            raise ValueError("Expected value, got None")
+
+        return struct.generate(value)
+
+    def generate(self, value: dict | list | str | int | float) -> Item:
+        """Generate the value of the data structure.
+
+        Args:
+            value: value to generate.
+
+        Returns:
+            Value of the data structure.
+
+        """
+        if isinstance(self.struct, str):
+            if isinstance(value, dict):
+                raise ValueError("Item can't be initialized from dict.")
+
+            return self.descriptors[self.struct].generate(value)
+
+        return self._generate(self.struct, value)
+
 
 class _FunctionSchema:  # pylint: disable=too-few-public-methods
     __schema: dict[str, typing.Any] | None = None
@@ -160,6 +247,8 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     stream: int
     function: int
 
+    data_items: DataItemDescriptors
+
     name: str
     mnemonic: str
     to_host: bool
@@ -168,18 +257,24 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
     reply_required: bool
     multi_block: bool
     structure: str | list[str] | None = None
-    sample_data: str | list[str] | None = None
+    sample_data: str | list[str] | list[dict] | None = None
     extra_help: str | None = None
 
     _data_structures: list[DataStructure] | None = None
 
     @classmethod
-    def from_yaml_item(cls, index: tuple[int, int], data: dict[str, typing.Any]) -> FunctionDescriptor:
+    def from_yaml_item(
+        cls,
+        index: tuple[int, int],
+        data: dict[str, typing.Any],
+        data_items: DataItemDescriptors,
+    ) -> FunctionDescriptor:
         """Load function descriptor from yaml structure.
 
         Args:
             index: Tuple of stream and function.
             data: function descriptor data.
+            data_items: data item descriptors to use for this function descriptors.
 
         Returns:
             FunctionDescriptor object for the provided data
@@ -189,13 +284,11 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
 
         stream, function = index
 
-        return cls(stream=stream, function=function, **dataset)
+        return cls(stream=stream, function=function, data_items=data_items, **dataset)
 
-    def data_structures(self, descriptors: DataItemDescriptors) -> list[DataStructure]:
+    @property
+    def data_structures(self) -> list[DataStructure]:
         """Get data structures for the function.
-
-        Args:
-            descriptors: list of data item descriptors to use for this function.
 
         Returns:
             Data item structures for this function.
@@ -211,7 +304,7 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
         if isinstance(structures, str):
             structures = [structures]
 
-        datastructures = [DataStructure(structure, descriptors) for structure in structures]
+        datastructures = [DataStructure(structure, self.data_items) for structure in structures]
 
         object.__setattr__(self, "_data_structures", datastructures)
 
@@ -220,12 +313,34 @@ class FunctionDescriptor:  # pylint: disable=too-many-instance-attributes
 
         return self._data_structures
 
+    def generate(self, data: dict | list | str | int | float) -> Item | None:
+        """Generate the data for the function.
+
+        Args:
+            data: data to generate.
+
+        Returns:
+            generated item structure or None if not generated
+
+        """
+        last_exception = Exception("Invalid data structures")
+
+        for structure in self.data_structures:
+            try:
+                return structure.generate(data)
+            except Exception as exc:  # noqa: PERF203 # pylint: disable=broad-exception-caught
+                last_exception = exc
+
+        raise last_exception
+
 
 @dataclasses.dataclass(frozen=True)
 class FunctionDescriptors:
     """Function descriptors class."""
 
     __descriptors: dict[tuple[int, int], FunctionDescriptor]
+
+    data_items: DataItemDescriptors
 
     def __getitem__(self, key: str | tuple[int, int]) -> FunctionDescriptor:
         """Get function descriptor by name.
@@ -259,11 +374,12 @@ class FunctionDescriptors:
         return self.__descriptors[parse_stream_function(key)]
 
     @classmethod
-    def from_yaml(cls, path: pathlib.Path) -> FunctionDescriptors:
+    def from_yaml(cls, path: pathlib.Path, data_items: DataItemDescriptors) -> FunctionDescriptors:
         """Load function descriptor list from yaml file.
 
         Args:
             path: Path to yaml file.
+            data_items: data item descriptors to use for this function descriptors.
 
         Returns:
             FunctionDescriptors object for all functions in the yaml file.
@@ -277,7 +393,31 @@ class FunctionDescriptors:
                 parse_stream_function(function): FunctionDescriptor.from_yaml_item(
                     parse_stream_function(function),
                     function_data,
+                    data_items,
                 )
                 for function, function_data in yaml_data.items()
             },
+            data_items,
         )
+
+    @property
+    def streams(self) -> list[int]:
+        """Get all available streams.
+
+        Returns:
+            list of functions for the stream
+
+        """
+        return sorted({descriptor_key[0] for descriptor_key in self.__descriptors})
+
+    def functions(self, stream: int) -> list[int]:
+        """Get all available functions for stream.
+
+        Args:
+            stream: stream index number
+
+        Returns:
+            list of functions for the stream
+
+        """
+        return sorted({descriptor_key[1] for descriptor_key in self.__descriptors if descriptor_key[0] == stream})
