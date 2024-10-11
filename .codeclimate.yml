@@ -3,6 +3,10 @@ plugins:
 #    enabled: true
   duplication:
     enabled: true
+    config:
+      languages:
+        python:
+          python_version: 3
     checks:
       Similar code:
         enabled: false
