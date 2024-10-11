@@ -71,7 +71,7 @@ class HsmsHeader(secsgem.common.Header):
 
     length = 10
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         system: int,
         device_id: int,

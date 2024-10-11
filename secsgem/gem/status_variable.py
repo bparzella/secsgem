@@ -35,7 +35,7 @@ class StatusVariableId(enum.Enum):
 class StatusVariable:  # pylint: disable=too-few-public-methods
     """Status variable definition."""
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         svid: int | str | StatusVariableId,
         name: str,

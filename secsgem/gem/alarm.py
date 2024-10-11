@@ -23,7 +23,7 @@ import secsgem.secs
 class Alarm:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Alarm definition."""
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         alid: str | int,
         name: str,

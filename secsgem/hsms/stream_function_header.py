@@ -24,7 +24,7 @@ class HsmsStreamFunctionHeader(HsmsHeader):
     Header for message with SType 0.
     """
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         system: int,
         stream: int,

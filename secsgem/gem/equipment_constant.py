@@ -32,7 +32,7 @@ class EquipmentConstantId(enum.Enum):
 class EquipmentConstant:  # pylint: disable=too-many-instance-attributes,too-few-public-methods
     """Equipment constant definition."""
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         ecid: int | str | EquipmentConstantId,
         name: str,

@@ -28,7 +28,7 @@ class Header(abc.ABC):
 
     length = -1
 
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # pylint: disable=too-many-arguments,too-many-positional-arguments
         self,
         system: int,
         device_id: int,
