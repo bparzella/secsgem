@@ -406,6 +406,16 @@ This changes the naming of the variable to match the semi naming of the variable
 
 As the version 3.8 is now EOL, the minimum requirement was raised to 3.9.
 
+### Add new classes for items
+
+The old secs variable classes (secsgem.secs.variables.U4 etc.) are primarily used in the structuring for the function classes.
+As these function classes will be deprecated in favor of runtime parsed yaml files for function definition, these type of variables are not required any more.
+
+The new Item classes mirror the old functionality for the data management without the need for structure definition.
+They also provide new functionalities for initializing them with data or getting data (eg sml).
+
+The naming "Item" is also closer to the naming used by the SEMI SECS norm.
+
 ### Load data item definition from yaml directly
 
 Data item class files were generated using the yaml file.

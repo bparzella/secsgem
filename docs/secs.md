@@ -9,6 +9,7 @@ types for specific purposes.
 
 ```{toctree}
 secs/variables
+secs/items
 secs/functions
 secs/handler
 ```
