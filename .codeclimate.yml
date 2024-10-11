@@ -1,3 +1,8 @@
+checks:
+  file-lines:
+    enabled: true
+    config:
+      threshold: 500
 plugins:
 #  bandit:
 #    enabled: true
@@ -10,10 +15,6 @@ plugins:
     checks:
       Similar code:
         enabled: false
-  file-lines:
-    enabled: true
-    config:
-      threshold: 500
 #  pep8:
 #    enabled: true
 #  pylint:
