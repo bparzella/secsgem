@@ -145,7 +145,6 @@ from .xypos import XYPOS
 from .ydies import YDIES
 
 __all__ = [
-    "DataItemBase",
     "ABS",
     "ACKA",
     "ACKC5",
@@ -264,10 +263,11 @@ __all__ = [
     "TRID",
     "UNITS",
     "UPPERDB",
-    "V",
     "VID",
     "VLAACK",
     "XDIES",
     "XYPOS",
     "YDIES",
+    "DataItemBase",
+    "V",
 ]

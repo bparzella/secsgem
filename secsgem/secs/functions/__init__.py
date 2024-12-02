@@ -156,8 +156,6 @@ from .s14f03 import SecsS14F03
 from .s14f04 import SecsS14F04
 
 __all__ = [
-    "SecsStreamFunction",
-    "StreamsFunctions",
     "SecsS00F00",
     "SecsS01F00",
     "SecsS01F01",
@@ -292,4 +290,6 @@ __all__ = [
     "SecsS14F02",
     "SecsS14F03",
     "SecsS14F04",
+    "SecsStreamFunction",
+    "StreamsFunctions",
 ]

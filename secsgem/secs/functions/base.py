@@ -23,7 +23,7 @@ import secsgem.common
 from secsgem.secs.data_items import DataItemBase
 from secsgem.secs.variables import functions
 
-DataItemRecursive = typing.Union[typing.Type[DataItemBase], typing.Iterable["DataItemRecursive"]]
+DataItemRecursive = typing.Union[type[DataItemBase], typing.Iterable["DataItemRecursive"]]
 
 
 class StructureDisplayingMeta(type):

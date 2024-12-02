@@ -28,19 +28,19 @@ from .remote_command import RemoteCommand, RemoteCommandId
 from .status_variable import StatusVariable, StatusVariableId
 
 __all__ = [
-    "GemHandler",
+    "Alarm",
+    "CollectionEvent",
+    "CollectionEventId",
+    "CollectionEventLink",
+    "CollectionEventReport",
+    "DataValue",
+    "EquipmentConstant",
+    "EquipmentConstantId",
     "GemEquipmentHandler",
+    "GemHandler",
     "GemHostHandler",
     "RemoteCommand",
     "RemoteCommandId",
-    "Alarm",
-    "EquipmentConstant",
-    "EquipmentConstantId",
-    "CollectionEventReport",
-    "CollectionEventLink",
-    "CollectionEvent",
-    "CollectionEventId",
     "StatusVariable",
     "StatusVariableId",
-    "DataValue",
 ]
