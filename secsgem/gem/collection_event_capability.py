@@ -117,10 +117,6 @@ class CollectionEventCapability(GemHandler, Capability):
         """
 
         def _ce_sender():
-            nonlocal ceids
-            if not isinstance(ceids, list):
-                ceids = [ceids]
-
             for ceid in ceids:
                 if isinstance(ceid, CollectionEventId):
                     ceid = ceid.value
