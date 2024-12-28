@@ -25,6 +25,8 @@ import secsgem.hsms
 
 if typing.TYPE_CHECKING:
     from .data_items.data_items import DataItems
+    from .data_items.sv import SV
+    from .functions import SecsS01F04, SecsS01F12
     from .functions.base import SecsStreamFunction
 
 
@@ -170,7 +172,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
-    def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction | None:
+    def list_svs(self, svs: list[str | int] | None = None) -> SecsS01F12:
         """Get list of available Status Variables.
 
         Args:
@@ -187,7 +189,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 11)(svs)))
 
-    def request_svs(self, svs: list[str | int]) -> SecsStreamFunction | None:
+    def request_svs(self, svs: list[str | int]) -> SecsS01F04:
         """Request contents of supplied Status Variables.
 
         Args:
@@ -201,7 +203,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 3)(svs)))
 
-    def request_sv(self, sv_id: int | str) -> int | str | None:
+    def request_sv(self, sv_id: int | str) -> SV:
         """Request contents of one Status Variable.
 
         Args:
@@ -214,10 +216,6 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         self.logger.info("Get value of status variable %s", sv_id)
 
         result = self.request_svs([sv_id])
-
-        if result is None:
-            return None
-
         return result[0]
 
     def list_ecs(self, ecs: list[str | int] | None = None) -> SecsStreamFunction | None:
