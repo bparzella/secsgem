@@ -25,6 +25,8 @@ import secsgem.hsms
 
 if typing.TYPE_CHECKING:
     from .data_items.data_items import DataItems
+    from .data_items.sv import SV
+    from .functions import SecsS01F04, SecsS01F12
     from .functions.base import SecsStreamFunction
 
 
@@ -170,54 +172,50 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
-    def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction | None:
-        """Get list of available Service Variables.
+    def list_svs(self, svs: list[str | int] | None = None) -> SecsS01F12:
+        """Get list of available Status Variables.
 
         Args:
-            svs: Service Variables to list
+            svs: Status Variables to list
 
         Returns:
-            available Service Variables
+            available Status Variables
 
         """
-        self.logger.info("Get list of service variables")
+        self.logger.info("Get list of status variables")
 
         if svs is None:
             svs = []
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 11)(svs)))
 
-    def request_svs(self, svs: list[str | int]) -> SecsStreamFunction | None:
-        """Request contents of supplied Service Variables.
+    def request_svs(self, svs: list[str | int]) -> SecsS01F04:
+        """Request contents of supplied Status Variables.
 
         Args:
-            svs: Service Variables to request
+            svs: Status Variables to request
 
         Returns:
-            values of requested Service Variables
+            values of requested Status Variables
 
         """
-        self.logger.info("Get value of service variables %s", svs)
+        self.logger.info("Get value of status variables %s", svs)
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 3)(svs)))
 
-    def request_sv(self, sv_id: int | str) -> int | str | None:
-        """Request contents of one Service Variable.
+    def request_sv(self, sv_id: int | str) -> SV:
+        """Request contents of one Status Variable.
 
         Args:
-            sv_id: id of Service Variable
+            sv_id: id of Status Variable
 
         Returns:
-            value of requested Service Variable
+            value of requested Status Variable
 
         """
-        self.logger.info("Get value of service variable %s", sv_id)
+        self.logger.info("Get value of status variable %s", sv_id)
 
         result = self.request_svs([sv_id])
-
-        if result is None:
-            return None
-
         return result[0]
 
     def list_ecs(self, ecs: list[str | int] | None = None) -> SecsStreamFunction | None:
