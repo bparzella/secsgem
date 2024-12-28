@@ -171,16 +171,16 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
     def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction | None:
-        """Get list of available Service Variables.
+        """Get list of available Status Variables.
 
         Args:
-            svs: Service Variables to list
+            svs: Status Variables to list
 
         Returns:
-            available Service Variables
+            available Status Variables
 
         """
-        self.logger.info("Get list of service variables")
+        self.logger.info("Get list of status variables")
 
         if svs is None:
             svs = []
@@ -188,30 +188,30 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 11)(svs)))
 
     def request_svs(self, svs: list[str | int]) -> SecsStreamFunction | None:
-        """Request contents of supplied Service Variables.
+        """Request contents of supplied Status Variables.
 
         Args:
-            svs: Service Variables to request
+            svs: Status Variables to request
 
         Returns:
-            values of requested Service Variables
+            values of requested Status Variables
 
         """
-        self.logger.info("Get value of service variables %s", svs)
+        self.logger.info("Get value of status variables %s", svs)
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 3)(svs)))
 
     def request_sv(self, sv_id: int | str) -> int | str | None:
-        """Request contents of one Service Variable.
+        """Request contents of one Status Variable.
 
         Args:
-            sv_id: id of Service Variable
+            sv_id: id of Status Variable
 
         Returns:
-            value of requested Service Variable
+            value of requested Status Variable
 
         """
-        self.logger.info("Get value of service variable %s", sv_id)
+        self.logger.info("Get value of status variable %s", sv_id)
 
         result = self.request_svs([sv_id])
 
