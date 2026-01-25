@@ -100,13 +100,8 @@ class CollectionEventCapability(GemHandler, Capability):
             collection event
 
         """
-        enabled_ceid = []
-
-        for ceid, collection_event in self._registered_collection_events.items():
-            if collection_event.enabled:
-                enabled_ceid.append(ceid)
-
-        return enabled_ceid
+        return [ceid for ceid, collection_event in self._registered_collection_events.items()
+                if collection_event.enabled]
 
     def trigger_collection_events(self, ceids: list[int | str | CollectionEventId]):
         """Triggers the supplied collection events.
