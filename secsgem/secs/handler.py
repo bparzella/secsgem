@@ -170,7 +170,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.send_and_waitfor_response(self.stream_function(2, 33)({"DATAID": 0, "DATA": []}))
 
-    def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction | None:
+    def list_svs(self, svs: list[str | int] | None = None) -> SecsStreamFunction:
         """Get list of available Status Variables.
 
         Args:
@@ -187,7 +187,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(1, 11)(svs)))
 
-    def request_svs(self, svs: list[str | int]) -> SecsStreamFunction | None:
+    def request_svs(self, svs: list[str | int]) -> SecsStreamFunction:
         """Request contents of supplied Status Variables.
 
         Args:
@@ -220,7 +220,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return result[0]
 
-    def list_ecs(self, ecs: list[str | int] | None = None) -> SecsStreamFunction | None:
+    def list_ecs(self, ecs: list[str | int] | None = None) -> SecsStreamFunction:
         """Get list of available Equipment Constants.
 
         Args:
@@ -237,7 +237,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(2, 29)(ecs)))
 
-    def request_ecs(self, ecs: list[int | str]) -> SecsStreamFunction | None:
+    def request_ecs(self, ecs: list[int | str]) -> SecsStreamFunction:
         """Request contents of supplied Equipment Constants.
 
         Args:
@@ -251,7 +251,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.settings.streams_functions.decode(self.send_and_waitfor_response(self.stream_function(2, 13)(ecs)))
 
-    def request_ec(self, ec_id: int | str) -> SecsStreamFunction | None:
+    def request_ec(self, ec_id: int | str) -> SecsStreamFunction:
         """Request contents of one Equipment Constant.
 
         Args:
@@ -265,7 +265,7 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
 
         return self.request_ecs([ec_id])
 
-    def set_ecs(self, ecs: list[list[str | int | float]]) -> int | str | float | bytes | None:
+    def set_ecs(self, ecs: list[list[str | int | float]]) -> int:
         """Set contents of supplied Equipment Constants.
 
         Args:
@@ -274,11 +274,12 @@ class SecsHandler:  # pylint: disable=too-many-instance-attributes,too-many-publ
         """
         self.logger.info("Set value of equipment constants %s", ecs)
 
-        return self.settings.streams_functions.decode(
+        s2f16 = self.settings.streams_functions.decode(
             self.send_and_waitfor_response(self.stream_function(2, 15)(ecs)),
-        ).get()
+        )
+        return s2f16.get() # EAC
 
-    def set_ec(self, ec_id: int | str, value: int | str | float) -> int | str | float | bytes | None:
+    def set_ec(self, ec_id: int | str, value: int | str | float) -> int:
         """Set contents of one Equipment Constant.
 
         Args:
