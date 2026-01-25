@@ -147,7 +147,7 @@ class TcpConnection(Connection):
                 # retry will be cleared if send succeeded
                 retry = False
             except OSError as exc:
-                if not is_errorcode_ewouldblock(exc.errno):
+                if exc.errno is None or not is_errorcode_ewouldblock(exc.errno):
                     # raise if not EWOULDBLOCK
                     return False
                 # it is EWOULDBLOCK, so retry sending
