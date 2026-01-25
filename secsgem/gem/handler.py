@@ -41,6 +41,7 @@ class GemHandler(secsgem.secs.SecsHandler):  # pylint: disable=too-many-instance
         """
         super().__init__(settings)
         self._protocol.events.communicating += self._on_communicating
+        self._protocol.events.disconnected += self.on_connection_closed
 
         self._mdln = "secsgem"  #: model number returned by S01E13/14
         self._softrev = "0.3.0"  #: software version returned by S01E13/14
