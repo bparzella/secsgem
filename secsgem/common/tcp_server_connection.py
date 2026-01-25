@@ -20,7 +20,6 @@ from __future__ import annotations
 import select
 import socket
 import threading
-import time
 import typing
 
 from .helpers import is_windows
@@ -53,7 +52,6 @@ class TcpServerConnection(TcpConnection):
         # reconnect thread required for server
         self._server_thread = None
         self._stop_server_thread = False
-        self._server_sock = None
 
         self.on_disconnected.register(self._disconnected)
 
@@ -92,13 +90,8 @@ class TcpServerConnection(TcpConnection):
             # stop connection thread if it is running
             if self._server_thread and self._server_thread.is_alive():
                 self._stop_server_thread = True
-
-                if self._server_sock:
-                    self._server_sock.close()
-
                 # wait for connection thread to stop
-                while self._stop_server_thread:
-                    time.sleep(0.2)
+                self._server_thread.join()
 
             # disconnect super class
             self.disconnect()
@@ -115,51 +108,51 @@ class TcpServerConnection(TcpConnection):
 
         .. warning:: Do not call this directly, for internal use only.
         """
-        self._server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if not is_windows():
-            self._server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            if not is_windows():
+                server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-        self._server_sock.bind((self._settings.address, self._settings.port))
-        self._server_sock.listen(1)
+            server_sock.bind((self._settings.address, self._settings.port))
+            server_sock.listen(1)
 
-        while not self._stop_server_thread:
-            try:
-                select_result = select.select([self._server_sock], [], [], self.select_timeout)
-            except Exception as exc:  # pylint: disable=broad-except
-                self._logger.debug("select exception", exc_info=exc)
+            while not self._stop_server_thread:
+                try:
+                    select_result = select.select([server_sock], [], [], self.select_timeout)
+                except Exception as exc:  # pylint: disable=broad-except
+                    self._logger.debug("select exception", exc_info=exc)
 
-            if not select_result[0]:
-                # select timed out
-                continue
+                if not select_result[0]:
+                    # select timed out
+                    continue
 
-            accept_result = self._server_sock.accept()
-            if accept_result is None:
-                continue
+                accept_result = server_sock.accept()
+                if accept_result is None:
+                    continue
 
-            (self._sock, (_, _)) = accept_result
+                (self._sock, (_, _)) = accept_result
 
-            # setup socket
-            self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+                # setup socket
+                self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
 
-            # make socket nonblocking
-            self._socket.setblocking(0)
+                # make socket nonblocking
+                self._socket.setblocking(0)
 
-            # mark connection as connected
-            self._connected = True
+                # mark connection as connected
+                self._connected = True
 
-            # start the receiver thread
-            self._start_receiver()
+                # start the receiver thread
+                self._start_receiver()
 
-            # send event
-            try:
-                self.on_connected({"source": self})
-            except Exception:  # pylint: disable=broad-except
-                self._logger.exception("ignoring exception for on_connection_established handler")
+                # send event
+                try:
+                    self.on_connected({"source": self})
+                except Exception:  # pylint: disable=broad-except
+                    self._logger.exception("ignoring exception for on_connection_established handler")
 
-            self._server_sock.shutdown(socket.SHUT_RDWR)
-            self._server_sock.close()
-
-            return
-
-        self._stop_server_thread = False
+                server_sock.shutdown(socket.SHUT_RDWR)
+                return
+        finally:
+            server_sock.close()
+            self._stop_server_thread = False
