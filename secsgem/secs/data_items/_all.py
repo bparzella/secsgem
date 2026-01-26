@@ -30,6 +30,7 @@ from .attrid import ATTRID
 from .attrreln import ATTRRELN
 from .bcequ import BCEQU
 from .binlt import BINLT
+from .ccode import CCODE
 from .ceed import CEED
 from .ceid import CEID
 from .cename import CENAME
@@ -97,6 +98,7 @@ from .objtype import OBJTYPE
 from .oflack import OFLACK
 from .onlack import ONLACK
 from .orloc import ORLOC
+from .pparm import PPARM
 from .ppbody import PPBODY
 from .ppgnt import PPGNT
 from .ppid import PPID
@@ -156,6 +158,7 @@ secs_data_items = [
     ATTRRELN,
     BCEQU,
     BINLT,
+    CCODE,
     CEED,
     CEID,
     CENAME,
@@ -223,6 +226,7 @@ secs_data_items = [
     OFLACK,
     ONLACK,
     ORLOC,
+    PPARM,
     PPBODY,
     PPGNT,
     PPID,
